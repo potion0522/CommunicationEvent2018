@@ -26,7 +26,7 @@ void Image::initialize( ) {
 		case NONE		: add.name = "none"				; break;
 		default	:
 			{
-				std::shared_ptr< Debug > debug( new Debug( ) );
+				std::shared_ptr< Debug > debug( new Debug( NULL ) );
 				debug->error( "Image.cpp : _dir_num‚Ì”’l‚ª‘å‚«‚·‚¬‚Ü‚·" );
 			}
 		}
@@ -54,7 +54,7 @@ Png Image::getPng( IMAGE item, int num ) const {
 	Png tmp;
 	memset( &tmp, 0, sizeof( Png ) );
 	if ( item > IMAGE_DIR_MAX - 1 ) {
-		std::shared_ptr< Debug > debug( new Debug( ) );
+		std::shared_ptr< Debug > debug( new Debug( NULL ) );
 		debug->error( "—ñ‹“Œ^‚Ì’Ç‰Á–Y‚ê‚Ì‰Â”\«‚ª‚ ‚è‚Ü‚·" );
 	}
 

@@ -6,7 +6,8 @@
 const int INIT_X = 20;
 const int INIT_Y = 0;
 
-Debug::Debug( ) {
+Debug::Debug( std::shared_ptr< GlobalData > data ) :
+_data( data ){
 	initialize( );
 }
 

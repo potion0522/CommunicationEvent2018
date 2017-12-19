@@ -29,6 +29,9 @@
     <ClCompile Include="MouseEvent.cpp">
       <Filter>Global</Filter>
     </ClCompile>
+    <ClCompile Include="Direction.cpp">
+      <Filter>Calc</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Base.h">
@@ -61,10 +64,16 @@
     <ClInclude Include="MouseEvent.h">
       <Filter>Global</Filter>
     </ClInclude>
+    <ClInclude Include="Direction.h">
+      <Filter>Calc</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Global">
       <UniqueIdentifier>{f6407ea1-6f72-4ff5-976a-56afe0c996a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Calc">
+      <UniqueIdentifier>{5ce74a89-a9e4-46b5-9878-20ca477b3414}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

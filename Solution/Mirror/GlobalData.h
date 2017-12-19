@@ -2,6 +2,7 @@
 #include "Base.h"
 #include "UpdateKey.h"
 #include "MouseEvent.h"
+#include "Debug.h"
 #include <memory>
 
 class GlobalData : public Base {
@@ -18,9 +19,18 @@ public:
 	int getMouseX( ) const;
 	int getMouseY( ) const;
 	bool getClickLeft( ) const;
+	SCENE getScene( ) const;
+
+public:
+	void setPtr( std::shared_ptr< class Debug > ptr );
+
+	std::shared_ptr< Debug > getDebugPtr( ) const;
 
 private:
-	std::shared_ptr< UpdateKey > _key;
-	std::shared_ptr< MouseEvent > _mouse;
+	SCENE _scene;
+
+	std::shared_ptr< class UpdateKey > _key;
+	std::shared_ptr< class MouseEvent > _mouse;
+	std::shared_ptr< class Debug > _debug;
 };
 

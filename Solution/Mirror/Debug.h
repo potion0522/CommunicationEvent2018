@@ -1,6 +1,7 @@
 #pragma once
 #include "Base.h"
 #include "Color.h"
+#include "GlobalData.h"
 #include <memory>
 #include <vector>
 #include <string>
@@ -8,7 +9,7 @@
 
 class Debug : public Base {
 public:
-	Debug( );
+	Debug( std::shared_ptr< class GlobalData > data );
 	virtual ~Debug( );
 
 public:
@@ -27,6 +28,7 @@ private:
 	FILE *_fp;
 	std::vector< std::string > _log;
 
+	std::shared_ptr< GlobalData > _data;
 	std::shared_ptr< Color > _color;
 };
 
