@@ -1,8 +1,9 @@
 #include "Direction.h"
 #include "DxLib.h"
 
-Direction::Direction( std::shared_ptr< GlobalData > data ) :
-_data( data ) {
+Direction::Direction( std::shared_ptr< GlobalData > data, std::shared_ptr< Debug > debug ) :
+_data( data ),
+_debug( debug ) {
 	initialize( );
 }
 
@@ -12,25 +13,22 @@ Direction::~Direction( ) {
 void Direction::initialize( ) {
 	_scene = NONE;
 	_data->initialize( );
-
-	_debug = std::shared_ptr< Debug >( new Debug( _data ) );
-
-	_data->setPtr( _debug );
-	_init = false;
 }
 
 void Direction::update( ) {
-	if ( !_init ) {
-		_base = _data;
-		add( ALL, _base );
-		_base = _debug;
-		add( ALL, _base );
-		_init = true;
-	}
-	
-	_scene = _data->getScene( );
+	_data->update( );
 
-	run( );
+	_scene = _data->getScene( );
+	std::map< SCENE, std::shared_ptr< Base > >::iterator ite;
+	ite = _exe.begin( );
+	for ( ite; ite != _exe.end( ); ite++ ) {
+		if ( ite->first == _data->getScene( ) ) {
+			ite->second->update( );
+		}
+		if ( ite->first == ALL ) {
+			ite->second->update( );
+		}
+	}
 
 	//デバッグON
 	if ( _data->getKeyState( KEY_INPUT_SPACE ) == 1 ) {
@@ -51,14 +49,13 @@ void Direction::add( SCENE scene, std::shared_ptr< Base > ptr ) {
 }
 
 void Direction::run( ) {
-	std::map< SCENE, std::shared_ptr< Base > >::iterator ite;
-	ite = _exe.begin( );
-	for ( ite; ite != _exe.end( ); ite++ ) {
-		if ( ite->first == _data->getScene( ) ) {
-			ite->second->update( );
+	// GlobalData のフラグが 0 であれば全プロセス終了
+	while ( _data->getFlag( ) ) {
+		if ( ScreenFlip( ) != 0 || ProcessMessage( ) != 0 || ClearDrawScreen( ) != 0 ) {
+			break;
 		}
-		if ( ite->first == ALL ) {
-			ite->second->update( );
-		}
+
+		//計算フェイズ
+		update( );
 	}
 }
