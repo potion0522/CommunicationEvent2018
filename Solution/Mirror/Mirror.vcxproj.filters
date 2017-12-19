@@ -23,14 +23,17 @@
     <ClCompile Include="UpdateKey.cpp">
       <Filter>Global</Filter>
     </ClCompile>
-    <ClCompile Include="Debug.cpp">
-      <Filter>Global</Filter>
-    </ClCompile>
     <ClCompile Include="MouseEvent.cpp">
       <Filter>Global</Filter>
     </ClCompile>
     <ClCompile Include="Direction.cpp">
       <Filter>Calc</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug.cpp">
+      <Filter>Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Title.cpp">
+      <Filter>Scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -58,14 +61,17 @@
     <ClInclude Include="UpdateKey.h">
       <Filter>Global</Filter>
     </ClInclude>
-    <ClInclude Include="Debug.h">
-      <Filter>Global</Filter>
-    </ClInclude>
     <ClInclude Include="MouseEvent.h">
       <Filter>Global</Filter>
     </ClInclude>
     <ClInclude Include="Direction.h">
       <Filter>Calc</Filter>
+    </ClInclude>
+    <ClInclude Include="Debug.h">
+      <Filter>Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="Title.h">
+      <Filter>Scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -74,6 +80,12 @@
     </Filter>
     <Filter Include="Calc">
       <UniqueIdentifier>{5ce74a89-a9e4-46b5-9878-20ca477b3414}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Debug">
+      <UniqueIdentifier>{1c3d046a-ab05-4ae0-8b83-b46b37fbcfe6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene">
+      <UniqueIdentifier>{ab8126be-caf2-4f25-9588-b18f497c5735}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

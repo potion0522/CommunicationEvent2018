@@ -1,6 +1,8 @@
 #include "Debug.h"
 #include "DxLib.h"
 #include "const.h"
+#include "Color.h"
+#include "GlobalData.h"
 #include <time.h>
 
 const int INIT_X = 20;

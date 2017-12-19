@@ -1,5 +1,9 @@
 #include "Direction.h"
 #include "DxLib.h"
+#include "GlobalData.h"
+#include "Debug.h"
+#include "Title.h"
+#include "Image.h"
 
 Direction::Direction( std::shared_ptr< GlobalData > data, std::shared_ptr< Debug > debug ) :
 _data( data ),
@@ -17,23 +21,26 @@ void Direction::initialize( ) {
 
 void Direction::update( ) {
 	_data->update( );
-
 	_scene = _data->getScene( );
+
 	std::map< SCENE, std::shared_ptr< Base > >::iterator ite;
 	ite = _exe.begin( );
 	for ( ite; ite != _exe.end( ); ite++ ) {
-		if ( ite->first == _data->getScene( ) ) {
-			ite->second->update( );
-		}
-		if ( ite->first == ALL ) {
-			ite->second->update( );
-		}
+		//if ( ite->first == _scene ) {
+		//	ite->second->update( );
+		//}
+		//if ( ite->first == ALL ) {
+		//	ite->second->update( );
+		//}
+		ite->second->update( );
 	}
 
 	//デバッグON
 	if ( _data->getKeyState( KEY_INPUT_SPACE ) == 1 ) {
 		_debug->setFlag( ( _debug->getFlag( ) + 1 ) % 2 );
 	}
+
+	_debug->addLog( "test" );
 
 	//終了
 	if ( _data->getKeyState( KEY_INPUT_ESCAPE ) ) {
@@ -57,5 +64,9 @@ void Direction::run( ) {
 
 		//計算フェイズ
 		update( );
+
+		//描画
+		Base::ImageProperty* data = _data->getTitlePtr( )->getBackPng( );
+		DrawRotaGraphF( WIDTH/ 2, HEIGHT / 2, 1, 0, data->png, TRUE );
 	}
 }

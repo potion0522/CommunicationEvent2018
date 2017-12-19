@@ -23,7 +23,7 @@ void Image::initialize( ) {
 
 		//ディレクトリ名を入力
 		switch ( ( IMAGE )i ) {
-		case NONE		: add.name = "none"				; break;
+		case NONE_IMAGE		: add.name = "none"				; break;
 		default	:
 			{
 				std::shared_ptr< Debug > debug( new Debug( NULL ) );

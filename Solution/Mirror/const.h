@@ -8,7 +8,7 @@ const int KEY_MAX = 256;
 //—ñ‹“Œ^‚Ì—v‘f‚ğ‘‚â‚µ‚½‚ç•K‚¸•ÏX‚µ‚Ä‚­‚¾‚³‚¢
 const int IMAGE_DIR_MAX = 1;
 const int COLOR_MAX = 6;
-const int SCENE_MAX = 1;
+const int SCENE_MAX = 2;
 
 enum COLOR {
 	WHITE,
@@ -22,6 +22,7 @@ enum COLOR {
 enum SCENE {
 	ALL = SCENE_MAX,
 	NONE = 0,
+	TITLE,
 };
 
 enum IMAGE {

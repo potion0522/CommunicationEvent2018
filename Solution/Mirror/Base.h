@@ -8,7 +8,7 @@ public:
 	virtual void setFlag( int flag );
 	virtual int getFlag( ) const;
 	virtual void update( ) = 0;
-	virtual void initialize( ) = 0;
+	virtual void initialize( );
 
 private:
 	int _flag;

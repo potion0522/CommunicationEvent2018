@@ -1,6 +1,8 @@
 #include "DxLib.h"
 #include "GlobalData.h"
 #include "Direction.h"
+#include "Title.h"
+#include "Debug.h"
 
 int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow ) {
 	ChangeWindowMode( 1 );
@@ -10,13 +12,17 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	}
 	SetDrawScreen( DX_SCREEN_BACK );
 
-
 	std::shared_ptr< GlobalData > data( new GlobalData( ) );
 	std::shared_ptr< Debug > debug( new Debug( data ) );
+
 	std::shared_ptr< Direction > direction( new Direction( data, debug ) );
+	std::shared_ptr< Title > title( new Title( data ) );
 
 	data->setPtr( debug );
+	data->setPtr( title );
+
 	direction->add( ALL, debug );
+	direction->add( TITLE, title );
 
 	direction->run( );
 

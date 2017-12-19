@@ -162,6 +162,7 @@
     <ClCompile Include="LoadCSV.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MouseEvent.cpp" />
+    <ClCompile Include="Title.cpp" />
     <ClCompile Include="UpdateKey.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -175,6 +176,7 @@
     <ClInclude Include="Image.h" />
     <ClInclude Include="LoadCSV.h" />
     <ClInclude Include="MouseEvent.h" />
+    <ClInclude Include="Title.h" />
     <ClInclude Include="UpdateKey.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
