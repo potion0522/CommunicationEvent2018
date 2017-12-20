@@ -86,4 +86,12 @@ void Direction::run( ) {
 			_server->sendData( i, data );
 		}
 	}
+
+	for ( int i = 0; i < MACHINE_MAX; i++ ) {
+		if ( _server->isRecving( i ) ) {
+			Client::NetWorkData data;
+			data = _server->getData( i );
+			_debug->addLog( std::to_string( data.test ) );
+		}
+	}
 }

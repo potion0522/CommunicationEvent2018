@@ -19,7 +19,9 @@ void Server::initialize( ) {
 	_connecting = false;
 	for ( int i = 0; i < MACHINE_MAX; i++ ) {
 		_handles[ i ] = -1;
+		_recving[ i ] = false;
 	}
+	memset( _recv_data, 0, sizeof( Client::NetWorkData ) * MACHINE_MAX );
 	createIP( );
 	PreparationListenNetWork( PORT );
 }
@@ -27,6 +29,11 @@ void Server::initialize( ) {
 void Server::update( ) {
 	accept( );
 	lost( );
+	for ( int i = 0; i < MACHINE_MAX; i++ ) {
+		if ( isConnecting( i ) ) {
+			recvTcp( i );
+		}
+	}
 }
 
 void Server::accept( ) {
@@ -64,6 +71,21 @@ void Server::sendData( int idx, Client::NetWorkData send_data ) {
 	NetWorkSend( _handles[ idx ], &send_data, sizeof( Client::NetWorkData ) ); 
 }
 
+void Server::recvTcp( int idx ) {
+	int size = GetNetWorkDataLength( _handles[ idx ] );
+	if ( size < 0 ) {
+		_recving[ idx ] = false;
+		return;
+	}
+
+	int recv = NetWorkRecv( _handles[ idx ], &_recv_data[ idx ], sizeof( Client::NetWorkData ) );
+	if ( recv < 0 ) {
+		_recving[ idx ] = false;
+		return;
+	}
+	_recving[ idx ] = true;
+}
+
 void Server::createIP( ) {
 	IPDATA ip;
 	GetMyIPAddress( &ip );
@@ -75,4 +97,12 @@ void Server::createIP( ) {
 
 bool Server::isConnecting( int idx ) const {
 	return _handles[ idx ] != -1;
+}
+
+bool Server::isRecving( int idx ) const {
+	return _recving[ idx ];
+}
+
+Client::NetWorkData Server::getData( int idx ) const {
+	return _recv_data[ idx ];
 }
