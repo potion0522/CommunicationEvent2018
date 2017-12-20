@@ -35,6 +35,12 @@
     <ClCompile Include="Title.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
+    <ClCompile Include="Client.cpp">
+      <Filter>NetWork</Filter>
+    </ClCompile>
+    <ClCompile Include="Server.cpp">
+      <Filter>NetWork</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Base.h">
@@ -73,6 +79,12 @@
     <ClInclude Include="Title.h">
       <Filter>Scene</Filter>
     </ClInclude>
+    <ClInclude Include="Client.h">
+      <Filter>NetWork</Filter>
+    </ClInclude>
+    <ClInclude Include="Server.h">
+      <Filter>NetWork</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Global">
@@ -86,6 +98,9 @@
     </Filter>
     <Filter Include="Scene">
       <UniqueIdentifier>{ab8126be-caf2-4f25-9588-b18f497c5735}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NetWork">
+      <UniqueIdentifier>{0c7e3648-d744-47ba-8ec9-454a6cf12308}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -154,6 +154,7 @@
   <ItemGroup>
     <ClCompile Include="Base.cpp" />
     <ClCompile Include="BaseDraw.cpp" />
+    <ClCompile Include="Client.cpp" />
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="Debug.cpp" />
     <ClCompile Include="Direction.cpp" />
@@ -162,12 +163,14 @@
     <ClCompile Include="LoadCSV.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MouseEvent.cpp" />
+    <ClCompile Include="Server.cpp" />
     <ClCompile Include="Title.cpp" />
     <ClCompile Include="UpdateKey.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Base.h" />
     <ClInclude Include="BaseDraw.h" />
+    <ClInclude Include="Client.h" />
     <ClInclude Include="Color.h" />
     <ClInclude Include="const.h" />
     <ClInclude Include="Debug.h" />
@@ -176,6 +179,7 @@
     <ClInclude Include="Image.h" />
     <ClInclude Include="LoadCSV.h" />
     <ClInclude Include="MouseEvent.h" />
+    <ClInclude Include="Server.h" />
     <ClInclude Include="Title.h" />
     <ClInclude Include="UpdateKey.h" />
   </ItemGroup>
