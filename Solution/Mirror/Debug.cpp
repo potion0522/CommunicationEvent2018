@@ -8,7 +8,7 @@
 const int INIT_X = 20;
 const int INIT_Y = 0;
 
-Debug::Debug( std::shared_ptr< GlobalData > data ) :
+Debug::Debug( GlobalDataPtr data ) :
 _data( data ){
 	initialize( );
 }
@@ -17,7 +17,8 @@ Debug::~Debug( ) {
 }
 
 void Debug::initialize( ) {
-	_color = std::shared_ptr< Color >( new Color( ) );
+	setFlag( 0 );
+	_color = ColorPtr( new Color( ) );
 }
 
 void Debug::error( std::string err ) {
@@ -59,5 +60,8 @@ void Debug::initLog( ) {
 }
 
 void Debug::addLog( std::string add ) {
+	if ( getFlag( ) < 1 ) {
+		return;
+	}
 	_log.push_back( add );
 }

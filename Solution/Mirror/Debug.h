@@ -1,13 +1,17 @@
 #pragma once
 #include "Base.h"
-#include <memory>
+#include "smart_ptr.h"
 #include <vector>
 #include <string>
 #include <stdio.h>
 
+PTR( Debug );
+PTR( GlobalData );
+PTR( Color );
+
 class Debug : public Base {
 public:
-	Debug( std::shared_ptr< class GlobalData > data );
+	Debug( GlobalDataPtr data );
 	virtual ~Debug( );
 
 public:
@@ -26,7 +30,7 @@ private:
 	FILE *_fp;
 	std::vector< std::string > _log;
 
-	std::shared_ptr< class GlobalData > _data;
-	std::shared_ptr< class Color > _color;
+	GlobalDataPtr _data;
+	ColorPtr _color;
 };
 

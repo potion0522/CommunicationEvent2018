@@ -3,7 +3,7 @@
 #include "GlobalData.h"
 #include "Image.h"
 
-Title::Title( std::shared_ptr< GlobalData > data ) :
+Title::Title( GlobalDataPtr data ) :
 _data( data ) {
 	initialize( );
 }

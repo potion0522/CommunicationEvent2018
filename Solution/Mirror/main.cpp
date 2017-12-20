@@ -1,4 +1,5 @@
 #include "DxLib.h"
+#include "smart_ptr.h"
 #include "GlobalData.h"
 #include "Direction.h"
 #include "Title.h"
@@ -12,19 +13,21 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	}
 	SetDrawScreen( DX_SCREEN_BACK );
 
-	std::shared_ptr< GlobalData > data( new GlobalData( ) );
-	std::shared_ptr< Debug > debug( new Debug( data ) );
+	GlobalDataPtr data( new GlobalData( ) );
+	DirectionPtr direction( new Direction( data ) );
 
-	std::shared_ptr< Direction > direction( new Direction( data, debug ) );
-	std::shared_ptr< Title > title( new Title( data ) );
+	// GlobalData のフラグが 0 であれば全プロセス終了
+	while ( data->getFlag( ) ) {
+		if ( ScreenFlip( ) != 0 || ProcessMessage( ) != 0 || ClearDrawScreen( ) != 0 ) {
+			break;
+		}
 
-	data->setPtr( debug );
-	data->setPtr( title );
+		//計算フェイズ
+		direction->run( );
 
-	direction->add( ALL, debug );
-	direction->add( TITLE, title );
+		//描画
 
-	direction->run( );
+	}
 
 
 	DxLib_End( );

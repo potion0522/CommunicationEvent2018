@@ -1,13 +1,13 @@
 #include "Direction.h"
 #include "DxLib.h"
+#include "Base.h"
 #include "GlobalData.h"
 #include "Debug.h"
 #include "Title.h"
 #include "Image.h"
 
-Direction::Direction( std::shared_ptr< GlobalData > data, std::shared_ptr< Debug > debug ) :
-_data( data ),
-_debug( debug ) {
+Direction::Direction( GlobalDataPtr data ) :
+_data( data ) {
 	initialize( );
 }
 
@@ -17,23 +17,20 @@ Direction::~Direction( ) {
 void Direction::initialize( ) {
 	_scene = NONE;
 	_data->initialize( );
+
+	_debug = DebugPtr( new Debug( _data ) );
+	_title = TitlePtr( new Title( _data ) );
+
+	_data->setPtr( _debug );
+	_data->setPtr( _title );
+
+	add( ALL, _debug );
+	add( TITLE, _title );
 }
 
 void Direction::update( ) {
 	_data->update( );
 	_scene = _data->getScene( );
-
-	std::map< SCENE, std::shared_ptr< Base > >::iterator ite;
-	ite = _exe.begin( );
-	for ( ite; ite != _exe.end( ); ite++ ) {
-		//if ( ite->first == _scene ) {
-		//	ite->second->update( );
-		//}
-		//if ( ite->first == ALL ) {
-		//	ite->second->update( );
-		//}
-		ite->second->update( );
-	}
 
 	//デバッグON
 	if ( _data->getKeyState( KEY_INPUT_SPACE ) == 1 ) {
@@ -51,22 +48,25 @@ void Direction::update( ) {
 void Direction::initNextProcess( ) {
 }
 
-void Direction::add( SCENE scene, std::shared_ptr< Base > ptr ) {
+void Direction::add( SCENE scene, BasePtr ptr ) {
 	_exe[ scene ] = ptr;
 }
 
 void Direction::run( ) {
-	// GlobalData のフラグが 0 であれば全プロセス終了
-	while ( _data->getFlag( ) ) {
-		if ( ScreenFlip( ) != 0 || ProcessMessage( ) != 0 || ClearDrawScreen( ) != 0 ) {
-			break;
+	update( );
+
+	std::map< SCENE, BasePtr >::iterator ite;
+	ite = _exe.begin( );
+	for ( ite; ite != _exe.end( ); ite++ ) {
+		if ( ite->first == _scene ) {
+			if ( ite->second->getFlag( ) ) {
+				ite->second->update( );
+			}
 		}
-
-		//計算フェイズ
-		update( );
-
-		//描画
-		Base::ImageProperty* data = _data->getTitlePtr( )->getBackPng( );
-		DrawRotaGraphF( WIDTH/ 2, HEIGHT / 2, 1, 0, data->png, TRUE );
+		if ( ite->first == ALL ) {
+			if ( ite->second->getFlag( ) ) {
+				ite->second->update( );
+			}
+		}
 	}
 }

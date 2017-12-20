@@ -1,10 +1,13 @@
 #pragma once
 #include "Base.h"
-#include <memory>
+#include "smart_ptr.h"
+
+PTR( Title );
+PTR( GlobalData );
 
 class Title : public Base {
 public:
-	Title( std::shared_ptr< class GlobalData > data );
+	Title( GlobalDataPtr data );
 	virtual ~Title( );
 
 public:
@@ -17,6 +20,6 @@ public:
 private:
 	ImageProperty _back;
 
-	std::shared_ptr< class GlobalData > _data;
+	GlobalDataPtr _data;
 };
 

@@ -1,18 +1,23 @@
 #pragma once
-#include "Base.h"
+#include "smart_ptr.h"
 #include "const.h"
-#include <memory>
 #include <map>
+
+PTR( Direction );
+PTR( GlobalData );
+PTR( Debug );
+PTR( Base );
+PTR( Title );
 
 class Direction {
 public:
-	Direction( std::shared_ptr< class GlobalData > data, std::shared_ptr< class Debug > debug );
+	Direction( GlobalDataPtr data );
 	virtual ~Direction( );
 
 public:
 	void initialize( );
 	void run( );
-	void add( SCENE scene, std::shared_ptr< class Base > ptr );
+	void add( SCENE scene, BasePtr ptr );
 
 private:
 	void update( );
@@ -21,8 +26,9 @@ private:
 private:
 	SCENE _scene;
 
-	std::shared_ptr< class GlobalData > _data;
-	std::shared_ptr< class Debug > _debug;
-	std::map< SCENE, std::shared_ptr< class Base > > _exe;
+	GlobalDataPtr _data;
+	DebugPtr _debug;
+	TitlePtr _title;
+	std::map< SCENE, BasePtr > _exe;
 };
 

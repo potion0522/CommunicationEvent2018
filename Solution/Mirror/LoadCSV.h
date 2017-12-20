@@ -1,6 +1,9 @@
 #pragma once
+#include "smart_ptr.h"
 #include <string>
 #include <vector>
+
+PTR( LoadCSV );
 
 struct CsvData {
 	std::string name;

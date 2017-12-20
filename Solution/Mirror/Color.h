@@ -1,5 +1,8 @@
 #pragma once
+#include "smart_ptr.h"
 #include "const.h"
+
+PTR( Color );
 
 class Color {
 public:
