@@ -5,6 +5,8 @@
 #include "Debug.h"
 #include "Title.h"
 #include "Image.h"
+#include "Server.h"
+#include "Client.h"
 
 Direction::Direction( GlobalDataPtr data ) :
 _data( data ) {
@@ -20,12 +22,15 @@ void Direction::initialize( ) {
 
 	_debug = DebugPtr( new Debug( _data ) );
 	_title = TitlePtr( new Title( _data ) );
+	_server = ServerPtr( new Server( ) );
+	_server->setFlag( 1 );
 
 	_data->setPtr( _debug );
 	_data->setPtr( _title );
 
 	add( ALL, _debug );
 	add( TITLE, _title );
+	add( SERVER, _server );
 }
 
 void Direction::update( ) {
@@ -63,10 +68,22 @@ void Direction::run( ) {
 				ite->second->update( );
 			}
 		}
-		if ( ite->first == ALL ) {
+		if ( ite->first == ALL || ite->first == SERVER ) {
 			if ( ite->second->getFlag( ) ) {
 				ite->second->update( );
 			}
+		}
+	}
+	
+	_debug->addLog( "Ú‘±‚ğ‘Ò‚Á‚Ä‚¢‚Ü‚·B" );
+
+	for ( int i = 0; i < MACHINE_MAX; i++ ) {
+		if ( _server->isConnecting( i ) ) {
+			std::string log = "_handle[ " + std::to_string( i ) + " ]‚ªÚ‘±‚µ‚Ü‚µ‚½B";
+			_debug->addLog( log );
+			Client::NetWorkData data;
+			data.test = i + 1;
+			_server->sendData( i, data );
 		}
 	}
 }

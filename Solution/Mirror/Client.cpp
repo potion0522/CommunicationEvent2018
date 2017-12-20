@@ -11,6 +11,7 @@ Client::~Client( ) {
 }
 
 void Client::initialize( ) {
+	setFlag( 0 );
 	_phase = READY;
 	_recving = false;
 	_handle = -1;
@@ -37,12 +38,14 @@ void Client::readIP( ) {
 }
 
 void Client::connect( ) {
-	_handle = ConnectNetWork( _ip, PORT );
 	if ( _handle < 0 ) {
-		return;
+		int handle = ConnectNetWork( _ip, PORT );
+		if ( handle < 0 ) {
+			return;
+		}
+		_handle = handle;
+		_phase = CONNECTING;
 	}
-
-	_phase = CONNECTING;
 }
 
 void Client::recving( ) {
@@ -57,7 +60,7 @@ void Client::recvTcp( ) {
 		return;
 	}
 
-	int recv = NetWorkRecv( _handle, &_recv_data, size );
+	int recv = NetWorkRecv( _handle, &_recv_data, sizeof( NetWorkData ) );
 	if ( recv < 0 ) {
 		_recving = false;
 		return;
@@ -67,6 +70,9 @@ void Client::recvTcp( ) {
 
 void Client::lost( ) {
 	int lost = GetLostNetWork( );
+	if ( lost < 0 ) {
+		return;
+	}
 	if ( lost == _handle ) {
 		CloseNetWork( _handle );
 		_handle = -1;

@@ -8,6 +8,7 @@ PTR( GlobalData );
 PTR( Debug );
 PTR( Base );
 PTR( Title );
+PTR( Server );
 
 class Direction {
 public:
@@ -29,6 +30,7 @@ private:
 	GlobalDataPtr _data;
 	DebugPtr _debug;
 	TitlePtr _title;
+	ServerPtr _server;
 	std::map< SCENE, BasePtr > _exe;
 };
 

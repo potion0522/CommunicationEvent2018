@@ -10,6 +10,9 @@ Server::Server( ) {
 
 Server::~Server( ) {
 	StopListenNetWork( );
+	for ( int i = 0; i < MACHINE_MAX; i++ ) {
+		CloseNetWork( _handles[ i ] );
+	}
 }
 
 void Server::initialize( ) {
@@ -65,18 +68,9 @@ void Server::createIP( ) {
 	IPDATA ip;
 	GetMyIPAddress( &ip );
 
-	std::string ip_str = "";
-	ip_str += std::to_string( ip.d1 );
-	ip_str += ".";
-	ip_str += std::to_string( ip.d2 );
-	ip_str += ".";
-	ip_str += std::to_string( ip.d3 );
-	ip_str += ".";
-	ip_str += std::to_string( ip.d4 );
-
 	FILE *fp;
 	fopen_s( &fp, "IP.ini", "wb" );
-	fwrite( &ip_str, 1, ip_str.size( ), fp );
+	fwrite( &ip, sizeof( IPDATA ), 1, fp );
 }
 
 bool Server::isConnecting( int idx ) const {
