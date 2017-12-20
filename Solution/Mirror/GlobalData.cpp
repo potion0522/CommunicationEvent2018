@@ -16,9 +16,9 @@ void GlobalData::initialize( ) {
 	setFlag( 1 );
 	_scene = NONE;
 
-	_key = std::shared_ptr< UpdateKey >( new UpdateKey( ) );
-	_mouse = std::shared_ptr< MouseEvent >( new MouseEvent( ) );
-	_image = std::shared_ptr< Image >( new Image( ) );
+	_key =   UpdateKeyPtr( new UpdateKey( ) );
+	_mouse = MouseEventPtr( new MouseEvent( ) );
+	_image = ImagePtr( new Image( ) );
 	_debug = NULL;
 	_title = NULL;
 }
@@ -27,7 +27,7 @@ void GlobalData::update( ) {
 	if ( _debug == NULL ||
 		 _title == NULL
 		) {
-		std::shared_ptr< Debug > debug( new Debug( NULL ) );
+		DebugPtr debug( new Debug( NULL ) );
 		debug->error( "GlobalData.cpp->update : クラスポインタがNULLのものがあります。" );
 	}
 
@@ -55,22 +55,38 @@ SCENE GlobalData::getScene( ) const {
 	return _scene;
 }
 
-void GlobalData::setPtr( std::shared_ptr< Debug > ptr ) {
+void GlobalData::setPtr( DebugPtr ptr ) {
 	_debug = ptr;
 }
 
-void GlobalData::setPtr( std::shared_ptr< Title > ptr ) {
+void GlobalData::setPtr( TitlePtr ptr ) {
 	_title = ptr;
 }
 
-std::shared_ptr< Image > GlobalData::getImagePtr( ) const {
+void GlobalData::setPtr( ServerPtr ptr ) {
+	_server = ptr;
+}
+
+void GlobalData::setPtr( ClientPtr ptr ) {
+	_client = ptr;
+}
+
+ImagePtr GlobalData::getImagePtr( ) const {
 	return _image;
 }
 
-std::shared_ptr< Debug > GlobalData::getDebugPtr( ) const {
+DebugPtr GlobalData::getDebugPtr( ) const {
 	return _debug;
 }
 
-std::shared_ptr< Title > GlobalData::getTitlePtr( ) const {
+TitlePtr GlobalData::getTitlePtr( ) const {
 	return _title;
+}
+
+ServerPtr GlobalData::getServerPtr( ) const {
+	return _server;
+}
+
+ClientPtr GlobalData::getClientPtr( ) const {
+	return _client;
 }

@@ -1,7 +1,16 @@
 #pragma once
 #include "Base.h"
+#include "smart_ptr.h"
 #include "const.h"
-#include <memory>
+
+PTR( GlobalData );
+PTR( UpdateKey );
+PTR( MouseEvent );
+PTR( Image );
+PTR( Debug );
+PTR( Title );
+PTR( Server );
+PTR( Client );
 
 class GlobalData : public Base {
 public:
@@ -20,20 +29,26 @@ public:
 	SCENE getScene( ) const;
 
 public:
-	void setPtr( std::shared_ptr< class Debug > ptr );
-	void setPtr( std::shared_ptr< class Title > ptr );
+	void setPtr( DebugPtr ptr );
+	void setPtr( TitlePtr ptr );
+	void setPtr( ServerPtr ptr );
+	void setPtr( ClientPtr ptr );
 
-	std::shared_ptr< class Image > getImagePtr( ) const;
-	std::shared_ptr< class Debug > getDebugPtr( ) const;
-	std::shared_ptr< class Title > getTitlePtr( ) const;
+	ImagePtr getImagePtr( ) const;
+	DebugPtr getDebugPtr( ) const;
+	TitlePtr getTitlePtr( ) const;
+	ServerPtr getServerPtr( ) const;
+	ClientPtr getClientPtr( ) const;
 
 private:
 	SCENE _scene;
 
-	std::shared_ptr< class UpdateKey > _key;
-	std::shared_ptr< class MouseEvent > _mouse;
-	std::shared_ptr< class Image > _image;
-	std::shared_ptr< class Debug > _debug;
-	std::shared_ptr< class Title > _title;
+	UpdateKeyPtr _key;
+	MouseEventPtr _mouse;
+	ImagePtr _image;
+	DebugPtr _debug;
+	TitlePtr _title;
+	ServerPtr _server;
+	ClientPtr _client;
 };
 
