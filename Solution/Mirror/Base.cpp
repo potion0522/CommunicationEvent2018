@@ -16,9 +16,6 @@ int Base::getFlag( ) const {
 	return _flag;
 }
 
-void Base::update( ) {
-}
-
 void Base::initialize( ) {
 	setFlag( 0 );
 }

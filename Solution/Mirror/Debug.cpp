@@ -5,8 +5,8 @@
 #include "GlobalData.h"
 #include <time.h>
 
-const int INIT_X = 20;
-const int INIT_Y = 0;
+const int ACTIVE_CLASS_X = 20;
+const int LOG_X = 120;
 
 Debug::Debug( GlobalDataPtr data ) :
 _data( data ){
@@ -19,6 +19,10 @@ Debug::~Debug( ) {
 void Debug::initialize( ) {
 	setFlag( 0 );
 	_color = ColorPtr( new Color( ) );
+}
+
+std::string Debug::getTag( ) {
+	return "DEBUG";
 }
 
 void Debug::error( std::string err ) {
@@ -43,15 +47,34 @@ void Debug::error( std::string err ) {
 
 void Debug::update( ) {
 	printLog( );
+	printActiveClass( );
 	initLog( );
+	//initActiveClass( );
+}
+
+int Debug::calcLogYpos( int num ) {
+	return ( num % ( HEIGHT / 20 ) ) * 20;
 }
 
 void Debug::printLog( ) {
 	int size = ( int )_log.size( );
 
 	for ( int i = 0; i < size; i++ ) {
-		int y = ( i % ( HEIGHT / 20 ) ) * 20;
-		DrawFormatString( 0, y, _color->getColor( WHITE ), "%s", _log[ i ].c_str( ) );
+		int y = calcLogYpos( i );
+		DrawFormatString( LOG_X, y, _color->getColor( WHITE ), "%s", _log[ i ].c_str( ) );
+	}
+}
+
+void Debug::printActiveClass( ) {
+	int size = ( int )_active_class.size( );
+
+	if ( size < 1 ) {
+		return;
+	}
+
+	for ( int i = 0; i < size; i++ ) {
+		int y = calcLogYpos( i );
+		DrawFormatString( ACTIVE_CLASS_X, y, _color->getColor( RED ), "%s", _active_class[ i ].c_str( ) );
 	}
 }
 
@@ -64,4 +87,18 @@ void Debug::addLog( std::string add ) {
 		return;
 	}
 	_log.push_back( add );
+}
+
+void Debug::initActiveClass( ) {
+	std::vector< std::string >( ).swap( _log );
+}
+
+void Debug::setActiveClass( std::string tag ) {
+	int size = ( int )_active_class.size( );
+	for ( int i = 0; i < size; i++ ) {
+		if ( _active_class[ i ].find( tag ) != std::string::npos ) {
+			return;
+		}
+	}
+	_active_class.push_back( tag );
 }

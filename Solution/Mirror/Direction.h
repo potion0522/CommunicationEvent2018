@@ -2,6 +2,7 @@
 #include "smart_ptr.h"
 #include "const.h"
 #include <map>
+#include <vector>
 
 PTR( Direction );
 PTR( GlobalData );
@@ -31,6 +32,6 @@ private:
 	DebugPtr _debug;
 	TitlePtr _title;
 	ServerPtr _server;
-	std::map< SCENE, BasePtr > _exe;
+	std::map< SCENE, std::vector< BasePtr > > _exe;
 };
 

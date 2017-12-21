@@ -11,6 +11,10 @@ _data( data ) {
 Title::~Title( ) {
 }
 
+std::string Title::getTag( ) {
+	return "TITLE";
+}
+
 void Title::initialize( ) {
 	setFlag( 0 );
 

@@ -12,6 +12,10 @@ GlobalData::GlobalData( ) {
 GlobalData::~GlobalData( ) {
 }
 
+std::string GlobalData::getTag( ) {
+	return "GLOBALDATA";
+}
+
 void GlobalData::initialize( ) {
 	setFlag( 1 );
 	_scene = NONE;

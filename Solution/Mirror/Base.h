@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 
 class Base {
 public:
@@ -9,6 +10,7 @@ public:
 	virtual int getFlag( ) const;
 	virtual void update( ) = 0;
 	virtual void initialize( );
+	virtual std::string getTag( ) = 0;
 
 private:
 	int _flag;

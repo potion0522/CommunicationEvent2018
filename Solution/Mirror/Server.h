@@ -13,6 +13,7 @@ public:
 	virtual ~Server( );
 
 public:
+	std::string getTag( );
 	void update( );
 	void initialize( );
 

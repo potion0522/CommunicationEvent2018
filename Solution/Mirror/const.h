@@ -24,6 +24,7 @@ enum SCENE {
 	NONE = 0,
 	TITLE,
 	SERVER,
+	CLIENT,
 };
 
 enum IMAGE {

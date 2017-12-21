@@ -11,6 +11,7 @@ public:
 	virtual ~Title( );
 
 public:
+	std::string getTag( );
 	void update( );
 	void initialize( );
 

@@ -30,7 +30,7 @@ void Direction::initialize( ) {
 
 	add( ALL, _debug );
 	add( TITLE, _title );
-	add( SERVER, _server );
+	add( ALL, _server );
 }
 
 void Direction::update( ) {
@@ -54,24 +54,27 @@ void Direction::initNextProcess( ) {
 }
 
 void Direction::add( SCENE scene, BasePtr ptr ) {
-	_exe[ scene ] = ptr;
+	_exe[ scene ].push_back( ptr );
 }
 
 void Direction::run( ) {
 	update( );
 
-	std::map< SCENE, BasePtr >::iterator ite;
+	std::map< SCENE, std::vector< BasePtr > >::iterator ite;
 	ite = _exe.begin( );
 	for ( ite; ite != _exe.end( ); ite++ ) {
-		if ( ite->first == _scene ) {
-			if ( ite->second->getFlag( ) ) {
-				ite->second->update( );
-			}
+		SCENE ite_scene = ite->first;
+		if ( ite_scene != _scene && ite_scene != ALL ) {
+			continue;
 		}
-		if ( ite->first == ALL || ite->first == SERVER ) {
-			if ( ite->second->getFlag( ) ) {
-				ite->second->update( );
+
+		int size = ( int )ite->second.size( );
+		for ( int i = 0; i < size; i++ ) {
+			if ( !ite->second[ i ]->getFlag( ) ) {
+				continue;
 			}
+			_debug->setActiveClass( ite->second[ i ]->getTag( ) );
+			ite->second[ i ]->update( );
 		}
 	}
 	
@@ -88,10 +91,14 @@ void Direction::run( ) {
 	}
 
 	for ( int i = 0; i < MACHINE_MAX; i++ ) {
-		if ( _server->isRecving( i ) ) {
-			Client::NetWorkData data;
-			data = _server->getData( i );
-			_debug->addLog( std::to_string( data.test ) );
+		if ( !_server->isConnecting( i ) ) {
+			continue;
 		}
+		if ( !_server->isRecving( i ) ) {
+			continue;
+		}
+		Client::NetWorkData data;
+		data = _server->getData( i );
+		_debug->addLog( std::to_string( data.test ) );
 	}
 }

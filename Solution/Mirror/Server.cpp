@@ -1,6 +1,5 @@
 #include "Server.h"
 #include "DxLib.h"
-#include <string>
 
 const int PORT = 8000;
 
@@ -13,6 +12,10 @@ Server::~Server( ) {
 	for ( int i = 0; i < MACHINE_MAX; i++ ) {
 		CloseNetWork( _handles[ i ] );
 	}
+}
+
+std::string Server::getTag( ) {
+	return "SERVER";
 }
 
 void Server::initialize( ) {
