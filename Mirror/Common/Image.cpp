@@ -3,7 +3,8 @@
 #include "Debug.h"
 #include "smart_ptr.h"
 
-const std::string PATH = "./Resources/image/";
+const std::string SOLUTION_DIR = "../";
+const std::string PATH = SOLUTION_DIR + "Resources/image/";
 
 Image::Image( ) {
 	initialize( );
@@ -34,7 +35,7 @@ void Image::initialize( ) {
 	}
 
 	FILE *fp;
-	if ( fopen_s( &fp, "filelist.txt", "w" ) != 0 ) {
+	if ( fopen_s( &fp, ( SOLUTION_DIR + "filelist.txt" ).c_str( ), "w" ) != 0 ) {
 		exit( 0 );
 	}
 	for ( int i = 0; i < _file.size( ); i++ ) {
@@ -70,8 +71,8 @@ void Image::check( int png ) const {
 	if ( png != -1 ) {
 		return;
 	} else {
-		printfDx( "Error：画像読み込みエラー！！\n" );
-		WaitKey( );
+		DebugPtr debug( new Debug( NULL ) );
+		debug->error( "Image->check : 画像読み込みエラー!!" );
 	}
 }
 
@@ -119,9 +120,10 @@ void Image::inputFileName( std::string path ) {
 	handle = FindFirstFile( ( path + "*" ).c_str( ), &find );
 
 	if ( handle == INVALID_HANDLE_VALUE ) {
-		printfDx( "%s が存在しません。", path.c_str( ) );
+		DebugPtr debug( new Debug( NULL ) );
 		FindClose( handle );
-		return;
+		debug->error( "Image->inputFileName : " + path + "が存在しません。\n"
+					  "基底ディレクトリの指定が間違っているかファイルが存在しない可能性があります。" );
 	}
 
 	do {
