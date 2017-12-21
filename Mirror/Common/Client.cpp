@@ -10,8 +10,12 @@ Client::Client( ) {
 Client::~Client( ) {
 }
 
+std::string Client::getTag( ) {
+	return "CLIENT";
+}
+
 void Client::initialize( ) {
-	setFlag( 0 );
+	setFlag( 1 );
 	_phase = READY;
 	_recving = false;
 	_handle = -1;

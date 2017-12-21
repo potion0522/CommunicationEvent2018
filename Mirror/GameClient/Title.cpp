@@ -16,7 +16,7 @@ std::string Title::getTag( ) {
 }
 
 void Title::initialize( ) {
-	setFlag( 0 );
+	setFlag( 1 );
 
 	std::shared_ptr< Image > image = _data->getImagePtr( );
 	_back.png = image->getPng( NONE_IMAGE, 0 ).png;

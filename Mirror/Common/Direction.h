@@ -8,16 +8,14 @@ PTR( Direction );
 PTR( GlobalData );
 PTR( Debug );
 PTR( Base );
-PTR( Title );
-PTR( Server );
 
 class Direction {
 public:
-	Direction( GlobalDataPtr data );
+	Direction( MACHINE_TYPE type, GlobalDataPtr data );
 	virtual ~Direction( );
 
 public:
-	void initialize( );
+	void initialize( MACHINE_TYPE type );
 	void run( );
 	void add( SCENE scene, BasePtr ptr );
 
@@ -30,8 +28,6 @@ private:
 
 	GlobalDataPtr _data;
 	DebugPtr _debug;
-	TitlePtr _title;
-	ServerPtr _server;
 	std::map< SCENE, std::vector< BasePtr > > _exe;
 };
 

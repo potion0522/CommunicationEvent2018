@@ -19,6 +19,7 @@ std::string Server::getTag( ) {
 }
 
 void Server::initialize( ) {
+	setFlag( 1 );
 	_connecting = false;
 	for ( int i = 0; i < MACHINE_MAX; i++ ) {
 		_handles[ i ] = -1;

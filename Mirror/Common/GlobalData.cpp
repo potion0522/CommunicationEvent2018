@@ -3,7 +3,6 @@
 #include "MouseEvent.h"
 #include "Image.h"
 #include "Debug.h"
-#include "Title.h"
 
 GlobalData::GlobalData( ) {
 	initialize( );
@@ -24,13 +23,10 @@ void GlobalData::initialize( ) {
 	_mouse = MouseEventPtr( new MouseEvent( ) );
 	_image = ImagePtr( new Image( ) );
 	_debug = NULL;
-	_title = NULL;
 }
 
 void GlobalData::update( ) {
-	if ( _debug == NULL ||
-		 _title == NULL
-		) {
+	if ( _debug == NULL ) {
 		DebugPtr debug( new Debug( NULL ) );
 		debug->error( "GlobalData.cpp->update : クラスポインタがNULLのものがあります。" );
 	}
@@ -63,10 +59,6 @@ void GlobalData::setPtr( DebugPtr ptr ) {
 	_debug = ptr;
 }
 
-void GlobalData::setPtr( TitlePtr ptr ) {
-	_title = ptr;
-}
-
 void GlobalData::setPtr( ServerPtr ptr ) {
 	_server = ptr;
 }
@@ -81,10 +73,6 @@ ImagePtr GlobalData::getImagePtr( ) const {
 
 DebugPtr GlobalData::getDebugPtr( ) const {
 	return _debug;
-}
-
-TitlePtr GlobalData::getTitlePtr( ) const {
-	return _title;
 }
 
 ServerPtr GlobalData::getServerPtr( ) const {

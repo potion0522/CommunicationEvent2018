@@ -2,8 +2,8 @@
 #include "smart_ptr.h"
 #include "GlobalData.h"
 #include "Direction.h"
+#include "Client.h"
 #include "Title.h"
-#include "Debug.h"
 
 int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow ) {
 	ChangeWindowMode( 1 );
@@ -14,7 +14,12 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	SetDrawScreen( DX_SCREEN_BACK );
 
 	GlobalDataPtr data( new GlobalData( ) );
-	DirectionPtr direction( new Direction( data ) );
+	ClientPtr client( new Client( ) );
+	data->setPtr( client );
+	TitlePtr title( new Title( data ) );
+
+	DirectionPtr direction( new Direction( CLIENT, data ) );
+	direction->add( ALL, title );
 
 	// GlobalData のフラグが 0 であれば全プロセス終了
 	while ( data->getFlag( ) ) {

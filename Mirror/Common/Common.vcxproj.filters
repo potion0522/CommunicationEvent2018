@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="Base.cpp">
+      <Filter>BaseClass</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseDraw.cpp">
+      <Filter>BaseClass</Filter>
+    </ClCompile>
+    <ClCompile Include="Client.cpp">
+      <Filter>NetWork</Filter>
+    </ClCompile>
+    <ClCompile Include="Server.cpp">
+      <Filter>NetWork</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug.cpp">
+      <Filter>Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GlobalData.cpp">
+      <Filter>Global</Filter>
+    </ClCompile>
+    <ClCompile Include="Image.cpp">
+      <Filter>Global</Filter>
+    </ClCompile>
+    <ClCompile Include="UpdateKey.cpp">
+      <Filter>Global</Filter>
+    </ClCompile>
+    <ClCompile Include="MouseEvent.cpp">
+      <Filter>Global</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadCSV.cpp">
+      <Filter>Global</Filter>
+    </ClCompile>
+    <ClCompile Include="Color.cpp">
+      <Filter>Global</Filter>
+    </ClCompile>
+    <ClCompile Include="Direction.cpp">
+      <Filter>Execute</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Base.h">
+      <Filter>BaseClass</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseDraw.h">
+      <Filter>BaseClass</Filter>
+    </ClInclude>
+    <ClInclude Include="Client.h">
+      <Filter>NetWork</Filter>
+    </ClInclude>
+    <ClInclude Include="Server.h">
+      <Filter>NetWork</Filter>
+    </ClInclude>
+    <ClInclude Include="const.h">
+      <Filter>Const</Filter>
+    </ClInclude>
+    <ClInclude Include="Debug.h">
+      <Filter>Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="GlobalData.h">
+      <Filter>Global</Filter>
+    </ClInclude>
+    <ClInclude Include="Image.h">
+      <Filter>Global</Filter>
+    </ClInclude>
+    <ClInclude Include="UpdateKey.h">
+      <Filter>Global</Filter>
+    </ClInclude>
+    <ClInclude Include="MouseEvent.h">
+      <Filter>Global</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadCSV.h">
+      <Filter>Global</Filter>
+    </ClInclude>
+    <ClInclude Include="Color.h">
+      <Filter>Global</Filter>
+    </ClInclude>
+    <ClInclude Include="Direction.h">
+      <Filter>Execute</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="BaseClass">
+      <UniqueIdentifier>{d70903bc-c504-4def-94e5-41979bc88b48}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NetWork">
+      <UniqueIdentifier>{8360caef-cc92-4a55-ab6f-967284e126bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Debug">
+      <UniqueIdentifier>{0a0242aa-8c6a-4064-9640-cb7c3e1f8b48}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Global">
+      <UniqueIdentifier>{c2ddc81c-aabc-4d21-841a-39757a0cd40f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Const">
+      <UniqueIdentifier>{8edaa095-8aad-42b9-9797-1ee671835156}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Execute">
+      <UniqueIdentifier>{b89c33a3-be59-437b-a6c0-d011fcaaaa17}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

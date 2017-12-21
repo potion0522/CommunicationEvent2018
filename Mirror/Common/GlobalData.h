@@ -8,7 +8,6 @@ PTR( UpdateKey );
 PTR( MouseEvent );
 PTR( Image );
 PTR( Debug );
-PTR( Title );
 PTR( Server );
 PTR( Client );
 
@@ -31,13 +30,11 @@ public:
 
 public:
 	void setPtr( DebugPtr ptr );
-	void setPtr( TitlePtr ptr );
 	void setPtr( ServerPtr ptr );
 	void setPtr( ClientPtr ptr );
 
 	ImagePtr getImagePtr( ) const;
 	DebugPtr getDebugPtr( ) const;
-	TitlePtr getTitlePtr( ) const;
 	ServerPtr getServerPtr( ) const;
 	ClientPtr getClientPtr( ) const;
 
@@ -48,7 +45,6 @@ private:
 	MouseEventPtr _mouse;
 	ImagePtr _image;
 	DebugPtr _debug;
-	TitlePtr _title;
 	ServerPtr _server;
 	ClientPtr _client;
 };

@@ -10,6 +10,11 @@ const int IMAGE_DIR_MAX = 1;
 const int COLOR_MAX = 6;
 const int SCENE_MAX = 3;
 
+enum MACHINE_TYPE {
+	CLIENT,
+	SERVER,
+};
+
 enum COLOR {
 	WHITE,
 	BLACK,
@@ -23,8 +28,6 @@ enum SCENE {
 	ALL = SCENE_MAX,
 	NONE = 0,
 	TITLE,
-	SERVER,
-	CLIENT,
 };
 
 enum IMAGE {
