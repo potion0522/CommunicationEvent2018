@@ -5,6 +5,7 @@
     <ClCompile Include="Title.cpp">
       <Filter>Calc</Filter>
     </ClCompile>
+    <ClCompile Include="Console.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Calc">
@@ -15,5 +16,6 @@
     <ClInclude Include="Title.h">
       <Filter>Calc</Filter>
     </ClInclude>
+    <ClInclude Include="Console.h" />
   </ItemGroup>
 </Project>

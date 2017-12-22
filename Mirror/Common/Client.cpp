@@ -1,4 +1,5 @@
 #include "Client.h"
+#include "DxLib.h"
 #include <string>
 
 const int PORT = 8000;
@@ -59,13 +60,13 @@ void Client::recving( ) {
 
 void Client::recvTcp( ) {
 	int size = GetNetWorkDataLength( _handle );
-	if ( size < 0 ) {
+	if ( size < 1 ) {
 		_recving = false;
 		return;
 	}
 
 	int recv = NetWorkRecv( _handle, &_recv_data, sizeof( NetWorkData ) );
-	if ( recv < 0 ) {
+	if ( recv < 1 ) {
 		_recving = false;
 		return;
 	}

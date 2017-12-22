@@ -18,7 +18,7 @@ public:
 
 public:
 	std::string getTag( );
-	void initialize( );
+	void initialize( MACHINE_TYPE type );
 	void update( );
 
 public:

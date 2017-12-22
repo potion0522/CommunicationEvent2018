@@ -3,8 +3,7 @@
 #include "Debug.h"
 #include "smart_ptr.h"
 
-const std::string SOLUTION_DIR = "../";
-const std::string PATH = SOLUTION_DIR + "Resources/image/";
+const std::string PATH = "Resources/image/";
 
 Image::Image( ) {
 	initialize( );
@@ -35,7 +34,7 @@ void Image::initialize( ) {
 	}
 
 	FILE *fp;
-	if ( fopen_s( &fp, ( SOLUTION_DIR + "filelist.txt" ).c_str( ), "w" ) != 0 ) {
+	if ( fopen_s( &fp, "filelist.txt", "w" ) != 0 ) {
 		exit( 0 );
 	}
 	for ( int i = 0; i < _file.size( ); i++ ) {

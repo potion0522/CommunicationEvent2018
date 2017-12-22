@@ -3,9 +3,18 @@
 #include "GlobalData.h"
 #include "Direction.h"
 #include "Server.h"
+#include "Connector.h"
+
+/**********************************************************
+*														  *
+* setFlag( 1 );　をinitializeでしないとupdateされませんよ *
+*														  *
+***********************************************************/
 
 int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow ) {
 	ChangeWindowMode( 1 );
+	SetDoubleStartValidFlag( TRUE );
+	SetAlwaysRunFlag( TRUE );
 	SetGraphMode( WIDTH, HEIGHT, 32 );
 	if ( DxLib_Init( ) != 0 ) {
 		return -1;
@@ -13,10 +22,11 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	SetDrawScreen( DX_SCREEN_BACK );
 
 	GlobalDataPtr data( new GlobalData( ) );
-	ServerPtr server( new Server( ) );
-	data->setPtr( server );
-
 	DirectionPtr direction( new Direction( SERVER, data ) );
+
+	ConnectorPtr connector( new Connector( data ) );
+	direction->add( ALL, connector );
+
 
 	// GlobalData のフラグが 0 であれば全プロセス終了
 	while ( data->getFlag( ) ) {

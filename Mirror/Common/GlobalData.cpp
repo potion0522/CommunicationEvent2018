@@ -3,9 +3,10 @@
 #include "MouseEvent.h"
 #include "Image.h"
 #include "Debug.h"
+#include "Server.h"
+#include "Client.h"
 
 GlobalData::GlobalData( ) {
-	initialize( );
 }
 
 GlobalData::~GlobalData( ) {
@@ -15,7 +16,7 @@ std::string GlobalData::getTag( ) {
 	return "GLOBALDATA";
 }
 
-void GlobalData::initialize( ) {
+void GlobalData::initialize( MACHINE_TYPE type ) {
 	setFlag( 1 );
 	_scene = NONE;
 
@@ -23,6 +24,11 @@ void GlobalData::initialize( ) {
 	_mouse = MouseEventPtr( new MouseEvent( ) );
 	_image = ImagePtr( new Image( ) );
 	_debug = NULL;
+
+	switch ( type ) {
+	case SERVER: _server = ServerPtr( new Server( ) ); break;
+	case CLIENT: _client = ClientPtr( new Client( ) ); break;
+	}
 }
 
 void GlobalData::update( ) {

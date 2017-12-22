@@ -5,7 +5,6 @@
 #include "GlobalData.h"
 #include <time.h>
 
-const std::string SOLUTION_DIR = "../";
 const int ACTIVE_CLASS_X = 20;
 const int LOG_X = 120;
 
@@ -27,7 +26,7 @@ std::string Debug::getTag( ) {
 }
 
 void Debug::error( std::string err ) {
-	if ( fopen_s( &_fp, ( SOLUTION_DIR + "error.txt" ).c_str( ), "w" ) != 0 ) {
+	if ( fopen_s( &_fp, "error.txt", "w" ) != 0 ) {
 		printfDx( "Error：ファイルオープンに失敗しました。" );
 		exit( 0 );
 	}

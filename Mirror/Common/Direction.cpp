@@ -17,7 +17,7 @@ Direction::~Direction( ) {
 
 void Direction::initialize( MACHINE_TYPE type ) {
 	_scene = NONE;
-	_data->initialize( );
+	_data->initialize( type );
 	_debug = DebugPtr( new Debug( _data ) );
 	_data->setPtr( _debug );
 	add( ALL, _debug );
@@ -35,8 +35,6 @@ void Direction::update( ) {
 	if ( _data->getKeyState( KEY_INPUT_SPACE ) == 1 ) {
 		_debug->setFlag( ( _debug->getFlag( ) + 1 ) % 2 );
 	}
-
-	_debug->addLog( "test" );
 
 	//I—¹
 	if ( _data->getKeyState( KEY_INPUT_ESCAPE ) ) {
