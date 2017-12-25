@@ -32,8 +32,8 @@ void Connector::update( ) {
 
 	for ( int i = 0; i < MACHINE_MAX; i++ ) {
 		switch ( _connect_state[ i ] ) {
-		case NOT_CONNECTING	: isNotConnecting( ); break;
-		case CONNECTING		: isConnecting( )	; break;
+		case NOT_CONNECTING	: NotConnecting( ); break;
+		case CONNECTING		: Connecting( )	; break;
 		}
 	}
 
@@ -43,6 +43,9 @@ void Connector::update( ) {
 void Connector::updateConnectState( ) {
 	for ( int i = 0; i < MACHINE_MAX; i++ ) {
 		if ( _server->isConnecting( i ) ) {
+			if ( _connect_state[ i ] != NOT_CONNECTING ) {
+				continue;
+			}
 			_connect_state[ i ] = CONNECTING;
 			std::string log = "Machine " + std::to_string( i ) + "is Connected";
 			_table->add( log );
@@ -52,20 +55,29 @@ void Connector::updateConnectState( ) {
 	}
 }
 
-void Connector::isNotConnecting( ) {
+void Connector::NotConnecting( ) {
 
 }
 
-void Connector::isConnecting( ) {
+void Connector::Connecting( ) {
+	//ëóêM
 	for ( int i = 0; i < MACHINE_MAX; i++ ) {
 		if ( _connect_state[ i ] != CONNECTING ) {
 			continue;
 		}
 		Client::NetWorkData send_data;
 		send_data.test = 1;
-		_server->sendData( i, send_data );
+		_server->sendDataTcp( i, send_data );
 	}
 
+	//if ( _data->getKeyState( KEY_INPUT_RETURN ) == 1 ) {
+	//	Client::NetWorkData send_data;
+	//	send_data.test = 2;
+	//	_server->sendDataUdp( send_data );
+	//	_table->add( "send udp" );
+	//}
+
+	//éÛêM
 	for ( int i = 0; i < MACHINE_MAX; i++ ) {
 		if ( _connect_state[ i ] != CONNECTING ) {
 			continue;

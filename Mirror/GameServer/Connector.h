@@ -19,8 +19,8 @@ public:
 
 private:
 	void updateConnectState( );
-	void isNotConnecting( );
-	void isConnecting( );
+	void NotConnecting( );
+	void Connecting( );
 
 private:
 	Client::NetWorkData _client_data[ MACHINE_MAX ];

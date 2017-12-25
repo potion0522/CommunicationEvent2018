@@ -4,6 +4,7 @@
 #include "Direction.h"
 #include "Title.h"
 #include "Console.h"
+#include "Drawer.h"
 
 /**********************************************************
 *														  *
@@ -15,6 +16,7 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	ChangeWindowMode( 1 );
 	SetDoubleStartValidFlag( TRUE );
 	SetAlwaysRunFlag( TRUE );
+	SetConnectTimeOutWait( 10 );
 	SetGraphMode( WIDTH, HEIGHT, 32 );
 	if ( DxLib_Init( ) != 0 ) {
 		return -1;
@@ -24,11 +26,13 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 	GlobalDataPtr data( new GlobalData( ) );
 	DirectionPtr direction( new Direction( CLIENT, data ) );
+	DrawerPtr drawer( new Drawer( data ) );
 
 	ConsolePtr console( new Console( data ) );
 	TitlePtr title( new Title( data ) );
 
-	direction->add( ALL, console );
+	direction->add( TITLE, title );
+	direction->add( CONNECT, console );
 
 	// GlobalData のフラグが 0 であれば全プロセス終了
 	while ( data->getFlag( ) ) {
@@ -40,7 +44,7 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 		direction->run( );
 
 		//描画
-
+		//drawer->update( );
 	}
 
 

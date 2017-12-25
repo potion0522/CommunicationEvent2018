@@ -17,7 +17,8 @@ public:
 	void update( );
 
 private:
-	Client::NetWorkData _recv_data;
+	Client::NetWorkData _recv_data_tcp;
+	Client::NetWorkData _recv_data_udp;
 	Client::NetWorkData _send_data;
 
 	GlobalDataPtr _data;

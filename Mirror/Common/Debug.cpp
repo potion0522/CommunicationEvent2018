@@ -5,6 +5,7 @@
 #include "GlobalData.h"
 #include <time.h>
 
+const int Y_POS = 20;
 const int ACTIVE_CLASS_X = 20;
 const int LOG_X = 120;
 
@@ -49,7 +50,8 @@ void Debug::update( ) {
 	printLog( );
 	printActiveClass( );
 	initLog( );
-	//initActiveClass( );
+	initActiveClass( );
+	drawScene( );
 }
 
 int Debug::calcLogYpos( int num ) {
@@ -101,4 +103,17 @@ void Debug::setActiveClass( std::string tag ) {
 		}
 	}
 	_active_class.push_back( tag );
+}
+
+void Debug::drawScene( ) {
+	std::string str = "";
+	SCENE scene = _data->getScene( );
+
+	switch ( scene ) {
+	case NONE	: str = "none"		; break;
+	case TITLE	: str = "title"		; break;
+	case CONNECT: str = "connect"	; break;
+	}
+
+	DrawFormatString( 100, _y, _color->getColor( WHITE ), "SCENE : %s", str.c_str( ) );
 }

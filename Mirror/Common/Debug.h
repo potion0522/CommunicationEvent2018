@@ -30,8 +30,10 @@ private:
 	void printActiveClass( );
 	void initLog( );
 	void initActiveClass( );
+	void drawScene( );
 
 private:
+	int _y;
 	FILE *_fp;
 	std::vector< std::string > _log;
 	std::vector< std::string > _active_class;

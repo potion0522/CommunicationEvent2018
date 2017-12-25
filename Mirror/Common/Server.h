@@ -20,7 +20,8 @@ public:
 public:
 	bool isConnecting( int idx ) const;
 	bool isRecving( int idx ) const;
-	void sendData( int idx, Client::NetWorkData send_data );
+	void sendDataTcp( int idx, Client::NetWorkData send_data );
+	void sendDataUdp( Client::NetWorkData send_data );
 	Client::NetWorkData getData( int idx ) const;
 
 private:
@@ -34,5 +35,6 @@ private:
 	bool _connecting;
 	bool _recving[ MACHINE_MAX ];
 	int _handles[ MACHINE_MAX ];
+	int _handle_udp;
 };
 

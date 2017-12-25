@@ -18,7 +18,7 @@ std::string GlobalData::getTag( ) {
 
 void GlobalData::initialize( MACHINE_TYPE type ) {
 	setFlag( 1 );
-	_scene = NONE;
+	_scene = TITLE;
 
 	_key =   UpdateKeyPtr( new UpdateKey( ) );
 	_mouse = MouseEventPtr( new MouseEvent( ) );
@@ -39,6 +39,10 @@ void GlobalData::update( ) {
 
 	_key->update( );
 	_mouse->update( );
+}
+
+void GlobalData::setScene( SCENE scene ) {
+	_scene = scene;
 }
 
 int GlobalData::getKeyState( int key ) const {

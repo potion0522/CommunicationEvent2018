@@ -1,14 +1,14 @@
 #include "Client.h"
 #include "DxLib.h"
+#include "const.h"
 #include <string>
-
-const int PORT = 8000;
 
 Client::Client( ) {
 	initialize( );
 }
 
 Client::~Client( ) {
+	DeleteUDPSocket( _handle_udp );
 }
 
 std::string Client::getTag( ) {
@@ -18,8 +18,13 @@ std::string Client::getTag( ) {
 void Client::initialize( ) {
 	setFlag( 1 );
 	_phase = READY;
-	_recving = false;
-	_handle = -1;
+	_recving_tcp = false;
+	_recving_udp = false;
+	_handle_tcp = -1;
+	_handle_udp = MakeUDPSocket( UDP_PORT );
+
+	memset( &_recv_data_tcp, 0, sizeof( NetWorkData ) );
+	memset( &_recv_data_udp, 0, sizeof( NetWorkData ) );
 
 	readIP( );
 }
@@ -43,34 +48,47 @@ void Client::readIP( ) {
 }
 
 void Client::connect( ) {
-	if ( _handle < 0 ) {
-		int handle = ConnectNetWork( _ip, PORT );
+	if ( _handle_tcp < 0 ) {
+		int handle = ConnectNetWork( _ip, TCP_PORT );
 		if ( handle < 0 ) {
 			return;
 		}
-		_handle = handle;
+		_handle_tcp = handle;
 		_phase = CONNECTING;
 	}
 }
 
 void Client::recving( ) {
 	recvTcp( );
+	recvUdp( );
 	lost( );
 }
 
 void Client::recvTcp( ) {
-	int size = GetNetWorkDataLength( _handle );
+	int size = GetNetWorkDataLength( _handle_tcp );
 	if ( size < 1 ) {
-		_recving = false;
+		_recving_tcp = false;
 		return;
 	}
 
-	int recv = NetWorkRecv( _handle, &_recv_data, sizeof( NetWorkData ) );
+	int recv = NetWorkRecv( _handle_tcp, &_recv_data_tcp, sizeof( NetWorkData ) );
 	if ( recv < 1 ) {
-		_recving = false;
+		_recving_tcp = false;
 		return;
 	}
-	_recving = true;
+	_recving_tcp = true;
+}
+
+void Client::recvUdp( ) {
+	if ( CheckNetWorkRecvUDP( _handle_udp ) != TRUE ) {
+		_recving_udp = false;
+		return;
+	}
+
+	IPDATA ip;
+	GetNetWorkIP( _handle_tcp, &ip );
+	NetWorkRecvUDP( _handle_udp, NULL, NULL, &_recv_data_udp, sizeof( NetWorkData ), FALSE );
+	_recving_udp = true;
 }
 
 void Client::lost( ) {
@@ -78,20 +96,24 @@ void Client::lost( ) {
 	if ( lost < 0 ) {
 		return;
 	}
-	if ( lost == _handle ) {
-		CloseNetWork( _handle );
-		_handle = -1;
+	if ( lost == _handle_tcp ) {
+		CloseNetWork( _handle_tcp );
+		_handle_tcp = -1;
 		_phase = READY;
 	}
 }
 
 
-bool Client::isRecving( ) const {
-	return _recving;
+bool Client::isRecvingTcp( ) const {
+	return _recving_tcp;
+}
+
+bool Client::isRecvingUdp( ) const {
+	return _recving_udp;
 }
 
 void Client::sendTcp( NetWorkData send_data ) {
-	NetWorkSend( _handle, &send_data, sizeof( NetWorkData ) );
+	NetWorkSend( _handle_tcp, &send_data, sizeof( NetWorkData ) );
 }
 
 std::string Client::getSeverIP( ) const {
@@ -117,6 +139,10 @@ std::string Client::getPhase( ) const {
 	return phase;
 }
 
-Client::NetWorkData Client::getData( ) const {
-	return _recv_data;
+Client::NetWorkData Client::getDataTcp( ) const {
+	return _recv_data_tcp;
+}
+
+Client::NetWorkData Client::getDataUdp( ) const {
+	return _recv_data_udp;
 }

@@ -6,6 +6,8 @@
       <Filter>Calc</Filter>
     </ClCompile>
     <ClCompile Include="Console.cpp" />
+    <ClCompile Include="Drawer.cpp" />
+    <ClCompile Include="DrawTitle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Calc">
@@ -17,5 +19,7 @@
       <Filter>Calc</Filter>
     </ClInclude>
     <ClInclude Include="Console.h" />
+    <ClInclude Include="Drawer.h" />
+    <ClInclude Include="DrawTitle.h" />
   </ItemGroup>
 </Project>

@@ -22,17 +22,20 @@ public:
 	void initialize( );
 
 public:
-	bool isRecving( ) const;
+	bool isRecvingTcp( ) const;
+	bool isRecvingUdp( ) const;
 	void sendTcp( NetWorkData send_data );
 	std::string getSeverIP( ) const;
 	std::string getPhase( ) const;
-	NetWorkData getData( ) const;
+	NetWorkData getDataTcp( ) const;
+	NetWorkData getDataUdp( ) const;
 
 private:
 	void readIP( );
 	void connect( );
 	void recving( );
 	void recvTcp( );
+	void recvUdp( );
 	void lost( );
 
 private:
@@ -42,9 +45,12 @@ private:
 	};
 	PHASE _phase;
 
-	int _handle;
-	bool _recving;
-	NetWorkData _recv_data;
+	int _handle_tcp;
+	int _handle_udp;
+	bool _recving_tcp;
+	bool _recving_udp;
+	NetWorkData _recv_data_tcp;
+	NetWorkData _recv_data_udp;
 	IPDATA _ip;
 };
 

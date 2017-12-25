@@ -1,7 +1,6 @@
 #include "Server.h"
 #include "DxLib.h"
-
-const int PORT = 8000;
+#include "const.h"
 
 Server::Server( ) {
 	initialize( );
@@ -12,6 +11,7 @@ Server::~Server( ) {
 	for ( int i = 0; i < MACHINE_MAX; i++ ) {
 		CloseNetWork( _handles[ i ] );
 	}
+	DeleteUDPSocket( _handle_udp );
 }
 
 std::string Server::getTag( ) {
@@ -25,9 +25,10 @@ void Server::initialize( ) {
 		_handles[ i ] = -1;
 		_recving[ i ] = false;
 	}
+	_handle_udp = MakeUDPSocket( UDP_PORT );
 	memset( _recv_data, 0, sizeof( Client::NetWorkData ) * MACHINE_MAX );
 	createIP( );
-	PreparationListenNetWork( PORT );
+	PreparationListenNetWork( TCP_PORT );
 }
 
 void Server::update( ) {
@@ -71,10 +72,20 @@ void Server::lost( ) {
 	}
 }
 
-void Server::sendData( int idx, Client::NetWorkData send_data ) {
+void Server::sendDataTcp( int idx, Client::NetWorkData send_data ) {
 	NetWorkSend( _handles[ idx ], &send_data, sizeof( Client::NetWorkData ) ); 
 }
 
+void Server::sendDataUdp( Client::NetWorkData send_data ) {
+	for ( int i = 0; i < MACHINE_MAX; i++ ) {
+		if ( _handles[ i ] < 0 ) {
+			continue;
+		}
+		IPDATA ip;
+		GetNetWorkIP( _handles[ i ], &ip );
+		NetWorkSendUDP( _handle_udp, ip, UDP_PORT, &send_data, sizeof( Client::NetWorkData ) ); 
+	}
+}
 void Server::recvTcp( int idx ) {
 	int size = GetNetWorkDataLength( _handles[ idx ] );
 	if ( size < 0 ) {

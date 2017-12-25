@@ -22,6 +22,7 @@ public:
 	void update( );
 
 public:
+	void setScene( SCENE scene );
 	int getKeyState( int key ) const;
 	int getMouseX( ) const;
 	int getMouseY( ) const;
