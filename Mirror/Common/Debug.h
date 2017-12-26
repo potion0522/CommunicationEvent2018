@@ -25,15 +25,15 @@ public:
 	void setActiveClass( std::string tag );
 
 private:
-	int calcLogYpos( int num );
 	void printLog( );
 	void printActiveClass( );
+	void printScene( );
 	void initLog( );
 	void initActiveClass( );
-	void drawScene( );
 
 private:
-	int _y;
+	int _log_y;
+	int _active_y;
 	FILE *_fp;
 	std::vector< std::string > _log;
 	std::vector< std::string > _active_class;

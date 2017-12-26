@@ -5,9 +5,11 @@
 #include "GlobalData.h"
 #include <time.h>
 
-const int Y_POS = 20;
 const int ACTIVE_CLASS_X = 20;
-const int LOG_X = 120;
+const int LOG_X = WIDTH - 200;
+const int SCENE_X = 20;
+const int Y_POS = 20;
+const int ACTIVE_CLASS_INIT_Y = 40;
 
 Debug::Debug( GlobalDataPtr data ) :
 _data( data ){
@@ -20,6 +22,10 @@ Debug::~Debug( ) {
 void Debug::initialize( ) {
 	setFlag( 0 );
 	_color = ColorPtr( new Color( ) );
+	_log_y = Y_POS;
+	_active_y = ACTIVE_CLASS_INIT_Y;
+	initLog( );
+	initActiveClass( );
 }
 
 std::string Debug::getTag( ) {
@@ -49,21 +55,21 @@ void Debug::error( std::string err ) {
 void Debug::update( ) {
 	printLog( );
 	printActiveClass( );
+	printScene( );
+
 	initLog( );
 	initActiveClass( );
-	drawScene( );
-}
 
-int Debug::calcLogYpos( int num ) {
-	return ( num % ( HEIGHT / 20 ) ) * 20;
+	_log_y = Y_POS;
+	_active_y = ACTIVE_CLASS_INIT_Y;
 }
 
 void Debug::printLog( ) {
 	int size = ( int )_log.size( );
 
 	for ( int i = 0; i < size; i++ ) {
-		int y = calcLogYpos( i );
-		DrawFormatString( LOG_X, y, _color->getColor( WHITE ), "%s", _log[ i ].c_str( ) );
+		DrawFormatString( LOG_X, _log_y, _color->getColor( WHITE ), "Log : %s", _log[ i ].c_str( ) );
+		_log_y += Y_POS;
 	}
 }
 
@@ -75,12 +81,28 @@ void Debug::printActiveClass( ) {
 	}
 
 	for ( int i = 0; i < size; i++ ) {
-		int y = calcLogYpos( i );
-		DrawFormatString( ACTIVE_CLASS_X, y, _color->getColor( RED ), "%s", _active_class[ i ].c_str( ) );
+		DrawFormatString( ACTIVE_CLASS_X, _active_y, _color->getColor( RED ), "Active : %s", _active_class[ i ].c_str( ) );
+		_active_y += Y_POS;
 	}
 }
 
+void Debug::printScene( ) {
+	std::string str = "";
+	SCENE scene = _data->getScene( );
+
+	switch ( scene ) {
+	case NONE	: str = "none"		; break;
+	case TITLE	: str = "title"		; break;
+	case CONNECT: str = "connect"	; break;
+	}
+
+	DrawFormatString( SCENE_X, Y_POS, _color->getColor( WHITE ), "SCENE  : %s", str.c_str( ) );
+}
+
 void Debug::initLog( ) {
+	if ( _log.size( ) < 1 ) {
+		return;
+	}
 	std::vector< std::string >( ).swap( _log );
 }
 
@@ -92,28 +114,21 @@ void Debug::addLog( std::string add ) {
 }
 
 void Debug::initActiveClass( ) {
-	std::vector< std::string >( ).swap( _log );
+	if ( _active_class.size( ) < 1 ) {
+		return;
+	}
+	std::vector< std::string >( ).swap( _active_class );
 }
 
 void Debug::setActiveClass( std::string tag ) {
+	if ( getFlag( ) < 1 ) {
+		return;
+	}
 	int size = ( int )_active_class.size( );
 	for ( int i = 0; i < size; i++ ) {
-		if ( _active_class[ i ].find( tag ) != std::string::npos ) {
+		if ( _active_class[ i ] == tag ) {
 			return;
 		}
 	}
 	_active_class.push_back( tag );
-}
-
-void Debug::drawScene( ) {
-	std::string str = "";
-	SCENE scene = _data->getScene( );
-
-	switch ( scene ) {
-	case NONE	: str = "none"		; break;
-	case TITLE	: str = "title"		; break;
-	case CONNECT: str = "connect"	; break;
-	}
-
-	DrawFormatString( 100, _y, _color->getColor( WHITE ), "SCENE : %s", str.c_str( ) );
 }
