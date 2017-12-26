@@ -34,6 +34,7 @@ void Title::update( ) {
 	
 	DrawerPtr drawer = _data->getDrawerPtr( );
 	drawer->setImage( _back );
+	drawer->setString( WIDTH / 2, HEIGHT / 2, RED, "TEST FROM TITLE" );
 }
 
 Base::ImageProperty* Title::getBackPng( ) const {

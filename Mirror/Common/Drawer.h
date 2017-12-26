@@ -18,7 +18,7 @@ public:
 
 public:
 	void setImage( ImageProperty png );
-	void setString( double x, double y, COLOR col, std::string str );
+	void setString( double x, double y, COLOR col, std::string str, int brt = 0 );
 
 private:
 	void drawImage( );
@@ -31,6 +31,7 @@ private:
 		float y;
 		COLOR col;
 		std::string str;
+		int brt;
 	};
 	std::list< StringProperty > _strings;
 	std::list< ImageProperty > _images;
