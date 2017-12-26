@@ -6,6 +6,7 @@
 #include "Image.h"
 #include "Server.h"
 #include "Client.h"
+#include "Drawer.h"
 
 Direction::Direction( MACHINE_TYPE type, GlobalDataPtr data ) :
 _data( data ) {
@@ -20,6 +21,7 @@ void Direction::initialize( MACHINE_TYPE type ) {
 	_data->initialize( type );
 	_debug = DebugPtr( new Debug( _data ) );
 	_data->setPtr( _debug );
+	add( ALL, _data->getDrawerPtr( ) );
 	add( ALL, _debug );
 	switch ( type ) {
 	case SERVER: add( ALL, _data->getServerPtr( ) ); break;

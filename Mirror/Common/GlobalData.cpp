@@ -5,6 +5,7 @@
 #include "Debug.h"
 #include "Server.h"
 #include "Client.h"
+#include "Drawer.h"
 
 GlobalData::GlobalData( ) {
 }
@@ -23,6 +24,7 @@ void GlobalData::initialize( MACHINE_TYPE type ) {
 	_key =   UpdateKeyPtr( new UpdateKey( ) );
 	_mouse = MouseEventPtr( new MouseEvent( ) );
 	_image = ImagePtr( new Image( ) );
+	_drawer = DrawerPtr( new Drawer( ) );
 	_debug = NULL;
 
 	switch ( type ) {
@@ -91,4 +93,8 @@ ServerPtr GlobalData::getServerPtr( ) const {
 
 ClientPtr GlobalData::getClientPtr( ) const {
 	return _client;
+}
+
+DrawerPtr GlobalData::getDrawerPtr( ) const {
+	return _drawer;
 }

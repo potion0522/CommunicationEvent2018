@@ -10,6 +10,7 @@ PTR( Image );
 PTR( Debug );
 PTR( Server );
 PTR( Client );
+PTR( Drawer );
 
 class GlobalData : public Base {
 public:
@@ -38,6 +39,7 @@ public:
 	DebugPtr getDebugPtr( ) const;
 	ServerPtr getServerPtr( ) const;
 	ClientPtr getClientPtr( ) const;
+	DrawerPtr getDrawerPtr( ) const;
 
 private:
 	SCENE _scene;
@@ -48,5 +50,6 @@ private:
 	DebugPtr _debug;
 	ServerPtr _server;
 	ClientPtr _client;
+	DrawerPtr _drawer;
 };
 

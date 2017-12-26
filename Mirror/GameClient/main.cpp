@@ -26,7 +26,6 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 	GlobalDataPtr data( new GlobalData( ) );
 	DirectionPtr direction( new Direction( CLIENT, data ) );
-	DrawerPtr drawer( new Drawer( data ) );
 
 	ConsolePtr console( new Console( data ) );
 	TitlePtr title( new Title( data ) );

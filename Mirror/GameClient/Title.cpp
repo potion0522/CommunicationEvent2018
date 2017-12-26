@@ -3,6 +3,7 @@
 #include "GlobalData.h"
 #include "Image.h"
 #include "BaseDraw.h"
+#include "Drawer.h"
 
 Title::Title( GlobalDataPtr data ) :
 _data( data ) {
@@ -31,7 +32,8 @@ void Title::update( ) {
 		_data->setScene( CONNECT );
 	}
 	
-	DrawRotaGraphF( ( float )_back.cx, ( float )_back.cy, _back.size, _back.angle, _back.png, TRUE );
+	DrawerPtr drawer = _data->getDrawerPtr( );
+	drawer->setImage( _back );
 }
 
 Base::ImageProperty* Title::getBackPng( ) const {

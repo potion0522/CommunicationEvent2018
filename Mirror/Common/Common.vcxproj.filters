@@ -37,6 +37,9 @@
     <ClCompile Include="Direction.cpp">
       <Filter>Execute</Filter>
     </ClCompile>
+    <ClCompile Include="Drawer.cpp">
+      <Filter>Drawer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Base.h">
@@ -78,6 +81,9 @@
     <ClInclude Include="Direction.h">
       <Filter>Execute</Filter>
     </ClInclude>
+    <ClInclude Include="Drawer.h">
+      <Filter>Drawer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="BaseClass">
@@ -97,6 +103,9 @@
     </Filter>
     <Filter Include="Execute">
       <UniqueIdentifier>{b89c33a3-be59-437b-a6c0-d011fcaaaa17}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Drawer">
+      <UniqueIdentifier>{dc5c1283-b7ba-4152-ac2b-efe6851d9ce0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
