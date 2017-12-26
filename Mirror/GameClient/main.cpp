@@ -4,7 +4,6 @@
 #include "Direction.h"
 #include "Title.h"
 #include "Console.h"
-#include "Drawer.h"
 
 /**********************************************************
 *														  *
@@ -23,29 +22,24 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	}
 	SetDrawScreen( DX_SCREEN_BACK );
 
+	{
+		GlobalDataPtr data( new GlobalData( ) );
+		DirectionPtr direction( new Direction( CLIENT, data ) );
 
-	GlobalDataPtr data( new GlobalData( ) );
-	DirectionPtr direction( new Direction( CLIENT, data ) );
+		ConsolePtr console( new Console( data ) );
+		TitlePtr title( new Title( data ) );
 
-	ConsolePtr console( new Console( data ) );
-	TitlePtr title( new Title( data ) );
+		direction->add( TITLE, title );
+		direction->add( CONNECT, console );
 
-	direction->add( TITLE, title );
-	direction->add( CONNECT, console );
-
-	// GlobalData のフラグが 0 であれば全プロセス終了
-	while ( data->getFlag( ) ) {
-		if ( ScreenFlip( ) != 0 || ProcessMessage( ) != 0 || ClearDrawScreen( ) != 0 ) {
-			break;
+		// GlobalData のフラグが 0 であれば全プロセス終了
+		while ( data->getFlag( ) ) {
+			if ( ScreenFlip( ) != 0 || ProcessMessage( ) != 0 || ClearDrawScreen( ) != 0 ) {
+				break;
+			}
+			direction->run( );
 		}
-
-		//計算フェイズ
-		direction->run( );
-
-		//描画
-		//drawer->update( );
 	}
-
 
 	DxLib_End( );
 	return 0;

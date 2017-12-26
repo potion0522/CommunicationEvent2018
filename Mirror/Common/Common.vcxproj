@@ -153,7 +153,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Base.cpp" />
-    <ClCompile Include="BaseDraw.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="Debug.cpp" />
@@ -168,7 +167,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Base.h" />
-    <ClInclude Include="BaseDraw.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Color.h" />
     <ClInclude Include="const.h" />

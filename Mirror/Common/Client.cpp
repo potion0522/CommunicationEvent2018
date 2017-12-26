@@ -1,14 +1,12 @@
 #include "Client.h"
-#include "DxLib.h"
 #include "const.h"
-#include <string>
 
 Client::Client( ) {
 	initialize( );
 }
 
 Client::~Client( ) {
-	DeleteUDPSocket( _handle_udp );
+	disConnect( );
 }
 
 std::string Client::getTag( ) {
@@ -60,7 +58,7 @@ void Client::connect( ) {
 
 void Client::recving( ) {
 	recvTcp( );
-	recvUdp( );
+	//recvUdp( );
 	lost( );
 }
 
@@ -97,6 +95,7 @@ void Client::lost( ) {
 		return;
 	}
 	if ( lost == _handle_tcp ) {
+		NetWorkRecvBufferClear( _handle_tcp );
 		CloseNetWork( _handle_tcp );
 		_handle_tcp = -1;
 		_phase = READY;
@@ -145,4 +144,13 @@ Client::NetWorkData Client::getDataTcp( ) const {
 
 Client::NetWorkData Client::getDataUdp( ) const {
 	return _recv_data_udp;
+}
+
+void Client::disConnect( ) {
+	if ( _handle_tcp != -1 ) {
+		NetWorkRecvBufferClear( _handle_tcp );
+	}
+	NetWorkRecvBufferClear( _handle_udp );
+	CloseNetWork( _handle_tcp );
+	DeleteUDPSocket( _handle_udp );
 }

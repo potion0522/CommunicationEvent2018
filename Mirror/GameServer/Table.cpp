@@ -2,10 +2,13 @@
 #include "const.h"
 #include "DxLib.h"
 #include "Color.h"
+#include "GlobalData.h"
+#include "Drawer.h"
 
 const int CHARA_SIZE = 20;
 
-Table::Table( ) {
+Table::Table( GlobalDataPtr data ) :
+_data( data ) {
 	initialize( );
 }
 
@@ -14,6 +17,7 @@ Table::~Table( ) {
 
 void Table::initialize( ) {
 	_add = SERVER_CONSOLE_LOG_MAX - 1;
+	_drawer = _data->getDrawerPtr( );
 }
 
 void Table::update( ) {
@@ -30,7 +34,7 @@ void Table::isLogPring( ) {
 
 	for ( int i = 0; i < size; i++ ) {
 		int y = HEIGHT - 20 * i;
-		DrawFormatString( LOG_X, y, color->getColor( WHITE ), "%s", _log[ i ].c_str( ) );
+		_drawer->setString( LOG_X, y, WHITE, _log[ i ] );
 	}
 }
 

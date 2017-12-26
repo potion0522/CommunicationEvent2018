@@ -2,7 +2,6 @@
 #include "DxLib.h"
 #include "GlobalData.h"
 #include "Image.h"
-#include "BaseDraw.h"
 #include "Drawer.h"
 
 Title::Title( GlobalDataPtr data ) :
@@ -34,7 +33,7 @@ void Title::update( ) {
 	
 	DrawerPtr drawer = _data->getDrawerPtr( );
 	drawer->setImage( _back );
-	drawer->setString( WIDTH / 2, HEIGHT / 2, RED, "TEST FROM TITLE" );
+	drawer->setString( WIDTH / 2, HEIGHT / 2, RED, "Press \"Z\" Key" );
 }
 
 Base::ImageProperty* Title::getBackPng( ) const {

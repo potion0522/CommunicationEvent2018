@@ -9,6 +9,7 @@ _data( data ) {
 }
 
 Connector::~Connector( ) {
+	_server->disConnect( );
 }
 
 std::string Connector::getTag( ) {
@@ -23,7 +24,7 @@ void Connector::initialize( ) {
 		_connect_state[ i ] = NOT_CONNECTING;
 	}
 
-	_table = TablePtr( new Table( ) );
+	_table = TablePtr( new Table( _data ) );
 	_table->add( "Connection Waiting" );
 }
 
@@ -38,6 +39,11 @@ void Connector::update( ) {
 	}
 
 	_table->update( );
+
+	if ( _data->getKeyState( KEY_INPUT_X ) == 1 ) {
+		_server->disConnect( );
+		_data->setScene( TITLE );
+	}
 }
 
 void Connector::updateConnectState( ) {
@@ -70,12 +76,12 @@ void Connector::Connecting( ) {
 		_server->sendDataTcp( i, send_data );
 	}
 
-	//if ( _data->getKeyState( KEY_INPUT_RETURN ) == 1 ) {
-	//	Client::NetWorkData send_data;
-	//	send_data.test = 2;
-	//	_server->sendDataUdp( send_data );
-	//	_table->add( "send udp" );
-	//}
+	if ( _data->getKeyState( KEY_INPUT_RETURN ) == 1 ) {
+		Client::NetWorkData send_data;
+		send_data.test = 2;
+		_server->sendDataUdp( send_data );
+		_table->add( "send udp" );
+	}
 
 	//óM
 	for ( int i = 0; i < MACHINE_MAX; i++ ) {

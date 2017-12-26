@@ -4,9 +4,6 @@
     <ClCompile Include="Base.cpp">
       <Filter>BaseClass</Filter>
     </ClCompile>
-    <ClCompile Include="BaseDraw.cpp">
-      <Filter>BaseClass</Filter>
-    </ClCompile>
     <ClCompile Include="Client.cpp">
       <Filter>NetWork</Filter>
     </ClCompile>
@@ -43,9 +40,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Base.h">
-      <Filter>BaseClass</Filter>
-    </ClInclude>
-    <ClInclude Include="BaseDraw.h">
       <Filter>BaseClass</Filter>
     </ClInclude>
     <ClInclude Include="Client.h">

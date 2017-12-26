@@ -7,11 +7,7 @@ Server::Server( ) {
 }
 
 Server::~Server( ) {
-	StopListenNetWork( );
-	for ( int i = 0; i < MACHINE_MAX; i++ ) {
-		CloseNetWork( _handles[ i ] );
-	}
-	DeleteUDPSocket( _handle_udp );
+	disConnect( );
 }
 
 std::string Server::getTag( ) {
@@ -25,8 +21,10 @@ void Server::initialize( ) {
 		_handles[ i ] = -1;
 		_recving[ i ] = false;
 	}
-	_handle_udp = MakeUDPSocket( UDP_PORT );
+	_handle_udp = MakeUDPSocket( -1 );
+
 	memset( _recv_data, 0, sizeof( Client::NetWorkData ) * MACHINE_MAX );
+
 	createIP( );
 	PreparationListenNetWork( TCP_PORT );
 }
@@ -65,6 +63,7 @@ void Server::lost( ) {
 	}
 	for ( int i = 0; i < MACHINE_MAX; i++ ) {
 		if ( lost == _handles[ i ] ) {
+			NetWorkRecvBufferClear( _handles[ i ] );
 			CloseNetWork( _handles[ i ] );
 			_handles[ i ] = -1;
 			break;
@@ -107,6 +106,9 @@ void Server::createIP( ) {
 
 	FILE *fp;
 	fopen_s( &fp, "IP.ini", "wb" );
+	if ( fp == NULL ) {
+		return;
+	}
 	fwrite( &ip, sizeof( IPDATA ), 1, fp );
 }
 
@@ -120,4 +122,18 @@ bool Server::isRecving( int idx ) const {
 
 Client::NetWorkData Server::getData( int idx ) const {
 	return _recv_data[ idx ];
+}
+
+void Server::disConnect( ) {
+	for ( int i = 0; i < MACHINE_MAX; i++ ) {
+		if ( _handles[ i ] != -1 ) {
+			NetWorkRecvBufferClear( _handles[ i ] );
+		}
+		CloseNetWork( _handles[ i ] );
+	}
+
+	NetWorkRecvBufferClear( _handle_udp );
+	DeleteUDPSocket( _handle_udp );
+
+	StopListenNetWork( );
 }

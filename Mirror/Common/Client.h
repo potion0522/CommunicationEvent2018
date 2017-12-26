@@ -29,6 +29,7 @@ public:
 	std::string getPhase( ) const;
 	NetWorkData getDataTcp( ) const;
 	NetWorkData getDataUdp( ) const;
+	void disConnect( );
 
 private:
 	void readIP( );

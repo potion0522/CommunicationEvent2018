@@ -2,11 +2,24 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Connector.cpp" />
-    <ClCompile Include="Table.cpp" />
+    <ClCompile Include="Table.cpp">
+      <Filter>Calc</Filter>
+    </ClCompile>
+    <ClCompile Include="Connector.cpp">
+      <Filter>Calc</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Connector.h" />
-    <ClInclude Include="Table.h" />
+    <ClInclude Include="Table.h">
+      <Filter>Calc</Filter>
+    </ClInclude>
+    <ClInclude Include="Connector.h">
+      <Filter>Calc</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Calc">
+      <UniqueIdentifier>{2d800446-fda2-48c7-878d-65bf077c722e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

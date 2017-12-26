@@ -23,6 +23,7 @@ public:
 	void sendDataTcp( int idx, Client::NetWorkData send_data );
 	void sendDataUdp( Client::NetWorkData send_data );
 	Client::NetWorkData getData( int idx ) const;
+	void disConnect( );
 
 private:
 	void accept( );

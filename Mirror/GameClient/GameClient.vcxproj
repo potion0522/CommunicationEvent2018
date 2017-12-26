@@ -153,7 +153,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Console.cpp" />
-    <ClCompile Include="DrawTitle.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Title.cpp" />
   </ItemGroup>
@@ -164,7 +163,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Console.h" />
-    <ClInclude Include="DrawTitle.h" />
     <ClInclude Include="Title.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
