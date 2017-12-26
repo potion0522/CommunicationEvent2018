@@ -24,14 +24,18 @@ void Direction::initialize( MACHINE_TYPE type ) {
 	add( ALL, _data->getDrawerPtr( ) );
 	add( ALL, _debug );
 	switch ( type ) {
-	case SERVER: add( ALL, _data->getServerPtr( ) ); break;
-	case CLIENT: add( ALL, _data->getClientPtr( ) ); break;
+	case SERVER: add( CONNECT, _data->getServerPtr( ) ); break;
+	case CLIENT: add( CONNECT, _data->getClientPtr( ) ); break;
 	}
 }
 
 void Direction::update( ) {
 	_data->update( );
-	_scene = _data->getScene( );
+	SCENE scene = _data->getScene( );
+	if ( _scene != scene ) {
+		_scene = scene;
+		initNextProcess( );
+	}
 
 	//デバッグON
 	if ( _data->getKeyState( KEY_INPUT_SPACE ) == 1 ) {
@@ -45,6 +49,10 @@ void Direction::update( ) {
 }
 
 void Direction::initNextProcess( ) {
+	int size = ( int )_exe[ _scene ].size( );
+	for ( int i = 0; i < size; i++ ) {
+		_exe[ _scene ][ i ]->initialize( );
+	}
 }
 
 void Direction::add( SCENE scene, BasePtr ptr ) {
