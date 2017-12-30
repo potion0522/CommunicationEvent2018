@@ -19,8 +19,8 @@ public:
 
 private:
 	void updateConnectState( );
-	void NotConnecting( );
-	void Connecting( );
+	void notConnecting( );
+	void connecting( );
 
 private:
 	Client::NetWorkData _client_data[ MACHINE_MAX ];
@@ -29,6 +29,7 @@ private:
 		CONNECTING,
 	};
 	CONNECT_STATE _connect_state[ MACHINE_MAX ];
+	bool _matching;
 
 	GlobalDataPtr _data;
 	ServerPtr _server;

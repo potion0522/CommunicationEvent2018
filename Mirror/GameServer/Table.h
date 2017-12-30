@@ -24,7 +24,7 @@ private:
 	void isLogPring( );
 
 private:
-	int _add;
+	std::array< std::string, SERVER_CONSOLE_LOG_MAX > _log_time;
 	std::array< std::string, SERVER_CONSOLE_LOG_MAX > _log;
 
 	GlobalDataPtr _data;

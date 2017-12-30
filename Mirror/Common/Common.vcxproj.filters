@@ -48,9 +48,6 @@
     <ClInclude Include="Server.h">
       <Filter>NetWork</Filter>
     </ClInclude>
-    <ClInclude Include="const.h">
-      <Filter>Const</Filter>
-    </ClInclude>
     <ClInclude Include="Debug.h">
       <Filter>Debug</Filter>
     </ClInclude>
@@ -78,6 +75,9 @@
     <ClInclude Include="Drawer.h">
       <Filter>Drawer</Filter>
     </ClInclude>
+    <ClInclude Include="const.h">
+      <Filter>Global</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="BaseClass">
@@ -91,9 +91,6 @@
     </Filter>
     <Filter Include="Global">
       <UniqueIdentifier>{c2ddc81c-aabc-4d21-841a-39757a0cd40f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Const">
-      <UniqueIdentifier>{8edaa095-8aad-42b9-9797-1ee671835156}</UniqueIdentifier>
     </Filter>
     <Filter Include="Execute">
       <UniqueIdentifier>{b89c33a3-be59-437b-a6c0-d011fcaaaa17}</UniqueIdentifier>

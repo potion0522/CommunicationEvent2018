@@ -39,10 +39,10 @@ void Drawer::initialize( ) {
 	for ( int i = 0; i < FONTHANDLE_MAX; i++ ) {
 		_handle_font[ i ] = -1;
 		switch ( ( FONTSIZE_TYPE )i ) {
-		case SMALL		: _handle_font[ i ] = CreateFontToHandle( NULL, _size[ i ], -1, DX_FONTTYPE_NORMAL ); break;
-		case NORMAL		: _handle_font[ i ] = CreateFontToHandle( NULL, _size[ i ], -1, DX_FONTTYPE_NORMAL ); break;
-		case LITTLE_BIG	: _handle_font[ i ] = CreateFontToHandle( NULL, _size[ i ], -1, DX_FONTTYPE_NORMAL ); break;
-		case BIG		: _handle_font[ i ] = CreateFontToHandle( NULL, _size[ i ], -1, DX_FONTTYPE_NORMAL ); break;
+		case SMALL		: _handle_font[ i ] = CreateFontToHandle( "MS –¾’©", _size[ i ], -1, DX_FONTTYPE_NORMAL ); break;
+		case NORMAL		: _handle_font[ i ] = CreateFontToHandle( "MS –¾’©", _size[ i ], -1, DX_FONTTYPE_NORMAL ); break;
+		case LITTLE_BIG	: _handle_font[ i ] = CreateFontToHandle( "MS –¾’©", _size[ i ], -1, DX_FONTTYPE_NORMAL ); break;
+		case BIG		: _handle_font[ i ] = CreateFontToHandle( "MS –¾’©", _size[ i ], -1, DX_FONTTYPE_NORMAL ); break;
 		}
 	}
 }
@@ -99,14 +99,15 @@ void Drawer::setImage( ImageProperty png ) {
 	_images.push_back( png );
 }
 
-void Drawer::setString( double x, double y, COLOR col, std::string str, Drawer::FONTSIZE_TYPE type, int brt ) {
+void Drawer::setString( bool flag, double x, double y, COLOR col, std::string str, Drawer::FONTSIZE_TYPE type, int brt ) {
 	//“n‚³‚ê‚½ x, y ‚ª•`‰æ‚·‚é‚Æ‚«‚É•¶Žš—ñ‚Ì’†‰›‚É‚È‚é‚æ‚¤‚É‚·‚é
-	int len = ( int )str.length( );
-	double w = GetDrawFormatStringWidthToHandle( _handle_font[ type ], str.c_str( ) );
+	if ( flag ) {
+		int len = ( int )str.length( );
+		double w = GetDrawFormatStringWidthToHandle( _handle_font[ type ], str.c_str( ) );
+		x -= w / 2;
+	}
 	double h = GetDrawFormatStringWidthToHandle( _handle_font[ type ], "‚ " );
-	x -= w / 2;
 	y -= h / 2;
-
 	StringProperty tmp = { ( float )x, ( float )y, col, str, brt, _handle_font[ type ] };
 	_strings.push_back( tmp );
 }

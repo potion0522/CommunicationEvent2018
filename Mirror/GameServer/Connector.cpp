@@ -24,6 +24,7 @@ void Connector::initialize( ) {
 	for ( int i = 0; i < MACHINE_MAX; i++ ) {
 		_connect_state[ i ] = NOT_CONNECTING;
 	}
+	_matching = false;
 
 	_table = TablePtr( new Table( _data ) );
 	_table->add( "Connection Waiting" );
@@ -32,71 +33,57 @@ void Connector::initialize( ) {
 void Connector::update( ) {
 	updateConnectState( );
 
+	//クライアントにマッチング相手が見つかったことを教える
 	for ( int i = 0; i < MACHINE_MAX; i++ ) {
-		switch ( _connect_state[ i ] ) {
-		case NOT_CONNECTING	: NotConnecting( ); break;
-		case CONNECTING		: Connecting( )	; break;
+		_matching = false;
+		if ( _connect_state[ i ] != CONNECTING ) {
+			break;
 		}
+		//シーンがCONNECTのときのみ
+		if ( _data->getScene( ) != CONNECT ) {
+			break;
+		}
+		Client::NetWorkData call = Client::NetWorkData( );
+		_server->sendDataTcp( i, call );
+		_matching = true;
+	}
+
+	if ( _matching ) {
+		connecting( );
 	}
 
 	_table->update( );
-
-	if ( _data->getKeyState( KEY_INPUT_X ) == 1 ) {
-		_server->disConnect( );
-		_data->setScene( TITLE );
-	}
 }
 
 void Connector::updateConnectState( ) {
 	for ( int i = 0; i < MACHINE_MAX; i++ ) {
-		if ( _server->isConnecting( i ) ) {
-			if ( _connect_state[ i ] != NOT_CONNECTING ) {
-				continue;
+		std::string log = "";
+		if ( !_server->isConnecting( i ) ) {
+			if ( _connect_state[ i ] == CONNECTING ) {
+				_connect_state[ i ] = NOT_CONNECTING;
+				log = "DisConnect Machine [ " + std::to_string( i ) + " ]";
+				_table->add( log );
 			}
-			_connect_state[ i ] = CONNECTING;
-			std::string log = "Machine " + std::to_string( i ) + "is Connected";
-			_table->add( log );
-			continue;
-		}		
-		_connect_state[ i ] = NOT_CONNECTING;
-	}
-}
-
-void Connector::NotConnecting( ) {
-
-}
-
-void Connector::Connecting( ) {
-	//送信
-	for ( int i = 0; i < MACHINE_MAX; i++ ) {
-		if ( _connect_state[ i ] != CONNECTING ) {
 			continue;
 		}
-		Client::NetWorkData send_data;
-		send_data.test = 1;
-		_server->sendDataTcp( i, send_data );
-	}
-
-	if ( _data->getKeyState( KEY_INPUT_RETURN ) == 1 ) {
-		Client::NetWorkData send_data;
-		send_data.test = 1;
-		_server->sendDataUdp( send_data );
-		_table->add( "send udp" );
-	}
-
-	//受信
-	for ( int i = 0; i < MACHINE_MAX; i++ ) {
-		if ( _connect_state[ i ] != CONNECTING ) {
+		if ( _connect_state[ i ] != NOT_CONNECTING ) {
 			continue;
 		}
-		if ( !_server->isRecving( i ) ) {
-			continue;
-		}
-		Client::NetWorkData recv_data;
-		recv_data = _server->getData( i );
-		std::string log = "Recv from " + std::to_string( i ) + 
-			"Machine" + "\"" + std::to_string( recv_data.test ) + "\"";
 
+		log = "Connect " + _server->getMachineIpStr( i );
+		_connect_state[ i ] = CONNECTING;
 		_table->add( log );
+
+	}
+}
+
+void Connector::notConnecting( ) {
+
+}
+
+void Connector::connecting( ) {
+	for ( int i = 0; i < MACHINE_MAX; i++ ) {
+		Client::NetWorkData send = Client::NetWorkData( );
+		_server->sendDataUdp( send );
 	}
 }

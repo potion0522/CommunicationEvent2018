@@ -20,6 +20,7 @@ public:
 public:
 	bool isConnecting( int idx ) const;
 	bool isRecving( int idx ) const;
+	std::string getMachineIpStr( int idx );
 	void sendDataTcp( int idx, Client::NetWorkData send_data );
 	void sendDataUdp( Client::NetWorkData send_data );
 	Client::NetWorkData getData( int idx ) const;

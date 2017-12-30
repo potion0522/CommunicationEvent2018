@@ -32,7 +32,7 @@ void Title::update( ) {
 	
 	DrawerPtr drawer = _data->getDrawerPtr( );
 	drawer->setImage( _back );
-	drawer->setString( WIDTH / 2, HEIGHT / 2, RED, "Press \"Z\" Key" );
+	drawer->setString( true, WIDTH / 2, HEIGHT / 2, RED, "Press \"Z\" Key" );
 }
 
 Base::ImageProperty* Title::getBackPng( ) const {

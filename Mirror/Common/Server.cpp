@@ -119,6 +119,23 @@ bool Server::isRecving( int idx ) const {
 	return _recving[ idx ];
 }
 
+std::string Server::getMachineIpStr( int idx ) {
+	std::string ip = "";
+	if ( _handles[ idx ] > 0 ) {
+		IPDATA tmp;
+		GetNetWorkIP( _handles[ idx ], &tmp );
+		ip = std::to_string( tmp.d1 );
+		ip += ".";
+		ip += std::to_string( tmp.d2 );
+		ip += ".";
+		ip += std::to_string( tmp.d3 );
+		ip += ".";
+		ip += std::to_string( tmp.d4 );
+	}
+
+	return ip;
+}
+
 Client::NetWorkData Server::getData( int idx ) const {
 	return _recv_data[ idx ];
 }

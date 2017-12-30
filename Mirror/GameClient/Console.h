@@ -17,14 +17,20 @@ public:
 	void initialize( );
 	void update( );
 
-private:
-	void ready( );
-	void connecting( );
+public:
+	bool isRecvDataUdp( ) const;
+	Client::NetWorkData getData( );
 
 private:
-	Client::NetWorkData _recv_data_tcp;
+	void ready( );
+	void matching( );
+	void battle( );
+
+private:
 	Client::NetWorkData _recv_data_udp;
 	Client::NetWorkData _send_data;
+
+	bool _recving_udp;
 
 	GlobalDataPtr _data;
 	ClientPtr _client;

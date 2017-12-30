@@ -29,7 +29,8 @@ public:
 
 public:
 	void setImage( ImageProperty png );
-	void setString( double x, double y, COLOR col, std::string str, FONTSIZE_TYPE type = NORMAL, int brt = 255 );
+	//中央寄せにするかどうか, x座標, y座標, カラー, 文字列, フォントサイズ, アルファ値
+	void setString( bool flag, double x, double y, COLOR col, std::string str, FONTSIZE_TYPE type = NORMAL, int brt = 255 );
 	int getStringW( FONTSIZE_TYPE type, std::string str ) const;
 	int getStringH( FONTSIZE_TYPE type ) const;
 
