@@ -56,6 +56,7 @@ void Debug::update( ) {
 	printLog( );
 	printActiveClass( );
 	printScene( );
+	//DrawCircle( WIDTH / 2, HEIGHT /2, 5, _color->getColor( RED ), TRUE );
 
 	initLog( );
 	initActiveClass( );

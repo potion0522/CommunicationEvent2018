@@ -43,22 +43,19 @@ void Console::update( ) {
 }
 
 void Console::ready( ) {
-	std::string finding = "finding server";
+	std::string finding = "- Connect Server -";
 	std::string ip = _client->getSeverIP( );
-	int size_find = ( int )finding.length( );
-	int size_ip = ( int )ip.length( );
-	_drawer->setString( WIDTH / 2 - size_find * 10 / 2, HEIGHT / 2 - 60, YELLOW, finding );
-	_drawer->setString( WIDTH / 2 - size_ip * 10 / 2, HEIGHT / 2, WHITE, ip );
+	int size_rate = _drawer->getStringH( Drawer::BIG );
+	_drawer->setString( WIDTH / 2, HEIGHT / 2 - size_rate, YELLOW, finding, Drawer::BIG );
+	_drawer->setString( WIDTH / 2, HEIGHT / 2, WHITE, ip );
 }
 
 void Console::connecting( ) {
 	_client->sendTcp( _send_data );
 
-	if ( _client->isRecvingTcp( ) ) {
-		_recv_data_tcp = _client->getDataTcp( );
+	if ( !_client->isRecvingTcp( ) ) {
+		std::string matching = "- Matching -";
+		_drawer->setString(  WIDTH / 2, HEIGHT / 2 - 60, YELLOW, matching );
 	}
-	if ( _client->isRecvingUdp( ) ) {
-		_recv_data_udp = _client->getDataUdp( );
-	}
-	_drawer->setString( WIDTH - 200, HEIGHT - 200, WHITE, "recv_udp : " + std::to_string( _recv_data_udp.test ) );
+	_recv_data_tcp = _client->getDataTcp( );
 }
