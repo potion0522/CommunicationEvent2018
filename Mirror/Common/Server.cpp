@@ -72,8 +72,10 @@ void Server::lost( ) {
 	}
 }
 
-void Server::sendDataTcp( int idx, Client::NetWorkData send_data ) {
-	NetWorkSend( _handles[ idx ], &send_data, sizeof( Client::NetWorkData ) ); 
+void Server::sendDataTcp( SCENE scene ) {
+	for ( int i = 0; i < MACHINE_MAX; i++ ) {
+		NetWorkSend( _handles[ i ], &scene, sizeof( SCENE ) ); 
+	}
 }
 
 void Server::sendDataUdp( Client::NetWorkData send_data ) {

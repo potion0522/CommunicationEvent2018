@@ -61,6 +61,9 @@ void Direction::update( ) {
 void Direction::initNextProcess( ) {
 	int size = ( int )_exe[ _scene ].size( );
 	for ( int i = 0; i < size; i++ ) {
+		if ( _scene == CONNECT ) {
+			break;
+		}
 		_exe[ _scene ][ i ]->initialize( );
 	}
 }
@@ -77,10 +80,11 @@ void Direction::run( ) {
 	for ( ite; ite != _exe.end( ); ite++ ) {
 		SCENE ite_scene = ite->first;
 		if ( ite_scene != _scene && ite_scene != ALL ) {
-			continue;
+			if ( ite_scene != CONNECT ) {
+				continue;
+			}
 		}
-
-		if ( ite_scene == CONNECT && ite_scene < _scene ) {
+		if ( ite_scene == CONNECT && _scene < CONNECT ) {
 			continue;
 		}
 

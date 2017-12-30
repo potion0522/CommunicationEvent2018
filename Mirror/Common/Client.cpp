@@ -1,5 +1,4 @@
 #include "Client.h"
-#include "const.h"
 
 Client::Client( ) {
 }
@@ -22,7 +21,7 @@ void Client::initialize( ) {
 		_handle_udp = MakeUDPSocket( UDP_PORT );
 	}
 
-	memset( &_recv_data_tcp, 0, sizeof( NetWorkData ) );
+	_recv_data_tcp = NONE;
 	memset( &_recv_data_udp, 0, sizeof( NetWorkData ) );
 
 	readIP( );
@@ -72,7 +71,7 @@ void Client::recvTcp( ) {
 	}
 
 	int recv = NetWorkRecv( _handle_tcp, &_recv_data_tcp, size );
-	if ( recv < 1 ) {
+	if ( recv < 0 ) {
 		_recving_tcp = false;
 		return;
 	}
@@ -139,7 +138,7 @@ std::string Client::getPhase( ) const {
 	return phase;
 }
 
-Client::NetWorkData Client::getDataTcp( ) const {
+SCENE Client::getDataTcp( ) const {
 	return _recv_data_tcp;
 }
 

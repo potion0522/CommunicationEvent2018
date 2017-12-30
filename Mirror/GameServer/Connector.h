@@ -1,6 +1,7 @@
 #include "Base.h"
 #include "smart_ptr.h"
 #include "Server.h"
+#include "const.h"
 
 PTR( Connector );
 PTR( Server );
@@ -19,8 +20,9 @@ public:
 
 private:
 	void updateConnectState( );
-	void notConnecting( );
-	void connecting( );
+	void updateMatchingState( );
+	void sendScene( );
+	void calcData( );
 
 private:
 	Client::NetWorkData _client_data[ MACHINE_MAX ];
@@ -29,7 +31,7 @@ private:
 		CONNECTING,
 	};
 	CONNECT_STATE _connect_state[ MACHINE_MAX ];
-	bool _matching;
+	SCENE _server_scene;
 
 	GlobalDataPtr _data;
 	ServerPtr _server;

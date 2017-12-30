@@ -2,6 +2,7 @@
 #include "Base.h"
 #include "smart_ptr.h"
 #include "DxLib.h"
+#include "const.h"
 #include <string>
 
 PTR( Client );
@@ -27,7 +28,7 @@ public:
 	void sendTcp( NetWorkData send_data );
 	std::string getSeverIP( ) const;
 	std::string getPhase( ) const;
-	NetWorkData getDataTcp( ) const;
+	SCENE getDataTcp( ) const;
 	NetWorkData getDataUdp( ) const;
 	void disConnect( );
 
@@ -51,7 +52,7 @@ private:
 	int _handle_udp;
 	bool _recving_tcp;
 	bool _recving_udp;
-	NetWorkData _recv_data_tcp;
+	SCENE _recv_data_tcp;
 	NetWorkData _recv_data_udp;
 	IPDATA _ip;
 };

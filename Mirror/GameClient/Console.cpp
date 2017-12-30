@@ -27,8 +27,16 @@ void Console::initialize( ) {
 }
 
 void Console::update( ) {
-	std::string phase = _client->getPhase( );
+	if ( _data->getScene( ) != BATTLE ) {
+		if ( _data->getKeyState( KEY_INPUT_X ) == 1 ) {
+			_data->setScene( TITLE );
+			_client->disConnect( );
+			_client->initialize( );
+			return;
+		}
+	}
 
+	std::string phase = _client->getPhase( );
 	if ( phase == "READY" ) {
 		ready( );
 	}
@@ -39,14 +47,14 @@ void Console::update( ) {
 		case BATTLE	: battle( );
 		}
 	}
-
-	if ( _data->getKeyState( KEY_INPUT_X ) == 1 ) {
-		_client->disConnect( );
-		_data->setScene( TITLE );
-	}
 }
 
 void Console::ready( ) {
+	if ( _data->getScene( ) != CONNECT ) {
+		_data->setScene( CONNECT );
+		return;
+	}
+
 	std::string finding = "- Connect Server -";
 	std::string ip = _client->getSeverIP( );
 	int size_rate = _drawer->getStringH( Drawer::BIG );
@@ -55,15 +63,16 @@ void Console::ready( ) {
 }
 
 void Console::matching( ) {
-	if ( !_client->isRecvingTcp( ) ) {
-		std::string matching = "- Matching -";
-		_drawer->setString( true, WIDTH / 2, HEIGHT / 2 - 60, YELLOW, matching, Drawer::BIG );
-		return;
-	}
-	_data->setScene( BATTLE );
+	std::string matching = "- Matching -";
+	_drawer->setString( true, WIDTH / 2, HEIGHT / 2 - 60, YELLOW, matching, Drawer::BIG );
+
+	checkRecvTcp( );
 }
 
 void Console::battle( ) {
+	if ( checkRecvTcp( ) ) {
+		return;
+	}
 	_recving_udp = false;
 	if ( _client->isRecvingUdp( ) ) {
 		_recv_data_udp = _client->getDataUdp( );
@@ -71,7 +80,16 @@ void Console::battle( ) {
 	}
 }
 
-bool Console::isRecvDataUdp( ) const {
+bool Console::checkRecvTcp( ) {
+	if ( !_client->isRecvingTcp( ) ) {
+		return false;
+	}
+	SCENE scene = _client->getDataTcp( );
+	_data->setScene( scene );
+	return true;
+}
+
+bool Console::isRecvingData( ) const {
 	return _recving_udp;
 }
 

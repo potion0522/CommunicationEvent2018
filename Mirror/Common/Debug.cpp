@@ -95,6 +95,8 @@ void Debug::printScene( ) {
 	case NONE	: str = "none"		; break;
 	case TITLE	: str = "title"		; break;
 	case CONNECT: str = "connect"	; break;
+	case BATTLE	: str = "battle"	; break;
+	default		: str = "please set scene"	; break;
 	}
 
 	DrawFormatString( SCENE_X, Y_POS, _color->getColor( WHITE ), "SCENE  : %s", str.c_str( ) );
