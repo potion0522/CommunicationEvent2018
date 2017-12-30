@@ -5,7 +5,6 @@
 
 Console::Console( GlobalDataPtr data ) :
 _data( data ) {
-	initialize( );
 }
 
 Console::~Console( ) {
@@ -43,8 +42,11 @@ void Console::update( ) {
 
 void Console::ready( ) {
 	std::string finding = "finding server";
-	int size = ( int )finding.length( );
-	_drawer->setString( WIDTH / 2 - size * 10 / 2, HEIGHT / 2 - 60, YELLOW, finding );
+	std::string ip = _client->getSeverIP( );
+	int size_find = ( int )finding.length( );
+	int size_ip = ( int )ip.length( );
+	_drawer->setString( WIDTH / 2 - size_find * 10 / 2, HEIGHT / 2 - 60, YELLOW, finding );
+	_drawer->setString( WIDTH / 2 - size_ip * 10 / 2, HEIGHT / 2, WHITE, ip );
 }
 
 void Console::connecting( ) {

@@ -5,7 +5,6 @@
 
 Connector::Connector( GlobalDataPtr data ) :
 _data( data ) {
-	initialize( );
 }
 
 Connector::~Connector( ) {

@@ -6,7 +6,6 @@
 
 Title::Title( GlobalDataPtr data ) :
 _data( data ) {
-	initialize( );
 }
 
 Title::~Title( ) {

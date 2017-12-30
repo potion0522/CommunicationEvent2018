@@ -2,7 +2,6 @@
 #include "const.h"
 
 Client::Client( ) {
-	initialize( );
 }
 
 Client::~Client( ) {
@@ -36,10 +35,10 @@ void Client::update( ) {
 
 void Client::readIP( ) {
 	int handle = 0;
-	const int SIZE = 64;
-	char buf[ SIZE ] = { };
-
 	handle = FileRead_open( "IP.ini" );
+	if ( handle == 0 ) {
+		handle = FileRead_open( "../IP.ini" );
+	}
 	FileRead_read( &_ip, sizeof( IPDATA ), handle );
 
 	FileRead_close( handle );
@@ -58,7 +57,7 @@ void Client::connect( ) {
 
 void Client::recving( ) {
 	recvTcp( );
-	//recvUdp( );
+	recvUdp( );
 	lost( );
 }
 
@@ -69,7 +68,7 @@ void Client::recvTcp( ) {
 		return;
 	}
 
-	int recv = NetWorkRecv( _handle_tcp, &_recv_data_tcp, sizeof( NetWorkData ) );
+	int recv = NetWorkRecv( _handle_tcp, &_recv_data_tcp, size );
 	if ( recv < 1 ) {
 		_recving_tcp = false;
 		return;
@@ -78,15 +77,11 @@ void Client::recvTcp( ) {
 }
 
 void Client::recvUdp( ) {
-	if ( CheckNetWorkRecvUDP( _handle_udp ) != TRUE ) {
-		_recving_udp = false;
-		return;
+	_recving_udp = false;
+	if ( CheckNetWorkRecvUDP( _handle_udp ) == TRUE ) {
+		NetWorkRecvUDP( _handle_udp, NULL, NULL, &_recv_data_udp, sizeof( NetWorkData ), FALSE );
+		_recving_udp = true;
 	}
-
-	IPDATA ip;
-	GetNetWorkIP( _handle_tcp, &ip );
-	NetWorkRecvUDP( _handle_udp, NULL, NULL, &_recv_data_udp, sizeof( NetWorkData ), FALSE );
-	_recving_udp = true;
 }
 
 void Client::lost( ) {

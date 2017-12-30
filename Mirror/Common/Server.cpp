@@ -3,7 +3,6 @@
 #include "const.h"
 
 Server::Server( ) {
-	initialize( );
 }
 
 Server::~Server( ) {
@@ -92,7 +91,7 @@ void Server::recvTcp( int idx ) {
 		return;
 	}
 
-	int recv = NetWorkRecv( _handles[ idx ], &_recv_data[ idx ], sizeof( Client::NetWorkData ) );
+	int recv = NetWorkRecv( _handles[ idx ], &_recv_data[ idx ], size );
 	if ( recv < 0 ) {
 		_recving[ idx ] = false;
 		return;
@@ -106,10 +105,8 @@ void Server::createIP( ) {
 
 	FILE *fp;
 	fopen_s( &fp, "IP.ini", "wb" );
-	if ( fp == NULL ) {
-		return;
-	}
 	fwrite( &ip, sizeof( IPDATA ), 1, fp );
+	fclose( fp );
 }
 
 bool Server::isConnecting( int idx ) const {

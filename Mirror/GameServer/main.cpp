@@ -27,11 +27,15 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 		ConnectorPtr connector( new Connector( data ) );
 
 		direction->add( CONNECT, connector );
+		data->setScene( CONNECT );
 
 		// GlobalData のフラグが 0 であれば全プロセス終了
 		while ( data->getFlag( ) ) {
 			if ( ScreenFlip( ) != 0 || ProcessMessage( ) != 0 || ClearDrawScreen( ) != 0 ) {
 				break;
+			}
+			if ( data->getKeyState( KEY_INPUT_Z ) == 1 ) {
+				data->setScene( CONNECT );
 			}
 			direction->run( );
 		}
