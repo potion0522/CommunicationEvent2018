@@ -8,7 +8,9 @@ _data( data ) {
 }
 
 Connector::~Connector( ) {
-	_server->disConnect( );
+	if ( _server->getFlag( ) ) {
+		_server->disConnect( );
+	}
 }
 
 std::string Connector::getTag( ) {
@@ -77,7 +79,7 @@ void Connector::Connecting( ) {
 
 	if ( _data->getKeyState( KEY_INPUT_RETURN ) == 1 ) {
 		Client::NetWorkData send_data;
-		send_data.test = 2;
+		send_data.test = 1;
 		_server->sendDataUdp( send_data );
 		_table->add( "send udp" );
 	}

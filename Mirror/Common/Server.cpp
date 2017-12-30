@@ -20,7 +20,9 @@ void Server::initialize( ) {
 		_handles[ i ] = -1;
 		_recving[ i ] = false;
 	}
-	_handle_udp = MakeUDPSocket( -1 );
+	if ( _handle_udp < 0 ) {
+		_handle_udp = MakeUDPSocket( -1 );
+	}
 
 	memset( _recv_data, 0, sizeof( Client::NetWorkData ) * MACHINE_MAX );
 
@@ -124,7 +126,9 @@ Client::NetWorkData Server::getData( int idx ) const {
 void Server::disConnect( ) {
 	for ( int i = 0; i < MACHINE_MAX; i++ ) {
 		if ( _handles[ i ] != -1 ) {
-			NetWorkRecvBufferClear( _handles[ i ] );
+			if ( GetNetWorkDataLength( _handles[ i ] ) > 0 ) {
+				NetWorkRecvBufferClear( _handles[ i ] );
+			}
 		}
 		CloseNetWork( _handles[ i ] );
 	}

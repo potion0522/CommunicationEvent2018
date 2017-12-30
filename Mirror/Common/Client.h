@@ -38,6 +38,7 @@ private:
 	void recvTcp( );
 	void recvUdp( );
 	void lost( );
+	void clearBuffer( );
 
 private:
 	enum PHASE {

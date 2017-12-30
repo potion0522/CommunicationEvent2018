@@ -10,13 +10,6 @@
 
 Direction::Direction( MACHINE_TYPE type, GlobalDataPtr data ) :
 _data( data ) {
-	initialize( type );
-}
-
-Direction::~Direction( ) {
-}
-
-void Direction::initialize( MACHINE_TYPE type ) {
 	_scene = NONE;
 	_data->initialize( type );
 	_debug = DebugPtr( new Debug( _data ) );
@@ -26,6 +19,23 @@ void Direction::initialize( MACHINE_TYPE type ) {
 	switch ( type ) {
 	case SERVER: add( CONNECT, _data->getServerPtr( ) ); break;
 	case CLIENT: add( CONNECT, _data->getClientPtr( ) ); break;
+	}
+}
+
+Direction::~Direction( ) {
+}
+
+void Direction::initialize( ) {
+	//ALLˆÈŠO‘S‚Ä‰Šú‰»
+	std::map< SCENE, std::vector< BasePtr > >::iterator ite;
+	ite = _exe.begin( );
+	for ( ite; ite != _exe.end( ); ite++ ) {
+		if ( ite->first != ALL ) {
+			int size = ( int )ite->second.size( );
+			for ( int i = 0; i < size; i++ ) {
+				ite->second[ i ]->initialize( );
+			}
+		}
 	}
 }
 

@@ -15,7 +15,7 @@ public:
 	virtual ~Direction( );
 
 public:
-	void initialize( MACHINE_TYPE type );
+	void initialize( );
 	void run( );
 	void add( SCENE scene, BasePtr ptr );
 

@@ -8,7 +8,9 @@ _data( data ) {
 }
 
 Console::~Console( ) {
-	_client->disConnect( );
+	if ( _client->getFlag( ) ) {
+		_client->disConnect( );
+	}
 }
 
 std::string Console::getTag( ) {

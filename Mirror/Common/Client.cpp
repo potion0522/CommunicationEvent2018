@@ -18,7 +18,9 @@ void Client::initialize( ) {
 	_recving_tcp = false;
 	_recving_udp = false;
 	_handle_tcp = -1;
-	_handle_udp = MakeUDPSocket( UDP_PORT );
+	if ( _handle_udp < 0 ) {
+		_handle_udp = MakeUDPSocket( UDP_PORT );
+	}
 
 	memset( &_recv_data_tcp, 0, sizeof( NetWorkData ) );
 	memset( &_recv_data_udp, 0, sizeof( NetWorkData ) );
@@ -59,6 +61,7 @@ void Client::recving( ) {
 	recvTcp( );
 	recvUdp( );
 	lost( );
+	clearBuffer( );
 }
 
 void Client::recvTcp( ) {
@@ -97,6 +100,9 @@ void Client::lost( ) {
 	}
 }
 
+void Client::clearBuffer( ) {
+	NetWorkRecvBufferClear( _handle_udp );
+}
 
 bool Client::isRecvingTcp( ) const {
 	return _recving_tcp;
@@ -142,10 +148,12 @@ Client::NetWorkData Client::getDataUdp( ) const {
 }
 
 void Client::disConnect( ) {
-	if ( _handle_tcp != -1 ) {
-		NetWorkRecvBufferClear( _handle_tcp );
+	if ( _handle_tcp > 0 ) {
+		if ( GetNetWorkDataLength( _handle_tcp ) > 0 ) {
+			NetWorkRecvBufferClear( _handle_tcp );
+		}
 	}
-	NetWorkRecvBufferClear( _handle_udp );
 	CloseNetWork( _handle_tcp );
+	NetWorkRecvBufferClear( _handle_udp );
 	DeleteUDPSocket( _handle_udp );
 }
