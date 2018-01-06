@@ -88,6 +88,10 @@ void Direction::run( ) {
 			continue;
 		}
 
+		if ( ite_scene == CONNECT ) {
+			continue;
+		}
+
 		int size = ( int )ite->second.size( );
 		for ( int i = 0; i < size; i++ ) {
 			if ( !ite->second[ i ]->getFlag( ) ) {

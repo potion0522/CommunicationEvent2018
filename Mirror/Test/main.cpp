@@ -1,14 +1,6 @@
 #include "DxLib.h"
-#include "smart_ptr.h"
 #include "GlobalData.h"
-#include "Direction.h"
-#include "Connector.h"
-
-/**********************************************************
-*														  *
-* setFlag( 1 );　をinitializeでしないとupdateされませんよ *
-*														  *
-***********************************************************/
+#include "Test.h"
 
 int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow ) {
 	ChangeWindowMode( 1 );
@@ -23,21 +15,17 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 	{
 		GlobalDataPtr data( new GlobalData( ) );
-		DirectionPtr direction( new Direction( SERVER, data ) );
+		TestPtr test( new Test( data ) );
 
-		ConnectorPtr connector( new Connector( data ) );
-
-		direction->add( CONNECT, connector );
-		data->setScene( CONNECT );
-
-		direction->initialize( );
 		// GlobalData のフラグが 0 であれば全プロセス終了
 		while ( data->getFlag( ) ) {
 			if ( ScreenFlip( ) != 0 || ProcessMessage( ) != 0 || ClearDrawScreen( ) != 0 ) {
 				break;
 			}
-
-			direction->run( );
+			if ( data->getKeyState( KEY_INPUT_ESCAPE ) == 1 ) {
+				break;
+			}
+			test->update( );
 		}
 	}
 

@@ -50,6 +50,7 @@ void Drawer::initialize( ) {
 void Drawer::update( ) {
 	drawImage( );
 	drawString( );
+	drawLine( );
 	reset( );
 }
 
@@ -95,6 +96,14 @@ void Drawer::drawString( ) {
 	}
 }
 
+void Drawer::drawLine( ) {
+	std::list< LineProperty >::iterator ite;
+	ite = _lines.begin( );
+	for ( ite; ite != _lines.end( ); ite++ ) {
+		DrawLineAA( ite->sx, ite->sy, ite->ex, ite->ey, _color->getColor( ite->col ) );
+	}
+}
+
 void Drawer::setImage( ImageProperty png ) {
 	_images.push_back( png );
 }
@@ -110,6 +119,11 @@ void Drawer::setString( bool flag, double x, double y, COLOR col, std::string st
 	y -= h / 2;
 	StringProperty tmp = { ( float )x, ( float )y, col, str, brt, _handle_font[ type ] };
 	_strings.push_back( tmp );
+}
+
+void Drawer::setLine( double sx, double sy, double ex, double ey, COLOR col ) {
+	LineProperty line = { ( float )sx, ( float )sy, ( float )ex, ( float )ey, col };
+	_lines.push_back( line );
 }
 
 int Drawer::getStringW( FONTSIZE_TYPE type, std::string str ) const {
@@ -129,5 +143,9 @@ void Drawer::reset( ) {
 	size = ( int )_strings.size( );
 	if ( size > 0 ) {
 		std::list< StringProperty >( ).swap( _strings );
+	}
+	size = ( int )_lines.size( );
+	if ( size > 0 ) {
+		std::list< LineProperty >( ).swap( _lines );
 	}
 }

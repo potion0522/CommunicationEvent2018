@@ -2,12 +2,14 @@
 #include "Base.h"
 #include "smart_ptr.h"
 #include "const.h"
+#include "Drawer.h"
 #include <vector>
 #include <stdio.h>
 
 PTR( Debug );
 PTR( GlobalData );
 PTR( Color );
+PTR( Drawer );
 
 class Debug : public Base {
 public:
@@ -23,6 +25,7 @@ public:
 	void error( std::string err );
 	void addLog( std::string add );
 	void setActiveClass( std::string tag );
+	void setLine( double sx, double sy, double ex, double ey, COLOR col = WHITE );
 
 private:
 	void printLog( );
@@ -40,5 +43,6 @@ private:
 
 	GlobalDataPtr _data;
 	ColorPtr _color;
+	DrawerPtr _drawer;
 };
 

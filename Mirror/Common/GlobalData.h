@@ -11,6 +11,7 @@ PTR( Debug );
 PTR( Server );
 PTR( Client );
 PTR( Drawer );
+PTR( Field );
 
 class GlobalData : public Base {
 public:
@@ -34,12 +35,14 @@ public:
 	void setPtr( DebugPtr ptr );
 	void setPtr( ServerPtr ptr );
 	void setPtr( ClientPtr ptr );
+	void setPtr( FieldPtr ptr );
 
 	ImagePtr getImagePtr( ) const;
 	DebugPtr getDebugPtr( ) const;
 	ServerPtr getServerPtr( ) const;
 	ClientPtr getClientPtr( ) const;
 	DrawerPtr getDrawerPtr( ) const;
+	FieldPtr getFieldPtr( ) const;
 
 private:
 	SCENE _scene;
@@ -51,5 +54,6 @@ private:
 	ServerPtr _server;
 	ClientPtr _client;
 	DrawerPtr _drawer;
+	FieldPtr _field;
 };
 

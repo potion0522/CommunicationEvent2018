@@ -1,6 +1,5 @@
 #include "Debug.h"
 #include "DxLib.h"
-#include "const.h"
 #include "Color.h"
 #include "GlobalData.h"
 #include <time.h>
@@ -22,6 +21,7 @@ Debug::~Debug( ) {
 void Debug::initialize( ) {
 	setFlag( 0 );
 	_color = ColorPtr( new Color( ) );
+	_drawer = _data->getDrawerPtr( );
 	_log_y = Y_POS;
 	_active_y = ACTIVE_CLASS_INIT_Y;
 	initLog( );
@@ -96,6 +96,8 @@ void Debug::printScene( ) {
 	case TITLE	: str = "title"		; break;
 	case CONNECT: str = "connect"	; break;
 	case BATTLE	: str = "battle"	; break;
+	case SET	: str = "set"		; break;
+	case CALC	: str = "calc"		; break;
 	default		: str = "please set scene"	; break;
 	}
 
@@ -134,4 +136,8 @@ void Debug::setActiveClass( std::string tag ) {
 		}
 	}
 	_active_class.push_back( tag );
+}
+
+void Debug::setLine( double sx, double sy, double ex, double ey, COLOR col ) {
+	_drawer->setLine( sx, sy, ex, ey, col );
 }

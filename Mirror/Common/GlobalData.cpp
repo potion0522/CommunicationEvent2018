@@ -28,8 +28,9 @@ void GlobalData::initialize( MACHINE_TYPE type ) {
 	_debug = NULL;
 
 	switch ( type ) {
-	case SERVER: _server = ServerPtr( new Server( ) ); break;
-	case CLIENT: _client = ClientPtr( new Client( ) ); break;
+	case SERVER	: _server = ServerPtr( new Server( ) )		; break;
+	case CLIENT	: _client = ClientPtr( new Client( ) )		; break;
+	case TEST	: _debug  = DebugPtr ( new Debug( NULL ) )	; break;
 	}
 }
 
@@ -79,6 +80,10 @@ void GlobalData::setPtr( ClientPtr ptr ) {
 	_client = ptr;
 }
 
+void GlobalData::setPtr( FieldPtr ptr ) {
+	_field = ptr;
+}
+
 ImagePtr GlobalData::getImagePtr( ) const {
 	return _image;
 }
@@ -97,4 +102,8 @@ ClientPtr GlobalData::getClientPtr( ) const {
 
 DrawerPtr GlobalData::getDrawerPtr( ) const {
 	return _drawer;
+}
+
+FieldPtr GlobalData::getFieldPtr( ) const {
+	return _field;
 }

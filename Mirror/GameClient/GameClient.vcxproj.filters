@@ -8,6 +8,9 @@
     <ClCompile Include="Console.cpp">
       <Filter>Calc</Filter>
     </ClCompile>
+    <ClCompile Include="Lazer.cpp">
+      <Filter>Calc</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Calc">
@@ -19,6 +22,9 @@
       <Filter>Calc</Filter>
     </ClInclude>
     <ClInclude Include="Console.h">
+      <Filter>Calc</Filter>
+    </ClInclude>
+    <ClInclude Include="Lazer.h">
       <Filter>Calc</Filter>
     </ClInclude>
   </ItemGroup>

@@ -11,11 +11,12 @@ const int UDP_PORT = 9900;
 //—ñ‹“Œ^‚Ì—v‘f‚ğ‘‚â‚µ‚½‚ç•K‚¸•ÏX‚µ‚Ä‚­‚¾‚³‚¢
 const int IMAGE_DIR_MAX = 1;
 const int COLOR_MAX = 6;
-const int SCENE_MAX = 4;
+const int SCENE_MAX = 6;
 
 enum MACHINE_TYPE {
 	CLIENT,
 	SERVER,
+	TEST,
 };
 
 enum COLOR {
@@ -33,6 +34,8 @@ enum SCENE {
 	TITLE,
 	CONNECT,
 	BATTLE,
+	SET,
+	CALC,
 };
 
 enum IMAGE {
