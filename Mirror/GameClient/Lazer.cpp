@@ -29,7 +29,7 @@ void Lazer::initialize( ) {
 
 void Lazer::update( ) {
 	_dir_vec.x += _unit.x;
-	_dir_vec.y += _unit.y;
+	_dir_vec.y -= _unit.y;	//yが反転しているため
 
 	if ( _field->isHitMirror( _start.x + _dir_vec.x, _start.y + _dir_vec.y ) ) {
 		updateLazer( );
@@ -51,7 +51,7 @@ void Lazer::updateUnitVector( Field::Vector vec ) {
 	double b = vec.y * vec.y;
 	double length = sqrt( a + b );
 	_unit.x = vec.x / length;
-	_unit.y = ( vec.y / length ) * -1;	//yがマイナスになれば上に行くため反転
+	_unit.y = vec.y / length;
 }
 
 void Lazer::updateLazer( ) {
@@ -66,7 +66,7 @@ void Lazer::updateStartPos( ) {
 
 void Lazer::convReflectionVector( ) {
 	Field::Vector normal = _field->getNormalVector( _unit.x, _unit.y );
-	Field::Vector ref = _dir_vec.getReflection( normal );
+	Field::Vector ref = _unit.getReflection( normal );
 	updateUnitVector( ref );
 	_dir_vec = { 0 };
 }
