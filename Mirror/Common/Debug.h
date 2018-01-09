@@ -10,6 +10,7 @@ PTR( Debug );
 PTR( GlobalData );
 PTR( Color );
 PTR( Drawer );
+PTR( Command );
 
 class Debug : public Base {
 public:
@@ -28,6 +29,7 @@ public:
 	void setLine( double sx, double sy, double ex, double ey, COLOR col = WHITE );
 
 private:
+	void commandExecution( );
 	void printLog( );
 	void printActiveClass( );
 	void printScene( );
@@ -44,5 +46,6 @@ private:
 	GlobalDataPtr _data;
 	ColorPtr _color;
 	DrawerPtr _drawer;
+	CommandPtr _command;
 };
 

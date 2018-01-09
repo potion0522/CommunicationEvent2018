@@ -155,12 +155,14 @@
     <ClCompile Include="Base.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="Color.cpp" />
+    <ClCompile Include="Command.cpp" />
     <ClCompile Include="Debug.cpp" />
     <ClCompile Include="Direction.cpp" />
     <ClCompile Include="Drawer.cpp" />
     <ClCompile Include="Field.cpp" />
     <ClCompile Include="GlobalData.cpp" />
     <ClCompile Include="Image.cpp" />
+    <ClCompile Include="KeyBoard.cpp" />
     <ClCompile Include="LoadCSV.cpp" />
     <ClCompile Include="MouseEvent.cpp" />
     <ClCompile Include="Server.cpp" />
@@ -170,6 +172,7 @@
     <ClInclude Include="Base.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Color.h" />
+    <ClInclude Include="Command.h" />
     <ClInclude Include="const.h" />
     <ClInclude Include="Debug.h" />
     <ClInclude Include="Direction.h" />
@@ -177,6 +180,7 @@
     <ClInclude Include="Field.h" />
     <ClInclude Include="GlobalData.h" />
     <ClInclude Include="Image.h" />
+    <ClInclude Include="KeyBoard.h" />
     <ClInclude Include="LoadCSV.h" />
     <ClInclude Include="MouseEvent.h" />
     <ClInclude Include="Server.h" />

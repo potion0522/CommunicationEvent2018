@@ -28,7 +28,7 @@ void Console::initialize( ) {
 
 void Console::update( ) {
 	if ( _data->getScene( ) != BATTLE ) {
-		if ( _data->getKeyState( KEY_INPUT_X ) == 1 ) {
+		if ( _data->getKeyState( KEY_INPUT_X ) == 1 && !_data->getCommandFlag( ) ) {
 			_data->setScene( TITLE );
 			_client->disConnect( );
 			_client->initialize( );

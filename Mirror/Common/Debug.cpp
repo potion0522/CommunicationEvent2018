@@ -2,6 +2,7 @@
 #include "DxLib.h"
 #include "Color.h"
 #include "GlobalData.h"
+#include "Command.h"
 #include <time.h>
 
 const int ACTIVE_CLASS_X = 20;
@@ -21,6 +22,7 @@ Debug::~Debug( ) {
 void Debug::initialize( ) {
 	setFlag( 0 );
 	_color = ColorPtr( new Color( ) );
+	_command = CommandPtr( new Command( _data ) );
 	_drawer = _data->getDrawerPtr( );
 	_log_y = Y_POS;
 	_active_y = ACTIVE_CLASS_INIT_Y;
@@ -58,11 +60,55 @@ void Debug::update( ) {
 	printScene( );
 	//DrawCircle( WIDTH / 2, HEIGHT /2, 5, _color->getColor( RED ), TRUE );
 
+	if ( _data->getKeyState( KEY_INPUT_RETURN ) == 1 && !_data->getCommandFlag( ) ) {
+		_command->setFlag( 1 );
+	}
+
+	_data->setCommandFlag( false );
+	if ( _command->getFlag( ) ) {
+		_command->update( );
+		commandExecution( );
+		_data->setCommandFlag( true );
+	}
+
+
 	initLog( );
 	initActiveClass( );
 
 	_log_y = Y_POS;
 	_active_y = ACTIVE_CLASS_INIT_Y;
+}
+
+void Debug::commandExecution( ) {
+	if ( _command->getWordNum( ) < 3 ) {
+		return;
+	}
+	if ( _command->getWord( 0 ) != "SET" ) {
+		return;
+	}
+	if ( _command->getWord( 1 ) == "SCENE" ) {
+		std::string str = _command->getWord( 2 );
+		SCENE scene = NONE;
+		if ( str == "TITLE" ) {
+			scene = TITLE;
+		}
+		if ( str == "CONNECT" ) {
+			scene = CONNECT;
+		}
+		if ( str == "BATTLE" ) {
+			scene = BATTLE;
+		}
+		if ( str == "SET" ) {
+			scene = SET;
+		}
+		if ( str == "CALC" ) {
+			scene = CALC;
+		}
+
+		if ( scene != NONE ) {
+			_data->setScene( scene );
+		}
+	}
 }
 
 void Debug::printLog( ) {

@@ -20,6 +20,7 @@ std::string GlobalData::getTag( ) {
 void GlobalData::initialize( MACHINE_TYPE type ) {
 	setFlag( 1 );
 	_scene = TITLE;
+	_command_flag = false;
 
 	_key =   UpdateKeyPtr( new UpdateKey( ) );
 	_mouse = MouseEventPtr( new MouseEvent( ) );
@@ -66,6 +67,14 @@ bool GlobalData::getClickLeft( ) const {
 
 SCENE GlobalData::getScene( ) const {
 	return _scene;
+}
+
+bool GlobalData::getCommandFlag( ) const {
+	return _command_flag;
+}
+
+void GlobalData::setCommandFlag( bool flag ) {
+	_command_flag = flag;
 }
 
 void GlobalData::setPtr( DebugPtr ptr ) {

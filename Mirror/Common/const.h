@@ -35,7 +35,7 @@ enum SCENE {
 	CONNECT,
 	BATTLE,
 	SET,
-	CALC,
+	CALC,	
 };
 
 enum IMAGE {

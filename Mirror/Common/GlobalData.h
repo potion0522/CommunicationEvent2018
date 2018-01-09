@@ -30,8 +30,10 @@ public:
 	int getMouseY( ) const;
 	bool getClickLeft( ) const;
 	SCENE getScene( ) const;
+	bool getCommandFlag( ) const;
 
 public:
+	void setCommandFlag( bool flag );
 	void setPtr( DebugPtr ptr );
 	void setPtr( ServerPtr ptr );
 	void setPtr( ClientPtr ptr );
@@ -46,6 +48,7 @@ public:
 
 private:
 	SCENE _scene;
+	bool _command_flag;
 
 	UpdateKeyPtr _key;
 	MouseEventPtr _mouse;

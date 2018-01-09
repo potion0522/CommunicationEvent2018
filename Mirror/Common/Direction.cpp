@@ -49,12 +49,16 @@ void Direction::update( ) {
 
 	//デバッグON
 	if ( _data->getKeyState( KEY_INPUT_SPACE ) == 1 ) {
-		_debug->setFlag( ( _debug->getFlag( ) + 1 ) % 2 );
+		if ( !_data->getCommandFlag( ) ) {
+			_debug->setFlag( ( _debug->getFlag( ) + 1 ) % 2 );
+		}
 	}
 
 	//終了
-	if ( _data->getKeyState( KEY_INPUT_ESCAPE ) ) {
-		_data->setFlag( 0 );
+	if ( _data->getKeyState( KEY_INPUT_ESCAPE ) == 1 ) {
+		if ( !_data->getCommandFlag( ) ) {
+			_data->setFlag( 0 );
+		}
 	}
 }
 
@@ -85,10 +89,6 @@ void Direction::run( ) {
 			}
 		}
 		if ( ite_scene == CONNECT && _scene < CONNECT ) {
-			continue;
-		}
-
-		if ( ite_scene == CONNECT ) {
 			continue;
 		}
 

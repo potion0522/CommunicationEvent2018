@@ -26,7 +26,7 @@ void Title::initialize( ) {
 }
 
 void Title::update( ) {
-	if ( _data->getKeyState( KEY_INPUT_Z ) == 1 ) {
+	if ( _data->getKeyState( KEY_INPUT_Z ) == 1 && !_data->getCommandFlag( ) ) {
 		_data->setScene( CONNECT );
 	}
 	

@@ -38,6 +38,10 @@
       <Filter>Drawer</Filter>
     </ClCompile>
     <ClCompile Include="Field.cpp" />
+    <ClCompile Include="KeyBoard.cpp">
+      <Filter>Global</Filter>
+    </ClCompile>
+    <ClCompile Include="Command.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Base.h">
@@ -80,6 +84,10 @@
       <Filter>Global</Filter>
     </ClInclude>
     <ClInclude Include="Field.h" />
+    <ClInclude Include="KeyBoard.h">
+      <Filter>Global</Filter>
+    </ClInclude>
+    <ClInclude Include="Command.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="BaseClass">
