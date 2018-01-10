@@ -6,6 +6,8 @@ PTR( Field );
 PTR( GlobalData );
 PTR( Drawer );
 
+const int MIRROR_MAX = 6;
+
 class Field : public Base {
 public:
 	struct Vector { 
@@ -34,6 +36,13 @@ public:
 			return ref;
 		};
 	};
+
+	struct Mirror {
+		double x;
+		double y;
+		double angle;
+		Vector normal;
+	};
 public:
 	Field( GlobalDataPtr data );
 	virtual ~Field( );
@@ -50,6 +59,8 @@ public:
 	bool isHitMirror( double x, double y ) const;
 
 private:
+	std::array< Mirror, MIRROR_MAX > _mirrors;
+
 	GlobalDataPtr _data;
 	DrawerPtr _drawer;
 };
