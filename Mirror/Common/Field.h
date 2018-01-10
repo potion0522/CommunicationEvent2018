@@ -1,6 +1,7 @@
 #include "smart_ptr.h"
 #include "Base.h"
 #include <string>
+#include <array>
 
 PTR( Field );
 PTR( GlobalData );
