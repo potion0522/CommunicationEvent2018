@@ -37,11 +37,15 @@
     <ClCompile Include="Drawer.cpp">
       <Filter>Drawer</Filter>
     </ClCompile>
-    <ClCompile Include="Field.cpp" />
     <ClCompile Include="KeyBoard.cpp">
       <Filter>Global</Filter>
     </ClCompile>
-    <ClCompile Include="Command.cpp" />
+    <ClCompile Include="Command.cpp">
+      <Filter>Global</Filter>
+    </ClCompile>
+    <ClCompile Include="Field.cpp">
+      <Filter>Global</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Base.h">
@@ -83,11 +87,15 @@
     <ClInclude Include="const.h">
       <Filter>Global</Filter>
     </ClInclude>
-    <ClInclude Include="Field.h" />
     <ClInclude Include="KeyBoard.h">
       <Filter>Global</Filter>
     </ClInclude>
-    <ClInclude Include="Command.h" />
+    <ClInclude Include="Command.h">
+      <Filter>Global</Filter>
+    </ClInclude>
+    <ClInclude Include="Field.h">
+      <Filter>Global</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="BaseClass">

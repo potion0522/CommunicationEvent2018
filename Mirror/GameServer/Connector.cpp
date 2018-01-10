@@ -20,23 +20,20 @@ std::string Connector::getTag( ) {
 void Connector::initialize( ) {
 	setFlag( 1 );
 	_server = _data->getServerPtr( );
-	memset( _client_data, 0, sizeof( Client::NetWorkData ) * MACHINE_MAX );	
 	for ( int i = 0; i < MACHINE_MAX; i++ ) {
 		_connect_state[ i ] = NOT_CONNECTING;
 	}
+	_matching = false;
+	_sending_state = false;
 	_server_scene = CONNECT;
 	_table = TablePtr( new Table( _data ) );
 	_table->add( "Connection Waiting" );
 }
 
 void Connector::update( ) {
-	if ( _data->getScene( ) == BATTLE ) {
-		calcData( );
-	}
-
 	updateConnectState( );
 	updateMatchingState( );
-	sendScene( );
+	sendState( );
 
 	_table->update( );
 }
@@ -67,6 +64,7 @@ void Connector::updateConnectState( ) {
 
 void Connector::updateMatchingState( ) {
 	//クライアントにマッチング相手が見つかったことを教える
+	_matching = false;
 	int check = 0;
 	for ( int i = 0; i < MACHINE_MAX; i++ ) {
 		if ( _connect_state[ i ] == CONNECTING ) {
@@ -75,31 +73,15 @@ void Connector::updateMatchingState( ) {
 		}
 	}
 
-	if ( check == 0 ) {
-		_data->setScene( CONNECT );
-		return;
-	}
-
-	if ( check < MACHINE_MAX ) {
-		_data->setScene( CONNECT );
-		return;
-	}
-
-	if ( _data->getScene( ) != BATTLE ) {
-		_data->setScene( BATTLE );
+	if ( check == MACHINE_MAX ) {
+		_matching = true;
 	}
 }
 
-void Connector::sendScene( ) {
-	SCENE global_scene = _data->getScene( );
-	if ( _server_scene != global_scene ) {
-		_server_scene = global_scene;
-		_server->sendDataTcp( _server_scene );
+void Connector::sendState( ) {
+	if ( _sending_state == _matching ) {
+		return;
 	}
-}
-
-void Connector::calcData( ) {
-	//Client::NetWorkData send = Client::NetWorkData( );
-	//send.test = 1;
-	//_server->sendDataUdp( send );
+	_server->sendDataTcp( _matching );
+	_sending_state = _matching;
 }

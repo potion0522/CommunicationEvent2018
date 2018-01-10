@@ -28,7 +28,7 @@ public:
 	void sendTcp( NetWorkData send_data );
 	std::string getSeverIP( ) const;
 	std::string getPhase( ) const;
-	SCENE getDataTcp( ) const;
+	bool getDataTcp( ) const;
 	NetWorkData getDataUdp( ) const;
 	void disConnect( );
 
@@ -52,7 +52,7 @@ private:
 	int _handle_udp;
 	bool _recving_tcp;
 	bool _recving_udp;
-	SCENE _recv_data_tcp;
+	bool _recv_data_tcp;
 	NetWorkData _recv_data_udp;
 	IPDATA _ip;
 };

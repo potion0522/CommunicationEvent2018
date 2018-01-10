@@ -37,7 +37,6 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 		direction->add( CALC, lazer );
 
 		direction->initialize( );
-		data->setScene( CALC );
 		// GlobalData のフラグが 0 であれば全プロセス終了
 		while ( data->getFlag( ) ) {
 			if ( ScreenFlip( ) != 0 || ProcessMessage( ) != 0 || ClearDrawScreen( ) != 0 ) {

@@ -3,6 +3,7 @@
 #include "GlobalData.h"
 #include "Image.h"
 #include "Drawer.h"
+#include "Client.h"
 
 Title::Title( GlobalDataPtr data ) :
 _data( data ) {
@@ -28,6 +29,11 @@ void Title::initialize( ) {
 void Title::update( ) {
 	if ( _data->getKeyState( KEY_INPUT_Z ) == 1 && !_data->getCommandFlag( ) ) {
 		_data->setScene( CONNECT );
+	}
+	ClientPtr client = _data->getClientPtr( );
+	if ( client->getPhase( ) == "CONNECTING" ) {
+		client->disConnect( );
+		client->initialize( );
 	}
 	
 	DrawerPtr drawer = _data->getDrawerPtr( );

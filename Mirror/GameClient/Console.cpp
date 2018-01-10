@@ -41,11 +41,7 @@ void Console::update( ) {
 		ready( );
 	}
 	if ( phase == "CONNECTING" ) {
-		SCENE scene = _data->getScene( );
-		switch ( scene ) {
-		case CONNECT: matching( );
-		case BATTLE	: battle( );
-		}
+		matching( );
 	}
 }
 
@@ -63,30 +59,26 @@ void Console::ready( ) {
 }
 
 void Console::matching( ) {
+	if ( _client->getDataTcp( ) ) {
+		if ( _data->getScene( ) != CONNECT ) {
+			return;
+		}
+	}
+
+	if ( _data->getScene( ) != CONNECT ) {
+		_data->setScene( CONNECT );
+		_client->disConnect( );
+		_client->initialize( );
+	}
+
 	std::string matching = "- Matching -";
 	_drawer->setString( true, WIDTH / 2, HEIGHT / 2 - 60, YELLOW, matching, Drawer::BIG );
 
-	checkRecvTcp( );
-}
-
-void Console::battle( ) {
-	if ( checkRecvTcp( ) ) {
-		return;
+	if ( _client->isRecvingTcp( ) ) {
+		if ( _client->getDataTcp( ) ) {
+			_data->setScene( BATTLE );
+		}
 	}
-	_recving_udp = false;
-	if ( _client->isRecvingUdp( ) ) {
-		_recv_data_udp = _client->getDataUdp( );
-		_recving_udp = true;
-	}
-}
-
-bool Console::checkRecvTcp( ) {
-	if ( !_client->isRecvingTcp( ) ) {
-		return false;
-	}
-	SCENE scene = _client->getDataTcp( );
-	_data->setScene( scene );
-	return true;
 }
 
 bool Console::isRecvingData( ) const {

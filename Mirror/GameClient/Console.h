@@ -24,8 +24,6 @@ public:
 private:
 	void ready( );
 	void matching( );
-	void battle( );
-	bool checkRecvTcp( );
 
 private:
 	Client::NetWorkData _recv_data_udp;

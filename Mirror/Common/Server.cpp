@@ -72,9 +72,9 @@ void Server::lost( ) {
 	}
 }
 
-void Server::sendDataTcp( SCENE scene ) {
+void Server::sendDataTcp( bool matching ) {
 	for ( int i = 0; i < MACHINE_MAX; i++ ) {
-		NetWorkSend( _handles[ i ], &scene, sizeof( SCENE ) ); 
+		NetWorkSend( _handles[ i ], &matching, sizeof( bool ) ); 
 	}
 }
 

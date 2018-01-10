@@ -16,12 +16,11 @@ void Client::initialize( ) {
 	_phase = READY;
 	_recving_tcp = false;
 	_recving_udp = false;
+	_recv_data_tcp = false;
 	_handle_tcp = -1;
 	if ( _handle_udp < 0 ) {
 		_handle_udp = MakeUDPSocket( UDP_PORT );
 	}
-
-	_recv_data_tcp = NONE;
 	memset( &_recv_data_udp, 0, sizeof( NetWorkData ) );
 
 	readIP( );
@@ -138,7 +137,7 @@ std::string Client::getPhase( ) const {
 	return phase;
 }
 
-SCENE Client::getDataTcp( ) const {
+bool Client::getDataTcp( ) const {
 	return _recv_data_tcp;
 }
 

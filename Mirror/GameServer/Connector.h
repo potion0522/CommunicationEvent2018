@@ -21,11 +21,11 @@ public:
 private:
 	void updateConnectState( );
 	void updateMatchingState( );
-	void sendScene( );
-	void calcData( );
+	void sendState( );
 
 private:
-	Client::NetWorkData _client_data[ MACHINE_MAX ];
+	bool _matching;
+	bool _sending_state;
 	enum CONNECT_STATE {
 		NOT_CONNECTING,
 		CONNECTING,
