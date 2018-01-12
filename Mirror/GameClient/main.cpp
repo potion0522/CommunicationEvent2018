@@ -5,6 +5,7 @@
 #include "Title.h"
 #include "Console.h"
 #include "Lazer.h"
+#include "Field.h"
 
 /**********************************************************
 *														  *
@@ -31,12 +32,17 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 		ConsolePtr console( new Console( data ) );
 		TitlePtr title( new Title( data ) );
 		LazerPtr lazer( new Lazer( data ) );
+		FieldPtr field( new Field( data ) );
 
 		direction->add( TITLE, title );
 		direction->add( CONNECT, console );
 		direction->add( CALC, lazer );
+		direction->add( CALC, field );
+
+		data->setPtr( field );
 
 		direction->initialize( );
+		data->setScene( CALC );
 		// GlobalData のフラグが 0 であれば全プロセス終了
 		while ( data->getFlag( ) ) {
 			if ( ScreenFlip( ) != 0 || ProcessMessage( ) != 0 || ClearDrawScreen( ) != 0 ) {

@@ -1,3 +1,4 @@
+#pragma once
 #include "smart_ptr.h"
 #include "Base.h"
 #include <string>
@@ -30,9 +31,15 @@ public:
 			P.x = dot * N.x;
 			P.y = dot * N.y;
 
-			Vector ref = Vector(  );
+			Vector ref = Vector( );
 			ref.x = F.x - P.x * 2;
 			ref.y = F.y - P.y * 2;
+
+			int tmp_a = ( int )( ref.x * 10 );
+			int tmp_b = ( int )( ref.y * 10 );
+
+			ref.x = tmp_a * 0.1;
+			ref.y = tmp_b * 0.1;
 
 			return ref;
 		};
@@ -42,6 +49,7 @@ public:
 		double x;
 		double y;
 		double angle;
+		//法線ベクトル
 		Vector normal;
 	};
 public:
@@ -54,13 +62,21 @@ public:
 	void update( );
 
 public:
+	void setDirLazerVector( Vector vec );
+	void setLazerPoint( );
+	void setMirrorPoint( );
+
+public:
 	Vector getLazerPoint( ) const;
 	Vector getLazerVector( ) const;
 	Vector getNormalVector( double x, double y ) const;
-	bool isHitMirror( double x, double y ) const;
+	bool isHitMirror( ) const;
+	int getHitMirrorIdx( ) const;
 
 private:
 	std::array< Mirror, MIRROR_MAX > _mirrors;
+	int _hit_mirror_num;
+	Vector _dir_vec;
 
 	GlobalDataPtr _data;
 	DrawerPtr _drawer;

@@ -28,12 +28,15 @@ void Lazer::initialize( ) {
 }
 
 void Lazer::update( ) {
+	if ( _field->isHitMirror( ) ) {
+		updateLazer( );
+	}
+
 	_dir_vec.x += _unit.x;
 	_dir_vec.y -= _unit.y;	//y‚ª”½“]‚µ‚Ä‚¢‚é‚½‚ß
 
-	if ( _field->isHitMirror( _start.x + _dir_vec.x, _start.y + _dir_vec.y ) ) {
-		updateLazer( );
-	}
+	Field::Vector tmp = { _start.x + _dir_vec.x, _start.y + _dir_vec.y };
+	_field->setDirLazerVector( tmp );
 
 	double draw_x = _start.x + _dir_vec.x;
 	double draw_y = _start.y + _dir_vec.y;
@@ -60,8 +63,8 @@ void Lazer::updateLazer( ) {
 }
 
 void Lazer::updateStartPos( ) {
-	_start.x = _start.x + _dir_vec.x;
-	_start.y = _start.y + _dir_vec.y;
+	_start.x = ( int )( _start.x + _dir_vec.x );
+	_start.y = ( int )( _start.y + _dir_vec.y );
 }
 
 void Lazer::convReflectionVector( ) {
