@@ -45,10 +45,16 @@ public:
 		};
 	};
 
+	enum MIRROR_ANGLE {
+		LEFT,
+		RIGHT
+	};
+
 	struct Mirror {
+		int flag;
 		double x;
 		double y;
-		double angle;
+		MIRROR_ANGLE angle;
 		//法線ベクトル
 		Vector normal;
 	};

@@ -78,6 +78,7 @@ void Drawer::drawImage( ) {
 void Drawer::drawString( ) {
 	std::list< StringProperty >::iterator ite;
 	ite = _strings.begin( );
+
 	for ( ite; ite != _strings.end( ); ite++ ) {
 		bool brend = false;
 		if ( ite->brt < 255 ) {
@@ -99,9 +100,15 @@ void Drawer::drawString( ) {
 void Drawer::drawLine( ) {
 	std::list< LineProperty >::iterator ite;
 	ite = _lines.begin( );
+	if ( _lines.size( ) < 1 ) {
+		return;
+	}
+
+	SetDrawMode( DX_DRAWMODE_BILINEAR );
 	for ( ite; ite != _lines.end( ); ite++ ) {
 		DrawLineAA( ite->sx, ite->sy, ite->ex, ite->ey, _color->getColor( ite->col ) );
 	}
+	SetDrawMode( DX_DRAWMODE_NEAREST );
 }
 
 void Drawer::setImage( ImageProperty png ) {
