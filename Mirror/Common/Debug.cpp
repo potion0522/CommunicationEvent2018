@@ -13,7 +13,6 @@ const int ACTIVE_CLASS_INIT_Y = 40;
 
 Debug::Debug( GlobalDataPtr data ) :
 _data( data ){
-	initialize( );
 }
 
 Debug::~Debug( ) {

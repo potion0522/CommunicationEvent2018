@@ -27,7 +27,7 @@ void Image::initialize( ) {
 		default	:
 			{
 				DebugPtr debug( new Debug( NULL ) );
-				debug->error( "Image.cpp : _dir_numの数値が大きすぎます" );
+				debug->error( "Image->initialize : _dir_numの数値が大きすぎるか、ディレクトリ名の追加忘れです" );
 			}
 		}
 		_data.push_back( add );
@@ -55,13 +55,13 @@ Png Image::getPng( IMAGE item, int num ) const {
 	memset( &tmp, 0, sizeof( Png ) );
 	if ( item > IMAGE_DIR_MAX - 1 ) {
 		DebugPtr debug( new Debug( NULL ) );
-		debug->error( "列挙型の追加忘れの可能性があります" );
+		debug->error( "Image->getPng : 列挙型の追加忘れの可能性があります" );
 	}
 
 	int size = ( int )_data[ dir ].png.size( );
 	if ( size < num ) {
-		printfDx( "要素がオーバーしています。\n" );
-		return tmp;
+		DebugPtr debug( new Debug( NULL ) );
+		debug->error( "Image->getPng : 要素がオーバーしています" );
 	}
 	return _data[ dir ].png[ num ];
 }

@@ -118,8 +118,8 @@ void Field::update( ) {
 
 void Field::setLazerVector( Vector vec ) {
 	_dir_vec = vec;
-	int x = ( vec.x - START_POS_X ) / SQUARE_SIZE;
-	int y = ( vec.y - START_POS_Y ) / SQUARE_SIZE - 1;
+	int x = ( int )( vec.x - START_POS_X ) / SQUARE_SIZE;
+	int y = ( int )( vec.y - START_POS_Y ) / SQUARE_SIZE - 1;
 	if ( x != _dir_board[ 0 ] || y != _dir_board[ 1 ] ) {
 		_dir_board[ 0 ] = x;
 		_dir_board[ 1 ] = y;

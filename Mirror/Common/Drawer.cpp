@@ -19,7 +19,6 @@ Drawer::Drawer( ) {
 	idx++;
 	_size[ idx ] = SIZE_BIG;
 	idx++;
-	initialize( );
 }
 
 Drawer::~Drawer( ) {

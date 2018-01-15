@@ -26,15 +26,13 @@ Direction::~Direction( ) {
 }
 
 void Direction::initialize( ) {
-	//ALLˆÈŠO‘S‚Ä‰Šú‰»
+	//‘S‚Ä‰Šú‰»
 	std::map< SCENE, std::vector< BasePtr > >::iterator ite;
 	ite = _exe.begin( );
 	for ( ite; ite != _exe.end( ); ite++ ) {
-		if ( ite->first != ALL ) {
-			int size = ( int )ite->second.size( );
-			for ( int i = 0; i < size; i++ ) {
-				ite->second[ i ]->initialize( );
-			}
+		int size = ( int )ite->second.size( );
+		for ( int i = 0; i < size; i++ ) {
+			ite->second[ i ]->initialize( );
 		}
 	}
 }
