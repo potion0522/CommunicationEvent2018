@@ -35,6 +35,7 @@ void Client::update( ) {
 
 void Client::readIP( ) {
 	int handle = 0;
+	_ip = IPDATA( );
 	handle = FileRead_open( "IP.ini" );
 	if ( handle == 0 ) {
 		handle = FileRead_open( "../IP.ini" );

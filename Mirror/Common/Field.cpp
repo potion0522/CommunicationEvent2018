@@ -59,7 +59,7 @@ void Field::initialize( ) {
 	}
 
 	_hit_mirror_num = -1;
-
+	_direct = DIR( );
 	_dir_vec = Vector( );
 }
 
@@ -116,8 +116,49 @@ void Field::update( ) {
 	}
 }
 
-void Field::setDirLazerVector( Vector vec ) {
+void Field::setLazerVector( Vector vec ) {
 	_dir_vec = vec;
+	int x = ( vec.x - START_POS_X ) / SQUARE_SIZE;
+	int y = ( vec.y - START_POS_Y ) / SQUARE_SIZE - 1;
+	if ( x != _dir_board[ 0 ] || y != _dir_board[ 1 ] ) {
+		_dir_board[ 0 ] = x;
+		_dir_board[ 1 ] = y;
+
+		std::array< int, 2 > board;
+		switch ( _direct ) {
+		case DIR_UP :
+			board[ 0 ] = _dir_board[ 0 ];
+			board[ 1 ] = _dir_board[ 1 ] - 1;
+			break;
+		case DIR_DOWN :
+			board[ 0 ] = _dir_board[ 0 ];
+			board[ 1 ] = _dir_board[ 1 ] + 1;
+			break;
+		case DIR_RIGHT :
+			board[ 0 ] = _dir_board[ 0 ] + 1;
+			board[ 1 ] = _dir_board[ 1 ];
+			break;
+		case DIR_LEFT :
+			board[ 0 ] = _dir_board[ 0 ] - 1;
+			board[ 1 ] = _dir_board[ 1 ];
+			break;
+		}
+
+	}
+}
+
+void Field::setDirect( Vector vec ) {
+	if ( vec.x < 0 ) {
+		_direct = DIR_LEFT;
+	} else {
+		_direct = DIR_RIGHT;
+	}
+
+	if ( vec.y < 0 ) {
+		_direct = DIR_UP;
+	} else {
+		_direct = DIR_DOWN;
+	}
 }
 
 void Field::setLazerPoint( ) {
@@ -128,7 +169,7 @@ void Field::setMirrorPoint( ) {
 }
 
 Field::Vector Field::getLazerPoint( ) const {
-	Vector vec = { START_POS_X + 3 * SQUARE_SIZE + SQUARE_SIZE * 0.5, START_POS_Y + SQUARE_SIZE * ROW + SQUARE_SIZE * 0.5 };
+	Vector vec = { START_POS_X + 3 * SQUARE_SIZE + SQUARE_SIZE * 0.5, START_POS_Y + SQUARE_SIZE * ROW };
 	return vec;
 }
 
@@ -139,13 +180,13 @@ Field::Vector Field::getLazerVector( ) const {
 
 Field::Vector Field::getNormalVector( double x, double y ) const {
 	Vector vec = Vector( );
-	if ( isHitMirror( ) ) {
+	if ( isMirror( ) ) {
 		vec = _mirrors[ _hit_mirror_num ].normal;
 	}
 	return vec;
 }
 
-bool Field::isHitMirror( ) const {
+bool Field::isMirror( ) const {
 	if ( _hit_mirror_num != -1 ) {
 		return true;
 	}

@@ -28,7 +28,7 @@ void Lazer::initialize( ) {
 }
 
 void Lazer::update( ) {
-	if ( _field->isHitMirror( ) ) {
+	if ( _field->isMirror( ) ) {
 		updateLazer( );
 	}
 
@@ -36,7 +36,8 @@ void Lazer::update( ) {
 	_dir_vec.y -= _unit.y;	//y‚ª”½“]‚µ‚Ä‚¢‚é‚½‚ß
 
 	Field::Vector tmp = { _start.x + _dir_vec.x, _start.y + _dir_vec.y };
-	_field->setDirLazerVector( tmp );
+	_field->setDirect( _unit );
+	_field->setLazerVector( tmp );
 
 	double draw_x = _start.x + _dir_vec.x;
 	double draw_y = _start.y + _dir_vec.y;

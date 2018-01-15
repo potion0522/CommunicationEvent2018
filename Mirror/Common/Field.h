@@ -50,6 +50,13 @@ public:
 		RIGHT
 	};
 
+	enum DIR {
+		DIR_UP,
+		DIR_DOWN,
+		DIR_LEFT,
+		DIR_RIGHT
+	};
+
 	struct Mirror {
 		int flag;
 		double x;
@@ -68,7 +75,8 @@ public:
 	void update( );
 
 public:
-	void setDirLazerVector( Vector vec );
+	void setLazerVector( Vector vec );
+	void setDirect( Vector vec );
 	void setLazerPoint( );
 	void setMirrorPoint( );
 
@@ -76,12 +84,14 @@ public:
 	Vector getLazerPoint( ) const;
 	Vector getLazerVector( ) const;
 	Vector getNormalVector( double x, double y ) const;
-	bool isHitMirror( ) const;
+	bool isMirror( ) const;
 	int getHitMirrorIdx( ) const;
 
 private:
 	std::array< Mirror, MIRROR_MAX > _mirrors;
+	std::array< int, 2 > _dir_board;
 	int _hit_mirror_num;
+	DIR _direct;
 	Vector _dir_vec;
 
 	GlobalDataPtr _data;
