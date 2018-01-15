@@ -29,6 +29,7 @@ private:
 	Field::Vector _start;
 	Field::Vector _dir_vec;
 	Field::Vector _unit;
+	double _distance;
 	GlobalDataPtr _data;
 	DrawerPtr _drawer;
 	FieldPtr _field;

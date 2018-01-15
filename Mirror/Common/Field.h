@@ -84,13 +84,15 @@ public:
 	Vector getLazerPoint( ) const;
 	Vector getLazerVector( ) const;
 	Vector getNormalVector( double x, double y ) const;
+	int getDistance( ) const;
 	bool isMirror( ) const;
 	int getHitMirrorIdx( ) const;
 
 private:
 	std::array< Mirror, MIRROR_MAX > _mirrors;
-	std::array< int, 2 > _dir_board;
+	std::array< int, 2 > _dir_board;	//x, y
 	int _hit_mirror_num;
+	int _distance;
 	DIR _direct;
 	Vector _dir_vec;
 

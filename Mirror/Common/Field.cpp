@@ -8,6 +8,8 @@ const int COL = 6;
 const int SQUARE_SIZE = 96;
 const int START_POS_X = WIDTH / 2 - SQUARE_SIZE * COL / 2;
 const int START_POS_Y = HEIGHT / 2 - SQUARE_SIZE * ROW / 2;
+const int DISTANCE = SQUARE_SIZE;
+const int DISTANCE_HALF = SQUARE_SIZE / 2;
 
 char field[ COL * ROW + 1 ] = 
 "      "
@@ -59,6 +61,7 @@ void Field::initialize( ) {
 	}
 
 	_hit_mirror_num = -1;
+	_distance = 0;
 	_direct = DIR( );
 	_dir_vec = Vector( );
 }
@@ -119,31 +122,47 @@ void Field::update( ) {
 void Field::setLazerVector( Vector vec ) {
 	_dir_vec = vec;
 	int x = ( int )( vec.x - START_POS_X ) / SQUARE_SIZE;
-	int y = ( int )( vec.y - START_POS_Y ) / SQUARE_SIZE - 1;
+	int y = ( int )( vec.y - START_POS_Y ) / SQUARE_SIZE;
+	if ( vec.x - START_POS_X > 0 && ( int )( vec.x - START_POS_X ) % SQUARE_SIZE == 0 ) {
+		x--;
+	}
+	if ( vec.y - START_POS_Y > 0 && ( int )( vec.y - START_POS_Y ) % SQUARE_SIZE == 0 ) {
+		y--;
+	}
+
 	if ( x != _dir_board[ 0 ] || y != _dir_board[ 1 ] ) {
 		_dir_board[ 0 ] = x;
 		_dir_board[ 1 ] = y;
 
-		std::array< int, 2 > board;
+		std::array< int, 2 > next_board;
 		switch ( _direct ) {
 		case DIR_UP :
-			board[ 0 ] = _dir_board[ 0 ];
-			board[ 1 ] = _dir_board[ 1 ] - 1;
+			next_board[ 0 ] = _dir_board[ 0 ];
+			next_board[ 1 ] = _dir_board[ 1 ] - 1;
 			break;
 		case DIR_DOWN :
-			board[ 0 ] = _dir_board[ 0 ];
-			board[ 1 ] = _dir_board[ 1 ] + 1;
+			next_board[ 0 ] = _dir_board[ 0 ];
+			next_board[ 1 ] = _dir_board[ 1 ] + 1;
 			break;
 		case DIR_RIGHT :
-			board[ 0 ] = _dir_board[ 0 ] + 1;
-			board[ 1 ] = _dir_board[ 1 ];
+			next_board[ 0 ] = _dir_board[ 0 ] + 1;
+			next_board[ 1 ] = _dir_board[ 1 ];
 			break;
 		case DIR_LEFT :
-			board[ 0 ] = _dir_board[ 0 ] - 1;
-			board[ 1 ] = _dir_board[ 1 ];
+			next_board[ 0 ] = _dir_board[ 0 ] - 1;
+			next_board[ 1 ] = _dir_board[ 1 ];
 			break;
 		}
 
+		//進行先がフィールド外であれば
+		if ( next_board[ 0 ] < 0 || next_board[ 1 ] < 0 ) {
+			return;
+		}
+
+		_distance = DISTANCE;
+		if ( field[ next_board[ 0 ] + next_board[ 1 ] * COL ] != ' ' ) {
+			_distance = DISTANCE_HALF;
+		}
 	}
 }
 
@@ -155,9 +174,9 @@ void Field::setDirect( Vector vec ) {
 	}
 
 	if ( vec.y < 0 ) {
-		_direct = DIR_UP;
-	} else {
 		_direct = DIR_DOWN;
+	} else {
+		_direct = DIR_UP;
 	}
 }
 
@@ -184,6 +203,10 @@ Field::Vector Field::getNormalVector( double x, double y ) const {
 		vec = _mirrors[ _hit_mirror_num ].normal;
 	}
 	return vec;
+}
+
+int Field::getDistance( ) const {
+	return _distance;
 }
 
 bool Field::isMirror( ) const {

@@ -6,7 +6,7 @@
 #include <time.h>
 
 const int ACTIVE_CLASS_X = 20;
-const int LOG_X = WIDTH - 200;
+const int LOG_X = WIDTH - 250;
 const int SCENE_X = 20;
 const int Y_POS = 20;
 const int ACTIVE_CLASS_INIT_Y = 40;
