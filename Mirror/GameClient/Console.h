@@ -19,16 +19,12 @@ public:
 
 public:
 	bool isRecvingData( ) const;
-	Client::NetWorkData getData( );
 
 private:
 	void ready( );
 	void matching( );
 
 private:
-	Client::NetWorkData _recv_data_udp;
-	Client::NetWorkData _send_data;
-
 	bool _recving_udp;
 
 	GlobalDataPtr _data;

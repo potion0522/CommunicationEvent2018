@@ -8,10 +8,6 @@
 PTR( Client );
 
 class Client : public Base {
-public:
-	struct NetWorkData {
-		int test;
-	};
 
 public:
 	Client( );
@@ -25,12 +21,23 @@ public:
 public:
 	bool isRecvingTcp( ) const;
 	bool isRecvingUdp( ) const;
-	void sendTcp( NetWorkData send_data );
+	void sendTcp( );
 	std::string getSeverIP( ) const;
 	std::string getPhase( ) const;
 	bool getDataTcp( ) const;
-	NetWorkData getDataUdp( ) const;
 	void disConnect( );
+
+public:
+	void setOrder( int order );
+	void setX( int x );
+	void setY( int y );
+	void setAngle( MIRROR_ANGLE angle );
+
+public:
+	int setOrder( ) const;
+	int setX( ) const;
+	int setY( ) const;
+	MIRROR_ANGLE setAngle( ) const;
 
 private:
 	void readIP( );
@@ -54,6 +61,7 @@ private:
 	bool _recving_udp;
 	bool _recv_data_tcp;
 	NetWorkData _recv_data_udp;
+	NetWorkData _send_data_udp;
 	IPDATA _ip;
 };
 

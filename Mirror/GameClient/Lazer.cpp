@@ -4,7 +4,7 @@
 #include "Debug.h"
 #include <math.h>
 
-const double LAZER_SPEED = 0.5;
+const double LAZER_SPEED = 1;
 
 Lazer::Lazer( GlobalDataPtr data ) :
 _data( data ) {

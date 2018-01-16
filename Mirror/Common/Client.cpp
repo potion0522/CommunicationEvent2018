@@ -21,7 +21,8 @@ void Client::initialize( ) {
 	if ( _handle_udp < 0 ) {
 		_handle_udp = MakeUDPSocket( UDP_PORT );
 	}
-	memset( &_recv_data_udp, 0, sizeof( NetWorkData ) );
+	_recv_data_udp = NetWorkData( );
+	_send_data_udp = NetWorkData( );
 
 	readIP( );
 }
@@ -111,8 +112,8 @@ bool Client::isRecvingUdp( ) const {
 	return _recving_udp;
 }
 
-void Client::sendTcp( NetWorkData send_data ) {
-	NetWorkSend( _handle_tcp, &send_data, sizeof( NetWorkData ) );
+void Client::sendTcp( ) {
+	NetWorkSend( _handle_tcp, &_send_data_udp, sizeof( NetWorkData ) );
 }
 
 std::string Client::getSeverIP( ) const {
@@ -142,10 +143,6 @@ bool Client::getDataTcp( ) const {
 	return _recv_data_tcp;
 }
 
-Client::NetWorkData Client::getDataUdp( ) const {
-	return _recv_data_udp;
-}
-
 void Client::disConnect( ) {
 	if ( _handle_tcp > 0 ) {
 		if ( GetNetWorkDataLength( _handle_tcp ) > 0 ) {
@@ -155,4 +152,36 @@ void Client::disConnect( ) {
 	CloseNetWork( _handle_tcp );
 	NetWorkRecvBufferClear( _handle_udp );
 	DeleteUDPSocket( _handle_udp );
+}
+
+void Client::setOrder( int order ) {
+	_send_data_udp.order = ( unsigned char )order;
+}
+
+void Client::setX( int x ) {
+	_send_data_udp.x = ( unsigned char )x;
+}
+
+void Client::setY( int y ) {
+	_send_data_udp.y = ( unsigned char )y;
+}
+
+void Client::setAngle( MIRROR_ANGLE angle ) {
+	_send_data_udp.angle = ( unsigned char )angle;
+}
+
+int Client::setOrder( ) const {
+	return ( int )_recv_data_udp.order;
+}
+
+int Client::setX( ) const {
+	return ( int )_recv_data_udp.x;
+}
+
+int Client::setY( ) const {
+	return ( int )_recv_data_udp.y;
+}
+
+MIRROR_ANGLE Client::setAngle( ) const {
+	return ( MIRROR_ANGLE )_recv_data_udp.angle;
 }

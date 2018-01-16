@@ -3,21 +3,20 @@
 #include "Drawer.h"
 #include "const.h"
 
-const int ROW = 6;
-const int COL = 6;
+const int ROW = 5;
+const int COL = 5;
 const int SQUARE_SIZE = 96;
-const int START_POS_X = WIDTH / 2 - SQUARE_SIZE * COL / 2;
+const int START_POS_X = WIDTH / 3 * 2 - SQUARE_SIZE * COL / 2;
 const int START_POS_Y = HEIGHT / 2 - SQUARE_SIZE * ROW / 2;
 const int DISTANCE = SQUARE_SIZE;
 const int DISTANCE_HALF = SQUARE_SIZE / 2;
 
 char field[ COL * ROW + 1 ] = 
-"      "
-"      "
-"      "
-"      "
-"      "
-"      ";
+"     "
+"     "
+"     "
+"     "
+"     ";
 
 Field::Field( GlobalDataPtr data ) :
 _data( data ) {

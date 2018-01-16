@@ -13,6 +13,13 @@ const int IMAGE_DIR_MAX = 1;
 const int COLOR_MAX = 6;
 const int SCENE_MAX = 6;
 
+struct NetWorkData {
+	unsigned char order;
+	unsigned char x;
+	unsigned char y;
+	unsigned char angle;
+};
+
 enum MACHINE_TYPE {
 	CLIENT,
 	SERVER,
@@ -40,4 +47,10 @@ enum SCENE {
 
 enum IMAGE {
 	NONE_IMAGE
+};
+
+
+enum MIRROR_ANGLE {
+	LEFT,
+	RIGHT
 };

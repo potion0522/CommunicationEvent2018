@@ -24,7 +24,8 @@ void Server::initialize( ) {
 		_handle_udp = MakeUDPSocket( -1 );
 	}
 
-	memset( _recv_data, 0, sizeof( Client::NetWorkData ) * MACHINE_MAX );
+	_send_data_udp = NetWorkData( );
+	memset( _recv_data_udp, 0, sizeof( NetWorkData ) * MACHINE_MAX );
 
 	createIP( );
 	PreparationListenNetWork( TCP_PORT );
@@ -78,14 +79,14 @@ void Server::sendDataTcp( bool matching ) {
 	}
 }
 
-void Server::sendDataUdp( Client::NetWorkData send_data ) {
+void Server::sendDataUdp( ) {
 	for ( int i = 0; i < MACHINE_MAX; i++ ) {
 		if ( _handles[ i ] < 0 ) {
 			continue;
 		}
 		IPDATA ip;
 		GetNetWorkIP( _handles[ i ], &ip );
-		NetWorkSendUDP( _handle_udp, ip, UDP_PORT, &send_data, sizeof( Client::NetWorkData ) ); 
+		NetWorkSendUDP( _handle_udp, ip, UDP_PORT, &_send_data_udp, sizeof( NetWorkData ) ); 
 	}
 }
 void Server::recvTcp( int idx ) {
@@ -95,7 +96,7 @@ void Server::recvTcp( int idx ) {
 		return;
 	}
 
-	int recv = NetWorkRecv( _handles[ idx ], &_recv_data[ idx ], size );
+	int recv = NetWorkRecv( _handles[ idx ], &_recv_data_udp[ idx ], size );
 	if ( recv < 0 ) {
 		_recving[ idx ] = false;
 		return;
@@ -138,10 +139,6 @@ std::string Server::getMachineIpStr( int idx ) {
 	return ip;
 }
 
-Client::NetWorkData Server::getData( int idx ) const {
-	return _recv_data[ idx ];
-}
-
 void Server::disConnect( ) {
 	for ( int i = 0; i < MACHINE_MAX; i++ ) {
 		if ( _handles[ i ] != -1 ) {
@@ -156,4 +153,36 @@ void Server::disConnect( ) {
 	DeleteUDPSocket( _handle_udp );
 
 	StopListenNetWork( );
+}
+
+void Server::setOrder( int order ) {
+	_send_data_udp.order = ( unsigned char )order;
+}
+
+void Server::setX( int x ) {
+	_send_data_udp.x = ( unsigned char )x;
+}
+
+void Server::setY( int y ) {
+	_send_data_udp.y = ( unsigned char )y;
+}
+
+void Server::setAngle( MIRROR_ANGLE angle ) {
+	_send_data_udp.angle = ( unsigned char )angle;
+}
+
+int Server::setOrder( int idx ) const {
+	return ( int )_recv_data_udp[ idx ].order;
+}
+
+int Server::setX( int idx ) const {
+	return ( int )_recv_data_udp[ idx ].x;
+}
+
+int Server::setY( int idx ) const {
+	return ( int )_recv_data_udp[ idx ].y;
+}
+
+MIRROR_ANGLE Server::setAngle( int idx ) const {
+	return ( MIRROR_ANGLE )_recv_data_udp[ idx ].angle;
 }

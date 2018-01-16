@@ -1,6 +1,7 @@
 #pragma once
 #include "smart_ptr.h"
 #include "Base.h"
+#include "const.h"
 #include <string>
 #include <array>
 
@@ -43,11 +44,6 @@ public:
 
 			return ref;
 		};
-	};
-
-	enum MIRROR_ANGLE {
-		LEFT,
-		RIGHT
 	};
 
 	enum DIR {

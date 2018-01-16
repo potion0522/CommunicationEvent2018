@@ -21,13 +21,11 @@ void Console::initialize( ) {
 	setFlag( 1 );
 	_client = _data->getClientPtr( );
 	_drawer = _data->getDrawerPtr( );
-	memset( &_recv_data_udp, 0, sizeof( Client::NetWorkData ) );
-	memset( &_send_data, 0, sizeof( Client::NetWorkData ) );
 	_recving_udp = false;
 }
 
 void Console::update( ) {
-	if ( _data->getScene( ) != BATTLE ) {
+	if ( _data->getScene( ) < SET ) {
 		if ( _data->getKeyState( KEY_INPUT_X ) == 1 && !_data->getCommandFlag( ) ) {
 			_data->setScene( TITLE );
 			_client->disConnect( );
@@ -76,15 +74,11 @@ void Console::matching( ) {
 
 	if ( _client->isRecvingTcp( ) ) {
 		if ( _client->getDataTcp( ) ) {
-			_data->setScene( BATTLE );
+			_data->setScene( SET );
 		}
 	}
 }
 
 bool Console::isRecvingData( ) const {
 	return _recving_udp;
-}
-
-Client::NetWorkData Console::getData( ) {
-	return _recv_data_udp;
 }

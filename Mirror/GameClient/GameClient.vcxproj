@@ -155,6 +155,7 @@
     <ClCompile Include="Console.cpp" />
     <ClCompile Include="Lazer.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="SetMirror.cpp" />
     <ClCompile Include="Title.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -165,6 +166,7 @@
   <ItemGroup>
     <ClInclude Include="Console.h" />
     <ClInclude Include="Lazer.h" />
+    <ClInclude Include="SetMirror.h" />
     <ClInclude Include="Title.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

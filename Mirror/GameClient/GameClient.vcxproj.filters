@@ -11,6 +11,7 @@
     <ClCompile Include="Lazer.cpp">
       <Filter>Calc</Filter>
     </ClCompile>
+    <ClCompile Include="SetMirror.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Calc">
@@ -27,5 +28,6 @@
     <ClInclude Include="Lazer.h">
       <Filter>Calc</Filter>
     </ClInclude>
+    <ClInclude Include="SetMirror.h" />
   </ItemGroup>
 </Project>
