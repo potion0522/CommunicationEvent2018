@@ -57,7 +57,7 @@ void Console::ready( ) {
 }
 
 void Console::matching( ) {
-	if ( _client->getDataTcp( ) ) {
+	if ( _client->isMatching( ) ) {
 		if ( _data->getScene( ) != CONNECT ) {
 			return;
 		}
@@ -73,7 +73,7 @@ void Console::matching( ) {
 	_drawer->setString( true, WIDTH / 2, HEIGHT / 2 - 60, YELLOW, matching, Drawer::BIG );
 
 	if ( _client->isRecvingTcp( ) ) {
-		if ( _client->getDataTcp( ) ) {
+		if ( _client->isMatching( ) ) {
 			_data->setScene( SET );
 		}
 	}

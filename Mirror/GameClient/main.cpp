@@ -6,6 +6,7 @@
 #include "Console.h"
 #include "Lazer.h"
 #include "Field.h"
+#include "SetMirror.h"
 
 /**********************************************************
 *														  *
@@ -31,11 +32,13 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 		//ŒvŽZƒNƒ‰ƒX
 		ConsolePtr console( new Console( data ) );
 		TitlePtr title( new Title( data ) );
+		SetMirrorPtr mirror( new SetMirror( data ) );
 		LazerPtr lazer( new Lazer( data ) );
 		FieldPtr field( new Field( data ) );
 
 		direction->add( TITLE, title );
 		direction->add( CONNECT, console );
+		direction->add( SET, mirror );
 		direction->add( CALC, lazer );
 		direction->add( CALC, field );
 

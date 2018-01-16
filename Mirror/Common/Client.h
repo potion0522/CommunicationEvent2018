@@ -21,10 +21,10 @@ public:
 public:
 	bool isRecvingTcp( ) const;
 	bool isRecvingUdp( ) const;
+	bool isMatching( ) const;
 	void sendTcp( );
 	std::string getSeverIP( ) const;
 	std::string getPhase( ) const;
-	bool getDataTcp( ) const;
 	void disConnect( );
 
 public:
@@ -32,12 +32,15 @@ public:
 	void setX( int x );
 	void setY( int y );
 	void setAngle( MIRROR_ANGLE angle );
+	void setFinish( bool fin );
 
 public:
-	int setOrder( ) const;
-	int setX( ) const;
-	int setY( ) const;
-	MIRROR_ANGLE setAngle( ) const;
+	int getPlayerNum( ) const;
+	int getOrder( ) const;
+	int getX( ) const;
+	int getY( ) const;
+	MIRROR_ANGLE getAngle( ) const;
+	BATTLE_PHASE getBattlePhase( ) const;
 
 private:
 	void readIP( );
@@ -59,7 +62,8 @@ private:
 	int _handle_udp;
 	bool _recving_tcp;
 	bool _recving_udp;
-	bool _recv_data_tcp;
+	bool _matching;
+	int _player_num;
 	NetWorkData _recv_data_udp;
 	NetWorkData _send_data_udp;
 	IPDATA _ip;

@@ -25,7 +25,7 @@ void Server::initialize( ) {
 	}
 
 	_send_data_udp = NetWorkData( );
-	memset( _recv_data_udp, 0, sizeof( NetWorkData ) * MACHINE_MAX );
+	memset( _recv_data_tcp, 0, sizeof( NetWorkData ) * MACHINE_MAX );
 
 	createIP( );
 	PreparationListenNetWork( TCP_PORT );
@@ -39,6 +39,13 @@ void Server::update( ) {
 			recvTcp( i );
 		}
 	}
+
+	for ( int i = 0; i < MACHINE_MAX; i++ ) {
+		if ( _handles[ i ] != -1 ) {
+			NetWorkRecvBufferClear( _handles[ i ] );
+		}
+	}
+	NetWorkRecvBufferClear( _handle_udp );
 }
 
 void Server::accept( ) {
@@ -75,7 +82,18 @@ void Server::lost( ) {
 
 void Server::sendDataTcp( bool matching ) {
 	for ( int i = 0; i < MACHINE_MAX; i++ ) {
-		NetWorkSend( _handles[ i ], &matching, sizeof( bool ) ); 
+		int size = sizeof( bool ) + sizeof( int );
+		char *buf;
+		buf = ( char* )malloc( size );
+		bool *match = ( bool* )buf;
+		int	 *order = ( int * )( buf + sizeof( bool ) );
+
+		*match = matching;
+		*order = i;
+
+		NetWorkSend( _handles[ i ], buf, size );
+
+		free( buf );
 	}
 }
 
@@ -89,6 +107,7 @@ void Server::sendDataUdp( ) {
 		NetWorkSendUDP( _handle_udp, ip, UDP_PORT, &_send_data_udp, sizeof( NetWorkData ) ); 
 	}
 }
+
 void Server::recvTcp( int idx ) {
 	int size = GetNetWorkDataLength( _handles[ idx ] );
 	if ( size < 0 ) {
@@ -96,7 +115,7 @@ void Server::recvTcp( int idx ) {
 		return;
 	}
 
-	int recv = NetWorkRecv( _handles[ idx ], &_recv_data_udp[ idx ], size );
+	int recv = NetWorkRecv( _handles[ idx ], &_recv_data_tcp[ idx ], size );
 	if ( recv < 0 ) {
 		_recving[ idx ] = false;
 		return;
@@ -139,22 +158,6 @@ std::string Server::getMachineIpStr( int idx ) {
 	return ip;
 }
 
-void Server::disConnect( ) {
-	for ( int i = 0; i < MACHINE_MAX; i++ ) {
-		if ( _handles[ i ] != -1 ) {
-			if ( GetNetWorkDataLength( _handles[ i ] ) > 0 ) {
-				NetWorkRecvBufferClear( _handles[ i ] );
-			}
-		}
-		CloseNetWork( _handles[ i ] );
-	}
-
-	NetWorkRecvBufferClear( _handle_udp );
-	DeleteUDPSocket( _handle_udp );
-
-	StopListenNetWork( );
-}
-
 void Server::setOrder( int order ) {
 	_send_data_udp.order = ( unsigned char )order;
 }
@@ -171,18 +174,46 @@ void Server::setAngle( MIRROR_ANGLE angle ) {
 	_send_data_udp.angle = ( unsigned char )angle;
 }
 
-int Server::setOrder( int idx ) const {
-	return ( int )_recv_data_udp[ idx ].order;
+void Server::setBattlePhase( BATTLE_PHASE phase ) {
+	_send_data_udp.phase = ( unsigned char )phase;
 }
 
-int Server::setX( int idx ) const {
-	return ( int )_recv_data_udp[ idx ].x;
+int Server::getOrder( int idx ) const {
+	return ( int )_recv_data_tcp[ idx ].order;
 }
 
-int Server::setY( int idx ) const {
-	return ( int )_recv_data_udp[ idx ].y;
+int Server::getX( int idx ) const {
+	return ( int )_recv_data_tcp[ idx ].x;
 }
 
-MIRROR_ANGLE Server::setAngle( int idx ) const {
-	return ( MIRROR_ANGLE )_recv_data_udp[ idx ].angle;
+int Server::getY( int idx ) const {
+	return ( int )_recv_data_tcp[ idx ].y;
+}
+
+MIRROR_ANGLE Server::getAngle( int idx ) const {
+	return ( MIRROR_ANGLE )_recv_data_tcp[ idx ].angle;
+}
+
+BATTLE_PHASE Server::getBattlePhase( int idx ) const {
+	return ( BATTLE_PHASE )_recv_data_tcp[ idx ].phase;
+}
+
+bool Server::getFinish( int idx ) const {
+	return _recv_data_tcp[ idx ].fin;
+}
+
+void Server::disConnect( ) {
+	for ( int i = 0; i < MACHINE_MAX; i++ ) {
+		if ( _handles[ i ] != -1 ) {
+			if ( GetNetWorkDataLength( _handles[ i ] ) > 0 ) {
+				NetWorkRecvBufferClear( _handles[ i ] );
+			}
+		}
+		CloseNetWork( _handles[ i ] );
+	}
+
+	NetWorkRecvBufferClear( _handle_udp );
+	DeleteUDPSocket( _handle_udp );
+
+	StopListenNetWork( );
 }

@@ -14,10 +14,12 @@ const int COLOR_MAX = 6;
 const int SCENE_MAX = 6;
 
 struct NetWorkData {
+	unsigned char phase;
 	unsigned char order;
 	unsigned char x;
 	unsigned char y;
 	unsigned char angle;
+	bool fin;
 };
 
 enum MACHINE_TYPE {
@@ -49,8 +51,12 @@ enum IMAGE {
 	NONE_IMAGE
 };
 
-
 enum MIRROR_ANGLE {
 	LEFT,
 	RIGHT
+};
+
+enum BATTLE_PHASE {
+	SET_PHASE,
+	ATTACK_PHASE,
 };

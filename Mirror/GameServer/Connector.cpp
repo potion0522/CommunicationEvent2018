@@ -1,10 +1,11 @@
 #include "Connector.h"
 #include "GlobalData.h"
-#include "Table.h"
+#include "Log.h"
 #include <string.h>
 
-Connector::Connector( GlobalDataPtr data ) :
-_data( data ) {
+Connector::Connector( GlobalDataPtr data, LogPtr log ) :
+_data( data ),
+_log( log ) {
 }
 
 Connector::~Connector( ) {
@@ -26,8 +27,7 @@ void Connector::initialize( ) {
 	_matching = false;
 	_sending_state = false;
 	_server_scene = CONNECT;
-	_table = TablePtr( new Table( _data ) );
-	_table->add( "Connection Waiting" );
+	_log->add( "Connection Waiting" );
 }
 
 void Connector::update( ) {
@@ -35,7 +35,7 @@ void Connector::update( ) {
 	updateMatchingState( );
 	sendState( );
 
-	_table->update( );
+	_log->update( );
 }
 
 void Connector::updateConnectState( ) {
@@ -45,7 +45,7 @@ void Connector::updateConnectState( ) {
 			//ƒƒXƒg‚µ‚½‚Æ‚«
 			if ( _connect_state[ i ] == CONNECTING ) {
 				log = "DisConnect Machine [ " + std::to_string( i ) + " ]";
-				_table->add( log );
+				_log->add( log );
 			}
 			_connect_state[ i ] = NOT_CONNECTING;
 			continue;
@@ -58,7 +58,7 @@ void Connector::updateConnectState( ) {
 		//‰‰ñÚ‘±‚Ì‚Ý
 		log = "Connect " + _server->getMachineIpStr( i );
 		_connect_state[ i ] = CONNECTING;
-		_table->add( log );
+		_log->add( log );
 	}
 }
 
@@ -84,4 +84,8 @@ void Connector::sendState( ) {
 	}
 	_server->sendDataTcp( _matching );
 	_sending_state = _matching;
+}
+
+bool Connector::isMatching( ) const {
+	return _matching;
 }

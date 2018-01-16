@@ -30,6 +30,7 @@ public:
 	int getMouseY( ) const;
 	bool getClickLeft( ) const;
 	SCENE getScene( ) const;
+	MACHINE_TYPE getMachineType( ) const;
 	bool getCommandFlag( ) const;
 
 public:
@@ -48,6 +49,7 @@ public:
 
 private:
 	SCENE _scene;
+	MACHINE_TYPE _type;
 	bool _command_flag;
 
 	UpdateKeyPtr _key;

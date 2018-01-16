@@ -16,7 +16,8 @@ void Client::initialize( ) {
 	_phase = READY;
 	_recving_tcp = false;
 	_recving_udp = false;
-	_recv_data_tcp = false;
+	_matching = false;
+	_player_num = 0;
 	_handle_tcp = -1;
 	if ( _handle_udp < 0 ) {
 		_handle_udp = MakeUDPSocket( UDP_PORT );
@@ -65,13 +66,23 @@ void Client::recving( ) {
 }
 
 void Client::recvTcp( ) {
-	int size = GetNetWorkDataLength( _handle_tcp );
-	if ( size < 1 ) {
+	int data = GetNetWorkDataLength( _handle_tcp );
+	if ( data < 1 ) {
 		_recving_tcp = false;
 		return;
 	}
 
-	int recv = NetWorkRecv( _handle_tcp, &_recv_data_tcp, size );
+	int size = sizeof( bool ) + sizeof( int );
+	char *buf;
+	buf = ( char* )malloc( size );
+	int recv = NetWorkRecv( _handle_tcp, buf, size );
+	_matching = *( bool* )buf;
+	if ( _matching ) {
+		_player_num = *( int* )( buf + sizeof( bool ) );
+	}
+
+	free( buf );
+
 	if ( recv < 0 ) {
 		_recving_tcp = false;
 		return;
@@ -139,8 +150,8 @@ std::string Client::getPhase( ) const {
 	return phase;
 }
 
-bool Client::getDataTcp( ) const {
-	return _recv_data_tcp;
+bool Client::isMatching( ) const {
+	return _matching;
 }
 
 void Client::disConnect( ) {
@@ -170,18 +181,30 @@ void Client::setAngle( MIRROR_ANGLE angle ) {
 	_send_data_udp.angle = ( unsigned char )angle;
 }
 
-int Client::setOrder( ) const {
+void Client::setFinish( bool fin ) {
+	_send_data_udp.fin = fin;
+}
+
+int Client::getPlayerNum( ) const {
+	return _player_num;
+}
+
+int Client::getOrder( ) const {
 	return ( int )_recv_data_udp.order;
 }
 
-int Client::setX( ) const {
+int Client::getX( ) const {
 	return ( int )_recv_data_udp.x;
 }
 
-int Client::setY( ) const {
+int Client::getY( ) const {
 	return ( int )_recv_data_udp.y;
 }
 
-MIRROR_ANGLE Client::setAngle( ) const {
+MIRROR_ANGLE Client::getAngle( ) const {
 	return ( MIRROR_ANGLE )_recv_data_udp.angle;
+}
+
+BATTLE_PHASE Client::getBattlePhase( ) const {
+	return ( BATTLE_PHASE )_recv_data_udp.phase;
 }

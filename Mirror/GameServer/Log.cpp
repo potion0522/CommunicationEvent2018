@@ -1,4 +1,4 @@
-#include "Table.h"
+#include "Log.h"
 #include "const.h"
 #include "DxLib.h"
 #include "Color.h"
@@ -8,23 +8,23 @@
 
 const int CHARA_SIZE = 20;
 
-Table::Table( GlobalDataPtr data ) :
+Log::Log( GlobalDataPtr data ) :
 _data( data ) {
 	initialize( );
 }
 
-Table::~Table( ) {
+Log::~Log( ) {
 }
 
-void Table::initialize( ) {
+void Log::initialize( ) {
 	_drawer = _data->getDrawerPtr( );
 }
 
-void Table::update( ) {
+void Log::update( ) {
 	isLogPring( );
 }
 
-void Table::isLogPring( ) {
+void Log::isLogPring( ) {
 	const int LOG_X = WIDTH - 250;
 	int size = 0;
 	for ( int i = 0; i < SERVER_CONSOLE_LOG_MAX; i++ ) {
@@ -47,7 +47,7 @@ void Table::isLogPring( ) {
 	}
 }
 
-void Table::add( std::string log ) {
+void Log::add( std::string log ) {
 	time_t now = time( NULL );
 	const int SIZE = 128;
 	char buf[ SIZE ] = { };

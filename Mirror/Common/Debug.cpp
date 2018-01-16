@@ -3,6 +3,7 @@
 #include "Color.h"
 #include "GlobalData.h"
 #include "Command.h"
+#include "Server.h"
 #include <time.h>
 
 const int ACTIVE_CLASS_X = 20;
@@ -79,33 +80,41 @@ void Debug::update( ) {
 }
 
 void Debug::commandExecution( ) {
-	if ( _command->getWordNum( ) < 3 ) {
+	if ( _command->getWordNum( ) < 2 ) {
 		return;
 	}
-	if ( _command->getWord( 0 ) != "SET" ) {
-		return;
-	}
-	if ( _command->getWord( 1 ) == "SCENE" ) {
-		std::string str = _command->getWord( 2 );
-		SCENE scene = NONE;
-		if ( str == "TITLE" ) {
-			scene = TITLE;
-		}
-		if ( str == "CONNECT" ) {
-			scene = CONNECT;
-		}
-		if ( str == "BATTLE" ) {
-			scene = BATTLE;
-		}
-		if ( str == "SET" ) {
-			scene = SET;
-		}
-		if ( str == "CALC" ) {
-			scene = CALC;
-		}
 
-		if ( scene != NONE ) {
-			_data->setScene( scene );
+	if ( _command->getWord( 0 ) == "SEND" ) {
+		if ( _command->getWord( 1 ) == "UDP" ) {
+			if ( _data->getMachineType( ) == SERVER ) {
+				_data->getServerPtr( )->sendDataUdp( );
+			}
+		}
+	}
+
+	if ( _command->getWord( 0 ) == "SET" ) {
+		if ( _command->getWord( 1 ) == "SCENE" ) {
+			std::string str = _command->getWord( 2 );
+			SCENE scene = NONE;
+			if ( str == "TITLE" ) {
+				scene = TITLE;
+			}
+			if ( str == "CONNECT" ) {
+				scene = CONNECT;
+			}
+			if ( str == "BATTLE" ) {
+				scene = BATTLE;
+			}
+			if ( str == "SET" ) {
+				scene = SET;
+			}
+			if ( str == "CALC" ) {
+				scene = CALC;
+			}
+
+			if ( scene != NONE ) {
+				_data->setScene( scene );
+			}
 		}
 	}
 }

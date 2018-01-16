@@ -8,10 +8,10 @@ PTR( Drawer );
 
 const int SERVER_CONSOLE_LOG_MAX = 8;
 
-class Table {
+class Log {
 public:
-	Table( GlobalDataPtr data );
-	virtual ~Table( );
+	Log( GlobalDataPtr data );
+	virtual ~Log( );
 
 public:
 	void initialize( );

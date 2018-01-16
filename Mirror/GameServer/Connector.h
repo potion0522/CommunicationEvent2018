@@ -6,17 +6,20 @@
 PTR( Connector );
 PTR( Server );
 PTR( GlobalData );
-PTR( Table );
+PTR( Log );
 
 class Connector : public Base {
 public:
-	Connector( GlobalDataPtr data );
+	Connector( GlobalDataPtr data, LogPtr log );
 	~Connector( );
 
 public:
 	std::string getTag( );
 	void update( );
 	void initialize( );
+
+public:
+	bool isMatching( ) const;
 
 private:
 	void updateConnectState( );
@@ -35,5 +38,5 @@ private:
 
 	GlobalDataPtr _data;
 	ServerPtr _server;
-	TablePtr _table;
+	LogPtr _log;
 };

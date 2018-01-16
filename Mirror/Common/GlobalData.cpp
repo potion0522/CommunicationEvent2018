@@ -27,8 +27,9 @@ void GlobalData::initialize( MACHINE_TYPE type ) {
 	_image = ImagePtr( new Image( ) );
 	_drawer = DrawerPtr( new Drawer( ) );
 	_debug = NULL;
+	_type = type;
 
-	switch ( type ) {
+	switch ( _type ) {
 	case SERVER	: _server = ServerPtr( new Server( ) )		; break;
 	case CLIENT	: _client = ClientPtr( new Client( ) )		; break;
 	case TEST	: _debug  = DebugPtr ( new Debug( NULL ) )	; break;
@@ -67,6 +68,10 @@ bool GlobalData::getClickLeft( ) const {
 
 SCENE GlobalData::getScene( ) const {
 	return _scene;
+}
+
+MACHINE_TYPE GlobalData::getMachineType( ) const {
+	return _type;
 }
 
 bool GlobalData::getCommandFlag( ) const {

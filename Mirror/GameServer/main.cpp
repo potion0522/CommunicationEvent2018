@@ -2,7 +2,9 @@
 #include "smart_ptr.h"
 #include "GlobalData.h"
 #include "Direction.h"
+#include "Log.h"
 #include "Connector.h"
+#include "GameMaster.h"
 
 /**********************************************************
 *														  *
@@ -25,9 +27,12 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 		GlobalDataPtr data( new GlobalData( ) );
 		DirectionPtr direction( new Direction( SERVER, data ) );
 
-		ConnectorPtr connector( new Connector( data ) );
+		LogPtr log( new Log( data ) );
+		ConnectorPtr connector( new Connector( data, log ) );
+		GameMasterPtr master( new GameMaster( data, connector, log ) );
 
 		direction->add( CONNECT, connector );
+		direction->add( CONNECT, master );
 		data->setScene( CONNECT );
 
 		direction->initialize( );

@@ -2,18 +2,20 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Table.cpp">
+    <ClCompile Include="Connector.cpp">
       <Filter>Calc</Filter>
     </ClCompile>
-    <ClCompile Include="Connector.cpp">
+    <ClCompile Include="GameMaster.cpp" />
+    <ClCompile Include="Log.cpp">
       <Filter>Calc</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Table.h">
+    <ClInclude Include="Connector.h">
       <Filter>Calc</Filter>
     </ClInclude>
-    <ClInclude Include="Connector.h">
+    <ClInclude Include="GameMaster.h" />
+    <ClInclude Include="Log.h">
       <Filter>Calc</Filter>
     </ClInclude>
   </ItemGroup>
