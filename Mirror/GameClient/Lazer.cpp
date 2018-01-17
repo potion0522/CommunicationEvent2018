@@ -85,7 +85,7 @@ void Lazer::updateStartPos( ) {
 
 void Lazer::convReflectionVector( ) {
 	Field::Vector normal = _field->getNormalVector( _unit.x, _unit.y );
-	Field::Vector ref = _unit.getReflection( normal );
-	updateUnitVector( ref );
+//	Field::Vector ref = _unit.getReflection( normal );
+//	updateUnitVector( ref );
 	_dir_vec = { 0 };
 }

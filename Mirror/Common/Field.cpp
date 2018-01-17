@@ -2,6 +2,7 @@
 #include "GlobalData.h"
 #include "Drawer.h"
 #include "const.h"
+#include <random>
 
 const int ROW = 5;
 const int COL = 5;
@@ -179,7 +180,12 @@ void Field::setDirect( Vector vec ) {
 	}
 }
 
+void Field::setPlayerPoint( int idx, int pos ) {
+	
+}
+
 void Field::setLazerPoint( ) {
+
 }
 
 void Field::setMirrorPoint( ) {

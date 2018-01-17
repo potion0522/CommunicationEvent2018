@@ -6,6 +6,7 @@
 #include "Server.h"
 #include "Client.h"
 #include "Drawer.h"
+#include <random>
 
 GlobalData::GlobalData( ) {
 }
@@ -64,6 +65,12 @@ int GlobalData::getMouseY( ) const {
 
 bool GlobalData::getClickLeft( ) const {
 	return _mouse->getLeftClick( );
+}
+
+
+int GlobalData::getRandom( int min, int max ) const {
+	std::random_device rd;
+	return rd( ) % max + min;
 }
 
 SCENE GlobalData::getScene( ) const {

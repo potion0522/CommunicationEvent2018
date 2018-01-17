@@ -9,41 +9,40 @@ PTR( Field );
 PTR( GlobalData );
 PTR( Drawer );
 
-const int MIRROR_MAX = 6;
 
 class Field : public Base {
 public:
 	struct Vector { 
 		double x;
 		double y;
-		Vector getReflection( Vector vec ) {
-			// R = F - 2dot( F, N )N
+		//Vector getReflection( Vector vec ) {
+		//	// R = F - 2dot( F, N )N
 
-			//進行ベクトル
-			Vector F = { x, y };
+		//	//進行ベクトル
+		//	Vector F = { x, y };
 
-			//法線ベクトル
-			double length = sqrt( vec.x * vec.x + vec.y * vec.y );
-			Vector N = { vec.x / length, vec.y / length };
+		//	//法線ベクトル
+		//	double length = sqrt( vec.x * vec.x + vec.y * vec.y );
+		//	Vector N = { vec.x / length, vec.y / length };
 
-			double dot = N.x * F.x + N.y * F.y;
+		//	double dot = N.x * F.x + N.y * F.y;
 
-			Vector P = Vector( );
-			P.x = dot * N.x;
-			P.y = dot * N.y;
+		//	Vector P = Vector( );
+		//	P.x = dot * N.x;
+		//	P.y = dot * N.y;
 
-			Vector ref = Vector( );
-			ref.x = F.x - P.x * 2;
-			ref.y = F.y - P.y * 2;
+		//	Vector ref = Vector( );
+		//	ref.x = F.x - P.x * 2;
+		//	ref.y = F.y - P.y * 2;
 
-			int tmp_a = ( int )( ref.x * 10 );
-			int tmp_b = ( int )( ref.y * 10 );
+		//	int tmp_a = ( int )( ref.x * 10 );
+		//	int tmp_b = ( int )( ref.y * 10 );
 
-			ref.x = tmp_a * 0.1;
-			ref.y = tmp_b * 0.1;
+		//	ref.x = tmp_a * 0.1;
+		//	ref.y = tmp_b * 0.1;
 
-			return ref;
-		};
+		//	return ref;
+		//};
 	};
 
 	enum DIR {
@@ -73,6 +72,7 @@ public:
 public:
 	void setLazerVector( Vector vec );
 	void setDirect( Vector vec );
+	void setPlayerPoint( int idx, int pos );
 	void setLazerPoint( );
 	void setMirrorPoint( );
 
