@@ -10,8 +10,6 @@ PTR( Connector );
 PTR( Log );
 PTR( Server );
 
-const int PLAYER = 2;
-
 class GameMaster : public Base {
 public:
 	GameMaster( GlobalDataPtr data, ConnectorPtr connector, LogPtr log );
@@ -28,7 +26,7 @@ private:
 	void attackTurn( );
 
 private:
-	NetWorkData _client_data[ PLAYER ];
+	NetWorkData _client_data[ PLAYER_NUM ];
 
 	bool _matching;
 	bool _dice;

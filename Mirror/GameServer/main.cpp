@@ -16,7 +16,7 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	ChangeWindowMode( 1 );
 	SetDoubleStartValidFlag( TRUE );
 	SetAlwaysRunFlag( TRUE );
-	SetConnectTimeOutWait( 10 );
+	SetConnectTimeOutWait( 60 );
 	SetGraphMode( WIDTH, HEIGHT, 32 );
 	if ( DxLib_Init( ) != 0 ) {
 		return -1;

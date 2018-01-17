@@ -27,16 +27,19 @@ public:
 
 public:
 	void setOrder( int order );
-	void setX( int x );
-	void setY( int y );
-	void setAngle( MIRROR_ANGLE angle );
+	void setStcFlag( int idx, bool flag );
+	void setStcX( int idx, int x );
+	void setStcY( int idx, int y );
+	void setStcAngle( int idx, MIRROR_ANGLE angle );
 	void setBattlePhase( BATTLE_PHASE phase );
 
 public:
 	int getOrder( int idx ) const;
-	int getX( int idx ) const;
-	int getY( int idx ) const;
-	MIRROR_ANGLE getAngle( int idx ) const;
+	int getPlayerPos( int idx ) const;
+	bool getCtsFlag( int idx ) const;
+	int getCtsX( int idx ) const;
+	int getCtsY( int idx ) const;
+	MIRROR_ANGLE getCtsAngle( int idx ) const;
 	BATTLE_PHASE getBattlePhase( int idx ) const;
 	bool getFinish( int idx ) const;
 

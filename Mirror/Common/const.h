@@ -4,6 +4,8 @@ const int WIDTH = 1280;
 const int HEIGHT = 720;
 const double PI = 3.14;
 const int KEY_MAX = 256;
+const int PLAYER_NUM = 2;
+const int MIRROR_MAX = 6;
 
 const int TCP_PORT = 9850;
 const int UDP_PORT = 9900;
@@ -13,12 +15,19 @@ const int IMAGE_DIR_MAX = 1;
 const int COLOR_MAX = 6;
 const int SCENE_MAX = 6;
 
-struct NetWorkData {
-	unsigned char phase;
-	unsigned char order;
+struct SendMirrorData {
+	bool flag;
 	unsigned char x;
 	unsigned char y;
 	unsigned char angle;
+};
+
+struct NetWorkData {
+	unsigned char player_pos[ PLAYER_NUM ];
+	unsigned char phase;
+	unsigned char order;
+	SendMirrorData cts;
+	SendMirrorData stc[ MIRROR_MAX ];
 	bool fin;
 };
 

@@ -14,16 +14,15 @@ std::string Client::getTag( ) {
 void Client::initialize( ) {
 	setFlag( 1 );
 	_phase = READY;
+	_connecting_tcp = false;
 	_recving_tcp = false;
 	_recving_udp = false;
 	_matching = false;
 	_player_num = 0;
 	_handle_tcp = -1;
-	if ( _handle_udp < 0 ) {
-		_handle_udp = MakeUDPSocket( UDP_PORT );
-	}
+	_handle_udp = -1;
 	_recv_data_udp = NetWorkData( );
-	_send_data_udp = NetWorkData( );
+	_send_data_tcp = NetWorkData( );
 
 	readIP( );
 }
@@ -54,6 +53,7 @@ void Client::connect( ) {
 			return;
 		}
 		_handle_tcp = handle;
+		_connecting_tcp = true;
 		_phase = CONNECTING;
 	}
 }
@@ -77,6 +77,8 @@ void Client::recvTcp( ) {
 	buf = ( char* )malloc( size );
 	int recv = NetWorkRecv( _handle_tcp, buf, size );
 	_matching = *( bool* )buf;
+
+	_player_num = 0;
 	if ( _matching ) {
 		_player_num = *( int* )( buf + sizeof( bool ) );
 	}
@@ -92,6 +94,9 @@ void Client::recvTcp( ) {
 
 void Client::recvUdp( ) {
 	_recving_udp = false;
+	if ( _handle_udp < 0 ) {
+		_handle_udp = MakeUDPSocket( UDP_PORT );
+	}
 	if ( CheckNetWorkRecvUDP( _handle_udp ) == TRUE ) {
 		NetWorkRecvUDP( _handle_udp, NULL, NULL, &_recv_data_udp, sizeof( NetWorkData ), FALSE );
 		_recving_udp = true;
@@ -109,10 +114,19 @@ void Client::lost( ) {
 		_handle_tcp = -1;
 		_phase = READY;
 	}
+	if ( lost == _handle_udp ) {
+		NetWorkRecvBufferClear( _handle_udp );
+		CloseNetWork( _handle_udp );
+		_handle_udp = -1;
+	}
 }
 
 void Client::clearBuffer( ) {
 	NetWorkRecvBufferClear( _handle_udp );
+}
+
+bool Client::isConnectingTcp( ) const {
+	return _connecting_tcp;
 }
 
 bool Client::isRecvingTcp( ) const {
@@ -124,7 +138,7 @@ bool Client::isRecvingUdp( ) const {
 }
 
 void Client::sendTcp( ) {
-	NetWorkSend( _handle_tcp, &_send_data_udp, sizeof( NetWorkData ) );
+	NetWorkSend( _handle_tcp, &_send_data_tcp, sizeof( NetWorkData ) );
 }
 
 std::string Client::getSeverIP( ) const {
@@ -166,23 +180,31 @@ void Client::disConnect( ) {
 }
 
 void Client::setOrder( int order ) {
-	_send_data_udp.order = ( unsigned char )order;
+	_send_data_tcp.order = ( unsigned char )order;
 }
 
-void Client::setX( int x ) {
-	_send_data_udp.x = ( unsigned char )x;
+void Client::setPlayerPos( int idx, int pos ) {
+	_send_data_tcp.player_pos[ idx ] = ( unsigned char )pos;
 }
 
-void Client::setY( int y ) {
-	_send_data_udp.y = ( unsigned char )y;
+void Client::setCtsFlag( bool flag ) {
+	_send_data_tcp.cts.flag = flag;
 }
 
-void Client::setAngle( MIRROR_ANGLE angle ) {
-	_send_data_udp.angle = ( unsigned char )angle;
+void Client::setCtsX( int x ) {
+	_send_data_tcp.cts.x = ( unsigned char )x;
+}
+
+void Client::setCtsY( int y ) {
+	_send_data_tcp.cts.y = ( unsigned char )y;
+}
+
+void Client::setCtsAngle( MIRROR_ANGLE angle ) {
+	_send_data_tcp.cts.angle = ( unsigned char )angle;
 }
 
 void Client::setFinish( bool fin ) {
-	_send_data_udp.fin = fin;
+	_send_data_tcp.fin = fin;
 }
 
 int Client::getPlayerNum( ) const {
@@ -193,16 +215,24 @@ int Client::getOrder( ) const {
 	return ( int )_recv_data_udp.order;
 }
 
-int Client::getX( ) const {
-	return ( int )_recv_data_udp.x;
+int Client::getPlayerPos( int idx ) const {
+	return ( int )_recv_data_udp.player_pos[ idx ];
 }
 
-int Client::getY( ) const {
-	return ( int )_recv_data_udp.y;
+bool Client::getStcFlag( int idx ) const {
+	return _recv_data_udp.stc[ idx ].flag;
 }
 
-MIRROR_ANGLE Client::getAngle( ) const {
-	return ( MIRROR_ANGLE )_recv_data_udp.angle;
+int Client::getStcX( int idx ) const {
+	return ( int )_recv_data_udp.stc[ idx ].x;
+}
+
+int Client::getStcY( int idx ) const {
+	return ( int )_recv_data_udp.stc[ idx ].y;
+}
+
+MIRROR_ANGLE Client::getStcAngle( int idx ) const {
+	return ( MIRROR_ANGLE )_recv_data_udp.stc[ idx ].angle;
 }
 
 BATTLE_PHASE Client::getBattlePhase( ) const {

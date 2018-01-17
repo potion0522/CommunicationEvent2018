@@ -23,7 +23,7 @@ void GameMaster::initialize( ) {
 	_server = _data->getServerPtr( );
 	_matching = false;
 	_dice = false;
-	memset( _client_data, 0, sizeof( NetWorkData ) * PLAYER );
+	memset( _client_data, 0, sizeof( NetWorkData ) * PLAYER_NUM );
 	_phase = SET_PHASE;
 	_server->setBattlePhase( _phase );
 }
@@ -50,6 +50,17 @@ void GameMaster::update( ) {
 	}
 
 	_server->sendDataUdp( );
+
+	for ( int i = 0; i < MACHINE_MAX; i++ ) {
+		if ( _server->isConnecting( i ) ) {
+			if ( _server->isRecving( i ) ) {
+				//_client_data[ i ].x = _server->getX( i );
+				//_client_data[ i ].y = _server->getY( i );
+				//_client_data[ i ].angle = _server->getAngle( i );
+				//_client_data[ i ].fin = _server->getFinish( i );
+			}
+		}
+	}
 }
 
 void GameMaster::orderPlayer( ) {
@@ -58,12 +69,12 @@ void GameMaster::orderPlayer( ) {
 	_client_data[ idx ].order = 1;
 	idx = ( idx + 1 ) % 2;
 	_client_data[ idx ].order = 2;
-	_dice = false;
+	_dice = true;
 }
 
 void GameMaster::setTurn( ) {
 	int idx = -1;
-	for ( int i = 0; i < PLAYER; i++ ) {
+	for ( int i = 0; i < PLAYER_NUM; i++ ) {
 		if ( _client_data[ i ].fin ) {
 			continue;
 		}
@@ -82,17 +93,17 @@ void GameMaster::setTurn( ) {
 		return;
 	}
 
-	//現在のオーダープレイヤーの情報だけ取得
-	if ( _server->isRecving( idx ) ) {
-		_client_data[ idx ].x = _server->getX( idx );
-		_client_data[ idx ].y = _server->getY( idx );
-		_client_data[ idx ].angle = _server->getAngle( idx );
-		_client_data[ idx ].fin = _server->getFinish( idx );
-	}
+	////現在のオーダープレイヤーの情報だけ取得
+	//if ( _server->isRecving( idx ) ) {
+	//	_client_data[ idx ].x = _server->getX( idx );
+	//	_client_data[ idx ].y = _server->getY( idx );
+	//	_client_data[ idx ].angle = _server->getAngle( idx );
+	//	_client_data[ idx ].fin = _server->getFinish( idx );
+	//}
 
-	if ( _client_data[ idx ].fin ) {
-		_log->add( "Machine[ " + std::to_string( idx ) + " ] is Finish" );
-	}
+	//if ( _client_data[ idx ].fin ) {
+	//	_log->add( "Machine[ " + std::to_string( idx ) + " ] is Finish" );
+	//}
 }
 
 void GameMaster::attackTurn( ) {

@@ -19,6 +19,7 @@ public:
 	void initialize( );
 
 public:
+	bool isConnectingTcp( ) const;
 	bool isRecvingTcp( ) const;
 	bool isRecvingUdp( ) const;
 	bool isMatching( ) const;
@@ -29,17 +30,21 @@ public:
 
 public:
 	void setOrder( int order );
-	void setX( int x );
-	void setY( int y );
-	void setAngle( MIRROR_ANGLE angle );
+	void setPlayerPos( int idx, int pos );
+	void setCtsFlag( bool flag );
+	void setCtsX( int x );
+	void setCtsY( int y );
+	void setCtsAngle( MIRROR_ANGLE angle );
 	void setFinish( bool fin );
 
 public:
 	int getPlayerNum( ) const;
 	int getOrder( ) const;
-	int getX( ) const;
-	int getY( ) const;
-	MIRROR_ANGLE getAngle( ) const;
+	int getPlayerPos( int idx ) const;
+	bool getStcFlag( int idx ) const;
+	int getStcX( int idx ) const;
+	int getStcY( int idx ) const;
+	MIRROR_ANGLE getStcAngle( int idx ) const;
 	BATTLE_PHASE getBattlePhase( ) const;
 
 private:
@@ -60,12 +65,13 @@ private:
 
 	int _handle_tcp;
 	int _handle_udp;
+	bool _connecting_tcp;
 	bool _recving_tcp;
 	bool _recving_udp;
 	bool _matching;
 	int _player_num;
 	NetWorkData _recv_data_udp;
-	NetWorkData _send_data_udp;
+	NetWorkData _send_data_tcp;
 	IPDATA _ip;
 };
 

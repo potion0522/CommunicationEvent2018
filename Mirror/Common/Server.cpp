@@ -33,18 +33,12 @@ void Server::initialize( ) {
 
 void Server::update( ) {
 	accept( );
-	lost( );
 	for ( int i = 0; i < MACHINE_MAX; i++ ) {
 		if ( isConnecting( i ) ) {
 			recvTcp( i );
 		}
 	}
-
-	for ( int i = 0; i < MACHINE_MAX; i++ ) {
-		if ( _handles[ i ] != -1 ) {
-			NetWorkRecvBufferClear( _handles[ i ] );
-		}
-	}
+	lost( );
 	NetWorkRecvBufferClear( _handle_udp );
 }
 
@@ -110,7 +104,7 @@ void Server::sendDataUdp( ) {
 
 void Server::recvTcp( int idx ) {
 	int size = GetNetWorkDataLength( _handles[ idx ] );
-	if ( size < 0 ) {
+	if ( size < 1 ) {
 		_recving[ idx ] = false;
 		return;
 	}
@@ -162,16 +156,20 @@ void Server::setOrder( int order ) {
 	_send_data_udp.order = ( unsigned char )order;
 }
 
-void Server::setX( int x ) {
-	_send_data_udp.x = ( unsigned char )x;
+void Server::setStcFlag( int idx, bool flag ) {
+	_send_data_udp.stc[ idx ].flag = flag;
 }
 
-void Server::setY( int y ) {
-	_send_data_udp.y = ( unsigned char )y;
+void Server::setStcX( int idx, int x ) {
+	_send_data_udp.stc[ idx ].x = ( unsigned char )x;
 }
 
-void Server::setAngle( MIRROR_ANGLE angle ) {
-	_send_data_udp.angle = ( unsigned char )angle;
+void Server::setStcY( int idx, int y ) {
+	_send_data_udp.stc[ idx ].y = ( unsigned char )y;
+}
+
+void Server::setStcAngle( int idx, MIRROR_ANGLE angle ) {
+	_send_data_udp.stc[ idx ].angle = ( unsigned char )angle;
 }
 
 void Server::setBattlePhase( BATTLE_PHASE phase ) {
@@ -182,16 +180,20 @@ int Server::getOrder( int idx ) const {
 	return ( int )_recv_data_tcp[ idx ].order;
 }
 
-int Server::getX( int idx ) const {
-	return ( int )_recv_data_tcp[ idx ].x;
+bool Server::getCtsFlag( int idx ) const {
+	return _recv_data_tcp[ idx ].cts.flag;
 }
 
-int Server::getY( int idx ) const {
-	return ( int )_recv_data_tcp[ idx ].y;
+int Server::getCtsX( int idx ) const {
+	return ( int )_recv_data_tcp[ idx ].cts.x;
 }
 
-MIRROR_ANGLE Server::getAngle( int idx ) const {
-	return ( MIRROR_ANGLE )_recv_data_tcp[ idx ].angle;
+int Server::getCtsY( int idx ) const {
+	return ( int )_recv_data_tcp[ idx ].cts.y;
+}
+
+MIRROR_ANGLE Server::getCtsAngle( int idx ) const {
+	return ( MIRROR_ANGLE )_recv_data_tcp[ idx ].cts.angle;
 }
 
 BATTLE_PHASE Server::getBattlePhase( int idx ) const {
