@@ -3,12 +3,16 @@
 #include "Connector.h"
 #include "Server.h"
 #include "Log.h"
+#include "Field.h"
 #include <random>
 
 GameMaster::GameMaster( GlobalDataPtr data, ConnectorPtr connector, LogPtr log ) :
 _data( data ),
 _connector( connector ),
 _log( log ) {
+	_field = FieldPtr( new Field( _data ) );
+	_server = _data->getServerPtr( );
+	setFlag( 1 );
 }
 
 GameMaster::~GameMaster( ) {
@@ -19,12 +23,10 @@ std::string GameMaster::getTag( ) {
 }
 
 void GameMaster::initialize( ) {
-	setFlag( 1 );
-	_server = _data->getServerPtr( );
 	_matching = false;
 	_dice = false;
-	memset( _client_data, 0, sizeof( NetWorkData ) * PLAYER_NUM );
-	_phase = SET_PHASE;
+	std::array< Data, PLAYER_NUM >( ).swap( _client_data );
+	_phase = SET_PLAYER_PHASE;
 	_server->setBattlePhase( _phase );
 }
 
@@ -36,6 +38,7 @@ void GameMaster::update( ) {
 			initialize( );
 		}
 	}
+
 	if ( !_matching ) {
 		return;
 	}
@@ -45,21 +48,17 @@ void GameMaster::update( ) {
 	}
 
 	switch ( _phase ) {
-	case SET_PHASE		: setTurn( )	; break;
-	case ATTACK_PHASE	: attackTurn( )	; break;
+	case SET_PLAYER_PHASE	: updatePlayerPhase( )	; break;
+	case SET_MIRROR_PHASE	: updateMirrorPhase( )	; break;
+	case ATTACK_PHASE		: updateAttackPhase( )	; break;
 	}
 
 	_server->sendDataUdp( );
 
-	for ( int i = 0; i < MACHINE_MAX; i++ ) {
-		if ( _server->isConnecting( i ) ) {
-			if ( _server->isRecving( i ) ) {
-				//_client_data[ i ].x = _server->getX( i );
-				//_client_data[ i ].y = _server->getY( i );
-				//_client_data[ i ].angle = _server->getAngle( i );
-				//_client_data[ i ].fin = _server->getFinish( i );
-			}
-		}
+	switch ( _phase ) {
+	case SET_PLAYER_PHASE	: inputPlayerPhase( ); break;
+	case SET_MIRROR_PHASE	: inputMirrorPhase( ); break;
+	case ATTACK_PHASE		: inputAttackPhase( ); break;
 	}
 }
 
@@ -72,7 +71,7 @@ void GameMaster::orderPlayer( ) {
 	_dice = true;
 }
 
-void GameMaster::setTurn( ) {
+int GameMaster::getWaitingIdx( ) const {
 	int idx = -1;
 	for ( int i = 0; i < PLAYER_NUM; i++ ) {
 		if ( _client_data[ i ].fin ) {
@@ -83,29 +82,85 @@ void GameMaster::setTurn( ) {
 		}
 		idx = i;
 	}
+	return idx;
+}
 
-	_server->setOrder( idx );
+int GameMaster::getOrderIdx( int order ) const {
+	int idx = -1;
+	for ( int i = 0; i < PLAYER_NUM; i++ ) {
+		if ( _client_data[ i ].order != order ) {
+			continue;
+		}
+		idx = i;
+		break;
+	}
+	return idx;
+}
 
-	// SET_PHASE 終了
-	if ( idx < 0 ) {
-		_phase = ATTACK_PHASE;
-		_server->setBattlePhase( _phase );
+void GameMaster::updatePlayerPhase( ) {
+	int idx = getWaitingIdx( );
+	_server->setOrder( -1 );
+
+	if ( idx != -1 ) {
 		return;
 	}
 
-	////現在のオーダープレイヤーの情報だけ取得
-	//if ( _server->isRecving( idx ) ) {
-	//	_client_data[ idx ].x = _server->getX( idx );
-	//	_client_data[ idx ].y = _server->getY( idx );
-	//	_client_data[ idx ].angle = _server->getAngle( idx );
-	//	_client_data[ idx ].fin = _server->getFinish( idx );
-	//}
+	_phase = SET_MIRROR_PHASE;
+	_server->setBattlePhase( _phase );
 
-	//if ( _client_data[ idx ].fin ) {
-	//	_log->add( "Machine[ " + std::to_string( idx ) + " ] is Finish" );
-	//}
+	for ( int i = 0; i < MACHINE_MAX; i++ ) {
+		_field->setPlayerPoint( i, _client_data[ i ].player_pos );
+		_client_data[ i ].fin = false;
+	}
 }
 
-void GameMaster::attackTurn( ) {
+void GameMaster::updateMirrorPhase( ) {
+	int idx = getWaitingIdx( );
+
+	_server->setOrder( idx );
+
+	if ( idx != -1 ) {
+		return;
+	}
+
+	_phase = ATTACK_PHASE;
+	_server->setBattlePhase( _phase );
+
+	idx = getOrderIdx( 1 );
+	Data data = _client_data[ idx ];
+	_field->setMirrorPoint( idx, data.x, data.y, data.angle );
+	data = _client_data[ ( idx + 1 ) % PLAYER_NUM ];
+	_field->setMirrorPoint( idx, data.x, data.y, data.angle );
+
+	for ( int i = 0; i < PLAYER_NUM; i++ ) {
+		_client_data[ i ].fin = false;
+	}
+}
+
+void GameMaster::updateAttackPhase( ) {
 	initialize( );
+}
+
+void GameMaster::inputPlayerPhase( ) {
+	for ( int i = 0; i < MACHINE_MAX; i++ ) {
+		if ( _server->isRecving( i ) ) {
+			_client_data[ i ].player_pos = _server->getPlayerPos( i );
+			_client_data[ i ].fin = true;
+		}
+	}
+}
+
+void GameMaster::inputMirrorPhase( ) {
+	for ( int i = 0; i < MACHINE_MAX; i++ ) {
+		if ( _server->isRecving( i ) ) {
+			_client_data[ i ].x = _server->getCtsX( i );
+			_client_data[ i ].y = _server->getCtsY( i );
+			_client_data[ i ].angle = _server->getCtsAngle( i );
+			_client_data[ i ].fin = true;
+		}
+	}
+}
+
+void GameMaster::inputAttackPhase( ) {
+
 }

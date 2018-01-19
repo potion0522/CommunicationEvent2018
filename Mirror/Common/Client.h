@@ -30,7 +30,7 @@ public:
 
 public:
 	void setOrder( int order );
-	void setPlayerPos( int idx, int pos );
+	void setPlayerPos( int pos );
 	void setCtsFlag( bool flag );
 	void setCtsX( int x );
 	void setCtsY( int y );

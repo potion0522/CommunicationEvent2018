@@ -183,8 +183,8 @@ void Client::setOrder( int order ) {
 	_send_data_tcp.order = ( unsigned char )order;
 }
 
-void Client::setPlayerPos( int idx, int pos ) {
-	_send_data_tcp.player_pos[ idx ] = ( unsigned char )pos;
+void Client::setPlayerPos( int pos ) {
+	_send_data_tcp.player_pos[ _player_num ] = ( unsigned char )pos;
 }
 
 void Client::setCtsFlag( bool flag ) {

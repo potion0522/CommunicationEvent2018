@@ -19,8 +19,9 @@ public:
 	void update( );
 
 private:
-	void setTurn( );
-	void attackTurn( );
+	void updatePlayerPhase( );
+	void updateMirrorPhase( );
+	void updateAttackPhase( );
 
 private:
 	int _player_num;

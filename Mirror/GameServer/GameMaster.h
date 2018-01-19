@@ -3,12 +3,14 @@
 #include "smart_ptr.h"
 #include "const.h"
 #include <string>
+#include <array>
 
 PTR( GameMaster );
 PTR( GlobalData );
 PTR( Connector );
 PTR( Log );
 PTR( Server );
+PTR( Field );
 
 class GameMaster : public Base {
 public:
@@ -22,11 +24,25 @@ public:
 
 private:
 	void orderPlayer( );
-	void setTurn( );
-	void attackTurn( );
+	int getWaitingIdx( ) const;
+	int getOrderIdx( int order ) const;
+	void updatePlayerPhase( );
+	void updateMirrorPhase( );
+	void updateAttackPhase( );
+	void inputPlayerPhase( );
+	void inputMirrorPhase( );
+	void inputAttackPhase( );
 
 private:
-	NetWorkData _client_data[ PLAYER_NUM ];
+	struct Data {
+		int player_pos;
+		int order;
+		int x;
+		int y;
+		MIRROR_ANGLE angle;
+		bool fin;
+	};
+	std::array< Data, PLAYER_NUM > _client_data;
 
 	bool _matching;
 	bool _dice;
@@ -36,5 +52,6 @@ private:
 	ConnectorPtr _connector;
 	LogPtr _log;
 	ServerPtr _server;
+	FieldPtr _field;
 };
 

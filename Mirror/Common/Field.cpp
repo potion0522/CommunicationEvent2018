@@ -33,37 +33,12 @@ std::string Field::getTag( ) {
 void Field::initialize( ) {
 	setFlag( 1 );
 	_drawer = _data->getDrawerPtr( );
-	const int INIT_X = ( WIDTH - COL * SQUARE_SIZE ) / 2;
-
-	_mirrors[ 0 ].flag = 1;
-	_mirrors[ 0 ].x = 3;
-	_mirrors[ 0 ].y = 0;
-	_mirrors[ 0 ].normal.x = -1;
-	_mirrors[ 0 ].normal.y = -1;
-	_mirrors[ 0 ].angle = LEFT;
-
-	_mirrors[ 1 ].flag = 1;
-	_mirrors[ 1 ].x = 2;
-	_mirrors[ 1 ].y = 0;
-	_mirrors[ 1 ].normal.x = 1;
-	_mirrors[ 1 ].normal.y = -1;
-	_mirrors[ 1 ].angle = RIGHT;
-
-	for ( int i = 0; i < MIRROR_MAX; i++ ) {
-		if ( _mirrors[ i ].flag ) {
-			char c = ' ';
-			switch ( _mirrors[ i ].angle ) {
-			case RIGHT	: c = 'R'; break;
-			case LEFT	: c = 'L'; break;
-			}
-			field[ ( int )( _mirrors[ i ].x + _mirrors[ i ].y * COL ) ] = c;
-		}
-	}
 
 	_hit_mirror_num = -1;
 	_distance = 0;
 	_direct = DIR( );
 	_dir_vec = Vector( );
+	std::array< Mirror, MIRROR_MAX >( ).swap( _mirrors );
 }
 
 void Field::update( ) {
@@ -181,15 +156,24 @@ void Field::setDirect( Vector vec ) {
 }
 
 void Field::setPlayerPoint( int idx, int pos ) {
-	
+	_player_pos[ idx ] = pos;
 }
 
 void Field::setLazerPoint( ) {
 
 }
 
-void Field::setMirrorPoint( ) {
+void Field::setMirrorPoint( int player_num, int x, int y, MIRROR_ANGLE angle ) {
+	int idx = getEmptyMirrorsIdx( );
+	if ( idx < 0 ) {
+		return;
+	}
 
+	_mirrors[ idx ].flag = true;
+	_mirrors[ idx ].player_num = player_num;
+	_mirrors[ idx ].x = x;
+	_mirrors[ idx ].y = y;
+	_mirrors[ idx ].angle = angle;
 }
 
 Field::Vector Field::getLazerPoint( ) const {
@@ -204,14 +188,19 @@ Field::Vector Field::getLazerVector( ) const {
 
 Field::Vector Field::getNormalVector( double x, double y ) const {
 	Vector vec = Vector( );
-	if ( isMirror( ) ) {
-		vec = _mirrors[ _hit_mirror_num ].normal;
-	}
 	return vec;
+}
+
+int Field::getPlayerPos( int idx ) const {
+	return _player_pos[ idx ];
 }
 
 int Field::getDistance( ) const {
 	return _distance;
+}
+
+int Field::getHitMirrorIdx( ) const {
+	return _hit_mirror_num;
 }
 
 bool Field::isMirror( ) const {
@@ -221,6 +210,14 @@ bool Field::isMirror( ) const {
 	return false;
 }
 
-int Field::getHitMirrorIdx( ) const {
-	return _hit_mirror_num;
+int Field::getEmptyMirrorsIdx( ) const {
+	int idx = -1;
+	for ( int i = 0; i < MIRROR_MAX; i++ ) {
+		if ( _mirrors[ i ].flag != false ) {
+			continue;
+		}
+		idx = i;
+		break;
+	}
+	return idx;
 }

@@ -17,6 +17,7 @@ const int SCENE_MAX = 6;
 
 struct SendMirrorData {
 	bool flag;
+	unsigned char player_num;
 	unsigned char x;
 	unsigned char y;
 	unsigned char angle;
@@ -66,6 +67,7 @@ enum MIRROR_ANGLE {
 };
 
 enum BATTLE_PHASE {
-	SET_PHASE,
+	SET_PLAYER_PHASE,
+	SET_MIRROR_PHASE,
 	ATTACK_PHASE,
 };

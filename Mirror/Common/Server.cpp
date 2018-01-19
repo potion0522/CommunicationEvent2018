@@ -180,6 +180,10 @@ int Server::getOrder( int idx ) const {
 	return ( int )_recv_data_tcp[ idx ].order;
 }
 
+int Server::getPlayerPos( int idx ) const {
+	return ( int )_recv_data_tcp[ idx ].player_pos[ idx ];
+}
+
 bool Server::getCtsFlag( int idx ) const {
 	return _recv_data_tcp[ idx ].cts.flag;
 }

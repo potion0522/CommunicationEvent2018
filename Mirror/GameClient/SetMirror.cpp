@@ -18,7 +18,7 @@ void SetMirror::initialize( ) {
 	setFlag( 1 );
 	_client = _data->getClientPtr( );
 	_player_num = 0;
-	_phase = SET_PHASE;
+	_phase = SET_PLAYER_PHASE;
 	_client->setFinish( false );
 }
 
@@ -32,8 +32,9 @@ void SetMirror::update( ) {
 
 	_phase = _client->getBattlePhase( );
 	switch ( _phase ) {
-	case SET_PHASE		: setTurn( )	; break;
-	case ATTACK_PHASE	: attackTurn( )	; break;
+	case SET_PLAYER_PHASE	: updatePlayerPhase( )	; break;
+	case SET_MIRROR_PHASE	: updateMirrorPhase( )	; break;
+	case ATTACK_PHASE		: updateAttackPhase( )	; break;
 	}
 
 	DebugPtr debug = _data->getDebugPtr( );
@@ -43,7 +44,11 @@ void SetMirror::update( ) {
 	}
 }
 
-void SetMirror::setTurn( ) {
+void SetMirror::updatePlayerPhase( ) {
+
+}
+
+void SetMirror::updateMirrorPhase( ) {
 	if ( _client->getOrder( ) != _player_num ) {
 		return;
 	}
@@ -53,6 +58,6 @@ void SetMirror::setTurn( ) {
 	}
 }
 
-void SetMirror::attackTurn( ) {
+void SetMirror::updateAttackPhase( ) {
 	initialize( );
 }
