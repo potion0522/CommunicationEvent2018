@@ -1,11 +1,13 @@
 #include "Drawer.h"
 #include "DxLib.h"
 #include "Color.h"
+#include <math.h>
 
 const int SIZE_SMALL		= 10;
 const int SIZE_NORMAL		= 18;
 const int SIZE_LITTLE_BIG	= 25;
 const int SIZE_BIG			= 35;
+const int BLINK_WAIT        = 2;
 
 Drawer::Drawer( ) {
 	setFlag( 1 );
@@ -35,6 +37,9 @@ std::string Drawer::getTag( ) {
 }
 
 void Drawer::initialize( ) {
+	_blink = GetColor( 0, 0, 0 );
+	_colcode = 0;
+	_color_change_speed = 1;
 	for ( int i = 0; i < FONTHANDLE_MAX; i++ ) {
 		_handle_font[ i ] = -1;
 		switch ( ( FONTSIZE_TYPE )i ) {
@@ -51,7 +56,17 @@ void Drawer::update( ) {
 	drawString( );
 	drawLine( );
 	drawCircle( );
+	drawBlinkCircle( );
 	reset( );
+}
+
+int Drawer::getBlink( ) {
+	_colcode += _color_change_speed;
+	if ( _colcode <= 0 || _colcode >= 255 ) {
+		_color_change_speed *= -1;
+	}
+	_blink = GetColor( _colcode / BLINK_WAIT, _colcode / BLINK_WAIT, _colcode / BLINK_WAIT );
+	return _blink;
 }
 
 void Drawer::drawImage( ) {
@@ -125,6 +140,20 @@ void Drawer::drawCircle( ) {
 	SetDrawMode( DX_DRAWMODE_NEAREST );
 }
 
+void Drawer::drawBlinkCircle( ) {
+	std::list< BlinkCircleProperty >::iterator ite;
+	ite = _blinkcircle.begin( );
+	if ( _blinkcircle.size( ) < 1 ) {
+		return;
+	}
+
+	SetDrawMode( DX_DRAWMODE_BILINEAR );
+	for ( ite; ite != _blinkcircle.end( ); ite++ ) {
+		DrawCircleAA( ite->bx, ite->by, ite->br, 32, getBlink( ), TRUE );
+	}
+	SetDrawMode( DX_DRAWMODE_NEAREST );
+}
+
 void Drawer::setImage( ImageProperty png ) {
 	_images.push_back( png );
 }
@@ -152,6 +181,11 @@ void Drawer::setCircle( double x, double y, double r, COLOR col ) {
 	_circle.push_back( circle );
 }
 
+void Drawer::setBlinkCircle( double x, double y, double r ) {
+	BlinkCircleProperty blinkcircle = { ( float )x, ( float )y, ( float )r };
+	_blinkcircle.push_back( blinkcircle );
+}
+
 int Drawer::getStringW( FONTSIZE_TYPE type, std::string str ) const {
 	return GetDrawFormatStringWidthToHandle( _handle_font[ type ], str.c_str( ) );
 }
@@ -177,5 +211,9 @@ void Drawer::reset( ) {
 	size = ( int )_circle.size( );
 	if ( size > 0 ) {
 		std::list< CircleProperty >( ).swap( _circle );
+	}
+	size = ( int )_blinkcircle.size( );
+	if ( size > 0 ) {
+		std::list< BlinkCircleProperty >( ).swap( _blinkcircle );
 	}
 }

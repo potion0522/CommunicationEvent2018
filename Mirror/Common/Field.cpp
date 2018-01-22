@@ -3,6 +3,7 @@
 #include "Drawer.h"
 #include "const.h"
 #include "Client.h"
+#include "DxLib.h"
 #include <random>
 
 const int MOUSE_R = 5;
@@ -144,18 +145,25 @@ void Field::drawMirror( ) const {
 }
 
 void Field::drawPlayerPos( ) const {
-	for ( int i = 0; i < ROW; i++ ) {
-		double x = PLAYER_POS_X;
-		double y = PLAYER_POS_Y + ( i + 1 ) * SQUARE_SIZE;
-		_drawer->setCircle( x, y, CIRCLE_SIZE, RED );
-	}
-	for ( int i = 0; i < COL; i++ ) {
-		double x = PLAYER_POS_X + ( i + 1 ) * SQUARE_SIZE;
-		double y = PLAYER_POS_Y;
-		_drawer->setCircle( x, y, CIRCLE_SIZE, BLUE );
+	if ( !_selected ) {
+		for ( int i = 0; i < ROW; i++ ) {
+			double x = PLAYER_POS_X;
+			double y = PLAYER_POS_Y + ( i + 1 ) * SQUARE_SIZE;
+			_drawer->setCircle( x, y, CIRCLE_SIZE, RED );
+			if ( _player_num ) {
+				_drawer->setBlinkCircle( x, y, CIRCLE_SIZE - 1 );
+			}
+		}
+		for ( int i = 0; i < COL; i++ ) {
+			double x = PLAYER_POS_X + ( i + 1 ) * SQUARE_SIZE;
+			double y = PLAYER_POS_Y;
+			_drawer->setCircle( x, y, CIRCLE_SIZE, BLUE );
+			if ( !_player_num ) {
+				_drawer->setBlinkCircle( x, y, CIRCLE_SIZE - 1 );
+			}
+		}
 	}
 }
-
 
 void Field::drawPlayer( ) const {
 	for ( int i = 0; i < PLAYER_POSITION; i++ ) {

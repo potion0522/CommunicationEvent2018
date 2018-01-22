@@ -105,6 +105,8 @@ private:
 	void drawMirror( ) const;
 	void drawPlayerPos( ) const;
 	void drawPlayer( ) const;
+	void drawBlink( ) const;
+
 
 private:
 	std::array< Mirror, MIRROR_MAX > _mirrors;
