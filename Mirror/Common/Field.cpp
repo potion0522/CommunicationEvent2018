@@ -163,7 +163,7 @@ void Field::setLazerPoint( ) {
 
 }
 
-void Field::setMirrorPoint( int player_num, int x, int y, MIRROR_ANGLE angle ) {
+void Field::GamePoint( int player_num, int x, int y, MIRROR_ANGLE angle ) {
 	int idx = getEmptyMirrorsIdx( );
 	if ( idx < 0 ) {
 		return;

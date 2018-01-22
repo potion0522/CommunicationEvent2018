@@ -4,14 +4,14 @@
 #include "const.h"
 #include <string>
 
-PTR( SetMirror );
+PTR( Game );
 PTR( GlobalData );
 PTR( Client );
 
-class SetMirror : public Base {
+class Game : public Base {
 public:
-	SetMirror( GlobalDataPtr data );
-	virtual ~SetMirror( );
+	Game( GlobalDataPtr data );
+	virtual ~Game( );
 
 public:
 	std::string getTag( );

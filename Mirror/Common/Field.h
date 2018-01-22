@@ -76,7 +76,7 @@ public:
 	void setDirect( Vector vec );
 	void setPlayerPoint( int idx, int pos );
 	void setLazerPoint( );
-	void setMirrorPoint( int player_num, int x, int y, MIRROR_ANGLE angle );
+	void GamePoint( int player_num, int x, int y, MIRROR_ANGLE angle );
 
 public:
 	Vector getLazerPoint( ) const;

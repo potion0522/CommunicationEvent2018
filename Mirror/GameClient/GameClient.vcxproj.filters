@@ -8,10 +8,10 @@
     <ClCompile Include="Lazer.cpp">
       <Filter>Calc</Filter>
     </ClCompile>
-    <ClCompile Include="SetMirror.cpp">
+    <ClCompile Include="Title.cpp">
       <Filter>Calc</Filter>
     </ClCompile>
-    <ClCompile Include="Title.cpp">
+    <ClCompile Include="Game.cpp">
       <Filter>Calc</Filter>
     </ClCompile>
   </ItemGroup>
@@ -27,10 +27,10 @@
     <ClInclude Include="Lazer.h">
       <Filter>Calc</Filter>
     </ClInclude>
-    <ClInclude Include="SetMirror.h">
+    <ClInclude Include="Title.h">
       <Filter>Calc</Filter>
     </ClInclude>
-    <ClInclude Include="Title.h">
+    <ClInclude Include="Game.h">
       <Filter>Calc</Filter>
     </ClInclude>
   </ItemGroup>

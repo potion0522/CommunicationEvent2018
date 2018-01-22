@@ -1,20 +1,20 @@
-#include "SetMirror.h"
+#include "Game.h"
 #include "GlobalData.h"
 #include "Client.h"
 #include "Debug.h"
 
-SetMirror::SetMirror( GlobalDataPtr data ) :
+Game::Game( GlobalDataPtr data ) :
 _data( data ) {
 }
 
-SetMirror::~SetMirror( ) {
+Game::~Game( ) {
 }
 
-std::string SetMirror::getTag( ) {
-	return "SETMIRROR";
+std::string Game::getTag( ) {
+	return "Game";
 }
 
-void SetMirror::initialize( ) {
+void Game::initialize( ) {
 	setFlag( 1 );
 	_client = _data->getClientPtr( );
 	_player_num = 0;
@@ -22,7 +22,7 @@ void SetMirror::initialize( ) {
 	_client->setFinish( false );
 }
 
-void SetMirror::update( ) {
+void Game::update( ) {
 	if ( _client->getPhase( ) != "CONNECTING" ) {
 		return;
 	}
@@ -44,11 +44,11 @@ void SetMirror::update( ) {
 	}
 }
 
-void SetMirror::updatePlayerPhase( ) {
+void Game::updatePlayerPhase( ) {
 
 }
 
-void SetMirror::updateMirrorPhase( ) {
+void Game::updateMirrorPhase( ) {
 	if ( _client->getOrder( ) != _player_num ) {
 		return;
 	}
@@ -58,6 +58,6 @@ void SetMirror::updateMirrorPhase( ) {
 	}
 }
 
-void SetMirror::updateAttackPhase( ) {
+void Game::updateAttackPhase( ) {
 	initialize( );
 }

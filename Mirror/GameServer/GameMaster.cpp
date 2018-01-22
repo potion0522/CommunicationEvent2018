@@ -128,9 +128,9 @@ void GameMaster::updateMirrorPhase( ) {
 
 	idx = getOrderIdx( 1 );
 	Data data = _client_data[ idx ];
-	_field->setMirrorPoint( idx, data.x, data.y, data.angle );
+	_field->GamePoint( idx, data.x, data.y, data.angle );
 	data = _client_data[ ( idx + 1 ) % PLAYER_NUM ];
-	_field->setMirrorPoint( idx, data.x, data.y, data.angle );
+	_field->GamePoint( idx, data.x, data.y, data.angle );
 
 	for ( int i = 0; i < PLAYER_NUM; i++ ) {
 		_client_data[ i ].fin = false;

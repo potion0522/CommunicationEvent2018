@@ -6,7 +6,7 @@
 #include "Console.h"
 #include "Lazer.h"
 #include "Field.h"
-#include "SetMirror.h"
+#include "Game.h"
 
 /**********************************************************
 *														  *
@@ -32,7 +32,7 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 		//ŒvŽZƒNƒ‰ƒX
 		ConsolePtr console( new Console( data ) );
 		TitlePtr title( new Title( data ) );
-		SetMirrorPtr mirror( new SetMirror( data ) );
+		GamePtr mirror( new Game( data ) );
 		LazerPtr lazer( new Lazer( data ) );
 		FieldPtr field( new Field( data ) );
 
