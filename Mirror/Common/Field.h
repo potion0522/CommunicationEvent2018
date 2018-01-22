@@ -9,6 +9,7 @@ PTR( Field );
 PTR( GlobalData );
 PTR( Drawer );
 
+const int PLAYER_POSITION = 5;
 
 class Field : public Base {
 public:
@@ -62,6 +63,13 @@ public:
 		MIRROR_ANGLE angle;
 		//法線ベクトル
 	};
+
+	struct PlayerPos {
+		double x;
+		double y;
+		double r;
+		double num;
+	};
 public:
 	Field( GlobalDataPtr data );
 	virtual ~Field( );
@@ -74,14 +82,16 @@ public:
 public:
 	void setLazerVector( Vector vec );
 	void setDirect( Vector vec );
+	void setPhase( BATTLE_PHASE phase );
 	void setPlayerPoint( int idx, int pos );
 	void setLazerPoint( );
-	void GamePoint( int player_num, int x, int y, MIRROR_ANGLE angle );
+	void setMirrorPoint( int player_num, int x, int y, MIRROR_ANGLE angle );
 
 public:
 	Vector getLazerPoint( ) const;
 	Vector getLazerVector( ) const;
 	Vector getNormalVector( double x, double y ) const;
+	BATTLE_PHASE getPhase( ) const;
 	int getPlayerPos( int idx ) const;
 	int getDistance( ) const;
 	int getHitMirrorIdx( ) const;
@@ -89,13 +99,21 @@ public:
 
 private:
 	int getEmptyMirrorsIdx( ) const;
+	bool isHitPlayerPos( ) const;
+	//Draw系
+	void drawField( ) const;
+	void drawMirror( ) const;
+	void drawPlayerPos( ) const;
 
 private:
 	std::array< Mirror, MIRROR_MAX > _mirrors;
 	std::array< int, 2 > _dir_board;	//x, y
-	std::array< int, PLAYER_NUM > _player_pos;
+	std::array< int, PLAYER_NUM > _player_no;
+	std::array< PlayerPos, PLAYER_POSITION > _player_pos;
 	int _hit_mirror_num;
+	int _player_num;
 	int _distance;
+	BATTLE_PHASE _phase;
 	DIR _direct;
 	Vector _dir_vec;
 

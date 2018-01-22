@@ -105,12 +105,6 @@ void Debug::commandExecution( ) {
 			if ( str == "BATTLE" ) {
 				scene = BATTLE;
 			}
-			if ( str == "SET" ) {
-				scene = SET;
-			}
-			if ( str == "CALC" ) {
-				scene = CALC;
-			}
 
 			if ( scene != NONE ) {
 				_data->setScene( scene );
@@ -150,8 +144,6 @@ void Debug::printScene( ) {
 	case TITLE	: str = "title"		; break;
 	case CONNECT: str = "connect"	; break;
 	case BATTLE	: str = "battle"	; break;
-	case SET	: str = "set"		; break;
-	case CALC	: str = "calc"		; break;
 	default		: str = "please set scene"	; break;
 	}
 

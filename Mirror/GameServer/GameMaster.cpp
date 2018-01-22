@@ -48,9 +48,9 @@ void GameMaster::update( ) {
 	}
 
 	switch ( _phase ) {
-	case SET_PLAYER_PHASE	: updatePlayerPhase( )	; break;
-	case SET_MIRROR_PHASE	: updateMirrorPhase( )	; break;
-	case ATTACK_PHASE		: updateAttackPhase( )	; break;
+	case SET_PLAYER_PHASE	: updatePlayerPhase( ); break;
+	case SET_MIRROR_PHASE	: updateMirrorPhase( ); break;
+	case ATTACK_PHASE		: updateAttackPhase( ); break;
 	}
 
 	_server->sendDataUdp( );
@@ -128,9 +128,9 @@ void GameMaster::updateMirrorPhase( ) {
 
 	idx = getOrderIdx( 1 );
 	Data data = _client_data[ idx ];
-	_field->GamePoint( idx, data.x, data.y, data.angle );
+	_field->setMirrorPoint( idx, data.x, data.y, data.angle );
 	data = _client_data[ ( idx + 1 ) % PLAYER_NUM ];
-	_field->GamePoint( idx, data.x, data.y, data.angle );
+	_field->setMirrorPoint( idx, data.x, data.y, data.angle );
 
 	for ( int i = 0; i < PLAYER_NUM; i++ ) {
 		_client_data[ i ].fin = false;

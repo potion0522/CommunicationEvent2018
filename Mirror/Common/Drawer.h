@@ -32,6 +32,7 @@ public:
 	//中央寄せにするかどうか, x座標, y座標, カラー, 文字列, フォントサイズ, アルファ値
 	void setString( bool flag, double x, double y, COLOR col, std::string str, FONTSIZE_TYPE type = NORMAL, int brt = 255 );
 	void setLine( double sx, double sy, double ex, double ey, COLOR col = WHITE );
+	void setCircle( double x, double y, double r, COLOR col = WHITE );
 	int getStringW( FONTSIZE_TYPE type, std::string str ) const;
 	int getStringH( FONTSIZE_TYPE type ) const;
 
@@ -39,6 +40,7 @@ private:
 	void drawImage( );
 	void drawString( );
 	void drawLine( );
+	void drawCircle( );
 	void reset( );
 
 private:
@@ -57,11 +59,18 @@ private:
 		float ey;
 		COLOR col;
 	};
+	struct CircleProperty {
+		float cx;//中心
+		float cy;
+		float r;//半径
+		COLOR col;
+	};
 	int _handle_font[ FONTHANDLE_MAX ];
 	std::array< int, FONTHANDLE_MAX > _size;
 	std::list< StringProperty > _strings;
 	std::list< ImageProperty > _images;
 	std::list< LineProperty > _lines;
+	std::list< CircleProperty > _circle;
 
 	ColorPtr _color;
 };

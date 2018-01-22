@@ -31,6 +31,9 @@ void Lazer::initialize( ) {
 }
 
 void Lazer::update( ) {
+	if ( _field->getPhase( ) < ATTACK_PHASE ) {
+		return;
+	}
 	if ( _field->isMirror( ) ) {
 		updateLazer( );
 	}

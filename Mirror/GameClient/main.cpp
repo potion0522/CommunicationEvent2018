@@ -32,20 +32,19 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 		//計算クラス
 		ConsolePtr console( new Console( data ) );
 		TitlePtr title( new Title( data ) );
-		GamePtr mirror( new Game( data ) );
-		LazerPtr lazer( new Lazer( data ) );
 		FieldPtr field( new Field( data ) );
+		data->setPtr( field );
+		GamePtr game( new Game( data ) );
+		LazerPtr lazer( new Lazer( data ) );
 
 		direction->add( TITLE, title );
 		direction->add( CONNECT, console );
-		direction->add( SET, mirror );
-		direction->add( CALC, lazer );
-		direction->add( CALC, field );
+		direction->add( BATTLE, game );
+		direction->add( BATTLE, field );
+		direction->add( BATTLE, lazer );
 
-		data->setPtr( field );
 
 		direction->initialize( );
-		data->setScene( CALC );
 		// GlobalData のフラグが 0 であれば全プロセス終了
 		while ( data->getFlag( ) ) {
 			if ( ScreenFlip( ) != 0 || ProcessMessage( ) != 0 || ClearDrawScreen( ) != 0 ) {

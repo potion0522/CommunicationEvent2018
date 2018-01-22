@@ -25,7 +25,7 @@ void Console::initialize( ) {
 }
 
 void Console::update( ) {
-	if ( _data->getScene( ) < SET ) {
+	if ( _data->getScene( ) == CONNECT ) {
 		if ( _data->getKeyState( KEY_INPUT_X ) == 1 && !_data->getCommandFlag( ) ) {
 			_data->setScene( TITLE );
 			_client->disConnect( );
@@ -74,7 +74,7 @@ void Console::matching( ) {
 
 	if ( _client->isRecvingTcp( ) ) {
 		if ( _client->isMatching( ) ) {
-			_data->setScene( SET );
+			_data->setScene( BATTLE );
 		}
 	}
 }

@@ -53,8 +53,6 @@ enum SCENE {
 	TITLE,
 	CONNECT,
 	BATTLE,
-	SET,
-	CALC,	
 };
 
 enum IMAGE {

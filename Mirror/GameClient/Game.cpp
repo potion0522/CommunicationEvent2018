@@ -2,9 +2,11 @@
 #include "GlobalData.h"
 #include "Client.h"
 #include "Debug.h"
+#include "Field.h"
 
 Game::Game( GlobalDataPtr data ) :
 _data( data ) {
+	_field = _data->getFieldPtr( );
 }
 
 Game::~Game( ) {
@@ -26,6 +28,10 @@ void Game::update( ) {
 	if ( _client->getPhase( ) != "CONNECTING" ) {
 		return;
 	}
+	if ( _field->getPhase( ) != _phase ) {
+		_field->setPhase( _phase );
+	}
+
 	if ( _player_num < 1 ) {
 		_player_num = _client->getPlayerNum( );
 	}
@@ -45,7 +51,10 @@ void Game::update( ) {
 }
 
 void Game::updatePlayerPhase( ) {
-
+	if ( _data->getKeyState( KEY_INPUT_RETURN ) == 1 ) {
+		_client->setPlayerPos( _player_num );
+		_client->sendTcp( );
+	}
 }
 
 void Game::updateMirrorPhase( ) {

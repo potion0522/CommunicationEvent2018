@@ -2,13 +2,18 @@
 #include "GlobalData.h"
 #include "Drawer.h"
 #include "const.h"
+#include "Client.h"
 #include <random>
 
+const int MOUSE_R = 5;
 const int ROW = 5;
 const int COL = 5;
 const int SQUARE_SIZE = 96;
+const int CIRCLE_SIZE = SQUARE_SIZE / 5 * 2;
 const int START_POS_X = WIDTH / 3 * 2 - SQUARE_SIZE * COL / 2;
 const int START_POS_Y = HEIGHT / 2 - SQUARE_SIZE * ROW / 2;
+const int PLAYER_POS_X = START_POS_X - SQUARE_SIZE / 2;
+const int PLAYER_POS_Y = START_POS_Y - SQUARE_SIZE / 2;
 const int DISTANCE = SQUARE_SIZE;
 const int DISTANCE_HALF = SQUARE_SIZE / 2;
 
@@ -39,19 +44,66 @@ void Field::initialize( ) {
 	_direct = DIR( );
 	_dir_vec = Vector( );
 	std::array< Mirror, MIRROR_MAX >( ).swap( _mirrors );
+	_phase = SET_PLAYER_PHASE;
+	_player_num = _data->getClientPtr( )->getPlayerNum( );
+	for ( int i = 0; i < PLAYER_POSITION; i++ ) {
+		if ( _player_num ) {
+			_player_pos[ i ].x = PLAYER_POS_X;
+			_player_pos[ i ].y = PLAYER_POS_Y + ( i + 1 ) * SQUARE_SIZE;
+		} else {
+			_player_pos[ i ].x = PLAYER_POS_X + ( i + 1 ) * SQUARE_SIZE;
+			_player_pos[ i ].y = PLAYER_POS_Y;
+		}
+	}
 }
 
 void Field::update( ) {
-	_hit_mirror_num = -1;
-	for ( int i = 0; i < MIRROR_MAX; i++ ) {
-		double pos_x = START_POS_X + _mirrors[ i ].x * SQUARE_SIZE + SQUARE_SIZE * 0.5;
-		double pos_y = START_POS_Y + _mirrors[ i ].y * SQUARE_SIZE + SQUARE_SIZE * 0.5;
-		if ( ( int )( _dir_vec.x - pos_x ) == 0 && ( int )( _dir_vec.y - pos_y ) == 0 ) {
-			_hit_mirror_num = i;
-			break;
-		}
+	drawField( );
+	drawPlayerPos( );
+	if ( _phase == SET_PLAYER_PHASE ) {
+		isHitPlayerPos( );
 	}
 
+	if ( _phase < SET_MIRROR_PHASE ) {
+		return;
+	}
+
+	drawMirror( );
+	if ( _phase < ATTACK_PHASE ) {
+		return;
+	}
+
+}
+
+bool Field::isHitPlayerPos( ) const {
+	bool result = false;
+//	if ( _data->getClickLeft( ) ) {
+		double _mouse_x = _data->getMouseX( );
+		double _mouse_y = _data->getMouseX( );
+
+
+		for ( int i = 0; i < ROW; i++ ) {
+			double x = PLAYER_POS_X;
+			double y = PLAYER_POS_Y + ( i + 1 ) * SQUARE_SIZE;
+			double distance = sqrt ( ( _mouse_x - x ) * ( _mouse_x - x ) + ( _mouse_y - y ) * ( _mouse_y - y ) );
+			if( distance <= CIRCLE_SIZE ) {
+				result = true;
+			}
+		}
+		for ( int i = 0; i < COL; i++ ) {
+			double x = PLAYER_POS_X + ( i + 1 ) * SQUARE_SIZE;
+			double y = PLAYER_POS_Y;
+			double distance = sqrt ( ( _mouse_x - x ) * ( _mouse_x - x ) + ( _mouse_y - y ) * ( _mouse_y - y ) );
+			if( distance <= CIRCLE_SIZE ) {
+				result = true;
+				
+			}
+		}
+//	}
+	return result;
+}
+
+void Field::drawField( ) const {
 	//ƒtƒB[ƒ‹ƒh•`‰æ
 	for ( int i = 0; i < ROW + 1; i++ ) {
 		int sx = START_POS_X;
@@ -67,7 +119,9 @@ void Field::update( ) {
 		int ey = sy + SQUARE_SIZE * ROW;
 		_drawer->setLine( sx, sy, ex, ey, YELLOW );
 	}
+}
 
+void Field::drawMirror( ) const {
 	//‹¾•`‰æ
 	for ( int i = 0; i <  ROW; i++ ) {
 		for ( int j = 0; j < COL; j++ ) {
@@ -79,7 +133,7 @@ void Field::update( ) {
 				m.y = 1;
 				break;
 			case 'L':
-				m.x = -1;
+				m.x = -1;	
 				m.y = 1;
 				break;
 			}
@@ -93,6 +147,27 @@ void Field::update( ) {
 		}
 	}
 }
+
+void Field::drawPlayerPos( ) const {
+	for ( int i = 0; i < ROW; i++ ) {
+		double x = PLAYER_POS_X;
+		double y = PLAYER_POS_Y + ( i + 1 ) * SQUARE_SIZE;
+		_drawer->setCircle( x, y, CIRCLE_SIZE, RED );
+		if( isHitPlayerPos( ) ) {
+			_drawer->setCircle( x, y, CIRCLE_SIZE / 2, RED );
+		}
+	}
+
+	for ( int i = 0; i < COL; i++ ) {
+		double x = PLAYER_POS_X + ( i + 1 ) * SQUARE_SIZE;
+		double y = PLAYER_POS_Y;
+		_drawer->setCircle( x, y, CIRCLE_SIZE, BLUE );
+		if( isHitPlayerPos( ) ) {
+			_drawer->setCircle( x, y, CIRCLE_SIZE / 2, BLUE );
+		}
+	}
+}
+
 
 void Field::setLazerVector( Vector vec ) {
 	_dir_vec = vec;
@@ -155,15 +230,19 @@ void Field::setDirect( Vector vec ) {
 	}
 }
 
+void Field::setPhase( BATTLE_PHASE phase ) {
+	_phase = phase;
+}
+
 void Field::setPlayerPoint( int idx, int pos ) {
-	_player_pos[ idx ] = pos;
+	_player_no[ idx ] = pos;
 }
 
 void Field::setLazerPoint( ) {
 
 }
 
-void Field::GamePoint( int player_num, int x, int y, MIRROR_ANGLE angle ) {
+void Field::setMirrorPoint( int player_num, int x, int y, MIRROR_ANGLE angle ) {
 	int idx = getEmptyMirrorsIdx( );
 	if ( idx < 0 ) {
 		return;
@@ -191,8 +270,12 @@ Field::Vector Field::getNormalVector( double x, double y ) const {
 	return vec;
 }
 
+BATTLE_PHASE Field::getPhase( ) const{
+	return _phase;
+}
+
 int Field::getPlayerPos( int idx ) const {
-	return _player_pos[ idx ];
+	return _player_no[ idx ];
 }
 
 int Field::getDistance( ) const {

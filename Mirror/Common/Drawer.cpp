@@ -50,6 +50,7 @@ void Drawer::update( ) {
 	drawImage( );
 	drawString( );
 	drawLine( );
+	drawCircle( );
 	reset( );
 }
 
@@ -110,6 +111,20 @@ void Drawer::drawLine( ) {
 	SetDrawMode( DX_DRAWMODE_NEAREST );
 }
 
+void Drawer::drawCircle( ) {
+	std::list< CircleProperty >::iterator ite;
+	ite = _circle.begin( );
+	if( _circle.size( ) < 1 ) {
+		return;
+	}
+
+	SetDrawMode(  DX_DRAWMODE_BILINEAR );
+	for( ite; ite != _circle.end( ); ite++ ) {
+		DrawCircleAA( ite->cx, ite->cy, ite->r, 32, _color->getColor( ite->col ), FALSE );
+	}
+	SetDrawMode( DX_DRAWMODE_NEAREST );
+}
+
 void Drawer::setImage( ImageProperty png ) {
 	_images.push_back( png );
 }
@@ -130,6 +145,11 @@ void Drawer::setString( bool flag, double x, double y, COLOR col, std::string st
 void Drawer::setLine( double sx, double sy, double ex, double ey, COLOR col ) {
 	LineProperty line = { ( float )sx, ( float )sy, ( float )ex, ( float )ey, col };
 	_lines.push_back( line );
+}
+
+void Drawer::setCircle( double x, double y, double r, COLOR col ) {
+	CircleProperty circle = { ( float )x, ( float )y, ( float )r, col };
+	_circle.push_back( circle );
 }
 
 int Drawer::getStringW( FONTSIZE_TYPE type, std::string str ) const {
@@ -153,5 +173,9 @@ void Drawer::reset( ) {
 	size = ( int )_lines.size( );
 	if ( size > 0 ) {
 		std::list< LineProperty >( ).swap( _lines );
+	}
+	size = ( int )_circle.size( );
+	if ( size > 0 ) {
+		std::list< CircleProperty >( ).swap( _circle );
 	}
 }
