@@ -43,19 +43,21 @@ void Field::initialize( ) {
 	_mouse_x = 0;
 	_mouse_y = 0;
 	_selected = false;
+	_color = WHITE;
 	_direct = DIR( );
 	_dir_vec = Vector( );
 	std::array< Mirror, MIRROR_MAX >( ).swap( _mirrors );
 	_phase = SET_PLAYER_PHASE;
-	//_player_num = _data->getClientPtr( )->getPlayerNum( );
-	_player_num = 0;
+	_player_num = _data->getClientPtr( )->getPlayerNum( );
 	for ( int i = 0; i < PLAYER_POSITION; i++ ) {
 		if ( _player_num ) {
 			_player_pos[ i ].x = PLAYER_POS_X;
 			_player_pos[ i ].y = PLAYER_POS_Y + ( i + 1 ) * SQUARE_SIZE;
+			_color = RED;
 		} else {
 			_player_pos[ i ].x = PLAYER_POS_X + ( i + 1 ) * SQUARE_SIZE;
 			_player_pos[ i ].y = PLAYER_POS_Y;
+			_color = BLUE;
 		}
 	}
 }
@@ -150,24 +152,18 @@ void Field::drawPlayerPos( ) const {
 	for ( int i = 0; i < COL; i++ ) {
 		double x = PLAYER_POS_X + ( i + 1 ) * SQUARE_SIZE;
 		double y = PLAYER_POS_Y;
-		_drawer->setCircle( x, y, CIRCLE_SIZE, BLUE );	
+		_drawer->setCircle( x, y, CIRCLE_SIZE, BLUE );
 	}
 }
 
 
 void Field::drawPlayer( ) const {
-	COLOR color;
-	if ( _player_num ) {
-		color = RED;
-	} else {
-		color = BLUE;
-	}
 	for ( int i = 0; i < PLAYER_POSITION; i++ ) {
 		double x = _player_pos[ i ].x;
 		double y = _player_pos[ i ].y;
 		double distance = sqrt( ( _mouse_x - x ) * ( _mouse_x - x ) + ( _mouse_y - y ) * ( _mouse_y - y ) );
 		if ( distance <= CIRCLE_SIZE ) {
-			_drawer->setCircle( x, y, CIRCLE_SIZE / 2, color );
+			_drawer->setCircle( x, y, CIRCLE_SIZE / 2, _color );
 		}
 	}
 }

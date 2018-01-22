@@ -120,6 +120,7 @@ private:
 	BATTLE_PHASE _phase;
 	DIR _direct;
 	Vector _dir_vec;
+	COLOR _color;
 
 	GlobalDataPtr _data;
 	DrawerPtr _drawer;
