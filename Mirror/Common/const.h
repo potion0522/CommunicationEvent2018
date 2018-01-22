@@ -10,11 +10,6 @@ const int MIRROR_MAX = 6;
 const int TCP_PORT = 9850;
 const int UDP_PORT = 9900;
 
-//—ñ‹“Œ^‚Ì—v‘f‚ğ‘‚â‚µ‚½‚ç•K‚¸•ÏX‚µ‚Ä‚­‚¾‚³‚¢
-const int IMAGE_DIR_MAX = 1;
-const int COLOR_MAX = 6;
-const int SCENE_MAX = 6;
-
 struct SendMirrorData {
 	bool flag;
 	unsigned char player_num;
@@ -45,18 +40,20 @@ enum COLOR {
 	BLUE,
 	WATER,
 	YELLOW,
+	COLOR_MAX,
 };
 
 enum SCENE {
-	ALL = SCENE_MAX,
-	NONE = 0,
+	NONE,
 	TITLE,
 	CONNECT,
 	BATTLE,
+	SCENE_MAX,
 };
 
 enum IMAGE {
-	NONE_IMAGE
+	NONE_IMAGE,
+	IMAGE_DIR_MAX
 };
 
 enum MIRROR_ANGLE {

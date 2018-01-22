@@ -99,11 +99,12 @@ public:
 
 private:
 	int getEmptyMirrorsIdx( ) const;
-	bool isHitPlayerPos( ) const;
+	bool isHitPlayerPos( );
 	//Drawån
 	void drawField( ) const;
 	void drawMirror( ) const;
 	void drawPlayerPos( ) const;
+	void drawPlayer( ) const;
 
 private:
 	std::array< Mirror, MIRROR_MAX > _mirrors;
@@ -113,6 +114,9 @@ private:
 	int _hit_mirror_num;
 	int _player_num;
 	int _distance;
+	double _mouse_x;
+	double _mouse_y;
+	bool _selected;
 	BATTLE_PHASE _phase;
 	DIR _direct;
 	Vector _dir_vec;

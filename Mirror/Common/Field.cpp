@@ -38,14 +38,17 @@ std::string Field::getTag( ) {
 void Field::initialize( ) {
 	setFlag( 1 );
 	_drawer = _data->getDrawerPtr( );
-
 	_hit_mirror_num = -1;
 	_distance = 0;
+	_mouse_x = 0;
+	_mouse_y = 0;
+	_selected = false;
 	_direct = DIR( );
 	_dir_vec = Vector( );
 	std::array< Mirror, MIRROR_MAX >( ).swap( _mirrors );
 	_phase = SET_PLAYER_PHASE;
-	_player_num = _data->getClientPtr( )->getPlayerNum( );
+	//_player_num = _data->getClientPtr( )->getPlayerNum( );
+	_player_num = 0;
 	for ( int i = 0; i < PLAYER_POSITION; i++ ) {
 		if ( _player_num ) {
 			_player_pos[ i ].x = PLAYER_POS_X;
@@ -62,6 +65,7 @@ void Field::update( ) {
 	drawPlayerPos( );
 	if ( _phase == SET_PLAYER_PHASE ) {
 		isHitPlayerPos( );
+		drawPlayer( );
 	}
 
 	if ( _phase < SET_MIRROR_PHASE ) {
@@ -74,32 +78,21 @@ void Field::update( ) {
 	}
 
 }
-
-bool Field::isHitPlayerPos( ) const {
+bool Field::isHitPlayerPos( ) {
 	bool result = false;
-//	if ( _data->getClickLeft( ) ) {
-		double _mouse_x = _data->getMouseX( );
-		double _mouse_y = _data->getMouseX( );
-
-
-		for ( int i = 0; i < ROW; i++ ) {
-			double x = PLAYER_POS_X;
-			double y = PLAYER_POS_Y + ( i + 1 ) * SQUARE_SIZE;
-			double distance = sqrt ( ( _mouse_x - x ) * ( _mouse_x - x ) + ( _mouse_y - y ) * ( _mouse_y - y ) );
-			if( distance <= CIRCLE_SIZE ) {
+	if ( _data->getClickLeft( ) && !_selected ) {
+		_mouse_x = _data->getMouseX( );
+		_mouse_y = _data->getMouseY( );
+		for ( int i = 0; i < PLAYER_POSITION; i++ ) {
+			double x = _player_pos[ i ].x;
+			double y = _player_pos[ i ].y;
+			double distance = sqrt( ( _mouse_x - x ) * ( _mouse_x - x ) + ( _mouse_y - y ) * ( _mouse_y - y ) );
+			if ( distance <= CIRCLE_SIZE ) {
 				result = true;
+				_selected = true;
 			}
 		}
-		for ( int i = 0; i < COL; i++ ) {
-			double x = PLAYER_POS_X + ( i + 1 ) * SQUARE_SIZE;
-			double y = PLAYER_POS_Y;
-			double distance = sqrt ( ( _mouse_x - x ) * ( _mouse_x - x ) + ( _mouse_y - y ) * ( _mouse_y - y ) );
-			if( distance <= CIRCLE_SIZE ) {
-				result = true;
-				
-			}
-		}
-//	}
+	}
 	return result;
 }
 
@@ -153,21 +146,31 @@ void Field::drawPlayerPos( ) const {
 		double x = PLAYER_POS_X;
 		double y = PLAYER_POS_Y + ( i + 1 ) * SQUARE_SIZE;
 		_drawer->setCircle( x, y, CIRCLE_SIZE, RED );
-		if( isHitPlayerPos( ) ) {
-			_drawer->setCircle( x, y, CIRCLE_SIZE / 2, RED );
-		}
 	}
-
 	for ( int i = 0; i < COL; i++ ) {
 		double x = PLAYER_POS_X + ( i + 1 ) * SQUARE_SIZE;
 		double y = PLAYER_POS_Y;
-		_drawer->setCircle( x, y, CIRCLE_SIZE, BLUE );
-		if( isHitPlayerPos( ) ) {
-			_drawer->setCircle( x, y, CIRCLE_SIZE / 2, BLUE );
-		}
+		_drawer->setCircle( x, y, CIRCLE_SIZE, BLUE );	
 	}
 }
 
+
+void Field::drawPlayer( ) const {
+	COLOR color;
+	if ( _player_num ) {
+		color = RED;
+	} else {
+		color = BLUE;
+	}
+	for ( int i = 0; i < PLAYER_POSITION; i++ ) {
+		double x = _player_pos[ i ].x;
+		double y = _player_pos[ i ].y;
+		double distance = sqrt( ( _mouse_x - x ) * ( _mouse_x - x ) + ( _mouse_y - y ) * ( _mouse_y - y ) );
+		if ( distance <= CIRCLE_SIZE ) {
+			_drawer->setCircle( x, y, CIRCLE_SIZE / 2, color );
+		}
+	}
+}
 
 void Field::setLazerVector( Vector vec ) {
 	_dir_vec = vec;

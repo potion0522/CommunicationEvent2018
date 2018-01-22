@@ -14,8 +14,8 @@ _data( data ) {
 	_data->initialize( type );
 	_debug = DebugPtr( new Debug( _data ) );
 	_data->setPtr( _debug );
-	add( ALL, _data->getDrawerPtr( ) );
-	add( ALL, _debug );
+	add( SCENE_MAX, _data->getDrawerPtr( ) );
+	add( SCENE_MAX, _debug );
 	switch ( type ) {
 	case SERVER: add( CONNECT, _data->getServerPtr( ) ); break;
 	case CLIENT: add( CONNECT, _data->getClientPtr( ) ); break;
@@ -81,7 +81,7 @@ void Direction::run( ) {
 	ite = _exe.begin( );
 	for ( ite; ite != _exe.end( ); ite++ ) {
 		SCENE ite_scene = ite->first;
-		if ( ite_scene != _scene && ite_scene != ALL ) {
+		if ( ite_scene != _scene && ite_scene != SCENE_MAX ) {
 			if ( ite_scene != CONNECT ) {
 				continue;
 			}
@@ -91,9 +91,9 @@ void Direction::run( ) {
 		}
 
 		////デバッグ用
-		//if ( ite_scene == CONNECT ) {
-		//	continue;
-		//}
+		if ( ite_scene == CONNECT ) {
+			continue;
+		}
 
 		int size = ( int )ite->second.size( );
 		for ( int i = 0; i < size; i++ ) {
