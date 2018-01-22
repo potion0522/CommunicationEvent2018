@@ -8,6 +8,9 @@ const int SIZE_NORMAL		= 18;
 const int SIZE_LITTLE_BIG	= 25;
 const int SIZE_BIG			= 35;
 const int BLINK_WAIT        = 2;
+const int GRADATION_SPEED   = 1;
+const int COL_MIN           = 0;
+const int COL_MAX           = 255;
 
 Drawer::Drawer( ) {
 	setFlag( 1 );
@@ -39,7 +42,7 @@ std::string Drawer::getTag( ) {
 void Drawer::initialize( ) {
 	_blink = GetColor( 0, 0, 0 );
 	_colcode = 0;
-	_color_change_speed = 1;
+	_color_change_speed = GRADATION_SPEED;
 	for ( int i = 0; i < FONTHANDLE_MAX; i++ ) {
 		_handle_font[ i ] = -1;
 		switch ( ( FONTSIZE_TYPE )i ) {
@@ -62,7 +65,7 @@ void Drawer::update( ) {
 
 int Drawer::getBlink( ) {
 	_colcode += _color_change_speed;
-	if ( _colcode <= 0 || _colcode >= 255 ) {
+	if ( _colcode <= COL_MIN || _colcode >= COL_MAX ) {
 		_color_change_speed *= -1;
 	}
 	_blink = GetColor( _colcode / BLINK_WAIT, _colcode / BLINK_WAIT, _colcode / BLINK_WAIT );
