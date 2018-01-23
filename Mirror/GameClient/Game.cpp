@@ -13,7 +13,7 @@ Game::~Game( ) {
 }
 
 std::string Game::getTag( ) {
-	return "Game";
+	return "GAME";
 }
 
 void Game::initialize( ) {
@@ -34,6 +34,7 @@ void Game::update( ) {
 
 	if ( _player_num < 1 ) {
 		_player_num = _client->getPlayerNum( );
+		_field->setPlayerNum( _player_num );
 	}
 
 	_phase = _client->getBattlePhase( );
@@ -45,16 +46,28 @@ void Game::update( ) {
 
 	DebugPtr debug = _data->getDebugPtr( );
 	if ( debug->getFlag( ) ) {
+		debug->addLog( "Phase      : " + std::to_string( ( int )_phase ) );
 		debug->addLog( "Player Num : " + std::to_string( _player_num ) );
 		debug->addLog( " Order Num : " + std::to_string( _client->getOrder( ) ) );
 	}
 }
 
 void Game::updatePlayerPhase( ) {
-	if ( _data->getKeyState( KEY_INPUT_RETURN ) == 1 ) {
-		_client->setPlayerPos( _player_num );
-		_client->sendTcp( );
+	bool hit = false;
+	if ( _data->getClickLeft( ) ) {
+		hit = _field->isHitPlayerPos( );
 	}
+	if ( !hit ) {
+		return;
+	}
+	int pos = _field->getPlayerPosHitNum( );
+	if ( pos < 0 ) {
+		return;
+	}
+	_field->setPlayerPoint( _player_num, pos );
+
+	_client->setPlayerPos( pos );
+	_client->sendTcp( );
 }
 
 void Game::updateMirrorPhase( ) {
@@ -62,7 +75,6 @@ void Game::updateMirrorPhase( ) {
 		return;
 	}
 	if ( _data->getKeyState( KEY_INPUT_RETURN ) == 1 ) {
-		_client->setFinish( true );
 		_client->sendTcp( );
 	}
 }

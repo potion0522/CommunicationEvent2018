@@ -91,16 +91,18 @@ void Direction::run( ) {
 		}
 
 		////デバッグ用
-		if ( ite_scene == CONNECT ) {
-			continue;
-		}
+		//if ( ite_scene == CONNECT ) {
+		//	continue;
+		//}
 
 		int size = ( int )ite->second.size( );
 		for ( int i = 0; i < size; i++ ) {
 			if ( !ite->second[ i ]->getFlag( ) ) {
 				continue;
 			}
-			_debug->setActiveClass( ite->second[ i ]->getTag( ) );
+			if ( _debug->getFlag( ) ) {
+				_debug->setActiveClass( ite->second[ i ]->getTag( ) );
+			}
 			ite->second[ i ]->update( );
 		}
 	}

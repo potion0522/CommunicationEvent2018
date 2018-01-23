@@ -43,7 +43,7 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 		direction->add( BATTLE, field );
 		direction->add( BATTLE, lazer );
 
-
+		//data->setScene( BATTLE );
 		direction->initialize( );
 		// GlobalData のフラグが 0 であれば全プロセス終了
 		while ( data->getFlag( ) ) {

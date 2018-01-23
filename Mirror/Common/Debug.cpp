@@ -172,9 +172,6 @@ void Debug::initActiveClass( ) {
 }
 
 void Debug::setActiveClass( std::string tag ) {
-	if ( getFlag( ) < 1 ) {
-		return;
-	}
 	int size = ( int )_active_class.size( );
 	for ( int i = 0; i < size; i++ ) {
 		if ( _active_class[ i ] == tag ) {

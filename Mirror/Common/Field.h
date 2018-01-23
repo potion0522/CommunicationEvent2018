@@ -67,8 +67,6 @@ public:
 	struct PlayerPos {
 		double x;
 		double y;
-		double r;
-		double num;
 	};
 public:
 	Field( GlobalDataPtr data );
@@ -80,6 +78,7 @@ public:
 	void update( );
 
 public:
+	void setPlayerNum( int num );
 	void setLazerVector( Vector vec );
 	void setDirect( Vector vec );
 	void setPhase( BATTLE_PHASE phase );
@@ -92,14 +91,15 @@ public:
 	Vector getLazerVector( ) const;
 	Vector getNormalVector( double x, double y ) const;
 	BATTLE_PHASE getPhase( ) const;
-	int getPlayerPos( int idx ) const;
+	int getPlayerPoint( int idx ) const;
 	int getDistance( ) const;
 	int getHitMirrorIdx( ) const;
+	int getPlayerPosHitNum( ) const;
 	bool isMirror( ) const;
+	bool isHitPlayerPos( );
 
 private:
 	int getEmptyMirrorsIdx( ) const;
-	bool isHitPlayerPos( );
 	//Drawån
 	void drawField( ) const;
 	void drawMirror( ) const;
@@ -111,18 +111,17 @@ private:
 private:
 	std::array< Mirror, MIRROR_MAX > _mirrors;
 	std::array< int, 2 > _dir_board;	//x, y
-	std::array< int, PLAYER_NUM > _player_no;
-	std::array< PlayerPos, PLAYER_POSITION > _player_pos;
-	int _hit_mirror_num;
+	std::array< int, PLAYER_NUM > _player_pos_no;
+	std::array< PlayerPos, PLAYER_POSITION * 2 > _select_player_pos;
+	std::array< COLOR, PLAYER_NUM >_player_color;
 	int _player_num;
+	int _player_pos_hit_num;
+	int _hit_mirror_num;
 	int _distance;
-	double _mouse_x;
-	double _mouse_y;
 	bool _selected;
 	BATTLE_PHASE _phase;
 	DIR _direct;
 	Vector _dir_vec;
-	COLOR _color;
 
 	GlobalDataPtr _data;
 	DrawerPtr _drawer;
