@@ -15,11 +15,13 @@
 ***********************************************************/
 
 int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow ) {
+	SetWindowText( "Mirror" );
 	ChangeWindowMode( 1 );
+	SetWindowSize( SCREEN_WIDTH, SCREEN_HEIGHT );
+	SetGraphMode( WIDTH, HEIGHT, 32 );
 	SetDoubleStartValidFlag( TRUE );
 	SetAlwaysRunFlag( TRUE );
 	SetConnectTimeOutWait( 60 );
-	SetGraphMode( WIDTH, HEIGHT, 32 );
 	if ( DxLib_Init( ) != 0 ) {
 		return -1;
 	}
@@ -43,7 +45,7 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 		direction->add( BATTLE, field );
 		direction->add( BATTLE, lazer );
 
-		//data->setScene( BATTLE );
+		data->setScene( BATTLE );
 		direction->initialize( );
 		// GlobalData のフラグが 0 であれば全プロセス終了
 		while ( data->getFlag( ) ) {

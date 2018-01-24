@@ -68,6 +68,7 @@ void Field::update( ) {
 	drawField( );
 	drawPlayer( );
 	drawArmament( );
+
 	if ( _phase == SET_PLAYER_PHASE ) {
 		drawPlayerPos( );
 	}
