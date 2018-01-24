@@ -98,18 +98,13 @@ void Drawer::drawString( ) {
 	ite = _strings.begin( );
 
 	for ( ite; ite != _strings.end( ); ite++ ) {
-		bool brend = false;
 		if ( ite->brt < 255 ) {
-			brend = true;
-		}
-
-		if ( brend ) {
 			SetDrawBlendMode( DX_BLENDMODE_ALPHA, ite->brt );
 		}
 
 		DrawFormatStringFToHandle( ite->x, ite->y, _color->getColor( ite->col ), ite->handle, "%s", ite->str.c_str( ) );
 
-		if ( brend ) {
+		if ( ite->brt < 255 ) {
 			SetDrawBlendMode( DX_BLENDMODE_NOBLEND, 0 );
 		}
 	}
@@ -138,7 +133,15 @@ void Drawer::drawCircle( ) {
 
 	SetDrawMode(  DX_DRAWMODE_BILINEAR );
 	for( ite; ite != _circle.end( ); ite++ ) {
-		DrawCircleAA( ite->cx, ite->cy, ite->r, 32, _color->getColor( ite->col ), FALSE );
+
+		if ( ite->brt < 255 ) {
+			SetDrawBlendMode( DX_BLENDMODE_ALPHA, ite->brt );
+		}
+		DrawCircleAA( ite->cx, ite->cy, ite->r, 32, _color->getColor( ite->col ), ite->isFill );
+
+		if ( ite->brt < 255 ) {
+			SetDrawBlendMode( DX_BLENDMODE_NOBLEND, 0 );
+		}
 	}
 	SetDrawMode( DX_DRAWMODE_NEAREST );
 }
@@ -179,8 +182,8 @@ void Drawer::setLine( double sx, double sy, double ex, double ey, COLOR col ) {
 	_lines.push_back( line );
 }
 
-void Drawer::setCircle( double x, double y, double r, COLOR col ) {
-	CircleProperty circle = { ( float )x, ( float )y, ( float )r, col };
+void Drawer::setCircle( double x, double y, double r, COLOR col, int brt, bool isfill ) {
+	CircleProperty circle = { ( float )x, ( float )y, ( float )r, col, brt, isfill };
 	_circle.push_back( circle );
 }
 

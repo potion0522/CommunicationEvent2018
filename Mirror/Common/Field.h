@@ -4,6 +4,7 @@
 #include "const.h"
 #include <string>
 #include <array>
+#include <Windows.h>
 
 PTR( Field );
 PTR( GlobalData );
@@ -83,8 +84,9 @@ public:
 	void setDirect( Vector vec );
 	void setPhase( BATTLE_PHASE phase );
 	void setPlayerPoint( int idx, int pos );
-	void setLazerPoint( );
+	void setLazerPoint( int pos );
 	void setMirrorPoint( int player_num, int x, int y, MIRROR_ANGLE angle );
+	void playerPosSelected( );
 
 public:
 	Vector getLazerPoint( ) const;
@@ -97,16 +99,16 @@ public:
 	int getPlayerPosHitNum( ) const;
 	bool isMirror( ) const;
 	bool isHitPlayerPos( );
+	bool isSelectedPlayer( ) const;
 
 private:
 	int getEmptyMirrorsIdx( ) const;
 	//Drawån
 	void drawField( ) const;
+	void drawArmament( ) const;
 	void drawMirror( ) const;
 	void drawPlayerPos( ) const;
 	void drawPlayer( ) const;
-	void drawBlink( ) const;
-
 
 private:
 	std::array< Mirror, MIRROR_MAX > _mirrors;
@@ -116,8 +118,10 @@ private:
 	std::array< COLOR, PLAYER_NUM >_player_color;
 	int _player_num;
 	int _player_pos_hit_num;
+	int _lazer_pos;
 	int _hit_mirror_num;
 	int _distance;
+	HCURSOR _cur_hand;
 	bool _selected;
 	BATTLE_PHASE _phase;
 	DIR _direct;

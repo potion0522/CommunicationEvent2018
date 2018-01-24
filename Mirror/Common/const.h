@@ -20,6 +20,7 @@ struct SendMirrorData {
 
 struct NetWorkData {
 	unsigned char player_pos[ PLAYER_NUM ];
+	unsigned char lazer_pos;
 	unsigned char phase;
 	unsigned char order;
 	SendMirrorData cts;
@@ -40,6 +41,7 @@ enum COLOR {
 	BLUE,
 	WATER,
 	YELLOW,
+	PURPLE,
 	COLOR_MAX,
 };
 

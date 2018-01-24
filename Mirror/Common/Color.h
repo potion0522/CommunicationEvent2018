@@ -19,6 +19,7 @@ private:
 	void setRed( );
 	void setBlue( );
 	void setWater( );
+	void setPurple( );
 	void setYellow( );
 
 private:

@@ -25,6 +25,9 @@ void Server::initialize( ) {
 	}
 
 	_send_data_udp = NetWorkData( );
+	_send_data_udp.player_pos[ 0 ] = -1;
+	_send_data_udp.player_pos[ 1 ] = -1;
+	_send_data_udp.lazer_pos = -1;
 	memset( _recv_data_tcp, 0, sizeof( NetWorkData ) * MACHINE_MAX );
 
 	createIP( );
@@ -154,6 +157,15 @@ std::string Server::getMachineIpStr( int idx ) {
 
 void Server::setOrder( int order ) {
 	_send_data_udp.order = ( unsigned char )order;
+}
+
+
+void Server::setPlayerPos( int idx, int pos ) {
+	_send_data_udp.player_pos[ idx ] = ( unsigned char )pos;
+}
+
+void Server::setLazerPos( int pos ) {
+	_send_data_udp.lazer_pos = ( unsigned char )pos;
 }
 
 void Server::setStcFlag( int idx, bool flag ) {

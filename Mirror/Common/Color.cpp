@@ -20,6 +20,7 @@ int Color::getColor( COLOR col ) {
 	case BLUE	: setBlue( )	;	break;
 	case WATER	: setWater( )	;	break;
 	case YELLOW	: setYellow( )	;	break;
+	case PURPLE	: setPurple( )	;	break;
 	default		: setWhite( )	;	break;
 	}
 
@@ -48,4 +49,8 @@ void Color::setWater( ) {
 
 void Color::setYellow( ) {
 	_col = GetColor( 255, 255, 0 );
+}
+
+void Color::setPurple( ) {
+	_col = GetColor( 255, 0, 255 );
 }

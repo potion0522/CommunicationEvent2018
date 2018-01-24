@@ -21,23 +21,23 @@ void Game::initialize( ) {
 	_client = _data->getClientPtr( );
 	_player_num = 0;
 	_phase = SET_PLAYER_PHASE;
-	_client->setFinish( false );
 }
 
 void Game::update( ) {
 	if ( _client->getPhase( ) != "CONNECTING" ) {
 		return;
 	}
+	_phase = _client->getBattlePhase( );
+
 	if ( _field->getPhase( ) != _phase ) {
-		_field->setPhase( _phase );
+ 		_field->setPhase( _phase );
 	}
 
-	if ( _player_num < 1 ) {
-		_player_num = _client->getPlayerNum( );
+	_player_num = _client->getPlayerNum( );
+	if ( _player_num != ( unsigned char )-1 ) {
 		_field->setPlayerNum( _player_num );
 	}
 
-	_phase = _client->getBattlePhase( );
 	switch ( _phase ) {
 	case SET_PLAYER_PHASE	: updatePlayerPhase( )	; break;
 	case SET_MIRROR_PHASE	: updateMirrorPhase( )	; break;
@@ -54,9 +54,8 @@ void Game::update( ) {
 
 void Game::updatePlayerPhase( ) {
 	bool hit = false;
-	if ( _data->getClickLeft( ) ) {
-		hit = _field->isHitPlayerPos( );
-	}
+	hit = _field->isHitPlayerPos( );
+
 	if ( !hit ) {
 		return;
 	}
@@ -64,6 +63,10 @@ void Game::updatePlayerPhase( ) {
 	if ( pos < 0 ) {
 		return;
 	}
+	if ( !_data->getClickLeft( ) ) {
+		return;
+	}
+	_field->playerPosSelected( );
 	_field->setPlayerPoint( _player_num, pos );
 
 	_client->setPlayerPos( pos );
@@ -71,6 +74,24 @@ void Game::updatePlayerPhase( ) {
 }
 
 void Game::updateMirrorPhase( ) {
+	if ( !_client->isRecvingUdp( ) ) {
+		return;
+	}
+
+	for ( int i = 0; i < PLAYER_NUM; i++ ) {
+		int pos = _client->getPlayerPos( i );
+		if ( pos == ( unsigned char )-1 ) {
+			return;
+		}
+		_field->setPlayerPoint( i, pos );
+	}
+
+	int lazer_pos = _client->getLazerPoint( );
+	if ( lazer_pos == ( unsigned char )-1 ) {
+		return;
+	}
+	_field->setLazerPoint( lazer_pos );
+
 	if ( _client->getOrder( ) != _player_num ) {
 		return;
 	}
@@ -81,4 +102,5 @@ void Game::updateMirrorPhase( ) {
 
 void Game::updateAttackPhase( ) {
 	initialize( );
+	_field->initialize( );
 }

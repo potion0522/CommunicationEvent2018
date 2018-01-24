@@ -32,7 +32,7 @@ public:
 	//中央寄せにするかどうか, x座標, y座標, カラー, 文字列, フォントサイズ, アルファ値
 	void setString( bool flag, double x, double y, COLOR col, std::string str, FONTSIZE_TYPE type = NORMAL, int brt = 255 );
 	void setLine( double sx, double sy, double ex, double ey, COLOR col = WHITE );
-	void setCircle( double x, double y, double r, COLOR col = WHITE );
+	void setCircle( double x, double y, double r, COLOR col = WHITE, int brt = 255, bool isfill = false );
 	void setBlinkCircle( double x, double y, double r );
 	int getStringW( FONTSIZE_TYPE type, std::string str ) const;
 	int getStringH( FONTSIZE_TYPE type ) const;
@@ -67,6 +67,7 @@ private:
 		float cy;
 		float r;//半径
 		COLOR col;
+		int brt;
 		bool isFill;
 	};
 	struct BlinkCircleProperty {

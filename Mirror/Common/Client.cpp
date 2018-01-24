@@ -211,6 +211,10 @@ int Client::getPlayerNum( ) const {
 	return _player_num;
 }
 
+int Client::getLazerPoint( ) const {
+	return ( int )_recv_data_udp.lazer_pos;
+}
+
 int Client::getOrder( ) const {
 	return ( int )_recv_data_udp.order;
 }

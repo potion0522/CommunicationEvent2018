@@ -5,6 +5,7 @@
 #include "Log.h"
 #include "Field.h"
 #include <random>
+#include <map>
 
 GameMaster::GameMaster( GlobalDataPtr data, ConnectorPtr connector, LogPtr log ) :
 _data( data ),
@@ -110,8 +111,23 @@ void GameMaster::updatePlayerPhase( ) {
 
 	for ( int i = 0; i < MACHINE_MAX; i++ ) {
 		_field->setPlayerPoint( i, _client_data[ i ].player_pos );
+		_server->setPlayerPos( i, _client_data[ i ].player_pos );
 		_client_data[ i ].fin = false;
 	}
+
+	int dif = 0;
+	int player_one = _server->getPlayerPos( 0 );
+	int player_two = _server->getPlayerPos( 1 );
+	std::map< int, int > point;
+	for ( int i = 0; i < PLAYER_POSITION * 2; i++ ) {
+		point[ i ] = i;
+	}
+
+	point.erase( player_one );
+	point.erase( player_two );
+
+	int rand = _data->getRandom( 0, PLAYER_POSITION * 2 - 2 );
+	_server->setLazerPos( point[ rand ] );
 }
 
 void GameMaster::updateMirrorPhase( ) {

@@ -39,6 +39,7 @@ public:
 
 public:
 	int getPlayerNum( ) const;
+	int getLazerPoint( ) const;
 	int getOrder( ) const;
 	int getPlayerPos( int idx ) const;
 	bool getStcFlag( int idx ) const;

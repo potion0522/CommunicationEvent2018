@@ -28,6 +28,7 @@ Field::Field( GlobalDataPtr data ) :
 _data( data ) {
 	setFlag( 1 );
 	_drawer = _data->getDrawerPtr( );
+	_cur_hand  = LoadCursor( NULL, IDC_HAND );
 }
 
 Field::~Field( ) {
@@ -42,6 +43,7 @@ void Field::initialize( ) {
 	_distance = 0;
 	_player_num = -1;
 	_player_pos_hit_num = -1;
+	_lazer_pos = -1;
 	_selected = false;
 	_direct = DIR( );
 	_dir_vec = Vector( );
@@ -65,6 +67,7 @@ void Field::initialize( ) {
 void Field::update( ) {
 	drawField( );
 	drawPlayer( );
+	drawArmament( );
 	if ( _phase == SET_PLAYER_PHASE ) {
 		drawPlayerPos( );
 	}
@@ -97,13 +100,16 @@ bool Field::isHitPlayerPos( ) {
 		double y = _select_player_pos[ i ].y;
 		double distance = sqrt( ( mouse_x - x ) * ( mouse_x - x ) + ( mouse_y - y ) * ( mouse_y - y ) );
 		if ( distance <= CIRCLE_SIZE + MOUSE_R ) {
-			_player_pos_hit_num = i % PLAYER_POSITION;
-			_selected = true;
+			_player_pos_hit_num = i;
 			return true;
 		}
 	}
 	_player_pos_hit_num = -1;
 	return false;
+}
+
+bool Field::isSelectedPlayer( ) const {
+	return _selected;
 }
 
 void Field::drawField( ) const {
@@ -122,6 +128,18 @@ void Field::drawField( ) const {
 		int ey = sy + SQUARE_SIZE * ROW;
 		_drawer->setLine( sx, sy, ex, ey, YELLOW );
 	}
+}
+
+void Field::drawArmament( ) const {
+	//–C‘ä•`‰æ
+	if ( _lazer_pos < 0 ) {
+		return;
+	}
+
+	double x = _select_player_pos[ _lazer_pos ].x;
+	double y = _select_player_pos[ _lazer_pos ].y;
+
+	_drawer->setCircle( x, y, CIRCLE_SIZE, PURPLE, 150, true );
 }
 
 void Field::drawMirror( ) const {
@@ -162,11 +180,15 @@ void Field::drawPlayerPos( ) const {
 	for ( int i = 0; i < PLAYER_POSITION * 2; i++ ) {
 		double x = _select_player_pos[ i ].x;
 		double y = _select_player_pos[ i ].y;
-		_drawer->setCircle( x, y, CIRCLE_SIZE, ( COLOR )( RED + i / PLAYER_POSITION ) );
-
 		if ( _player_num == i / PLAYER_POSITION ) {
-			_drawer->setBlinkCircle( x, y, CIRCLE_SIZE - 1 );
+			if ( getPlayerPosHitNum( ) == i ) {
+				_drawer->setCircle( x, y, CIRCLE_SIZE, WHITE, 255, true );
+				SetCursor( _cur_hand );
+			} else {
+				_drawer->setBlinkCircle( x, y, CIRCLE_SIZE - 1 );
+			}
 		}
+		_drawer->setCircle( x, y, CIRCLE_SIZE, ( COLOR )( RED + i / PLAYER_POSITION ) );
 	}
 }
 
@@ -184,16 +206,10 @@ void Field::drawPlayer( ) const {
 		double x = 0;
 		double y = 0;
 
-		x = PLAYER_POS_X + ( pos + 1 ) * SQUARE_SIZE;
-		y = PLAYER_POS_Y + ( pos + 1 ) * SQUARE_SIZE;
+		x = _select_player_pos[ pos ].x;
+		y = _select_player_pos[ pos ].y;
 
-		if ( i == 0 ) {
-			x = PLAYER_POS_X;
-		}
-		if ( i == 1 ) {
-			y = PLAYER_POS_Y;
-		}
-
+		_drawer->setCircle( x, y, CIRCLE_SIZE / 2, WHITE, 150, true );
 		_drawer->setCircle( x, y, CIRCLE_SIZE / 2, _player_color[ i ] );
 	}
 }
@@ -271,8 +287,8 @@ void Field::setPlayerPoint( int idx, int pos ) {
 	_player_pos_no[ idx ] = pos;
 }
 
-void Field::setLazerPoint( ) {
-
+void Field::setLazerPoint( int pos ) {
+	_lazer_pos = pos;
 }
 
 void Field::setMirrorPoint( int player_num, int x, int y, MIRROR_ANGLE angle ) {
@@ -286,6 +302,10 @@ void Field::setMirrorPoint( int player_num, int x, int y, MIRROR_ANGLE angle ) {
 	_mirrors[ idx ].x = x;
 	_mirrors[ idx ].y = y;
 	_mirrors[ idx ].angle = angle;
+}
+
+void Field::playerPosSelected( ) {
+	_selected = !_selected;
 }
 
 Field::Vector Field::getLazerPoint( ) const {

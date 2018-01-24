@@ -69,7 +69,8 @@ bool GlobalData::getClickLeft( ) const {
 
 int GlobalData::getRandom( int min, int max ) const {
 	std::random_device rd;
-	return rd( ) % max + min;
+	int random = min + rd( ) % ( max - min + 1 );
+	return random;
 }
 
 SCENE GlobalData::getScene( ) const {

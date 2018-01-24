@@ -27,6 +27,8 @@ public:
 
 public:
 	void setOrder( int order );
+	void setPlayerPos( int idx, int pos );
+	void setLazerPos( int pos );
 	void setStcFlag( int idx, bool flag );
 	void setStcX( int idx, int x );
 	void setStcY( int idx, int y );
