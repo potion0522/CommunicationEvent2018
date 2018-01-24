@@ -11,10 +11,11 @@ PTR( Connector );
 PTR( Log );
 PTR( Server );
 PTR( Field );
+PTR( Command );
 
 class GameMaster : public Base {
 public:
-	GameMaster( GlobalDataPtr data, ConnectorPtr connector, LogPtr log );
+	GameMaster( GlobalDataPtr data, ConnectorPtr connector, LogPtr log, CommandPtr command );
 	virtual ~GameMaster( );
 
 public:
@@ -23,6 +24,7 @@ public:
 	void update( );
 
 private:
+	void commandExecution( );
 	void orderPlayer( );
 	int getWaitingIdx( ) const;
 	int getOrderIdx( int order ) const;
@@ -53,5 +55,6 @@ private:
 	LogPtr _log;
 	ServerPtr _server;
 	FieldPtr _field;
+	CommandPtr _command;
 };
 

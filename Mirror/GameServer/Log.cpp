@@ -25,7 +25,7 @@ void Log::update( ) {
 }
 
 void Log::isLogPring( ) {
-	const int LOG_X = WIDTH - 250;
+	const int LOG_X = WIDTH - 300;
 	int size = 0;
 	for ( int i = 0; i < SERVER_CONSOLE_LOG_MAX; i++ ) {
 		if ( _log[ i ].empty( ) ) {

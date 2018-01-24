@@ -4,13 +4,15 @@
 #include "Server.h"
 #include "Log.h"
 #include "Field.h"
+#include "Command.h"
 #include <random>
 #include <map>
 
-GameMaster::GameMaster( GlobalDataPtr data, ConnectorPtr connector, LogPtr log ) :
+GameMaster::GameMaster( GlobalDataPtr data, ConnectorPtr connector, LogPtr log, CommandPtr command ) :
 _data( data ),
 _connector( connector ),
-_log( log ) {
+_log( log ),
+_command( command ) {
 	_field = FieldPtr( new Field( _data ) );
 	_server = _data->getServerPtr( );
 	setFlag( 1 );
@@ -43,6 +45,7 @@ void GameMaster::update( ) {
 	if ( !_matching ) {
 		return;
 	}
+	commandExecution( );
 
 	if ( !_dice ) {
 		orderPlayer( );
@@ -116,8 +119,8 @@ void GameMaster::updatePlayerPhase( ) {
 	}
 
 	int dif = 0;
-	int player_one = _server->getPlayerPos( 0 );
-	int player_two = _server->getPlayerPos( 1 );
+	int player_one = _field->getPlayerPoint( 0 );
+	int player_two = _field->getPlayerPoint( 1 );
 	std::map< int, int > point;
 	for ( int i = 0; i < PLAYER_POSITION * 2; i++ ) {
 		point[ i ] = i;
@@ -145,7 +148,17 @@ void GameMaster::updateMirrorPhase( ) {
 	idx = getOrderIdx( 1 );
 	Data data = _client_data[ idx ];
 	_field->setMirrorPoint( idx, data.x, data.y, data.angle );
-	data = _client_data[ ( idx + 1 ) % PLAYER_NUM ];
+	_server->setStcX( idx, data.x );
+	_server->setStcY( idx, data.y );
+	_server->setStcAngle( idx, data.angle );
+	_server->setStcFlag( idx, true );
+
+	idx = ( idx + 1 ) % PLAYER_NUM;
+	data = _client_data[ idx ];
+	_server->setStcX( idx, data.x );
+	_server->setStcY( idx, data.y );
+	_server->setStcAngle( idx, data.angle );
+	_server->setStcFlag( idx, true );
 	_field->setMirrorPoint( idx, data.x, data.y, data.angle );
 
 	for ( int i = 0; i < PLAYER_NUM; i++ ) {
@@ -154,7 +167,6 @@ void GameMaster::updateMirrorPhase( ) {
 }
 
 void GameMaster::updateAttackPhase( ) {
-	initialize( );
 }
 
 void GameMaster::inputPlayerPhase( ) {
@@ -179,4 +191,70 @@ void GameMaster::inputMirrorPhase( ) {
 
 void GameMaster::inputAttackPhase( ) {
 
+}
+
+void GameMaster::commandExecution( ) {
+	if ( _command->getWordNum( ) < 1 ) {
+		return;
+	}
+
+	if ( _command->getWord( 0 ) == "RETURN" ) {
+		_phase = SET_MIRROR_PHASE;
+		_server->setBattlePhase( _phase );
+		int one = _client_data[ 0 ].player_pos;
+		int two = _client_data[ 1 ].player_pos;
+		std::array< Data, PLAYER_NUM >( ).swap( _client_data );
+		_client_data[ 0 ].player_pos = one;
+		_client_data[ 1 ].player_pos = two;
+		_dice = false;
+	}
+
+	if ( _command->getWordNum( ) < 2 ) {
+		return;
+	}
+
+	if ( _command->getWord( 0 ) != "SET" ) {
+		return;
+	}
+	if ( _command->getWord( 1 ) == "PLAYER" ) {
+		std::string pos = _command->getWord( 2 );
+		if ( ( int )pos.size( ) > 1 ) {
+			return;
+		}
+		int val = atoi( pos.c_str( ) );
+		if ( 0 <= val && val <= 4 ) {
+			_client_data[ 1 ].player_pos = val + PLAYER_POSITION;
+			_client_data[ 1 ].fin = true;
+			_log->add( "player 1 pos " + std::to_string( val ) );
+		}
+	}
+
+	if ( _command->getWordNum( ) < 5 ) {
+		return;
+	}
+
+	if ( _command->getWord( 1 ) == "MIRROR" ) {
+		std::string x = _command->getWord( 2 );
+		std::string y = _command->getWord( 3 );
+		std::string angle = _command->getWord( 4 );
+		if ( ( int )x.size( ) > 1 || ( int )y.size( ) > 1 ) {
+			return;
+		}
+		if ( angle != "RIGHT" && angle != "LEFT" ) {
+			return;
+		}
+		const int ROW = 5;
+		const int COL = 5;
+		int val_x = atoi( x.c_str( ) );
+		int val_y = atoi( y.c_str( ) );
+		if ( 0 <= val_x && val_x < COL &&
+			 0 <= val_y && val_y < ROW ) {
+			_client_data[ 1 ].x = val_x;
+			_client_data[ 1 ].y = val_y;
+			_client_data[ 1 ].angle = ( angle == "RIGHT" ? RIGHT : LEFT );
+			_client_data[ 1 ].fin = true;
+			_log->add( "mirror pos ( " + x + ", " + y + " )" );
+			_log->add( "       angle " + angle );
+		}
+	}
 }

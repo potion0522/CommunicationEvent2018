@@ -5,6 +5,8 @@
 #include "Log.h"
 #include "Connector.h"
 #include "GameMaster.h"
+#include "Command.h"
+#include "Debug.h"
 
 /**********************************************************
 *														  *
@@ -15,7 +17,7 @@
 int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow ) {
 	SetWindowText( "Mirror" );
 	ChangeWindowMode( 1 );
-	SetWindowSize( SCREEN_WIDTH, SCREEN_HEIGHT );
+	//SetWindowSize( SCREEN_WIDTH, SCREEN_HEIGHT );
 	SetGraphMode( WIDTH, HEIGHT, 32 );
 	SetDoubleStartValidFlag( TRUE );
 	SetAlwaysRunFlag( TRUE );
@@ -29,21 +31,24 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 		GlobalDataPtr data( new GlobalData( ) );
 		DirectionPtr direction( new Direction( SERVER, data ) );
 
+		CommandPtr command( new Command( data ) );
+		command->setFlag( 1 );
 		LogPtr log( new Log( data ) );
-		ConnectorPtr connector( new Connector( data, log ) );
-		GameMasterPtr master( new GameMaster( data, connector, log ) );
+		ConnectorPtr connector( new Connector( data, log, command ) );
+		GameMasterPtr master( new GameMaster( data, connector, log, command ) );
 
 		direction->add( CONNECT, connector );
 		direction->add( CONNECT, master );
 		data->setScene( CONNECT );
 
 		direction->initialize( );
+		data->getDebugPtr( )->setFlag( 1 );
 		// GlobalData のフラグが 0 であれば全プロセス終了
 		while ( data->getFlag( ) ) {
 			if ( ScreenFlip( ) != 0 || ProcessMessage( ) != 0 || ClearDrawScreen( ) != 0 ) {
 				break;
 			}
-
+			command->update( );
 			direction->run( );
 		}
 	}

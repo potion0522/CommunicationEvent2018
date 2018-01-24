@@ -9,8 +9,10 @@
 const int ACTIVE_CLASS_X = 20;
 const int LOG_X = WIDTH - 250;
 const int SCENE_X = 20;
+const int MOUSE_X = 200;
 const int Y_POS = 20;
 const int ACTIVE_CLASS_INIT_Y = 40;
+const int MOUSE_Y = 20;
 
 Debug::Debug( GlobalDataPtr data ) :
 _data( data ){
@@ -21,8 +23,8 @@ Debug::~Debug( ) {
 
 void Debug::initialize( ) {
 	setFlag( 0 );
-	_color = ColorPtr( new Color( ) );
 	_command = CommandPtr( new Command( _data ) );
+	_color = ColorPtr( new Color( ) );
 	_drawer = _data->getDrawerPtr( );
 	_log_y = Y_POS;
 	_active_y = ACTIVE_CLASS_INIT_Y;
@@ -58,6 +60,7 @@ void Debug::update( ) {
 	printLog( );
 	printActiveClass( );
 	printScene( );
+	drawMousePoint( );
 	//DrawCircle( WIDTH / 2, HEIGHT /2, 5, _color->getColor( RED ), TRUE );
 
 	if ( _data->getKeyState( KEY_INPUT_RETURN ) == 1 && !_data->getCommandFlag( ) ) {
@@ -65,12 +68,11 @@ void Debug::update( ) {
 	}
 
 	_data->setCommandFlag( false );
-	if ( _command->getFlag( ) ) {
+	if ( _command->getFlag( ) && _data->getMachineType( ) == CLIENT ) {
 		_command->update( );
 		commandExecution( );
 		_data->setCommandFlag( true );
 	}
-
 
 	initLog( );
 	initActiveClass( );
@@ -113,11 +115,17 @@ void Debug::commandExecution( ) {
 	}
 }
 
+void Debug::drawMousePoint( ) {
+	int x = _data->getMouseX( );
+	int y = _data->getMouseY( );
+	_drawer->setString( false, MOUSE_X, MOUSE_Y, WHITE, "x : " + std::to_string( x ) + " y : " + std::to_string( y ) );
+}
+
 void Debug::printLog( ) {
 	int size = ( int )_log.size( );
 
 	for ( int i = 0; i < size; i++ ) {
-		DrawFormatString( LOG_X, _log_y, _color->getColor( WHITE ), "Log : %s", _log[ i ].c_str( ) );
+		_drawer->setString( false, LOG_X, _log_y, WHITE, "Log : " + _log[ i ] );
 		_log_y += Y_POS;
 	}
 }
@@ -130,7 +138,7 @@ void Debug::printActiveClass( ) {
 	}
 
 	for ( int i = 0; i < size; i++ ) {
-		DrawFormatString( ACTIVE_CLASS_X, _active_y, _color->getColor( RED ), "Active : %s", _active_class[ i ].c_str( ) );
+		_drawer->setString( false, ACTIVE_CLASS_X, _active_y, RED, "Active : " + _active_class[ i ] );
 		_active_y += Y_POS;
 	}
 }
@@ -147,7 +155,7 @@ void Debug::printScene( ) {
 	default		: str = "please set scene"	; break;
 	}
 
-	DrawFormatString( SCENE_X, Y_POS, _color->getColor( WHITE ), "SCENE  : %s", str.c_str( ) );
+	_drawer->setString( false, SCENE_X, Y_POS, WHITE, "SCENE  : " + str );
 }
 
 void Debug::initLog( ) {

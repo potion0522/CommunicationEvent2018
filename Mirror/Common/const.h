@@ -1,11 +1,12 @@
 #pragma once
 
-//解像度
-const int WIDTH = 1280;
-const int HEIGHT = 720;
 //スクリーンサイズ
 const int SCREEN_WIDTH = 1920;
 const int SCREEN_HEIGHT = 1080;
+//解像度
+const int WIDTH = 1280;
+const int HEIGHT = 720;
+
 const double PI = 3.14;
 const int KEY_MAX = 256;
 const int PLAYER_NUM = 2;

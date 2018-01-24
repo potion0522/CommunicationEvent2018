@@ -17,7 +17,7 @@
 int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow ) {
 	SetWindowText( "Mirror" );
 	ChangeWindowMode( 1 );
-	SetWindowSize( SCREEN_WIDTH, SCREEN_HEIGHT );
+	//SetWindowSize( SCREEN_WIDTH, SCREEN_HEIGHT );
 	SetGraphMode( WIDTH, HEIGHT, 32 );
 	SetDoubleStartValidFlag( TRUE );
 	SetAlwaysRunFlag( TRUE );

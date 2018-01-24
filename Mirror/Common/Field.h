@@ -87,6 +87,7 @@ public:
 	void setLazerPoint( int pos );
 	void setMirrorPoint( int player_num, int x, int y, MIRROR_ANGLE angle );
 	void playerPosSelected( );
+	void mirrorPosSelected( );
 
 public:
 	Vector getLazerPoint( ) const;
@@ -97,9 +98,12 @@ public:
 	int getDistance( ) const;
 	int getHitMirrorIdx( ) const;
 	int getPlayerPosHitNum( ) const;
+	int getFieldPosHitNum( ) const;
 	bool isMirror( ) const;
 	bool isHitPlayerPos( );
 	bool isSelectedPlayer( ) const;
+	bool isHitFieldPos( );
+	bool isSelectedMirror( ) const;
 
 private:
 	int getEmptyMirrorsIdx( ) const;
@@ -116,13 +120,15 @@ private:
 	std::array< int, PLAYER_NUM > _player_pos_no;
 	std::array< PlayerPos, PLAYER_POSITION * 2 > _select_player_pos;
 	std::array< COLOR, PLAYER_NUM >_player_color;
+	bool _player_selected;
+	bool _mirror_selected;
 	int _player_num;
 	int _player_pos_hit_num;
+	int _field_pos_hit_num;
 	int _lazer_pos;
 	int _hit_mirror_num;
 	int _distance;
 	HCURSOR _cur_hand;
-	bool _selected;
 	BATTLE_PHASE _phase;
 	DIR _direct;
 	Vector _dir_vec;

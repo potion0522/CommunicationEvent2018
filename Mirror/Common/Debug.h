@@ -30,6 +30,7 @@ public:
 
 private:
 	void commandExecution( );
+	void drawMousePoint( );
 	void printLog( );
 	void printActiveClass( );
 	void printScene( );

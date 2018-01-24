@@ -39,12 +39,14 @@ std::string Field::getTag( ) {
 }
 
 void Field::initialize( ) {
+	_player_selected = false;
+	_mirror_selected = false;
 	_hit_mirror_num = -1;
 	_distance = 0;
 	_player_num = -1;
 	_player_pos_hit_num = -1;
+	_field_pos_hit_num = -1;
 	_lazer_pos = -1;
-	_selected = false;
 	_direct = DIR( );
 	_dir_vec = Vector( );
 	std::array< Mirror, MIRROR_MAX >( ).swap( _mirrors );
@@ -110,7 +112,35 @@ bool Field::isHitPlayerPos( ) {
 }
 
 bool Field::isSelectedPlayer( ) const {
-	return _selected;
+	return _player_selected;
+}
+
+bool Field::isHitFieldPos( ) {
+	if ( _player_num < 0 ) {
+		return false;
+	}
+	if ( _mirror_selected ) {
+		return false;
+	}
+	double mouse_x = ( double )_data->getMouseX( );
+	double mouse_y = ( double )_data->getMouseY( );
+	for ( int i = 0; i < ROW; i++ ) {
+		for ( int j = 0; j < COL; j++ ) {
+			double table_left = START_POS_X + j * SQUARE_SIZE;
+			double table_top  = START_POS_Y + i * SQUARE_SIZE;
+			if ( table_left < mouse_x && mouse_x   < table_left + SQUARE_SIZE &&
+				 table_top  < mouse_y && mouse_y < table_top  + SQUARE_SIZE ) {
+				_field_pos_hit_num = j + i * COL;
+				return true;
+			}
+		}
+	}
+	_field_pos_hit_num = -1;
+	return false;
+}
+
+bool Field::isSelectedMirror( ) const {
+	return _mirror_selected;
 }
 
 void Field::drawField( ) const {
@@ -171,7 +201,7 @@ void Field::drawMirror( ) const {
 }
 
 void Field::drawPlayerPos( ) const {
-	if ( _selected ) {
+	if ( _player_selected ) {
 		return;
 	}
 	if ( _player_num < 0 ) {
@@ -194,7 +224,7 @@ void Field::drawPlayerPos( ) const {
 }
 
 void Field::drawPlayer( ) const {
-	if ( !_selected ) {
+	if ( !_player_selected ) {
 		return;
 	}
 
@@ -298,6 +328,8 @@ void Field::setMirrorPoint( int player_num, int x, int y, MIRROR_ANGLE angle ) {
 		return;
 	}
 
+	field[ x + y * COL ] = ( angle == RIGHT ? 'R' : 'L' );
+
 	_mirrors[ idx ].flag = true;
 	_mirrors[ idx ].player_num = player_num;
 	_mirrors[ idx ].x = x;
@@ -306,7 +338,11 @@ void Field::setMirrorPoint( int player_num, int x, int y, MIRROR_ANGLE angle ) {
 }
 
 void Field::playerPosSelected( ) {
-	_selected = !_selected;
+	_player_selected = !_player_selected;
+}
+
+void Field::mirrorPosSelected( ) {
+	_mirror_selected = !_mirror_selected;
 }
 
 Field::Vector Field::getLazerPoint( ) const {
@@ -342,6 +378,10 @@ int Field::getHitMirrorIdx( ) const {
 
 int Field::getPlayerPosHitNum( ) const {
 	return _player_pos_hit_num;
+}
+
+int Field::getFieldPosHitNum( ) const {
+	return _field_pos_hit_num;
 }
 
 bool Field::isMirror( ) const {

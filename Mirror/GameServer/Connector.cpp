@@ -1,11 +1,13 @@
 #include "Connector.h"
 #include "GlobalData.h"
 #include "Log.h"
+#include "Command.h"
 #include <string.h>
 
-Connector::Connector( GlobalDataPtr data, LogPtr log ) :
+Connector::Connector( GlobalDataPtr data, LogPtr log, CommandPtr command ) :
 _data( data ),
-_log( log ) {
+_log( log ),
+_command( command ) {
 }
 
 Connector::~Connector( ) {
@@ -26,14 +28,18 @@ void Connector::initialize( ) {
 	}
 	_matching = false;
 	_sending_state = false;
+	_command_matching = false;
 	_server_scene = CONNECT;
 	_log->add( "Connection Waiting" );
 }
 
 void Connector::update( ) {
-	updateConnectState( );
-	updateMatchingState( );
-	sendState( );
+	commandExecution( );
+	if ( !_command_matching ) {
+		updateConnectState( );
+		updateMatchingState( );
+		sendState( );
+	}
 
 	_log->update( );
 }
@@ -84,6 +90,18 @@ void Connector::sendState( ) {
 	}
 	_server->sendDataTcp( _matching );
 	_sending_state = _matching;
+}
+
+void Connector::commandExecution( ) {
+	if ( _command->getWordNum( ) < 1 ) {
+		return;
+	}
+	if ( _command->getWord( 0 ) == "MATCHING" ) {
+		_command_matching = true;
+		_matching = true;
+		sendState( );
+		_log->add( "change matching TRUE" );
+	}
 }
 
 bool Connector::isMatching( ) const {

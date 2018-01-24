@@ -7,10 +7,11 @@ PTR( Connector );
 PTR( Server );
 PTR( GlobalData );
 PTR( Log );
+PTR( Command );
 
 class Connector : public Base {
 public:
-	Connector( GlobalDataPtr data, LogPtr log );
+	Connector( GlobalDataPtr data, LogPtr log, CommandPtr command );
 	~Connector( );
 
 public:
@@ -25,10 +26,12 @@ private:
 	void updateConnectState( );
 	void updateMatchingState( );
 	void sendState( );
+	void commandExecution( );
 
 private:
 	bool _matching;
 	bool _sending_state;
+	bool _command_matching;
 	enum CONNECT_STATE {
 		NOT_CONNECTING,
 		CONNECTING,
@@ -39,4 +42,5 @@ private:
 	GlobalDataPtr _data;
 	ServerPtr _server;
 	LogPtr _log;
+	CommandPtr _command;
 };

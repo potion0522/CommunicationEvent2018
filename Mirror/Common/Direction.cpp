@@ -46,7 +46,7 @@ void Direction::update( ) {
 	}
 
 	//デバッグON
-	if ( _data->getKeyState( KEY_INPUT_SPACE ) == 1 ) {
+	if ( _data->getKeyState( KEY_INPUT_SPACE ) == 1 && _data->getMachineType( ) == CLIENT ) {
 		if ( !_data->getCommandFlag( ) ) {
 			_debug->setFlag( ( _debug->getFlag( ) + 1 ) % 2 );
 		}
@@ -90,10 +90,10 @@ void Direction::run( ) {
 			continue;
 		}
 
-		//デバッグ用
-		if ( ite_scene == CONNECT ) {
-			continue;
-		}
+		////デバッグ用
+		//if ( ite_scene == CONNECT ) {
+		//	continue;
+		//}
 
 		int size = ( int )ite->second.size( );
 		for ( int i = 0; i < size; i++ ) {

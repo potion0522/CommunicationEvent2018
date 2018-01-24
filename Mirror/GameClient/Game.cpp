@@ -7,6 +7,7 @@
 Game::Game( GlobalDataPtr data ) :
 _data( data ) {
 	_field = _data->getFieldPtr( );
+	_client = _data->getClientPtr( );
 }
 
 Game::~Game( ) {
@@ -18,7 +19,6 @@ std::string Game::getTag( ) {
 
 void Game::initialize( ) {
 	setFlag( 1 );
-	_client = _data->getClientPtr( );
 	_player_num = 0;
 	_phase = SET_PLAYER_PHASE;
 }
@@ -27,7 +27,13 @@ void Game::update( ) {
 	if ( _client->getPhase( ) != "CONNECTING" ) {
 		return;
 	}
-	_phase = _client->getBattlePhase( );
+	BATTLE_PHASE phase = _client->getBattlePhase( );
+	if ( _phase != phase ) {
+		if ( _phase == ATTACK_PHASE && phase == SET_MIRROR_PHASE ) {
+			_field->mirrorPosSelected( );
+		}
+		_phase = phase;
+	}
 
 	if ( _field->getPhase( ) != _phase ) {
  		_field->setPhase( _phase );
@@ -48,7 +54,7 @@ void Game::update( ) {
 	if ( debug->getFlag( ) ) {
 		debug->addLog( "Phase      : " + std::to_string( ( int )_phase ) );
 		debug->addLog( "Player Num : " + std::to_string( _player_num ) );
-		debug->addLog( " Order Num : " + std::to_string( _client->getOrder( ) ) );
+		debug->addLog( "Order Num  : " + std::to_string( _client->getOrder( ) ) );
 	}
 }
 
@@ -95,12 +101,53 @@ void Game::updateMirrorPhase( ) {
 	if ( _client->getOrder( ) != _player_num ) {
 		return;
 	}
-	if ( _data->getKeyState( KEY_INPUT_RETURN ) == 1 ) {
-		_client->sendTcp( );
+
+	//
+	bool hit = false;
+	hit = _field->isHitFieldPos( );
+
+	if ( !hit ) {
+		return;
 	}
+	int pos = _field->getFieldPosHitNum( );
+	if ( pos < 0 ) {
+		return;
+	}
+	if ( !_data->getClickLeft( ) ) {
+		return;
+	}
+
+	const int COL = 5;
+	int x = pos % COL;
+	int y = pos / COL;
+
+	_field->mirrorPosSelected( );
+	_field->setMirrorPoint( _player_num, x, y, RIGHT );
+
+	_client->setCtsAngle( RIGHT );
+	_client->setCtsX( x );
+	_client->setCtsY( y );
+	_client->setCtsFlag( true );
+
+	_client->sendTcp( );
 }
 
 void Game::updateAttackPhase( ) {
-	initialize( );
-	_field->initialize( );
+	if ( !_client->isRecvingUdp( ) ) {
+		return;
+	}
+
+	for ( int i = 0; i < PLAYER_NUM; i++ ) {
+		int x = _client->getStcX( i );
+		int y = _client->getStcY( i );
+		MIRROR_ANGLE angle = _client->getStcAngle( i );
+		if ( !_client->getStcFlag( i ) ) {
+			continue;
+		}
+		_field->setMirrorPoint( i, x, y, angle );
+	}
+
+
+	//initialize( );
+	//_field->initialize( );
 }
