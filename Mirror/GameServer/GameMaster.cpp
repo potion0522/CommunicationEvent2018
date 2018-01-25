@@ -146,20 +146,17 @@ void GameMaster::updateMirrorPhase( ) {
 	_server->setBattlePhase( _phase );
 
 	idx = getOrderIdx( 1 );
-	Data data = _client_data[ idx ];
-	_field->setMirrorPoint( idx, data.x, data.y, data.angle );
-	_server->setStcX( idx, data.x );
-	_server->setStcY( idx, data.y );
-	_server->setStcAngle( idx, data.angle );
-	_server->setStcFlag( idx, true );
+	for ( int i = 0; i < PLAYER_NUM; i++ ) {
+		Data data = _client_data[ idx ];
+		_field->setMirrorPoint( idx, data.x, data.y, data.angle );
+		_server->setStcPlayerNum( i, data.player_num );
+		_server->setStcX( i, data.x );
+		_server->setStcY( i, data.y );
+		_server->setStcAngle( i, data.angle );
+		_server->setStcFlag( i, true );
 
-	idx = ( idx + 1 ) % PLAYER_NUM;
-	data = _client_data[ idx ];
-	_server->setStcX( idx, data.x );
-	_server->setStcY( idx, data.y );
-	_server->setStcAngle( idx, data.angle );
-	_server->setStcFlag( idx, true );
-	_field->setMirrorPoint( idx, data.x, data.y, data.angle );
+		idx = ( idx + 1 ) % PLAYER_NUM;
+	}
 
 	for ( int i = 0; i < PLAYER_NUM; i++ ) {
 		_client_data[ i ].fin = false;
@@ -181,6 +178,7 @@ void GameMaster::inputPlayerPhase( ) {
 void GameMaster::inputMirrorPhase( ) {
 	for ( int i = 0; i < MACHINE_MAX; i++ ) {
 		if ( _server->isRecving( i ) ) {
+			_client_data[ i ].player_num = i;
 			_client_data[ i ].x = _server->getCtsX( i );
 			_client_data[ i ].y = _server->getCtsY( i );
 			_client_data[ i ].angle = _server->getCtsAngle( i );
@@ -249,6 +247,7 @@ void GameMaster::commandExecution( ) {
 		int val_y = atoi( y.c_str( ) );
 		if ( 0 <= val_x && val_x < COL &&
 			 0 <= val_y && val_y < ROW ) {
+			_client_data[ 1 ].player_num = 1;
 			_client_data[ 1 ].x = val_x;
 			_client_data[ 1 ].y = val_y;
 			_client_data[ 1 ].angle = ( angle == "RIGHT" ? RIGHT : LEFT );

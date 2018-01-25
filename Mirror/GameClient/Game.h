@@ -25,6 +25,7 @@ private:
 	void updateAttackPhase( );
 
 private:
+	int _turn;
 	int _player_num;
 	BATTLE_PHASE _phase;
 

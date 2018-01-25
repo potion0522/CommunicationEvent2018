@@ -31,6 +31,7 @@ public:
 public:
 	void setOrder( int order );
 	void setPlayerPos( int pos );
+	void setCtsPlayerNum( );
 	void setCtsFlag( bool flag );
 	void setCtsX( int x );
 	void setCtsY( int y );
@@ -43,6 +44,7 @@ public:
 	int getOrder( ) const;
 	int getPlayerPos( int idx ) const;
 	bool getStcFlag( int idx ) const;
+	int getStcPlayerNum( int idx ) const;
 	int getStcX( int idx ) const;
 	int getStcY( int idx ) const;
 	MIRROR_ANGLE getStcAngle( int idx ) const;

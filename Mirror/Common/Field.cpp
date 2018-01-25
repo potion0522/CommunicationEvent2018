@@ -41,6 +41,7 @@ std::string Field::getTag( ) {
 void Field::initialize( ) {
 	_player_selected = false;
 	_mirror_selected = false;
+	_turn = 0;
 	_hit_mirror_num = -1;
 	_distance = 0;
 	_player_num = -1;
@@ -49,7 +50,7 @@ void Field::initialize( ) {
 	_lazer_pos = -1;
 	_direct = DIR( );
 	_dir_vec = Vector( );
-	std::array< Mirror, MIRROR_MAX >( ).swap( _mirrors );
+	std::map< int, Mirror >( ).swap( _mirrors );
 	_phase = SET_PLAYER_PHASE;
 	for ( int i = 0; i < PLAYER_POSITION * 2; i++ ) {
 		if ( i < PLAYER_POSITION ) {
@@ -175,29 +176,61 @@ void Field::drawArmament( ) const {
 
 void Field::drawMirror( ) const {
 	//‹¾•`‰æ
-	for ( int i = 0; i <  ROW; i++ ) {
-		for ( int j = 0; j < COL; j++ ) {
-			int idx = j + COL * i;
-			Vector m = Vector( );
-			switch ( field[ idx ] ) {
-			case 'R': 
-				m.x = 1;
-				m.y = 1;
-				break;
-			case 'L':
-				m.x = -1;	
-				m.y = 1;
-				break;
-			}
-			if ( m.x != 0 ) {
-				double line = SQUARE_SIZE / 2;
-				double sx = START_POS_X + j * SQUARE_SIZE + SQUARE_SIZE * 0.5;
-				double sy = START_POS_Y + i * SQUARE_SIZE + SQUARE_SIZE * 0.5;
-				_drawer->setLine( sx, sy, sx + line * m.x, sy - line * m.y );
-				_drawer->setLine( sx, sy, sx - line * m.x, sy + line * m.y );
-			}
+	for ( int i = 0; i < ROW * COL; i++ ) {
+		if ( _mirrors.find( i ) == _mirrors.end( ) ) {
+			continue;
 		}
+		Mirror mirror = _mirrors.find( i )->second;
+		Vector angle = Vector( );
+				switch ( mirror.angle ) {
+				case RIGHT: 
+					angle.x = 1;
+					angle.y = 1;
+					break;
+				case LEFT:
+					angle.x = -1;	
+					angle.y = 1;
+					break;
+			}
+
+			double line = SQUARE_SIZE / 2;
+			double sx = START_POS_X + mirror.x * SQUARE_SIZE + SQUARE_SIZE * 0.5;
+			double sy = START_POS_Y + mirror.y * SQUARE_SIZE + SQUARE_SIZE * 0.5;
+
+			COLOR col = ( mirror.player_num == 0 ? RED : BLUE );
+			_drawer->setLine( sx, sy, sx + line * angle.x, sy - line * angle.y, col );
+			_drawer->setLine( sx, sy, sx - line * angle.x, sy + line * angle.y, col );
 	}
+
+	//int mirror_num = 0;
+	//for ( int i = 0; i < ROW; i ++ ) {
+	//	for ( int j = 0; j < COL; j++ ) {
+	//		int idx = i * COL + j;
+	//		if ( field[ idx ] == ' ' ) {
+	//			continue;
+	//		}
+	//		Vector angle = Vector( );
+	//			switch ( field[ idx ] ) {
+	//			case 'R': 
+	//				angle.x = 1;
+	//				angle.y = 1;
+	//				break;
+	//			case 'L':
+	//				angle.x = -1;	
+	//				angle.y = 1;
+	//				break;
+	//		}
+
+	//		double line = SQUARE_SIZE / 2;
+	//		double sx = START_POS_X + j * SQUARE_SIZE + SQUARE_SIZE * 0.5;
+	//		double sy = START_POS_Y + i * SQUARE_SIZE + SQUARE_SIZE * 0.5;
+
+	//		COLOR col = ( _mirrors.find( idx )->second.player_num == 0 ? RED : BLUE );
+	//		_drawer->setLine( sx, sy, sx + line * angle.x, sy - line * angle.y, col );
+	//		_drawer->setLine( sx, sy, sx - line * angle.x, sy + line * angle.y, col );
+	//		mirror_num++;
+	//	}
+	//}
 }
 
 void Field::drawPlayerPos( ) const {
@@ -243,6 +276,10 @@ void Field::drawPlayer( ) const {
 		_drawer->setCircle( x, y, CIRCLE_SIZE / 2, WHITE, 150, true );
 		_drawer->setCircle( x, y, CIRCLE_SIZE / 2, _player_color[ i ] );
 	}
+}
+
+void Field::setTurn( int turn ) {
+	_turn = turn;
 }
 
 void Field::setPlayerNum( int num ) {
@@ -323,18 +360,16 @@ void Field::setLazerPoint( int pos ) {
 }
 
 void Field::setMirrorPoint( int player_num, int x, int y, MIRROR_ANGLE angle ) {
-	int idx = getEmptyMirrorsIdx( );
-	if ( idx < 0 ) {
-		return;
-	}
-
+	int idx = x + y * COL;
 	field[ x + y * COL ] = ( angle == RIGHT ? 'R' : 'L' );
-
-	_mirrors[ idx ].flag = true;
-	_mirrors[ idx ].player_num = player_num;
-	_mirrors[ idx ].x = x;
-	_mirrors[ idx ].y = y;
-	_mirrors[ idx ].angle = angle;
+	Mirror mirror = {
+		true,
+		player_num,
+		x,
+		y,
+		angle
+	};
+	_mirrors[ idx ] = mirror;
 }
 
 void Field::playerPosSelected( ) {
@@ -364,6 +399,10 @@ BATTLE_PHASE Field::getPhase( ) const{
 	return _phase;
 }
 
+int Field::getTurn( ) const {
+	return _turn;
+}
+
 int Field::getPlayerPoint( int idx ) const {
 	return _player_pos_no[ idx ];
 }
@@ -389,16 +428,4 @@ bool Field::isMirror( ) const {
 		return true;
 	}
 	return false;
-}
-
-int Field::getEmptyMirrorsIdx( ) const {
-	int idx = -1;
-	for ( int i = 0; i < MIRROR_MAX; i++ ) {
-		if ( _mirrors[ i ].flag != false ) {
-			continue;
-		}
-		idx = i;
-		break;
-	}
-	return idx;
 }

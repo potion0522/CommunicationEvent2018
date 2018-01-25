@@ -172,6 +172,10 @@ void Server::setStcFlag( int idx, bool flag ) {
 	_send_data_udp.stc[ idx ].flag = flag;
 }
 
+void Server::setStcPlayerNum( int idx, int player_num ) {
+	_send_data_udp.stc[ idx ].player_num = ( unsigned char )player_num;
+}
+
 void Server::setStcX( int idx, int x ) {
 	_send_data_udp.stc[ idx ].x = ( unsigned char )x;
 }

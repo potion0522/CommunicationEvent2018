@@ -38,6 +38,7 @@ private:
 private:
 	struct Data {
 		int player_pos;
+		int player_num;
 		int order;
 		int x;
 		int y;

@@ -29,7 +29,7 @@ struct NetWorkData {
 	unsigned char phase;
 	unsigned char order;
 	SendMirrorData cts;
-	SendMirrorData stc[ MIRROR_MAX ];
+	SendMirrorData stc[ PLAYER_NUM ];
 	bool fin;
 };
 

@@ -30,6 +30,7 @@ public:
 	void setPlayerPos( int idx, int pos );
 	void setLazerPos( int pos );
 	void setStcFlag( int idx, bool flag );
+	void setStcPlayerNum( int idx, int player_num );
 	void setStcX( int idx, int x );
 	void setStcY( int idx, int y );
 	void setStcAngle( int idx, MIRROR_ANGLE angle );

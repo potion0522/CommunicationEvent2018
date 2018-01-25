@@ -187,6 +187,10 @@ void Client::setPlayerPos( int pos ) {
 	_send_data_tcp.player_pos[ _player_num ] = ( unsigned char )pos;
 }
 
+void Client::setCtsPlayerNum( ) {
+	_send_data_tcp.cts.player_num = _player_num;
+}
+
 void Client::setCtsFlag( bool flag ) {
 	_send_data_tcp.cts.flag = flag;
 }
@@ -225,6 +229,10 @@ int Client::getPlayerPos( int idx ) const {
 
 bool Client::getStcFlag( int idx ) const {
 	return _recv_data_udp.stc[ idx ].flag;
+}
+
+int Client::getStcPlayerNum( int idx ) const {
+	return ( int )_recv_data_udp.stc[ idx ].player_num;
 }
 
 int Client::getStcX( int idx ) const {

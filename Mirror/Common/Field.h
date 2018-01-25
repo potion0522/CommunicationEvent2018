@@ -4,6 +4,7 @@
 #include "const.h"
 #include <string>
 #include <array>
+#include <map>
 #include <Windows.h>
 
 PTR( Field );
@@ -62,7 +63,6 @@ public:
 		int x;
 		int y;
 		MIRROR_ANGLE angle;
-		//法線ベクトル
 	};
 
 	struct PlayerPos {
@@ -79,6 +79,7 @@ public:
 	void update( );
 
 public:
+	void setTurn( int turn );
 	void setPlayerNum( int num );
 	void setLazerVector( Vector vec );
 	void setDirect( Vector vec );
@@ -94,6 +95,7 @@ public:
 	Vector getLazerVector( ) const;
 	Vector getNormalVector( double x, double y ) const;
 	BATTLE_PHASE getPhase( ) const;
+	int getTurn( ) const;
 	int getPlayerPoint( int idx ) const;
 	int getDistance( ) const;
 	int getHitMirrorIdx( ) const;
@@ -106,7 +108,6 @@ public:
 	bool isSelectedMirror( ) const;
 
 private:
-	int getEmptyMirrorsIdx( ) const;
 	//Draw系
 	void drawField( ) const;
 	void drawArmament( ) const;
@@ -115,13 +116,14 @@ private:
 	void drawPlayer( ) const;
 
 private:
-	std::array< Mirror, MIRROR_MAX > _mirrors;
+	std::map< int, Mirror > _mirrors;
 	std::array< int, 2 > _dir_board;	//x, y
 	std::array< int, PLAYER_NUM > _player_pos_no;
 	std::array< PlayerPos, PLAYER_POSITION * 2 > _select_player_pos;
 	std::array< COLOR, PLAYER_NUM >_player_color;
 	bool _player_selected;
 	bool _mirror_selected;
+	int _turn;
 	int _player_num;
 	int _player_pos_hit_num;
 	int _field_pos_hit_num;
