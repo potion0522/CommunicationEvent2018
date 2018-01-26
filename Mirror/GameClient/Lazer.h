@@ -20,7 +20,7 @@ public:
 	void update( );
 
 private:
-	void updateUnitVector( Field::Vector vec );
+	void updateUnitVector( );
 	void updateLazer( );
 	void updateStartPos( );
 	void convReflectionVector( );

@@ -12,9 +12,13 @@ PTR( GlobalData );
 PTR( Drawer );
 
 const int PLAYER_POSITION = 5;
+const int SQUARE_SIZE = 96;
+const int DISTANCE = SQUARE_SIZE;
+const int DISTANCE_HALF = SQUARE_SIZE / 2;
 
 class Field : public Base {
 public:
+
 	struct Vector { 
 		double x;
 		double y;
@@ -79,10 +83,9 @@ public:
 	void update( );
 
 public:
+	void updateLazerVector( Vector vec );
 	void setTurn( int turn );
 	void setPlayerNum( int num );
-	void setLazerVector( Vector vec );
-	void setDirect( Vector vec );
 	void setPhase( BATTLE_PHASE phase );
 	void setPlayerPoint( int idx, int pos );
 	void setLazerPoint( int pos );
@@ -92,8 +95,7 @@ public:
 
 public:
 	Vector getLazerPoint( ) const;
-	Vector getLazerVector( ) const;
-	Vector getNormalVector( double x, double y ) const;
+	Vector getNextDirect( ) const;
 	BATTLE_PHASE getPhase( ) const;
 	int getTurn( ) const;
 	int getPlayerPoint( int idx ) const;
@@ -106,6 +108,9 @@ public:
 	bool isSelectedPlayer( ) const;
 	bool isHitFieldPos( );
 	bool isSelectedMirror( ) const;
+
+private:
+	void setDirect( Vector vec );
 
 private:
 	//Drawån
@@ -123,6 +128,7 @@ private:
 	std::array< COLOR, PLAYER_NUM >_player_color;
 	bool _player_selected;
 	bool _mirror_selected;
+	bool _reflection;
 	int _turn;
 	int _player_num;
 	int _player_pos_hit_num;

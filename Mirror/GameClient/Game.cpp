@@ -49,9 +49,16 @@ void Game::update( ) {
 	}
 
 	switch ( _phase ) {
-	case SET_PLAYER_PHASE	: updatePlayerPhase( )	; break;
-	case SET_MIRROR_PHASE	: updateMirrorPhase( )	; break;
-	case ATTACK_PHASE		: updateAttackPhase( )	; break;
+	case SET_PLAYER_PHASE :
+		updatePlayerPhase( );
+		break;
+	case SET_MIRROR_PHASE : 
+		updateMirrorPhase( );
+		break;
+	case ATTACK_PHASE     : 
+		updateAttackPhase( );
+		_lazer->update( );
+		break;
 	}
 
 	DebugPtr debug = _data->getDebugPtr( );
@@ -135,6 +142,8 @@ void Game::updateMirrorPhase( ) {
 	_client->setCtsFlag( true );
 
 	_client->sendTcp( );
+
+	_lazer->initialize( );
 }
 
 void Game::updateAttackPhase( ) {
@@ -161,5 +170,4 @@ void Game::updateAttackPhase( ) {
 	//initialize( );
 	//_field->initialize( );
 
-	//_lazer->update( );
 }

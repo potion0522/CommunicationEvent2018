@@ -8,14 +8,11 @@
 const int MOUSE_R = 5;
 const int ROW = 5;
 const int COL = 5;
-const int SQUARE_SIZE = 96;
 const int CIRCLE_SIZE = SQUARE_SIZE / 5 * 2;
 const int START_POS_X = WIDTH / 3 * 2 - SQUARE_SIZE * COL / 2;
 const int START_POS_Y = HEIGHT / 2 - SQUARE_SIZE * ROW / 2;
 const int PLAYER_POS_X = START_POS_X - SQUARE_SIZE / 2;
 const int PLAYER_POS_Y = START_POS_Y - SQUARE_SIZE / 2;
-const int DISTANCE = SQUARE_SIZE;
-const int DISTANCE_HALF = SQUARE_SIZE / 2;
 
 char field[ COL * ROW + 1 ] = 
 "     "
@@ -41,6 +38,7 @@ std::string Field::getTag( ) {
 void Field::initialize( ) {
 	_player_selected = false;
 	_mirror_selected = false;
+	_reflection = false;
 	_turn = 0;
 	_hit_mirror_num = -1;
 	_distance = 0;
@@ -286,64 +284,76 @@ void Field::setPlayerNum( int num ) {
 	_player_num = num;
 }
 
-void Field::setLazerVector( Vector vec ) {
+void Field::updateLazerVector( Vector vec ) {
 	_dir_vec = vec;
-	int x = ( int )( vec.x - START_POS_X ) / SQUARE_SIZE;
-	int y = ( int )( vec.y - START_POS_Y ) / SQUARE_SIZE;
-	if ( vec.x - START_POS_X > 0 && ( int )( vec.x - START_POS_X ) % SQUARE_SIZE == 0 ) {
-		x--;
+	int x = ( int )( vec.x - START_POS_X );
+	int y = ( int )( vec.y - START_POS_Y );
+
+	if ( x < 0 || y < 0 || x > START_POS_X + SQUARE_SIZE * ( COL - 1 ) || y > START_POS_Y + SQUARE_SIZE * ( ROW - 1 ) ) {
+		_distance = 1;
+		return;
 	}
-	if ( vec.y - START_POS_Y > 0 && ( int )( vec.y - START_POS_Y ) % SQUARE_SIZE == 0 ) {
-		y--;
-	}
+	x /= SQUARE_SIZE;
+	y /= SQUARE_SIZE;
 
-	if ( x != _dir_board[ 0 ] || y != _dir_board[ 1 ] ) {
-		_dir_board[ 0 ] = x;
-		_dir_board[ 1 ] = y;
-
-		std::array< int, 2 > next_board;
-		switch ( _direct ) {
-		case DIR_UP :
-			next_board[ 0 ] = _dir_board[ 0 ];
-			next_board[ 1 ] = _dir_board[ 1 ] - 1;
-			break;
-		case DIR_DOWN :
-			next_board[ 0 ] = _dir_board[ 0 ];
-			next_board[ 1 ] = _dir_board[ 1 ] + 1;
-			break;
-		case DIR_RIGHT :
-			next_board[ 0 ] = _dir_board[ 0 ] + 1;
-			next_board[ 1 ] = _dir_board[ 1 ];
-			break;
-		case DIR_LEFT :
-			next_board[ 0 ] = _dir_board[ 0 ] - 1;
-			next_board[ 1 ] = _dir_board[ 1 ];
-			break;
-		}
-
-		//進行先がフィールド外であれば
-		if ( next_board[ 0 ] < 0 || next_board[ 1 ] < 0 ) {
+	if ( _distance == DISTANCE_HALF && !_reflection ) {
+		std::map< int, Mirror >::iterator ite;
+		ite = _mirrors.begin( );
+		for ( ite; ite != _mirrors.end( ); ite++ ) {
+			int mirror_x = ite->second.x;
+			int mirror_y = ite->second.y;
+			if ( mirror_x != x || mirror_y != y ) {
+				continue;
+			}
+			MIRROR_ANGLE mirror_angle = ite->second.angle;
+			Vector next_dir = Vector( );
+			switch ( _direct ) {
+			case DIR_UP :
+				mirror_angle == RIGHT ? next_dir.x = 1 : next_dir.x = -1;
+				break;
+			case DIR_DOWN :
+				mirror_angle == RIGHT ? next_dir.x = -1 : next_dir.x = 1;
+				break;
+			case DIR_RIGHT :
+				mirror_angle == RIGHT ? next_dir.y = 1 : next_dir.y = -1;
+				break;
+			case DIR_LEFT :
+				mirror_angle == RIGHT ? next_dir.y = -1 : next_dir.y = 1;
+				break;			
+			}
+			setDirect( next_dir );
+			_distance = DISTANCE_HALF + 1;
+			_reflection = true;
 			return;
 		}
 
-		_distance = DISTANCE;
-		if ( field[ next_board[ 0 ] + next_board[ 1 ] * COL ] != ' ' ) {
-			_distance = DISTANCE_HALF;
-		}
+	}
+	_dir_board[ 0 ] = x;
+	_dir_board[ 1 ] = y;
+
+	_reflection = false;
+
+	_distance = DISTANCE;
+	if ( field[ _dir_board[ 0 ] + _dir_board[ 1 ] * COL ] != ' ' ) {
+		_distance = DISTANCE_HALF;
 	}
 }
 
 void Field::setDirect( Vector vec ) {
-	if ( vec.x < 0 ) {
-		_direct = DIR_LEFT;
-	} else {
-		_direct = DIR_RIGHT;
+	if ( vec.x != 0 ) {
+		if ( vec.x < 0 ) {
+			_direct = DIR_LEFT;
+		} else {
+			_direct = DIR_RIGHT;
+		}
 	}
 
-	if ( vec.y < 0 ) {
-		_direct = DIR_DOWN;
-	} else {
-		_direct = DIR_UP;
+	if ( vec.y != 0 ) {
+		if ( vec.y < 0 ) {
+			_direct = DIR_DOWN;
+		} else {
+			_direct = DIR_UP;
+		}	
 	}
 }
 
@@ -357,6 +367,15 @@ void Field::setPlayerPoint( int idx, int pos ) {
 
 void Field::setLazerPoint( int pos ) {
 	_lazer_pos = pos;
+	Vector dir = Vector( );
+	if ( _lazer_pos < PLAYER_POSITION ) {
+		dir.x = 1;
+		dir.y = 0;
+	} else {
+		dir.x = 0;
+		dir.y = -1;
+	}
+	setDirect( dir );
 }
 
 void Field::setMirrorPoint( int player_num, int x, int y, MIRROR_ANGLE angle ) {
@@ -385,17 +404,39 @@ void Field::mirrorPosSelected( ) {
 }
 
 Field::Vector Field::getLazerPoint( ) const {
-	Vector vec = { START_POS_X + 3 * SQUARE_SIZE + SQUARE_SIZE * 0.5, START_POS_Y + SQUARE_SIZE * ROW };
-	return vec;
-}
-
-Field::Vector Field::getLazerVector( ) const {
-	Vector vec = { 0, 1 };
-	return vec;
-}
-
-Field::Vector Field::getNormalVector( double x, double y ) const {
 	Vector vec = Vector( );
+	if ( _lazer_pos < PLAYER_POSITION ) {
+		vec.x = PLAYER_POS_X;
+		vec.y = PLAYER_POS_Y + ( _lazer_pos + 1 ) * SQUARE_SIZE;
+	} else {
+		vec.x = PLAYER_POS_X + ( _lazer_pos % PLAYER_POSITION + 1 ) * SQUARE_SIZE;
+		vec.y = PLAYER_POS_Y;
+	}
+
+	return vec;
+}
+
+Field::Vector Field::getNextDirect( ) const {
+	Vector vec = Vector( );
+	switch ( _direct ) {
+	case DIR_UP :
+		vec.x = 0;
+		vec.y = 1;
+		break;
+	case DIR_DOWN :
+		vec.x = 0;
+		vec.y = -1;
+		break;
+	case DIR_RIGHT :
+		vec.x = 1;
+		vec.y = 0;
+		break;
+	case DIR_LEFT :
+		vec.x = -1;
+		vec.y = 0;
+		break;
+	}
+
 	return vec;
 }
 

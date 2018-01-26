@@ -8,6 +8,9 @@ const double LAZER_SPEED = 1;
 
 Lazer::Lazer( GlobalDataPtr data ) :
 _data( data ) {
+	setFlag( 1 );
+	_drawer = _data->getDrawerPtr( );
+	_field = _data->getFieldPtr( );
 }
 
 Lazer::~Lazer( ) {
@@ -18,24 +21,17 @@ std::string Lazer::getTag( ) {
 }
 
 void Lazer::initialize( ) {
-	setFlag( 1 );
 	_start = Field::Vector( );
 	_dir_vec = Field::Vector( );
 	_unit = Field::Vector( );
-	_distance = 0;
-	_drawer = _data->getDrawerPtr( );
-	_field = _data->getFieldPtr( );
+	_distance = 1;
 	_start = _field->getLazerPoint( );
-	_dir_vec = _field->getLazerVector( );
-	updateUnitVector( _dir_vec );
+	updateUnitVector( );
 }
 
 void Lazer::update( ) {
 	if ( _field->getPhase( ) < ATTACK_PHASE ) {
 		return;
-	}
-	if ( _field->isMirror( ) ) {
-		updateLazer( );
 	}
 
 	double x = _unit.x * LAZER_SPEED;
@@ -50,10 +46,15 @@ void Lazer::update( ) {
 		_dir_vec.y += _unit.y * fabsf( ( float )_distance );
 
 		Field::Vector tmp = { _start.x + _dir_vec.x, _start.y + _dir_vec.y };
-		_field->setDirect( _unit );
-		_field->setLazerVector( tmp );
-
+		_field->updateLazerVector( tmp );
+		updateUnitVector( );
 		_distance = _field->getDistance( );
+		if ( _distance == DISTANCE_HALF + 1 ) {
+			_start.x += _dir_vec.x;
+			_start.y += _dir_vec.y;
+			_dir_vec.x = 0;
+			_dir_vec.y = 0;
+		}
 	}
 
 	double draw_x = _start.x + _dir_vec.x;
@@ -64,16 +65,12 @@ void Lazer::update( ) {
 	if ( debug->getFlag( ) ) {
 		debug->setLine( WIDTH / 2, 0, WIDTH / 2, HEIGHT );
 		debug->setLine( 0, HEIGHT / 2, WIDTH, HEIGHT / 2 );
-		debug->addLog( "DISTANCE : " + std::to_string( _distance ) );
+		debug->addLog( "DISTANCE : " + std::to_string( _field->getDistance( ) ) );
 	}
 }
 
-void Lazer::updateUnitVector( Field::Vector vec ) {
-	double a = vec.x * vec.x;
-	double b = vec.y * vec.y;
-	double length = sqrt( a + b );
-	_unit.x = vec.x / length;
-	_unit.y = vec.y / length;
+void Lazer::updateUnitVector( ) {
+	_unit = _field->getNextDirect( );
 }
 
 void Lazer::updateLazer( ) {
@@ -87,7 +84,7 @@ void Lazer::updateStartPos( ) {
 }
 
 void Lazer::convReflectionVector( ) {
-	Field::Vector normal = _field->getNormalVector( _unit.x, _unit.y );
+	//Field::Vector normal = _field->getNormalVector( _unit.x, _unit.y );
 //	Field::Vector ref = _unit.getReflection( normal );
 //	updateUnitVector( ref );
 	_dir_vec = { 0 };
