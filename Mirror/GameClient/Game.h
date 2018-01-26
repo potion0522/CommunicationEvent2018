@@ -8,6 +8,7 @@ PTR( Game );
 PTR( GlobalData );
 PTR( Client );
 PTR( Field );
+PTR( Lazer );
 
 class Game : public Base {
 public:
@@ -32,5 +33,6 @@ private:
 	GlobalDataPtr _data;
 	ClientPtr _client;
 	FieldPtr _field;
+	LazerPtr _lazer;
 };
 

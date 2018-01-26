@@ -369,6 +369,10 @@ void Field::setMirrorPoint( int player_num, int x, int y, MIRROR_ANGLE angle ) {
 		y,
 		angle
 	};
+
+	if ( _mirrors.size( ) > MIRROR_MAX ) {
+		return;
+	}
 	_mirrors[ idx ] = mirror;
 }
 

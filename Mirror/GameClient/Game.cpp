@@ -3,11 +3,13 @@
 #include "Client.h"
 #include "Debug.h"
 #include "Field.h"
+#include "Lazer.h"
 
 Game::Game( GlobalDataPtr data ) :
 _data( data ) {
 	_field = _data->getFieldPtr( );
 	_client = _data->getClientPtr( );
+	_lazer = LazerPtr( new Lazer( _data ) );
 	_turn = 1;
 }
 
@@ -158,4 +160,6 @@ void Game::updateAttackPhase( ) {
 
 	//initialize( );
 	//_field->initialize( );
+
+	//_lazer->update( );
 }

@@ -43,7 +43,6 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 		direction->add( CONNECT, console );
 		direction->add( BATTLE, game );
 		direction->add( BATTLE, field );
-		direction->add( BATTLE, lazer );
 
 		data->setScene( BATTLE );
 		direction->initialize( );

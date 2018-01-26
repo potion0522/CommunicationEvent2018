@@ -130,7 +130,13 @@ void GameMaster::updatePlayerPhase( ) {
 	point.erase( player_two );
 
 	int rand = _data->getRandom( 0, PLAYER_POSITION * 2 - 2 );
-	_server->setLazerPos( point[ rand ] );
+	std::map< int, int >::iterator ite;
+	ite = point.begin( );
+	for ( int i = 0; i < rand - 1; i++ ) {
+		ite++;
+	}
+
+	_server->setLazerPos( ite->second );
 }
 
 void GameMaster::updateMirrorPhase( ) {
