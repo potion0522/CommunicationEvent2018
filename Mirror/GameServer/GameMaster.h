@@ -31,12 +31,15 @@ private:
 	void updatePlayerPhase( );
 	void updateMirrorPhase( );
 	void updateAttackPhase( );
+	void updateJudgePhase( );
 	void inputPlayerPhase( );
 	void inputMirrorPhase( );
 	void inputAttackPhase( );
+	void inputJudgePhase( );
 
 private:
 	struct Data {
+		bool live;
 		int player_pos;
 		int player_num;
 		int order;
@@ -49,6 +52,7 @@ private:
 
 	bool _matching;
 	bool _dice;
+	int _winner;
 	BATTLE_PHASE _phase;
 
 	GlobalDataPtr _data;

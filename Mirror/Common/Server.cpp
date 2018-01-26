@@ -188,6 +188,10 @@ void Server::setStcAngle( int idx, MIRROR_ANGLE angle ) {
 	_send_data_udp.stc[ idx ].angle = ( unsigned char )angle;
 }
 
+void Server::setStcWinner( int winner ) {
+	_send_data_udp.winner = winner;
+}
+
 void Server::setBattlePhase( BATTLE_PHASE phase ) {
 	_send_data_udp.phase = ( unsigned char )phase;
 }
@@ -222,6 +226,10 @@ BATTLE_PHASE Server::getBattlePhase( int idx ) const {
 
 bool Server::getFinish( int idx ) const {
 	return _recv_data_tcp[ idx ].fin;
+}
+
+bool Server::getLive( int idx ) const {
+	return _recv_data_tcp[ idx ].live;
 }
 
 void Server::disConnect( ) {

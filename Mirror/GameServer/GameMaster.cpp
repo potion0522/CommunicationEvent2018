@@ -28,6 +28,7 @@ std::string GameMaster::getTag( ) {
 void GameMaster::initialize( ) {
 	_matching = false;
 	_dice = false;
+	_winner = -1;
 	std::array< Data, PLAYER_NUM >( ).swap( _client_data );
 	_phase = SET_PLAYER_PHASE;
 	_server->setBattlePhase( _phase );
@@ -55,6 +56,7 @@ void GameMaster::update( ) {
 	case SET_PLAYER_PHASE	: updatePlayerPhase( ); break;
 	case SET_MIRROR_PHASE	: updateMirrorPhase( ); break;
 	case ATTACK_PHASE		: updateAttackPhase( ); break;
+	case JUDGE_PHASE		: updateJudgePhase ( ); break;
 	}
 
 	_server->sendDataUdp( );
@@ -63,6 +65,7 @@ void GameMaster::update( ) {
 	case SET_PLAYER_PHASE	: inputPlayerPhase( ); break;
 	case SET_MIRROR_PHASE	: inputMirrorPhase( ); break;
 	case ATTACK_PHASE		: inputAttackPhase( ); break;
+	case JUDGE_PHASE		: inputJudgePhase ( ); break;
 	}
 }
 
@@ -170,6 +173,48 @@ void GameMaster::updateMirrorPhase( ) {
 }
 
 void GameMaster::updateAttackPhase( ) {
+	int idx = getWaitingIdx( );
+	_server->setOrder( -1 );
+
+	if ( idx != -1 ) {
+		return;
+	}
+
+	for ( int i = 0; i < PLAYER_NUM; i++ ) {
+		if ( !_client_data[ i ].live ) {
+			_winner = ( i + 1 ) % PLAYER_NUM;
+			break;
+		}
+	}
+	
+	_phase = JUDGE_PHASE;
+	_server->setBattlePhase( _phase );
+	_server->setStcWinner( _winner );
+
+	for ( int i = 0; i < PLAYER_NUM; i++ ) {
+		_client_data[ i ].fin = false;
+	}
+}
+
+void GameMaster::updateJudgePhase( ) {
+	int idx = getWaitingIdx( );
+	_server->setOrder( -1 );
+
+	if ( idx != -1 ) {
+		return;
+	}
+
+	if ( _winner < 0 ) {
+		//Ÿ”s‚È‚µ
+		_phase = SET_MIRROR_PHASE;
+		_server->setBattlePhase( _phase );
+		int one = _client_data[ 0 ].player_pos;
+		int two = _client_data[ 1 ].player_pos;
+		std::array< Data, PLAYER_NUM >( ).swap( _client_data );
+		_client_data[ 0 ].player_pos = one;
+		_client_data[ 1 ].player_pos = two;
+		_dice = false;
+	}
 }
 
 void GameMaster::inputPlayerPhase( ) {
@@ -194,7 +239,20 @@ void GameMaster::inputMirrorPhase( ) {
 }
 
 void GameMaster::inputAttackPhase( ) {
+	for ( int i = 0; i < MACHINE_MAX; i++ ) {
+		if ( _server->isRecving( i ) ) {
+			_client_data[ i ].live = _server->getLive( i );
+			_client_data[ i ].fin = true;
+		}
+	}
+}
 
+void GameMaster::inputJudgePhase( ) {
+	for ( int i = 0; i < MACHINE_MAX; i++ ) {
+		if ( _server->isRecving( i ) ) {
+			_client_data[ i ].fin = true;
+		}
+	}
 }
 
 void GameMaster::commandExecution( ) {

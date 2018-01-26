@@ -18,6 +18,8 @@ public:
 	std::string getTag( );
 	void initialize( );
 	void update( );
+public:
+	bool isFinish( ) const;
 
 private:
 	void updateUnitVector( );
@@ -26,10 +28,12 @@ private:
 	void convReflectionVector( );
 
 private:
+	bool _fin;
+	double _distance;
 	Field::Vector _start;
 	Field::Vector _dir_vec;
 	Field::Vector _unit;
-	double _distance;
+
 	GlobalDataPtr _data;
 	DrawerPtr _drawer;
 	FieldPtr _field;

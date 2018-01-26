@@ -6,11 +6,7 @@
 #include <random>
 
 const int MOUSE_R = 5;
-const int ROW = 5;
-const int COL = 5;
 const int CIRCLE_SIZE = SQUARE_SIZE / 5 * 2;
-const int START_POS_X = WIDTH / 3 * 2 - SQUARE_SIZE * COL / 2;
-const int START_POS_Y = HEIGHT / 2 - SQUARE_SIZE * ROW / 2;
 const int PLAYER_POS_X = START_POS_X - SQUARE_SIZE / 2;
 const int PLAYER_POS_Y = START_POS_Y - SQUARE_SIZE / 2;
 
@@ -289,7 +285,7 @@ void Field::updateLazerVector( Vector vec ) {
 	int x = ( int )( vec.x - START_POS_X );
 	int y = ( int )( vec.y - START_POS_Y );
 
-	if ( x < 0 || y < 0 || x > START_POS_X + SQUARE_SIZE * ( COL - 1 ) || y > START_POS_Y + SQUARE_SIZE * ( ROW - 1 ) ) {
+	if ( x < 0 || y < 0 || x > START_POS_X + SQUARE_SIZE * COL || y > START_POS_Y + SQUARE_SIZE * ROW ) {
 		_distance = 1;
 		return;
 	}

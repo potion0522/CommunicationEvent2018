@@ -7,10 +7,10 @@
 
 Game::Game( GlobalDataPtr data ) :
 _data( data ) {
+	setFlag( 1 );
 	_field = _data->getFieldPtr( );
 	_client = _data->getClientPtr( );
 	_lazer = LazerPtr( new Lazer( _data ) );
-	_turn = 1;
 }
 
 Game::~Game( ) {
@@ -21,7 +21,9 @@ std::string Game::getTag( ) {
 }
 
 void Game::initialize( ) {
-	setFlag( 1 );
+	_turn = 1;
+	_turn_finish = false;
+	_send_live = false;
 	_player_num = 0;
 	_phase = SET_PLAYER_PHASE;
 }
@@ -32,11 +34,8 @@ void Game::update( ) {
 	}
 	BATTLE_PHASE phase = _client->getBattlePhase( );
 	if ( _phase != phase ) {
-		if ( _phase == ATTACK_PHASE && phase == SET_MIRROR_PHASE ) {
-			_field->mirrorPosSelected( );
-			_turn++;
-		}
 		_phase = phase;
+		_turn_finish = false;
 	}
 
 	if ( _field->getPhase( ) != _phase ) {
@@ -49,15 +48,18 @@ void Game::update( ) {
 	}
 
 	switch ( _phase ) {
-	case SET_PLAYER_PHASE :
+	case SET_PLAYER_PHASE:
 		updatePlayerPhase( );
 		break;
-	case SET_MIRROR_PHASE : 
+	case SET_MIRROR_PHASE: 
 		updateMirrorPhase( );
 		break;
-	case ATTACK_PHASE     : 
+	case ATTACK_PHASE:
 		updateAttackPhase( );
-		_lazer->update( );
+		updateLazerClass( );
+		break;
+	case JUDGE_PHASE:
+		updateJudgePhase( );
 		break;
 	}
 
@@ -166,8 +168,44 @@ void Game::updateAttackPhase( ) {
 		_field->setMirrorPoint( player_num, x, y, angle );
 	}
 	_field->setTurn( _turn );
+}
 
-	//initialize( );
-	//_field->initialize( );
+void Game::updateLazerClass( ) {
+	_lazer->update( );
+	if ( !_lazer->isFinish( ) ) {
+		return;
+	}
+	if ( _send_live ) {
+		return;
+	}
 
+	//‚±‚±‚ÉƒvƒŒƒCƒ„[‚Ì¶Ž€”»’è
+
+	_client->setLive( true );
+	_client->sendTcp( );
+	_send_live = true;
+}
+
+void Game::updateJudgePhase( ) {
+	if ( _turn_finish ) {
+		return;
+	}
+	if ( !_client->isRecvingUdp( ) ) {
+		return;
+	}
+	int winner = _client->getWinner( );
+
+	if ( winner == _player_num ) {
+		//Ÿ—˜
+	} else if ( winner == ( unsigned char )-1 ) {
+		//Ÿ”s‚È‚µ
+		_field->mirrorPosSelected( );
+		_turn++;
+		_turn_finish = true;
+		_send_live = false;
+	} else {
+		//•‰‚¯
+	}
+
+	_client->sendTcp( );
 }

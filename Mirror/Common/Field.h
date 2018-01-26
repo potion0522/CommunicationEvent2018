@@ -13,6 +13,10 @@ PTR( Drawer );
 
 const int PLAYER_POSITION = 5;
 const int SQUARE_SIZE = 96;
+const int ROW = 5;
+const int COL = 5;
+const int START_POS_X = WIDTH / 3 * 2 - SQUARE_SIZE * COL / 2;
+const int START_POS_Y = HEIGHT / 2 - SQUARE_SIZE * ROW / 2;
 const int DISTANCE = SQUARE_SIZE;
 const int DISTANCE_HALF = SQUARE_SIZE / 2;
 

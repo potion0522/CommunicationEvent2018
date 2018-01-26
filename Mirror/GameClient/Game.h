@@ -24,8 +24,12 @@ private:
 	void updatePlayerPhase( );
 	void updateMirrorPhase( );
 	void updateAttackPhase( );
+	void updateLazerClass( );
+	void updateJudgePhase( );
 
 private:
+	bool _turn_finish;
+	bool _send_live;
 	int _turn;
 	int _player_num;
 	BATTLE_PHASE _phase;

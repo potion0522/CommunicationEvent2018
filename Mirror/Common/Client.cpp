@@ -211,6 +211,10 @@ void Client::setFinish( bool fin ) {
 	_send_data_tcp.fin = fin;
 }
 
+void Client::setLive( bool live ) {
+	_send_data_tcp.live = live;
+}
+
 int Client::getPlayerNum( ) const {
 	return _player_num;
 }
@@ -249,4 +253,8 @@ MIRROR_ANGLE Client::getStcAngle( int idx ) const {
 
 BATTLE_PHASE Client::getBattlePhase( ) const {
 	return ( BATTLE_PHASE )_recv_data_udp.phase;
+}
+
+int Client::getWinner( ) const {
+	return ( int )_recv_data_udp.winner;
 }

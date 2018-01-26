@@ -4,7 +4,7 @@
 #include "Debug.h"
 #include <math.h>
 
-const double LAZER_SPEED = 1;
+const double LAZER_SPEED = 5;
 
 Lazer::Lazer( GlobalDataPtr data ) :
 _data( data ) {
@@ -21,16 +21,27 @@ std::string Lazer::getTag( ) {
 }
 
 void Lazer::initialize( ) {
+	_fin = false;
+	_distance = 1;
 	_start = Field::Vector( );
 	_dir_vec = Field::Vector( );
 	_unit = Field::Vector( );
-	_distance = 1;
 	_start = _field->getLazerPoint( );
 	updateUnitVector( );
 }
 
 void Lazer::update( ) {
 	if ( _field->getPhase( ) < ATTACK_PHASE ) {
+		return;
+	}
+	if ( _fin ) {
+		return;
+	}
+	if ( _dir_vec.x + _start.x > START_POS_X + SQUARE_SIZE * COL + SQUARE_SIZE ||
+		 _dir_vec.x + _start.x < START_POS_X - SQUARE_SIZE ||
+		 _dir_vec.y + _start.y > START_POS_Y + SQUARE_SIZE * ROW + SQUARE_SIZE ||
+		 _dir_vec.y + _start.y < START_POS_Y - SQUARE_SIZE ) {
+		_fin = true;
 		return;
 	}
 
@@ -67,6 +78,10 @@ void Lazer::update( ) {
 		debug->setLine( 0, HEIGHT / 2, WIDTH, HEIGHT / 2 );
 		debug->addLog( "DISTANCE : " + std::to_string( _field->getDistance( ) ) );
 	}
+}
+
+bool Lazer::isFinish( ) const {
+	return _fin;
 }
 
 void Lazer::updateUnitVector( ) {

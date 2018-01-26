@@ -37,6 +37,7 @@ public:
 	void setCtsY( int y );
 	void setCtsAngle( MIRROR_ANGLE angle );
 	void setFinish( bool fin );
+	void setLive( bool live );
 
 public:
 	int getPlayerNum( ) const;
@@ -49,6 +50,7 @@ public:
 	int getStcY( int idx ) const;
 	MIRROR_ANGLE getStcAngle( int idx ) const;
 	BATTLE_PHASE getBattlePhase( ) const;
+	int getWinner( ) const;
 
 private:
 	void readIP( );

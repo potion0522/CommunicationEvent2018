@@ -34,6 +34,7 @@ public:
 	void setStcX( int idx, int x );
 	void setStcY( int idx, int y );
 	void setStcAngle( int idx, MIRROR_ANGLE angle );
+	void setStcWinner( int winner );
 	void setBattlePhase( BATTLE_PHASE phase );
 
 public:
@@ -45,6 +46,7 @@ public:
 	MIRROR_ANGLE getCtsAngle( int idx ) const;
 	BATTLE_PHASE getBattlePhase( int idx ) const;
 	bool getFinish( int idx ) const;
+	bool getLive( int idx ) const;
 
 private:
 	void accept( );
