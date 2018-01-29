@@ -7,6 +7,7 @@
 
 Title::Title( GlobalDataPtr data ) :
 _data( data ) {
+	_drawer = _data->getDrawerPtr( );
 }
 
 Title::~Title( ) {
@@ -35,12 +36,8 @@ void Title::update( ) {
 		client->disConnect( );
 		client->initialize( );
 	}
-	
-	DrawerPtr drawer = _data->getDrawerPtr( );
-	drawer->setImage( _back );
-	drawer->setString( true, WIDTH / 2, HEIGHT / 2, RED, "Press \"Z\" Key" );
-}
 
-Base::ImageProperty* Title::getBackPng( ) const {
-	return ( ImageProperty* )&_back;
+	_drawer->setImage( _back );
+	_drawer->setString( true, WIDTH / 2, HEIGHT / 3, YELLOW, "MIRROR", Drawer::SUPER_BIG );
+	_drawer->setString( true, WIDTH / 2, HEIGHT / 2, RED, "Press \"Z\" Key" );
 }

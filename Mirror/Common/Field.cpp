@@ -3,6 +3,7 @@
 #include "Drawer.h"
 #include "const.h"
 #include "DxLib.h"
+#include "Image.h"
 #include <random>
 
 const int MOUSE_R = 5;
@@ -10,7 +11,6 @@ const int CIRCLE_SIZE = SQUARE_SIZE / 5 * 2;
 const int PLAYER_POS_X = START_POS_X - SQUARE_SIZE / 2;
 const int PLAYER_POS_Y = START_POS_Y - SQUARE_SIZE / 2;
 const int PLAYER_SIZE = CIRCLE_SIZE / 2;
-
 
 char field[ FIELD_COL * FIELD_ROW + 1 ] = 
 "     "
@@ -23,6 +23,7 @@ Field::Field( GlobalDataPtr data ) :
 _data( data ) {
 	setFlag( 1 );
 	_drawer = _data->getDrawerPtr( );
+	_image = _data->getImagePtr( );
 	_cur_hand  = LoadCursor( NULL, IDC_HAND );
 }
 
@@ -63,6 +64,32 @@ void Field::initialize( ) {
 		_player_pos_no[ i ] = -1;
 		_player_color[ i ] = ( COLOR )( i + ( int )RED );
 	}
+
+	Png image = _image->getPng( BUTTON_IMAGE, 0 );
+	_decision_button = ImageProperty( );
+	_decision_button.cx = 100;
+	_decision_button.cy = 100;
+	_decision_button.lx = _decision_button.cx - image.width / 2;
+	_decision_button.rx = _decision_button.cx + image.width / 2;
+	_decision_button.ly = _decision_button.cx - image.height / 2;
+	_decision_button.ry = _decision_button.cx + image.height / 2;
+	_decision_button.png = image.png;
+}
+
+void Field::nextRound( ) {
+	_phase = SET_MIRROR_PHASE;
+	_mirror_selected = false;
+	_reflection = false;
+	_turn = 0;
+	_dead_flag = -1;
+	_hit_mirror_num = -1;
+	_distance = 0;
+	_field_pos_hit_num = -1;
+	_direct = DIR( );
+	_dir_vec = Vector( );
+	_tmp_mirror = Mirror( );
+	std::array< int, 2 >( ).swap( _dir_board );
+	std::map< int, Mirror >( ).swap( _mirrors );
 }
 
 void Field::update( ) {
@@ -152,10 +179,8 @@ bool Field::isHitDecisionButton( ) const {
 	double mouse_x = ( double )_data->getMouseX( );
 	double mouse_y = ( double )_data->getMouseY( );
 
-	double a = mouse_x - 100;
-	double b = mouse_y - 100;
-	double c = sqrt( a * a + b * b );
-	if ( c <= CIRCLE_SIZE + MOUSE_R ) {
+	if ( _decision_button.lx < mouse_x && mouse_x < _decision_button.rx &&
+		 _decision_button.ly < mouse_y && mouse_y < _decision_button.ry ) {
 		return true;
 	}
 
@@ -168,146 +193,6 @@ bool Field::isSelectedMirror( ) const {
 
 int Field::getDeadPlayer( ) const {
 	return _dead_flag;
-}
-
-void Field::drawField( ) const {
-	//ÉtÉBÅ[ÉãÉhï`âÊ
-	for ( int i = 0; i < FIELD_ROW + 1; i++ ) {
-		int sx = START_POS_X;
-		int sy = START_POS_Y + i * SQUARE_SIZE;
-		int ex = START_POS_X + SQUARE_SIZE * FIELD_COL;
-		int ey = sy;
-		_drawer->setLine( sx, sy, ex, ey, YELLOW );
-	}
-	for ( int i = 0; i < FIELD_COL + 1; i++ ) {
-		int sx = START_POS_X + i * SQUARE_SIZE;
-		int sy = START_POS_Y;
-		int ex = sx;
-		int ey = sy + SQUARE_SIZE * FIELD_ROW;
-		_drawer->setLine( sx, sy, ex, ey, YELLOW );
-	}
-}
-
-void Field::drawArmament( ) const {
-	//ñCë‰ï`âÊ
-	if ( _lazer_pos < 0 ) {
-		return;
-	}
-
-	double x = _select_player_pos[ _lazer_pos ].x;
-	double y = _select_player_pos[ _lazer_pos ].y;
-
-	_drawer->setCircle( x, y, CIRCLE_SIZE, PURPLE, 150, true );
-}
-
-void Field::drawTmpMirror( ) const {
-	if ( !_tmp_mirror.flag ) {
-		return;
-	}
-	//ãæï`âÊ
-	for ( int i = 0; i < FIELD_ROW; i++ ) {
-		for ( int j = 0; j < FIELD_COL; j++ ) {
-			if ( _tmp_mirror.x != j || _tmp_mirror.y != i ) {
-				continue;
-			}
-			Vector angle = Vector( );
-			switch ( _tmp_mirror.angle ) {
-				case RIGHT: 
-					angle.x = 1;
-					angle.y = 1;
-					break;
-				case LEFT:
-					angle.x = -1;	
-					angle.y = 1;
-					break;
-			}
-			double line = SQUARE_SIZE / 2;
-			double sx = START_POS_X + _tmp_mirror.x * SQUARE_SIZE + SQUARE_SIZE * 0.5;
-			double sy = START_POS_Y + _tmp_mirror.y * SQUARE_SIZE + SQUARE_SIZE * 0.5;
-
-			COLOR col = ( _tmp_mirror.player_num == 0 ? RED : BLUE );
-			_drawer->setLine( sx, sy, sx + line * angle.x, sy - line * angle.y, col );
-			_drawer->setLine( sx, sy, sx - line * angle.x, sy + line * angle.y, col );
-		}
-	}
-}
-
-void Field::drawDecisionButton( ) const {
-	_drawer->setCircle( 100, 100, CIRCLE_SIZE );
-}
-
-void Field::drawMirror( ) const {
-	//ãæï`âÊ
-	for ( int i = 0; i < FIELD_ROW * FIELD_COL; i++ ) {
-		if ( _mirrors.find( i ) == _mirrors.end( ) ) {
-			continue;
-		}
-		Mirror mirror = _mirrors.find( i )->second;
-		Vector angle = Vector( );
-				switch ( mirror.angle ) {
-				case RIGHT: 
-					angle.x = 1;
-					angle.y = 1;
-					break;
-				case LEFT:
-					angle.x = -1;	
-					angle.y = 1;
-					break;
-			}
-
-			double line = SQUARE_SIZE / 2;
-			double sx = START_POS_X + mirror.x * SQUARE_SIZE + SQUARE_SIZE * 0.5;
-			double sy = START_POS_Y + mirror.y * SQUARE_SIZE + SQUARE_SIZE * 0.5;
-
-			COLOR col = ( mirror.player_num == 0 ? RED : BLUE );
-			_drawer->setLine( sx, sy, sx + line * angle.x, sy - line * angle.y, col );
-			_drawer->setLine( sx, sy, sx - line * angle.x, sy + line * angle.y, col );
-	}
-}
-
-void Field::drawPlayerPos( ) const {
-	if ( _player_selected ) {
-		return;
-	}
-	if ( _player_num < 0 ) {
-		return;
-	}
-
-	for ( int i = 0; i < PLAYER_POSITION * 2; i++ ) {
-		double x = _select_player_pos[ i ].x;
-		double y = _select_player_pos[ i ].y;
-		if ( _player_num == i / PLAYER_POSITION ) {
-			if ( getPlayerPosHitNum( ) == i ) {
-				_drawer->setCircle( x, y, CIRCLE_SIZE, WHITE, 255, true );
-				SetCursor( _cur_hand );
-			} else {
-				_drawer->setBlinkCircle( x, y, CIRCLE_SIZE - 1 );
-			}
-		}
-		_drawer->setCircle( x, y, CIRCLE_SIZE, ( COLOR )( RED + i / PLAYER_POSITION ) );
-	}
-}
-
-void Field::drawPlayer( ) const {
-	if ( !_player_selected ) {
-		return;
-	}
-
-	for ( int i = 0; i < PLAYER_NUM; i++ ) {
-		int pos = getPlayerPoint( i );
-		if ( pos < 0 ) {
-			continue;
-		}
-
-		double x = 0;
-		double y = 0;
-
-		x = _select_player_pos[ pos ].x;
-		y = _select_player_pos[ pos ].y;
-
-		_drawer->setCircle( x, y, PLAYER_SIZE, WHITE, 150, true );
-		_drawer->setCircle( x, y, PLAYER_SIZE, _player_color[ i ] );
-	}
 }
 
 void Field::setTurn( int turn ) {
@@ -521,4 +406,157 @@ int Field::getPlayerPosHitNum( ) const {
 
 int Field::getFieldPosHitNum( ) const {
 	return _field_pos_hit_num;
+}
+
+void Field::drawField( ) const {
+	//ÉtÉBÅ[ÉãÉhï`âÊ
+	for ( int i = 0; i < FIELD_ROW + 1; i++ ) {
+		int sx = START_POS_X;
+		int sy = START_POS_Y + i * SQUARE_SIZE;
+		int ex = START_POS_X + SQUARE_SIZE * FIELD_COL;
+		int ey = sy;
+		_drawer->setLine( sx, sy, ex, ey, YELLOW );
+	}
+	for ( int i = 0; i < FIELD_COL + 1; i++ ) {
+		int sx = START_POS_X + i * SQUARE_SIZE;
+		int sy = START_POS_Y;
+		int ex = sx;
+		int ey = sy + SQUARE_SIZE * FIELD_ROW;
+		_drawer->setLine( sx, sy, ex, ey, YELLOW );
+	}
+}
+
+void Field::drawArmament( ) const {
+	//ñCë‰ï`âÊ
+	if ( _lazer_pos < 0 ) {
+		return;
+	}
+
+	double x = _select_player_pos[ _lazer_pos ].x;
+	double y = _select_player_pos[ _lazer_pos ].y;
+
+	_drawer->setCircle( x, y, CIRCLE_SIZE, PURPLE, 150, true );
+}
+
+void Field::drawTmpMirror( ) const {
+	if ( getFieldPosHitNum( ) > 0 ) {
+		int pos = getFieldPosHitNum( );
+		int x = pos % FIELD_COL;
+		int y = pos / FIELD_COL;
+		double line = SQUARE_SIZE / 2;
+		double sx = START_POS_X + x * SQUARE_SIZE + SQUARE_SIZE * 0.5;
+		double sy = START_POS_Y + y * SQUARE_SIZE + SQUARE_SIZE * 0.5;
+
+		COLOR col = ( _tmp_mirror.player_num == 0 ? RED : BLUE );
+		_drawer->setLine( sx, sy, sx + line * 1, sy - line * 1, col, 150 );
+		_drawer->setLine( sx, sy, sx - line * 1, sy + line * 1, col, 150 );
+	}
+
+	if ( !_tmp_mirror.flag ) {
+		return;
+	}
+	//ãæï`âÊ
+	for ( int i = 0; i < FIELD_ROW; i++ ) {
+		for ( int j = 0; j < FIELD_COL; j++ ) {
+			if ( _tmp_mirror.x != j || _tmp_mirror.y != i ) {
+				continue;
+			}
+			Vector angle = Vector( );
+			switch ( _tmp_mirror.angle ) {
+				case RIGHT: 
+					angle.x = 1;
+					angle.y = 1;
+					break;
+				case LEFT:
+					angle.x = -1;	
+					angle.y = 1;
+					break;
+			}
+			double line = SQUARE_SIZE / 2;
+			double sx = START_POS_X + _tmp_mirror.x * SQUARE_SIZE + SQUARE_SIZE * 0.5;
+			double sy = START_POS_Y + _tmp_mirror.y * SQUARE_SIZE + SQUARE_SIZE * 0.5;
+
+			COLOR col = ( _tmp_mirror.player_num == 0 ? RED : BLUE );
+			_drawer->setLine( sx, sy, sx + line * angle.x, sy - line * angle.y, col );
+			_drawer->setLine( sx, sy, sx - line * angle.x, sy + line * angle.y, col );
+		}
+	}
+}
+
+void Field::drawDecisionButton( ) const {
+	_drawer->setImage( _decision_button );
+}
+
+void Field::drawMirror( ) const {
+	//ãæï`âÊ
+	for ( int i = 0; i < FIELD_ROW * FIELD_COL; i++ ) {
+		if ( _mirrors.find( i ) == _mirrors.end( ) ) {
+			continue;
+		}
+		Mirror mirror = _mirrors.find( i )->second;
+		Vector angle = Vector( );
+				switch ( mirror.angle ) {
+				case RIGHT: 
+					angle.x = 1;
+					angle.y = 1;
+					break;
+				case LEFT:
+					angle.x = -1;	
+					angle.y = 1;
+					break;
+			}
+
+			double line = SQUARE_SIZE / 2;
+			double sx = START_POS_X + mirror.x * SQUARE_SIZE + SQUARE_SIZE * 0.5;
+			double sy = START_POS_Y + mirror.y * SQUARE_SIZE + SQUARE_SIZE * 0.5;
+
+			COLOR col = ( mirror.player_num == 0 ? RED : BLUE );
+			_drawer->setLine( sx, sy, sx + line * angle.x, sy - line * angle.y, col );
+			_drawer->setLine( sx, sy, sx - line * angle.x, sy + line * angle.y, col );
+	}
+}
+
+void Field::drawPlayerPos( ) const {
+	if ( _player_selected ) {
+		return;
+	}
+	if ( _player_num < 0 ) {
+		return;
+	}
+
+	for ( int i = 0; i < PLAYER_POSITION * 2; i++ ) {
+		double x = _select_player_pos[ i ].x;
+		double y = _select_player_pos[ i ].y;
+		if ( _player_num == i / PLAYER_POSITION ) {
+			if ( getPlayerPosHitNum( ) == i ) {
+				_drawer->setCircle( x, y, CIRCLE_SIZE, WHITE, 255, true );
+				SetCursor( _cur_hand );
+			} else {
+				_drawer->setBlinkCircle( x, y, CIRCLE_SIZE - 1 );
+			}
+		}
+		_drawer->setCircle( x, y, CIRCLE_SIZE, ( COLOR )( RED + i / PLAYER_POSITION ) );
+	}
+}
+
+void Field::drawPlayer( ) const {
+	if ( !_player_selected ) {
+		return;
+	}
+
+	for ( int i = 0; i < PLAYER_NUM; i++ ) {
+		int pos = getPlayerPoint( i );
+		if ( pos < 0 ) {
+			continue;
+		}
+
+		double x = 0;
+		double y = 0;
+
+		x = _select_player_pos[ pos ].x;
+		y = _select_player_pos[ pos ].y;
+
+		_drawer->setCircle( x, y, PLAYER_SIZE, WHITE, 150, true );
+		_drawer->setCircle( x, y, PLAYER_SIZE, _player_color[ i ] );
+	}
 }

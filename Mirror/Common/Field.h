@@ -10,6 +10,7 @@
 PTR( Field );
 PTR( GlobalData );
 PTR( Drawer );
+PTR( Image );
 
 const int PLAYER_POSITION = 5;
 const int SQUARE_SIZE = 96;
@@ -84,6 +85,7 @@ public:
 public:
 	std::string getTag( );
 	void initialize( );
+	void nextRound( );
 	void update( );
 
 public:
@@ -151,6 +153,10 @@ private:
 	Vector _dir_vec;
 	Mirror _tmp_mirror;
 
+	//‰æ‘œŠÖ˜A
+	ImageProperty _decision_button;
+
 	GlobalDataPtr _data;
 	DrawerPtr _drawer;
+	ImagePtr _image;
 };

@@ -24,7 +24,8 @@ void Image::initialize( ) {
 
 		//ディレクトリ名を入力
 		switch ( ( IMAGE )i ) {
-		case NONE_IMAGE		: add.name = "none"				; break;
+		case NONE_IMAGE   : add.name = "none"  ; break;
+		case BUTTON_IMAGE : add.name = "button"; break;
 		default	:
 			{
 				DebugPtr debug( new Debug( NULL ) );

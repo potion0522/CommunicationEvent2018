@@ -1,12 +1,14 @@
 #include "Drawer.h"
 #include "DxLib.h"
 #include "Color.h"
+#include "Debug.h"
 #include <math.h>
 
-const int SIZE_SMALL		= 10;
-const int SIZE_NORMAL		= 18;
-const int SIZE_LITTLE_BIG	= 25;
-const int SIZE_BIG			= 35;
+const int SIZE_SMALL        = 10;
+const int SIZE_NORMAL       = 18;
+const int SIZE_LITTLE_BIG   = 25;
+const int SIZE_BIG          = 35;
+const int SIZE_SUPER_BIG    = 100;
 const int BLINK_WAIT        = 2;
 const int GRADATION_SPEED   = 1;
 const int COL_MIN           = 0;
@@ -24,10 +26,12 @@ Drawer::Drawer( ) {
 	idx++;
 	_size[ idx ] = SIZE_BIG;
 	idx++;
+	_size[ idx ] = SIZE_SUPER_BIG;
+	idx++;
 }
 
 Drawer::~Drawer( ) {
-	for ( int i = 0; i < FONTHANDLE_MAX; i++ ) {
+	for ( int i = 0; i < FONT_TYPE_MAX; i++ ) {
 		if ( _handle_font[ i ] < 0 ) {
 			continue;
 		}
@@ -43,13 +47,14 @@ void Drawer::initialize( ) {
 	_blink = GetColor( 0, 0, 0 );
 	_colcode = 0;
 	_color_change_speed = GRADATION_SPEED;
-	for ( int i = 0; i < FONTHANDLE_MAX; i++ ) {
+	for ( int i = 0; i < FONT_TYPE_MAX; i++ ) {
 		_handle_font[ i ] = -1;
 		switch ( ( FONTSIZE_TYPE )i ) {
-		case SMALL		: _handle_font[ i ] = CreateFontToHandle( "MS –¾’©", _size[ i ], -1, DX_FONTTYPE_NORMAL ); break;
-		case NORMAL		: _handle_font[ i ] = CreateFontToHandle( "MS –¾’©", _size[ i ], -1, DX_FONTTYPE_NORMAL ); break;
-		case LITTLE_BIG	: _handle_font[ i ] = CreateFontToHandle( "MS –¾’©", _size[ i ], -1, DX_FONTTYPE_NORMAL ); break;
-		case BIG		: _handle_font[ i ] = CreateFontToHandle( "MS –¾’©", _size[ i ], -1, DX_FONTTYPE_NORMAL ); break;
+		case SMALL      : _handle_font[ i ] = CreateFontToHandle( "MS –¾’©", _size[ i ], -1, DX_FONTTYPE_NORMAL ); break;
+		case NORMAL     : _handle_font[ i ] = CreateFontToHandle( "MS –¾’©", _size[ i ], -1, DX_FONTTYPE_NORMAL ); break;
+		case LITTLE_BIG : _handle_font[ i ] = CreateFontToHandle( "MS –¾’©", _size[ i ], -1, DX_FONTTYPE_NORMAL ); break;
+		case BIG        : _handle_font[ i ] = CreateFontToHandle( "MS –¾’©", _size[ i ], -1, DX_FONTTYPE_NORMAL ); break;
+		case SUPER_BIG  : _handle_font[ i ] = CreateFontToHandle( "MS –¾’©", _size[ i ], -1, DX_FONTTYPE_NORMAL ); break;
 		}
 	}
 }
@@ -76,8 +81,13 @@ void Drawer::drawImage( ) {
 	std::list< ImageProperty >::iterator ite;
 	ite = _images.begin( );
 	for ( ite; ite != _images.end( ); ite++ ) {
+		if ( ite->png < 0 ) {
+			DebugPtr debug( new Debug( NULL ) );
+			debug->error( "drawer->drawImage : ‰æ‘œƒnƒ“ƒhƒ‹‚ª‚ ‚è‚Ü‚¹‚ñ" );
+		}
+
 		bool brend = false;
-		if ( ite->brt > 0 ) {
+		if ( ite->brt < 255 ) {
 			brend = true;
 		}
 
@@ -119,9 +129,18 @@ void Drawer::drawLine( ) {
 
 	SetDrawMode( DX_DRAWMODE_BILINEAR );
 	for ( ite; ite != _lines.end( ); ite++ ) {
+		if ( ite->brt < 255 ) {
+			SetDrawBlendMode( DX_BLENDMODE_ALPHA, ite->brt );
+		}
+
 		DrawLineAA( ite->sx, ite->sy, ite->ex, ite->ey, _color->getColor( ite->col ) );
+
+		if ( ite->brt < 255 ) {
+			SetDrawBlendMode( DX_BLENDMODE_NOBLEND, 0 );
+		}
 	}
 	SetDrawMode( DX_DRAWMODE_NEAREST );
+
 }
 
 void Drawer::drawCircle( ) {
@@ -177,8 +196,8 @@ void Drawer::setString( bool flag, double x, double y, COLOR col, std::string st
 	_strings.push_back( tmp );
 }
 
-void Drawer::setLine( double sx, double sy, double ex, double ey, COLOR col ) {
-	LineProperty line = { ( float )sx, ( float )sy, ( float )ex, ( float )ey, col };
+void Drawer::setLine( double sx, double sy, double ex, double ey, COLOR col, int brt ) {
+	LineProperty line = { ( float )sx, ( float )sy, ( float )ex, ( float )ey, col, brt };
 	_lines.push_back( line );
 }
 

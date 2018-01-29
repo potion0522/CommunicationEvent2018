@@ -4,6 +4,7 @@
 
 PTR( Title );
 PTR( GlobalData );
+PTR( Drawer );
 
 class Title : public Base {
 public:
@@ -15,12 +16,10 @@ public:
 	void update( );
 	void initialize( );
 
-public:
-	ImageProperty* getBackPng( ) const;
-
 private:
 	ImageProperty _back;
 
 	GlobalDataPtr _data;
+	DrawerPtr _drawer;
 };
 

@@ -11,6 +11,7 @@ const double PI = 3.14;
 const int KEY_MAX = 256;
 const int PLAYER_NUM = 2;
 const int MIRROR_MAX = 6;
+const int TURN_MAX = 3;
 
 const int TCP_PORT = 9850;
 const int UDP_PORT = 9900;
@@ -63,6 +64,7 @@ enum SCENE {
 
 enum IMAGE {
 	NONE_IMAGE,
+	BUTTON_IMAGE,
 	IMAGE_DIR_MAX
 };
 

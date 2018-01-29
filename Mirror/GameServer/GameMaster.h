@@ -53,6 +53,7 @@ private:
 	bool _matching;
 	bool _dice;
 	int _winner;
+	int _turn;
 	BATTLE_PHASE _phase;
 
 	GlobalDataPtr _data;

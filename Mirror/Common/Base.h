@@ -25,10 +25,10 @@ public:
 		double rx;	//‰E‰º
 		double ry;
 		double r;	//‚ ‚½‚è”»’è
-		double size;//‰æ‘œŠg‘å—¦
+		double size = 1;//‰æ‘œŠg‘å—¦
 		double angle;
 		int knd;
-		int brt;
+		int brt = 255;
 		int cnt;
 		int png;
 	};

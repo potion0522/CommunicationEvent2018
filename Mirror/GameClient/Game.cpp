@@ -70,7 +70,7 @@ void Game::update( ) {
 		break;
 	case JUDGE_PHASE:
 		if ( _turn_finish ) {
-			return;
+			break;
 		}
 		recvJudgePhase( );
 		if ( _judge_phase_recv ) {
@@ -213,6 +213,12 @@ void Game::updateJudgePhase( ) {
 		_attack_phase_recv = false;
 		_judge_phase_recv = false;
 		_send_live = false;
+		_tmp_mirror = Field::Mirror( );
+
+		if ( _turn > TURN_MAX ) {
+			_field->nextRound( );
+			_turn = 1;
+		}
 	} else {
 		//•‰‚¯
 		_data->setScene( RESULT );

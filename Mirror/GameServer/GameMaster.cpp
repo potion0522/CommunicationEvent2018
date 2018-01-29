@@ -29,9 +29,11 @@ void GameMaster::initialize( ) {
 	_matching = false;
 	_dice = false;
 	_winner = -1;
+	_turn = 1;
 	std::array< Data, PLAYER_NUM >( ).swap( _client_data );
 	_phase = SET_PLAYER_PHASE;
 	_server->setBattlePhase( _phase );
+	_field->setPhase( _phase );
 }
 
 void GameMaster::update( ) {
@@ -114,10 +116,11 @@ void GameMaster::updatePlayerPhase( ) {
 
 	_phase = SET_MIRROR_PHASE;
 	_server->setBattlePhase( _phase );
+	_field->setPhase( _phase );
 
 	for ( int i = 0; i < MACHINE_MAX; i++ ) {
-		_field->setPlayerPoint( i, _client_data[ i ].player_pos );
 		_server->setPlayerPos( i, _client_data[ i ].player_pos );
+		_field->setPlayerPoint( i, _client_data[ i ].player_pos );
 		_client_data[ i ].fin = false;
 	}
 
@@ -153,6 +156,7 @@ void GameMaster::updateMirrorPhase( ) {
 
 	_phase = ATTACK_PHASE;
 	_server->setBattlePhase( _phase );
+	_field->setPhase( _phase );
 
 	idx = getOrderIdx( 1 );
 	for ( int i = 0; i < PLAYER_NUM; i++ ) {
@@ -190,6 +194,7 @@ void GameMaster::updateAttackPhase( ) {
 	_phase = JUDGE_PHASE;
 	_server->setBattlePhase( _phase );
 	_server->setStcWinner( _winner );
+	_field->setPhase( _phase );
 
 	for ( int i = 0; i < PLAYER_NUM; i++ ) {
 		_client_data[ i ].fin = false;
@@ -207,6 +212,7 @@ void GameMaster::updateJudgePhase( ) {
 	if ( _winner < 0 ) {
 		//Ÿ”s‚È‚µ
 		_phase = SET_MIRROR_PHASE;
+		_field->setPhase( _phase );
 		_server->setBattlePhase( _phase );
 		int one = _client_data[ 0 ].player_pos;
 		int two = _client_data[ 1 ].player_pos;
@@ -214,6 +220,12 @@ void GameMaster::updateJudgePhase( ) {
 		_client_data[ 0 ].player_pos = one;
 		_client_data[ 1 ].player_pos = two;
 		_dice = false;
+		_turn++;
+
+		if ( _turn > TURN_MAX ) {
+			_field->nextRound( );
+			_turn = 1;
+		}
 	}
 }
 
