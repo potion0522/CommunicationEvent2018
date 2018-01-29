@@ -57,6 +57,7 @@ enum SCENE {
 	TITLE,
 	CONNECT,
 	BATTLE,
+	RESULT,
 	SCENE_MAX,
 };
 

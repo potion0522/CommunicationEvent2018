@@ -24,6 +24,7 @@ void Game::initialize( ) {
 	_turn = 1;
 	_turn_finish = false;
 	_send_live = false;
+	_win = false;
 	_player_num = 0;
 	_phase = SET_PLAYER_PHASE;
 }
@@ -204,15 +205,21 @@ void Game::updateJudgePhase( ) {
 
 	if ( winner == _player_num ) {
 		//Ÿ—˜
+		_win = true;
 	} else if ( winner == ( unsigned char )-1 ) {
 		//Ÿ”s‚È‚µ
 		_field->mirrorPosSelected( );
 		_turn++;
-		_turn_finish = true;
 		_send_live = false;
 	} else {
+		_win = false;
 		//•‰‚¯
 	}
 
+	_turn_finish = true;
 	_client->sendTcp( );
+}
+
+bool Game::isWin( ) const {
+	return _win;
 }

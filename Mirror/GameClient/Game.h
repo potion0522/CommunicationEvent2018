@@ -20,6 +20,9 @@ public:
 	void initialize( );
 	void update( );
 
+public:
+	bool isWin( ) const;
+
 private:
 	void updatePlayerPhase( );
 	void updateMirrorPhase( );
@@ -30,8 +33,9 @@ private:
 private:
 	bool _turn_finish;
 	bool _send_live;
-	int _turn;
-	int _player_num;
+	bool _win;
+	int  _turn;
+	int  _player_num;
 	BATTLE_PHASE _phase;
 
 	GlobalDataPtr _data;
