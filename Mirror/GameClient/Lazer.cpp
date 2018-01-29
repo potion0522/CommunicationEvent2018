@@ -37,9 +37,9 @@ void Lazer::update( ) {
 	if ( _fin ) {
 		return;
 	}
-	if ( _dir_vec.x + _start.x > START_POS_X + SQUARE_SIZE * COL + SQUARE_SIZE ||
+	if ( _dir_vec.x + _start.x > START_POS_X + SQUARE_SIZE * FIELD_COL + SQUARE_SIZE ||
 		 _dir_vec.x + _start.x < START_POS_X - SQUARE_SIZE ||
-		 _dir_vec.y + _start.y > START_POS_Y + SQUARE_SIZE * ROW + SQUARE_SIZE ||
+		 _dir_vec.y + _start.y > START_POS_Y + SQUARE_SIZE * FIELD_ROW + SQUARE_SIZE ||
 		 _dir_vec.y + _start.y < START_POS_Y - SQUARE_SIZE ) {
 		_fin = true;
 		return;

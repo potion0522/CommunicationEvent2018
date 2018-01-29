@@ -12,7 +12,7 @@ const int PLAYER_POS_Y = START_POS_Y - SQUARE_SIZE / 2;
 const int PLAYER_SIZE = CIRCLE_SIZE / 2;
 
 
-char field[ COL * ROW + 1 ] = 
+char field[ FIELD_COL * FIELD_ROW + 1 ] = 
 "     "
 "     "
 "     "
@@ -47,6 +47,7 @@ void Field::initialize( ) {
 	_lazer_pos = -1;
 	_direct = DIR( );
 	_dir_vec = Vector( );
+	_tmp_mirror = Mirror( );
 	std::map< int, Mirror >( ).swap( _mirrors );
 	_phase = SET_PLAYER_PHASE;
 	for ( int i = 0; i < PLAYER_POSITION * 2; i++ ) {
@@ -77,6 +78,10 @@ void Field::update( ) {
 		return;
 	}
 
+	if ( !_mirror_selected ) {
+		drawDecisionButton( );
+		drawTmpMirror( );
+	}
 	drawMirror( );
 	if ( _phase < ATTACK_PHASE ) {
 		return;
@@ -122,18 +127,37 @@ bool Field::isHitFieldPos( ) {
 	}
 	double mouse_x = ( double )_data->getMouseX( );
 	double mouse_y = ( double )_data->getMouseY( );
-	for ( int i = 0; i < ROW; i++ ) {
-		for ( int j = 0; j < COL; j++ ) {
+	for ( int i = 0; i < FIELD_ROW; i++ ) {
+		for ( int j = 0; j < FIELD_COL; j++ ) {
 			double table_left = START_POS_X + j * SQUARE_SIZE;
 			double table_top  = START_POS_Y + i * SQUARE_SIZE;
 			if ( table_left < mouse_x && mouse_x   < table_left + SQUARE_SIZE &&
 				 table_top  < mouse_y && mouse_y < table_top  + SQUARE_SIZE ) {
-				_field_pos_hit_num = j + i * COL;
+				_field_pos_hit_num = j + i * FIELD_COL;
 				return true;
 			}
 		}
 	}
 	_field_pos_hit_num = -1;
+	return false;
+}
+
+bool Field::isHitDecisionButton( ) const {
+	if ( !_tmp_mirror.flag ) {
+		return false;
+	}
+	if ( _mirror_selected ) {
+		return false;
+	}
+	double mouse_x = ( double )_data->getMouseX( );
+	double mouse_y = ( double )_data->getMouseY( );
+
+	double a = mouse_x - 100;
+	double b = mouse_y - 100;
+	if ( a * a + b * b <= CIRCLE_SIZE + 1 ) {
+		return true;
+	}
+
 	return false;
 }
 
@@ -147,18 +171,18 @@ int Field::getDeadPlayer( ) const {
 
 void Field::drawField( ) const {
 	//フィールド描画
-	for ( int i = 0; i < ROW + 1; i++ ) {
+	for ( int i = 0; i < FIELD_ROW + 1; i++ ) {
 		int sx = START_POS_X;
 		int sy = START_POS_Y + i * SQUARE_SIZE;
-		int ex = START_POS_X + SQUARE_SIZE * COL;
+		int ex = START_POS_X + SQUARE_SIZE * FIELD_COL;
 		int ey = sy;
 		_drawer->setLine( sx, sy, ex, ey, YELLOW );
 	}
-	for ( int i = 0; i < COL + 1; i++ ) {
+	for ( int i = 0; i < FIELD_COL + 1; i++ ) {
 		int sx = START_POS_X + i * SQUARE_SIZE;
 		int sy = START_POS_Y;
 		int ex = sx;
-		int ey = sy + SQUARE_SIZE * ROW;
+		int ey = sy + SQUARE_SIZE * FIELD_ROW;
 		_drawer->setLine( sx, sy, ex, ey, YELLOW );
 	}
 }
@@ -175,9 +199,45 @@ void Field::drawArmament( ) const {
 	_drawer->setCircle( x, y, CIRCLE_SIZE, PURPLE, 150, true );
 }
 
+void Field::drawTmpMirror( ) const {
+	if ( !_tmp_mirror.flag ) {
+		return;
+	}
+	//鏡描画
+	for ( int i = 0; i < FIELD_ROW; i++ ) {
+		for ( int j = 0; j < FIELD_COL; j++ ) {
+			if ( _tmp_mirror.x != j || _tmp_mirror.y != i ) {
+				continue;
+			}
+			Vector angle = Vector( );
+			switch ( _tmp_mirror.angle ) {
+				case RIGHT: 
+					angle.x = 1;
+					angle.y = 1;
+					break;
+				case LEFT:
+					angle.x = -1;	
+					angle.y = 1;
+					break;
+			}
+			double line = SQUARE_SIZE / 2;
+			double sx = START_POS_X + _tmp_mirror.x * SQUARE_SIZE + SQUARE_SIZE * 0.5;
+			double sy = START_POS_Y + _tmp_mirror.y * SQUARE_SIZE + SQUARE_SIZE * 0.5;
+
+			COLOR col = ( _tmp_mirror.player_num == 0 ? RED : BLUE );
+			_drawer->setLine( sx, sy, sx + line * angle.x, sy - line * angle.y, col );
+			_drawer->setLine( sx, sy, sx - line * angle.x, sy + line * angle.y, col );
+		}
+	}
+}
+
+void Field::drawDecisionButton( ) const {
+	_drawer->setCircle( 100, 100, CIRCLE_SIZE );
+}
+
 void Field::drawMirror( ) const {
 	//鏡描画
-	for ( int i = 0; i < ROW * COL; i++ ) {
+	for ( int i = 0; i < FIELD_ROW * FIELD_COL; i++ ) {
 		if ( _mirrors.find( i ) == _mirrors.end( ) ) {
 			continue;
 		}
@@ -262,7 +322,7 @@ void Field::updateLazerVector( Vector vec ) {
 	int x = ( int )( vec.x - START_POS_X );
 	int y = ( int )( vec.y - START_POS_Y );
 
-	if ( x < 0 || y < 0 || x > START_POS_X + SQUARE_SIZE * COL || y > START_POS_Y + SQUARE_SIZE * ROW ) {
+	if ( x < 0 || y < 0 || x > START_POS_X + SQUARE_SIZE * FIELD_COL || y > START_POS_Y + SQUARE_SIZE * FIELD_ROW ) {
 		_distance = 1;
 		//プレイヤーの当たり判定
 		for ( int i = 0; i < PLAYER_NUM; i++ ) {
@@ -320,7 +380,7 @@ void Field::updateLazerVector( Vector vec ) {
 	_reflection = false;
 
 	_distance = DISTANCE;
-	if ( field[ _dir_board[ 0 ] + _dir_board[ 1 ] * COL ] != ' ' ) {
+	if ( field[ _dir_board[ 0 ] + _dir_board[ 1 ] * FIELD_COL ] != ' ' ) {
 		_distance = DISTANCE_HALF;
 	}
 }
@@ -364,9 +424,17 @@ void Field::setLazerPoint( int pos ) {
 	setDirect( dir );
 }
 
+void Field::setTmpMirrorPoint( int player_num, int x, int y, MIRROR_ANGLE angle ) {
+	_tmp_mirror.player_num = player_num;
+	_tmp_mirror.x = x;
+	_tmp_mirror.y = y;
+	_tmp_mirror.angle = angle;
+	_tmp_mirror.flag = true;
+}
+
 void Field::setMirrorPoint( int player_num, int x, int y, MIRROR_ANGLE angle ) {
-	int idx = x + y * COL;
-	field[ x + y * COL ] = ( angle == RIGHT ? 'R' : 'L' );
+	int idx = x + y * FIELD_COL;
+	field[ x + y * FIELD_COL ] = ( angle == RIGHT ? 'R' : 'L' );
 	Mirror mirror = {
 		true,
 		player_num,
@@ -452,11 +520,4 @@ int Field::getPlayerPosHitNum( ) const {
 
 int Field::getFieldPosHitNum( ) const {
 	return _field_pos_hit_num;
-}
-
-bool Field::isMirror( ) const {
-	if ( _hit_mirror_num != -1 ) {
-		return true;
-	}
-	return false;
 }

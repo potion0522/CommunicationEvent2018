@@ -13,10 +13,10 @@ PTR( Drawer );
 
 const int PLAYER_POSITION = 5;
 const int SQUARE_SIZE = 96;
-const int ROW = 5;
-const int COL = 5;
-const int START_POS_X = WIDTH / 3 * 2 - SQUARE_SIZE * COL / 2;
-const int START_POS_Y = HEIGHT / 2 - SQUARE_SIZE * ROW / 2;
+const int FIELD_ROW = 5;
+const int FIELD_COL = 5;
+const int START_POS_X = WIDTH / 3 * 2 - SQUARE_SIZE * FIELD_COL / 2;
+const int START_POS_Y = HEIGHT / 2 - SQUARE_SIZE * FIELD_ROW / 2;
 const int DISTANCE = SQUARE_SIZE;
 const int DISTANCE_HALF = SQUARE_SIZE / 2;
 
@@ -93,6 +93,7 @@ public:
 	void setPhase( BATTLE_PHASE phase );
 	void setPlayerPoint( int idx, int pos );
 	void setLazerPoint( int pos );
+	void setTmpMirrorPoint( int player_num, int x, int y, MIRROR_ANGLE angle );
 	void setMirrorPoint( int player_num, int x, int y, MIRROR_ANGLE angle );
 	void playerPosSelected( );
 	void mirrorPosSelected( );
@@ -108,10 +109,10 @@ public:
 	int getPlayerPosHitNum( ) const;
 	int getFieldPosHitNum( ) const;
 	int getDeadPlayer( ) const;
-	bool isMirror( ) const;
 	bool isHitPlayerPos( );
 	bool isSelectedPlayer( ) const;
 	bool isHitFieldPos( );
+	bool isHitDecisionButton( ) const;
 	bool isSelectedMirror( ) const;
 
 private:
@@ -121,6 +122,8 @@ private:
 	//Drawån
 	void drawField( ) const;
 	void drawArmament( ) const;
+	void drawTmpMirror( ) const;
+	void drawDecisionButton( ) const;
 	void drawMirror( ) const;
 	void drawPlayerPos( ) const;
 	void drawPlayer( ) const;
@@ -146,6 +149,7 @@ private:
 	BATTLE_PHASE _phase;
 	DIR _direct;
 	Vector _dir_vec;
+	Mirror _tmp_mirror;
 
 	GlobalDataPtr _data;
 	DrawerPtr _drawer;

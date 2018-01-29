@@ -2,7 +2,6 @@
 #include "GlobalData.h"
 #include "Client.h"
 #include "Debug.h"
-#include "Field.h"
 #include "Lazer.h"
 
 Game::Game( GlobalDataPtr data ) :
@@ -22,11 +21,15 @@ std::string Game::getTag( ) {
 
 void Game::initialize( ) {
 	_turn = 1;
+	_mirror_phase_recv = false;
+	_attack_phase_recv = false;
+	_judge_phase_recv = false;
 	_turn_finish = false;
 	_send_live = false;
 	_win = false;
 	_player_num = 0;
 	_phase = SET_PLAYER_PHASE;
+	_tmp_mirror = Field::Mirror( );
 }
 
 void Game::update( ) {
@@ -53,14 +56,25 @@ void Game::update( ) {
 		updatePlayerPhase( );
 		break;
 	case SET_MIRROR_PHASE: 
-		updateMirrorPhase( );
+		recvMirrorPhase( );
+		if ( _mirror_phase_recv ) {
+			updateMirrorPhase( );
+		}
 		break;
 	case ATTACK_PHASE:
-		updateAttackPhase( );
-		updateLazerClass( );
+		recvMirrorPhase( );
+		if ( _attack_phase_recv ) {
+			updateAttackPhase( );
+		}
 		break;
 	case JUDGE_PHASE:
-		updateJudgePhase( );
+		if ( _turn_finish ) {
+			return;
+		}
+		recvJudgePhase( );
+		if ( _judge_phase_recv ) {
+			updateJudgePhase( );
+		}
 		break;
 	}
 
@@ -93,87 +107,77 @@ void Game::updatePlayerPhase( ) {
 	_client->sendTcp( );
 }
 
-void Game::updateMirrorPhase( ) {
-	if ( !_client->isRecvingUdp( ) ) {
-		return;
-	}
-
-	for ( int i = 0; i < PLAYER_NUM; i++ ) {
-		int pos = _client->getPlayerPos( i );
-		if ( pos == ( unsigned char )-1 ) {
-			return;
-		}
-		_field->setPlayerPoint( i, pos );
-	}
-
-	int lazer_pos = _client->getLazerPoint( );
-	if ( lazer_pos == ( unsigned char )-1 ) {
-		return;
-	}
-	_field->setLazerPoint( lazer_pos );
-
+void Game::inputTmpMirror( ) {
 	if ( _client->getOrder( ) != _player_num ) {
 		return;
 	}
-
-	//
+	
 	bool hit = false;
 	hit = _field->isHitFieldPos( );
 
 	if ( !hit ) {
 		return;
 	}
+
 	int pos = _field->getFieldPosHitNum( );
 	if ( pos < 0 ) {
 		return;
 	}
+
 	if ( !_data->getClickLeft( ) ) {
 		return;
 	}
+	
+	int x = pos % FIELD_COL;
+	int y = pos / FIELD_COL;
 
-	//Šm’èˆ—
+	_tmp_mirror.x = x;
+	_tmp_mirror.y = y;
+	_tmp_mirror.flag = true;
+	if ( _tmp_mirror.x == x && _tmp_mirror.y == y ) {
+		_tmp_mirror.angle = ( MIRROR_ANGLE )( ( int )( _tmp_mirror.angle + 1 ) % ( int )MIRROR_ANGLE_MAX );
+	} else {
+		_tmp_mirror.angle = RIGHT;
+	}
 
-	const int COL = 5;
-	int x = pos % COL;
-	int y = pos / COL;
+	_field->setTmpMirrorPoint( _player_num, _tmp_mirror.x, _tmp_mirror.y, _tmp_mirror.angle );
+}
+
+void Game::updateMirrorPhase( ) {
+	inputTmpMirror( );
+
+	if ( !_tmp_mirror.flag ) {
+		return;
+	}
+
+	bool hit = false;
+	hit = _field->isHitDecisionButton( );
+
+	if ( !hit ) {
+		return;
+	}
+
+	if ( !_data->getClickLeft( ) ) {
+		return;
+	}
+	_field->isSelectedMirror( );
+	_field->setMirrorPoint( _player_num, _tmp_mirror.x, _tmp_mirror.y, _tmp_mirror.angle );
 
 	_field->mirrorPosSelected( );
-	_field->setMirrorPoint( _player_num, x, y, RIGHT );
 
 	_client->setCtsPlayerNum( );
-	_client->setCtsAngle( RIGHT );
-	_client->setCtsX( x );
-	_client->setCtsY( y );
+	_client->setCtsAngle( _tmp_mirror.angle );
+	_client->setCtsX( _tmp_mirror.x );
+	_client->setCtsY( _tmp_mirror.y );
 	_client->setCtsFlag( true );
 
 	_client->sendTcp( );
 
+	_tmp_mirror = Field::Mirror( );
 	_lazer->initialize( );
 }
 
 void Game::updateAttackPhase( ) {
-	if ( !_client->isRecvingUdp( ) ) {
-		return;
-	}
-
-	if ( _field->getTurn( ) == _turn ) {
-		return;
-	}
-
-	for ( int i = 0; i < PLAYER_NUM; i++ ) {
-		int player_num = _client->getStcPlayerNum( i );
-		int x = _client->getStcX( i );
-		int y = _client->getStcY( i );
-		MIRROR_ANGLE angle = _client->getStcAngle( i );
-		if ( !_client->getStcFlag( i ) ) {
-			continue;
-		}
-		_field->setMirrorPoint( player_num, x, y, angle );
-	}
-	_field->setTurn( _turn );
-}
-
-void Game::updateLazerClass( ) {
 	_lazer->update( );
 	if ( !_lazer->isFinish( ) ) {
 		return;
@@ -195,12 +199,6 @@ void Game::updateLazerClass( ) {
 }
 
 void Game::updateJudgePhase( ) {
-	if ( _turn_finish ) {
-		return;
-	}
-	if ( !_client->isRecvingUdp( ) ) {
-		return;
-	}
 	int winner = _client->getWinner( );
 
 	if ( winner == _player_num ) {
@@ -210,6 +208,9 @@ void Game::updateJudgePhase( ) {
 		//Ÿ”s‚È‚µ
 		_field->mirrorPosSelected( );
 		_turn++;
+		_mirror_phase_recv = false;
+		_attack_phase_recv = false;
+		_judge_phase_recv = false;
 		_send_live = false;
 	} else {
 		_win = false;
@@ -218,6 +219,59 @@ void Game::updateJudgePhase( ) {
 
 	_turn_finish = true;
 	_client->sendTcp( );
+}
+
+void Game::recvMirrorPhase( ) {
+	if ( !_client->isRecvingUdp( ) ) {
+		return;
+	}
+
+	for ( int i = 0; i < PLAYER_NUM; i++ ) {
+		int pos = _client->getPlayerPos( i );
+		if ( pos == ( unsigned char )-1 ) {
+			return;
+		}
+		_field->setPlayerPoint( i, pos );
+	}
+
+	int lazer_pos = _client->getLazerPoint( );
+	if ( lazer_pos == ( unsigned char )-1 ) {
+		return;
+	}
+	_field->setLazerPoint( lazer_pos );
+
+	_mirror_phase_recv = true;
+}
+
+void Game::recvAttackPhase( ) {
+	if ( !_client->isRecvingUdp( ) ) {
+		return;
+	}
+
+	if ( _field->getTurn( ) == _turn ) {
+		return;
+	}
+
+	for ( int i = 0; i < PLAYER_NUM; i++ ) {
+		int player_num = _client->getStcPlayerNum( i );
+		int x = _client->getStcX( i );
+		int y = _client->getStcY( i );
+		MIRROR_ANGLE angle = _client->getStcAngle( i );
+		if ( !_client->getStcFlag( i ) ) {
+			continue;
+		}
+		_field->setMirrorPoint( player_num, x, y, angle );
+	}
+	_field->setTurn( _turn );
+
+	_attack_phase_recv = true;
+}
+
+void Game::recvJudgePhase( ) {
+	if ( !_client->isRecvingUdp( ) ) {
+		return;
+	}
+	_judge_phase_recv = true;
 }
 
 bool Game::isWin( ) const {

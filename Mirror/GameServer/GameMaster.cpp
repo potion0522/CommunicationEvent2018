@@ -294,12 +294,12 @@ void GameMaster::commandExecution( ) {
 		if ( angle != "RIGHT" && angle != "LEFT" ) {
 			return;
 		}
-		const int ROW = 5;
-		const int COL = 5;
+		const int FIELD_ROW = 5;
+		const int FIELD_COL = 5;
 		int val_x = atoi( x.c_str( ) );
 		int val_y = atoi( y.c_str( ) );
-		if ( 0 <= val_x && val_x < COL &&
-			 0 <= val_y && val_y < ROW ) {
+		if ( 0 <= val_x && val_x < FIELD_COL &&
+			 0 <= val_y && val_y < FIELD_ROW ) {
 			_client_data[ 1 ].player_num = 1;
 			_client_data[ 1 ].x = val_x;
 			_client_data[ 1 ].y = val_y;

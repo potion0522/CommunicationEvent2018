@@ -68,7 +68,8 @@ enum IMAGE {
 
 enum MIRROR_ANGLE {
 	LEFT,
-	RIGHT
+	RIGHT,
+	MIRROR_ANGLE_MAX
 };
 
 enum BATTLE_PHASE {
