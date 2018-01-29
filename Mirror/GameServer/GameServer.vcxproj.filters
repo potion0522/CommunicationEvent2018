@@ -2,30 +2,13 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Connector.cpp">
-      <Filter>Calc</Filter>
-    </ClCompile>
-    <ClCompile Include="Log.cpp">
-      <Filter>Calc</Filter>
-    </ClCompile>
-    <ClCompile Include="GameMaster.cpp">
-      <Filter>Calc</Filter>
-    </ClCompile>
+    <ClCompile Include="Log.cpp" />
+    <ClCompile Include="GameMaster.cpp" />
+    <ClCompile Include="Connector.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Connector.h">
-      <Filter>Calc</Filter>
-    </ClInclude>
-    <ClInclude Include="Log.h">
-      <Filter>Calc</Filter>
-    </ClInclude>
-    <ClInclude Include="GameMaster.h">
-      <Filter>Calc</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <Filter Include="Calc">
-      <UniqueIdentifier>{2d800446-fda2-48c7-878d-65bf077c722e}</UniqueIdentifier>
-    </Filter>
+    <ClInclude Include="Log.h" />
+    <ClInclude Include="GameMaster.h" />
+    <ClInclude Include="Connector.h" />
   </ItemGroup>
 </Project>

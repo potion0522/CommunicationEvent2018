@@ -3,6 +3,7 @@
 #include "Client.h"
 #include "Debug.h"
 #include "Lazer.h"
+#include "Drawer.h"
 
 Game::Game( GlobalDataPtr data ) :
 _data( data ) {
@@ -62,7 +63,7 @@ void Game::update( ) {
 		}
 		break;
 	case ATTACK_PHASE:
-		recvMirrorPhase( );
+		recvAttackPhase( );
 		if ( _attack_phase_recv ) {
 			updateAttackPhase( );
 		}
@@ -130,15 +131,15 @@ void Game::inputTmpMirror( ) {
 	
 	int x = pos % FIELD_COL;
 	int y = pos / FIELD_COL;
-
-	_tmp_mirror.x = x;
-	_tmp_mirror.y = y;
-	_tmp_mirror.flag = true;
 	if ( _tmp_mirror.x == x && _tmp_mirror.y == y ) {
 		_tmp_mirror.angle = ( MIRROR_ANGLE )( ( int )( _tmp_mirror.angle + 1 ) % ( int )MIRROR_ANGLE_MAX );
 	} else {
 		_tmp_mirror.angle = RIGHT;
 	}
+
+	_tmp_mirror.x = x;
+	_tmp_mirror.y = y;
+	_tmp_mirror.flag = true;
 
 	_field->setTmpMirrorPoint( _player_num, _tmp_mirror.x, _tmp_mirror.y, _tmp_mirror.angle );
 }
@@ -160,7 +161,6 @@ void Game::updateMirrorPhase( ) {
 	if ( !_data->getClickLeft( ) ) {
 		return;
 	}
-	_field->isSelectedMirror( );
 	_field->setMirrorPoint( _player_num, _tmp_mirror.x, _tmp_mirror.y, _tmp_mirror.angle );
 
 	_field->mirrorPosSelected( );
@@ -203,6 +203,7 @@ void Game::updateJudgePhase( ) {
 
 	if ( winner == _player_num ) {
 		//Ÿ—˜
+		_data->setScene( RESULT );
 		_win = true;
 	} else if ( winner == ( unsigned char )-1 ) {
 		//Ÿ”s‚È‚µ
@@ -213,8 +214,9 @@ void Game::updateJudgePhase( ) {
 		_judge_phase_recv = false;
 		_send_live = false;
 	} else {
-		_win = false;
 		//•‰‚¯
+		_data->setScene( RESULT );
+		_win = false;
 	}
 
 	_turn_finish = true;

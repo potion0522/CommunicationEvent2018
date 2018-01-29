@@ -107,6 +107,9 @@ void Debug::commandExecution( ) {
 			if ( str == "BATTLE" ) {
 				scene = BATTLE;
 			}
+			if ( str == "RESULT" ) {
+				scene = RESULT;
+			}
 
 			if ( scene != NONE ) {
 				_data->setScene( scene );
@@ -148,10 +151,11 @@ void Debug::printScene( ) {
 	SCENE scene = _data->getScene( );
 
 	switch ( scene ) {
-	case NONE	: str = "none"		; break;
-	case TITLE	: str = "title"		; break;
-	case CONNECT: str = "connect"	; break;
-	case BATTLE	: str = "battle"	; break;
+	case NONE   : str = "NONE   " ; break;
+	case TITLE  : str = "TITLE  " ; break;
+	case CONNECT: str = "CONNECT" ; break;
+	case BATTLE : str = "BATTLE " ; break;
+	case RESULT : str = "RESULT " ; break;
 	default		: str = "please set scene"	; break;
 	}
 

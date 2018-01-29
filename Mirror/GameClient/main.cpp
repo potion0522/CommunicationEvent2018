@@ -7,6 +7,7 @@
 #include "Lazer.h"
 #include "Field.h"
 #include "Game.h"
+#include "ResultClient.h"
 
 /**********************************************************
 *														  *
@@ -38,13 +39,15 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 		data->setPtr( field );
 		GamePtr game( new Game( data ) );
 		LazerPtr lazer( new Lazer( data ) );
+		ResultClientPtr result( new ResultClient( data, game ) );
 
 		direction->add( TITLE, title );
 		direction->add( CONNECT, console );
 		direction->add( BATTLE, game );
 		direction->add( BATTLE, field );
+		direction->add( RESULT, result );
 
-		data->setScene( BATTLE );
+		//data->setScene( BATTLE );
 		direction->initialize( );
 		// GlobalData のフラグが 0 であれば全プロセス終了
 		while ( data->getFlag( ) ) {

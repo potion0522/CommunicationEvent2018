@@ -8,6 +8,7 @@
 PTR( Game );
 PTR( GlobalData );
 PTR( Client );
+PTR( Drawer );
 PTR( Field );
 PTR( Lazer );
 
@@ -48,6 +49,7 @@ private:
 
 	GlobalDataPtr _data;
 	ClientPtr _client;
+	DrawerPtr _drawer;
 	FieldPtr _field;
 	LazerPtr _lazer;
 };

@@ -154,7 +154,8 @@ bool Field::isHitDecisionButton( ) const {
 
 	double a = mouse_x - 100;
 	double b = mouse_y - 100;
-	if ( a * a + b * b <= CIRCLE_SIZE + 1 ) {
+	double c = sqrt( a * a + b * b );
+	if ( c <= CIRCLE_SIZE + MOUSE_R ) {
 		return true;
 	}
 

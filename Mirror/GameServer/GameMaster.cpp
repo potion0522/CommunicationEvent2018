@@ -260,6 +260,23 @@ void GameMaster::commandExecution( ) {
 		return;
 	}
 
+	if ( _command->getWord( 0 ) == "ALIVE" ) {
+		_client_data[ 1 ].alive = true;
+		_client_data[ 1 ].fin = true;
+		_log->add( "player 1 live" );
+	}
+
+	if ( _command->getWord( 0 ) == "DEAD" ) {
+		_client_data[ 1 ].alive = false;
+		_client_data[ 1 ].fin = true;
+		_log->add( "player 1 dead" );
+	}
+
+	if ( _command->getWord( 0 ) == "CALLBACK" ) {
+		_client_data[ 1 ].fin = true;
+		_log->add( "player 1 flag true" );
+	}
+
 	if ( _command->getWordNum( ) < 2 ) {
 		return;
 	}
@@ -308,10 +325,5 @@ void GameMaster::commandExecution( ) {
 			_log->add( "mirror pos ( " + x + ", " + y + " )" );
 			_log->add( "       angle " + angle );
 		}
-	}
-
-	if ( _command->getWord( 0 ) == "LIVE" ) {
-		_client_data[ 1 ].alive = true;
-		_client_data[ 1 ].fin = true;
 	}
 }
