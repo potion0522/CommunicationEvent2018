@@ -24,7 +24,7 @@ struct SendMirrorData {
 };
 
 struct NetWorkData {
-	bool live;	//é©ï™ÇÃê∂éÄ
+	bool alive;	//é©ï™ÇÃê∂éÄ
 	unsigned char winner;
 	unsigned char player_pos[ PLAYER_NUM ];
 	unsigned char lazer_pos;
@@ -72,6 +72,7 @@ enum MIRROR_ANGLE {
 
 enum BATTLE_PHASE {
 	SET_PLAYER_PHASE,
+	ITEM_PHASE,
 	SET_MIRROR_PHASE,
 	ATTACK_PHASE,
 	JUDGE_PHASE,

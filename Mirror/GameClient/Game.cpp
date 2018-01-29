@@ -182,8 +182,13 @@ void Game::updateLazerClass( ) {
 	}
 
 	//‚±‚±‚ÉƒvƒŒƒCƒ„[‚Ì¶€”»’è
+	int dead = _field->getDeadPlayer( );
+	bool alive = true;
+	if ( dead == _player_num ) {
+		alive = !alive;
+	}
 
-	_client->setLive( true );
+	_client->setAlive( alive );
 	_client->sendTcp( );
 	_send_live = true;
 }

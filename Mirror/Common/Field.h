@@ -107,6 +107,7 @@ public:
 	int getHitMirrorIdx( ) const;
 	int getPlayerPosHitNum( ) const;
 	int getFieldPosHitNum( ) const;
+	int getDeadPlayer( ) const;
 	bool isMirror( ) const;
 	bool isHitPlayerPos( );
 	bool isSelectedPlayer( ) const;
@@ -134,6 +135,7 @@ private:
 	bool _mirror_selected;
 	bool _reflection;
 	int _turn;
+	int _dead_flag;
 	int _player_num;
 	int _player_pos_hit_num;
 	int _field_pos_hit_num;

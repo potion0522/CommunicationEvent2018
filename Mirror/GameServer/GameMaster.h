@@ -39,7 +39,7 @@ private:
 
 private:
 	struct Data {
-		bool live;
+		bool alive;
 		int player_pos;
 		int player_num;
 		int order;

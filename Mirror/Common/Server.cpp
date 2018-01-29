@@ -228,8 +228,8 @@ bool Server::getFinish( int idx ) const {
 	return _recv_data_tcp[ idx ].fin;
 }
 
-bool Server::getLive( int idx ) const {
-	return _recv_data_tcp[ idx ].live;
+bool Server::getAlive( int idx ) const {
+	return _recv_data_tcp[ idx ].alive;
 }
 
 void Server::disConnect( ) {

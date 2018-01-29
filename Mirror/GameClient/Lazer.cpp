@@ -74,8 +74,6 @@ void Lazer::update( ) {
 
 	DebugPtr debug = _data->getDebugPtr( );
 	if ( debug->getFlag( ) ) {
-		debug->setLine( WIDTH / 2, 0, WIDTH / 2, HEIGHT );
-		debug->setLine( 0, HEIGHT / 2, WIDTH, HEIGHT / 2 );
 		debug->addLog( "DISTANCE : " + std::to_string( _field->getDistance( ) ) );
 	}
 }

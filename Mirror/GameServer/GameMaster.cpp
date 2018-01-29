@@ -181,7 +181,7 @@ void GameMaster::updateAttackPhase( ) {
 	}
 
 	for ( int i = 0; i < PLAYER_NUM; i++ ) {
-		if ( !_client_data[ i ].live ) {
+		if ( !_client_data[ i ].alive ) {
 			_winner = ( i + 1 ) % PLAYER_NUM;
 			break;
 		}
@@ -241,7 +241,7 @@ void GameMaster::inputMirrorPhase( ) {
 void GameMaster::inputAttackPhase( ) {
 	for ( int i = 0; i < MACHINE_MAX; i++ ) {
 		if ( _server->isRecving( i ) ) {
-			_client_data[ i ].live = _server->getLive( i );
+			_client_data[ i ].alive = _server->getAlive( i );
 			_client_data[ i ].fin = true;
 		}
 	}
@@ -311,7 +311,7 @@ void GameMaster::commandExecution( ) {
 	}
 
 	if ( _command->getWord( 0 ) == "LIVE" ) {
-		_client_data[ 1 ].live = true;
+		_client_data[ 1 ].alive = true;
 		_client_data[ 1 ].fin = true;
 	}
 }

@@ -37,7 +37,7 @@ public:
 	void setCtsY( int y );
 	void setCtsAngle( MIRROR_ANGLE angle );
 	void setFinish( bool fin );
-	void setLive( bool live );
+	void setAlive( bool alive );
 
 public:
 	int getPlayerNum( ) const;

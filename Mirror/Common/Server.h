@@ -46,7 +46,7 @@ public:
 	MIRROR_ANGLE getCtsAngle( int idx ) const;
 	BATTLE_PHASE getBattlePhase( int idx ) const;
 	bool getFinish( int idx ) const;
-	bool getLive( int idx ) const;
+	bool getAlive( int idx ) const;
 
 private:
 	void accept( );

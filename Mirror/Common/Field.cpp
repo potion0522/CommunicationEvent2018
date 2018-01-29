@@ -9,6 +9,8 @@ const int MOUSE_R = 5;
 const int CIRCLE_SIZE = SQUARE_SIZE / 5 * 2;
 const int PLAYER_POS_X = START_POS_X - SQUARE_SIZE / 2;
 const int PLAYER_POS_Y = START_POS_Y - SQUARE_SIZE / 2;
+const int PLAYER_SIZE = CIRCLE_SIZE / 2;
+
 
 char field[ COL * ROW + 1 ] = 
 "     "
@@ -36,6 +38,7 @@ void Field::initialize( ) {
 	_mirror_selected = false;
 	_reflection = false;
 	_turn = 0;
+	_dead_flag = -1;
 	_hit_mirror_num = -1;
 	_distance = 0;
 	_player_num = -1;
@@ -138,6 +141,10 @@ bool Field::isSelectedMirror( ) const {
 	return _mirror_selected;
 }
 
+int Field::getDeadPlayer( ) const {
+	return _dead_flag;
+}
+
 void Field::drawField( ) const {
 	//フィールド描画
 	for ( int i = 0; i < ROW + 1; i++ ) {
@@ -237,8 +244,8 @@ void Field::drawPlayer( ) const {
 		x = _select_player_pos[ pos ].x;
 		y = _select_player_pos[ pos ].y;
 
-		_drawer->setCircle( x, y, CIRCLE_SIZE / 2, WHITE, 150, true );
-		_drawer->setCircle( x, y, CIRCLE_SIZE / 2, _player_color[ i ] );
+		_drawer->setCircle( x, y, PLAYER_SIZE, WHITE, 150, true );
+		_drawer->setCircle( x, y, PLAYER_SIZE, _player_color[ i ] );
 	}
 }
 
@@ -257,8 +264,21 @@ void Field::updateLazerVector( Vector vec ) {
 
 	if ( x < 0 || y < 0 || x > START_POS_X + SQUARE_SIZE * COL || y > START_POS_Y + SQUARE_SIZE * ROW ) {
 		_distance = 1;
+		//プレイヤーの当たり判定
+		for ( int i = 0; i < PLAYER_NUM; i++ ) {
+			int pos = getPlayerPoint( i );
+			int player_x = ( int )_select_player_pos[ pos ].x;
+			int player_y = ( int )_select_player_pos[ pos ].y;
+			int a = ( int )vec.x - player_x;
+			int b = ( int )vec.y - player_y;
+			if ( sqrt( a * a + b * b ) <= PLAYER_SIZE + 1 ) {
+				_dead_flag = i;
+				break;
+			}
+		}
 		return;
 	}
+
 	x /= SQUARE_SIZE;
 	y /= SQUARE_SIZE;
 

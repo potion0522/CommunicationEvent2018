@@ -211,8 +211,8 @@ void Client::setFinish( bool fin ) {
 	_send_data_tcp.fin = fin;
 }
 
-void Client::setLive( bool live ) {
-	_send_data_tcp.live = live;
+void Client::setAlive( bool alive ) {
+	_send_data_tcp.alive = alive;
 }
 
 int Client::getPlayerNum( ) const {
