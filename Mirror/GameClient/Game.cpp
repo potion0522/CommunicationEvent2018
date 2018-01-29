@@ -130,6 +130,8 @@ void Game::updateMirrorPhase( ) {
 		return;
 	}
 
+	//Šm’èˆ—
+
 	const int COL = 5;
 	int x = pos % COL;
 	int y = pos / COL;

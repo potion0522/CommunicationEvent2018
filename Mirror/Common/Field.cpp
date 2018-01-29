@@ -195,36 +195,6 @@ void Field::drawMirror( ) const {
 			_drawer->setLine( sx, sy, sx + line * angle.x, sy - line * angle.y, col );
 			_drawer->setLine( sx, sy, sx - line * angle.x, sy + line * angle.y, col );
 	}
-
-	//int mirror_num = 0;
-	//for ( int i = 0; i < ROW; i ++ ) {
-	//	for ( int j = 0; j < COL; j++ ) {
-	//		int idx = i * COL + j;
-	//		if ( field[ idx ] == ' ' ) {
-	//			continue;
-	//		}
-	//		Vector angle = Vector( );
-	//			switch ( field[ idx ] ) {
-	//			case 'R': 
-	//				angle.x = 1;
-	//				angle.y = 1;
-	//				break;
-	//			case 'L':
-	//				angle.x = -1;	
-	//				angle.y = 1;
-	//				break;
-	//		}
-
-	//		double line = SQUARE_SIZE / 2;
-	//		double sx = START_POS_X + j * SQUARE_SIZE + SQUARE_SIZE * 0.5;
-	//		double sy = START_POS_Y + i * SQUARE_SIZE + SQUARE_SIZE * 0.5;
-
-	//		COLOR col = ( _mirrors.find( idx )->second.player_num == 0 ? RED : BLUE );
-	//		_drawer->setLine( sx, sy, sx + line * angle.x, sy - line * angle.y, col );
-	//		_drawer->setLine( sx, sy, sx - line * angle.x, sy + line * angle.y, col );
-	//		mirror_num++;
-	//	}
-	//}
 }
 
 void Field::drawPlayerPos( ) const {

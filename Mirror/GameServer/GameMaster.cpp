@@ -260,17 +260,6 @@ void GameMaster::commandExecution( ) {
 		return;
 	}
 
-	if ( _command->getWord( 0 ) == "RETURN" ) {
-		_phase = SET_MIRROR_PHASE;
-		_server->setBattlePhase( _phase );
-		int one = _client_data[ 0 ].player_pos;
-		int two = _client_data[ 1 ].player_pos;
-		std::array< Data, PLAYER_NUM >( ).swap( _client_data );
-		_client_data[ 0 ].player_pos = one;
-		_client_data[ 1 ].player_pos = two;
-		_dice = false;
-	}
-
 	if ( _command->getWordNum( ) < 2 ) {
 		return;
 	}
@@ -319,5 +308,10 @@ void GameMaster::commandExecution( ) {
 			_log->add( "mirror pos ( " + x + ", " + y + " )" );
 			_log->add( "       angle " + angle );
 		}
+	}
+
+	if ( _command->getWord( 0 ) == "LIVE" ) {
+		_client_data[ 1 ].live = true;
+		_client_data[ 1 ].fin = true;
 	}
 }

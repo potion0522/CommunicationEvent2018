@@ -29,6 +29,7 @@ public:
 	int getMouseX( ) const;
 	int getMouseY( ) const;
 	bool getClickLeft( ) const;
+	bool getClickRight( ) const;
 	int getRandom( int min, int max ) const;
 	SCENE getScene( ) const;
 	MACHINE_TYPE getMachineType( ) const;

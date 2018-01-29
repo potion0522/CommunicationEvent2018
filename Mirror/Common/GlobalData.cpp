@@ -67,6 +67,10 @@ bool GlobalData::getClickLeft( ) const {
 	return _mouse->getLeftClick( );
 }
 
+bool GlobalData::getClickRight( ) const {
+	return _mouse->getRightClick( );
+}
+
 int GlobalData::getRandom( int min, int max ) const {
 	std::random_device rd;
 	int random = min + rd( ) % ( max - min + 1 );

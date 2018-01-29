@@ -2,6 +2,7 @@
 #include "DxLib.h"
 #include "Debug.h"
 #include "smart_ptr.h"
+#include <assert.h>
 
 const std::string PATH = "Resources/image/";
 

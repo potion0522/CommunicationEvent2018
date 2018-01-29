@@ -11,12 +11,14 @@ MouseEvent::~MouseEvent( ) {
 void MouseEvent::initialize( ) {
 	_mouse = NULL;
 	_click_left = 0;
+	_click_right = 0;
 	memset( &_point, 0, sizeof( Point ) );
 }
 
 void MouseEvent::update( ) {
 	_mouse = GetMouseInput( );
 	calcLeftClick( );
+	calcRightClick( );
 	GetMousePoint( &_point.x, &_point.y );
 }
 
@@ -26,6 +28,14 @@ void MouseEvent::calcLeftClick( ) {
 		return;
 	}
 	_click_left = 0;
+}
+
+void MouseEvent::calcRightClick( ) {
+	if ( _mouse & MOUSE_INPUT_RIGHT ) {
+		_click_right++;
+		return;
+	}
+	_click_right = 0;
 }
 
 int MouseEvent::getPointX( ) const {
@@ -38,6 +48,13 @@ int MouseEvent::getPointY( ) const {
 
 bool MouseEvent::getLeftClick( ) const {
 	if ( _click_left == 1 ) {
+		return true;
+	}
+	return false;
+}
+
+bool MouseEvent::getRightClick( ) const {
+	if ( _click_right == 1 ) {
 		return true;
 	}
 	return false;
