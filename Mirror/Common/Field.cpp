@@ -42,7 +42,6 @@ void Field::initialize( ) {
 	_turn = 0;
 	_dead_flag = -1;
 	_hit_mirror_num = -1;
-	_distance = 0;
 	_player_num = -1;
 	_player_pos_hit_num = -1;
 	_field_pos_hit_num = -1;
@@ -77,14 +76,12 @@ void Field::initialize( ) {
 	_decision_button.png = image.png;
 }
 
-void Field::nextRound( ) {
+void Field::nextTurn( ) {
 	_phase = SET_MIRROR_PHASE;
 	_mirror_selected = false;
 	_reflection = false;
-	_turn = 0;
 	_dead_flag = -1;
 	_hit_mirror_num = -1;
-	_distance = 0;
 	_field_pos_hit_num = -1;
 	_direct = DIR( );
 	_tmp_mirror = Mirror( );
@@ -438,11 +435,6 @@ int Field::getTurn( ) const {
 int Field::getPlayerPoint( int idx ) const {
 	return _player_pos_no[ idx ];
 }
-
-int Field::getDistance( ) const {
-	return _distance;
-}
-
 int Field::getHitMirrorIdx( ) const {
 	return _hit_mirror_num;
 }

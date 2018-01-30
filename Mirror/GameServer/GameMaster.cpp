@@ -224,9 +224,12 @@ void GameMaster::updateJudgePhase( ) {
 		_field->setPhase( _phase );
 		_server->setBattlePhase( _phase );
 
-		int lazer = calcLazerPoint( _field->getLazerPointIdx( ) );
-		_field->setLazerPoint( lazer );
-		_server->setLazerPos( lazer );
+		if ( _turn % TURN_MAX == 0 ) {
+			_field->nextTurn( );
+			int lazer = calcLazerPoint( _field->getLazerPointIdx( ) );
+			_field->setLazerPoint( lazer );
+			_server->setLazerPos( lazer );
+		}
 
 		int one = _client_data[ 0 ].player_pos;
 		int two = _client_data[ 1 ].player_pos;
@@ -235,11 +238,6 @@ void GameMaster::updateJudgePhase( ) {
 		_client_data[ 1 ].player_pos = two;
 		_dice = false;
 		_turn++;
-
-		if ( _turn > TURN_MAX ) {
-			_field->nextRound( );
-			_turn = 1;
-		}
 	}
 }
 

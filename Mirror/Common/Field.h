@@ -85,7 +85,7 @@ public:
 public:
 	std::string getTag( );
 	void initialize( );
-	void nextRound( );
+	void nextTurn( );
 	void update( );
 
 public:
@@ -107,7 +107,6 @@ public:
 	BATTLE_PHASE getPhase( ) const;
 	int getTurn( ) const;
 	int getPlayerPoint( int idx ) const;
-	int getDistance( ) const;
 	int getHitMirrorIdx( ) const;
 	int getPlayerPosHitNum( ) const;
 	int getFieldPosHitNum( ) const;
@@ -146,7 +145,6 @@ private:
 	int _player_pos_hit_num;
 	int _field_pos_hit_num;
 	int _hit_mirror_num;
-	int _distance;
 	int _lazer_point_idx;
 	HCURSOR _cur_hand;
 	BATTLE_PHASE _phase;
