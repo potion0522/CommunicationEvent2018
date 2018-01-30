@@ -481,7 +481,7 @@ void Field::drawArmament( ) const {
 }
 
 void Field::drawTmpMirror( ) const {
-	if ( getFieldPosHitNum( ) > 0 ) {
+	if ( getFieldPosHitNum( ) != -1 ) {
 		int pos = getFieldPosHitNum( );
 		int x = pos % FIELD_COL;
 		int y = pos / FIELD_COL;
