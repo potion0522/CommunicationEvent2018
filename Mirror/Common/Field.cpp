@@ -36,11 +36,12 @@ std::string Field::getTag( ) {
 }
 
 void Field::initialize( ) {
+	_turn = 1;
 	_player_selected = false;
 	_mirror_selected = false;
 	_reflection = false;
+	_info_idx = 0;
 	_tmp_player_pos = -1;
-	_turn = 0;
 	_dead_flag = -1;
 	_hit_mirror_num = -1;
 	_player_num = -1;
@@ -50,6 +51,7 @@ void Field::initialize( ) {
 	_direct = DIR( );
 	_tmp_mirror = Mirror( );
 	std::map< int, Mirror >( ).swap( _mirrors );
+	std::array< Info, INFO_TEXT_MAX >( ).swap( _info );
 	_reflection_point = Vector( );
 	_phase = SET_PLAYER_PHASE;
 	for ( int i = 0; i < PLAYER_POSITION * 2; i++ ) {
@@ -94,6 +96,9 @@ void Field::update( ) {
 	drawPlayer( );
 	drawArmament( );
 	drawDecisionButton( );
+	drawInfo( );
+	drawRound( );
+	resetInfo( );
 
 	if ( _phase == SET_PLAYER_PHASE ) {
 		drawPlayerPos( );
@@ -110,7 +115,6 @@ void Field::update( ) {
 	if ( _phase < ATTACK_PHASE ) {
 		return;
 	}
-
 }
 
 bool Field::isHitPlayerPos( ) {
@@ -196,6 +200,12 @@ void Field::setTurn( int turn ) {
 
 void Field::setPlayerNum( int num ) {
 	_player_num = num;
+}
+
+void Field::setInfoText( std::string str, COLOR col ) {
+	_info[ _info_idx ].str = str;
+	_info[ _info_idx ].col = col;
+	_info_idx = ( _info_idx + 1 ) % INFO_TEXT_MAX;
 }
 
 void Field::updateLazerVector( Vector vec ) {
@@ -307,6 +317,11 @@ void Field::updateLazerVector( Vector vec ) {
 	if ( field[ _dir_board[ 0 ] + _dir_board[ 1 ] * FIELD_COL ] != ' ' ) {
 		_distance = DISTANCE_HALF;
 	}*/
+}
+
+void Field::resetInfo( ) {
+	std::array< Info, INFO_TEXT_MAX >( ).swap( _info );
+	_info_idx = 0;
 }
 
 void Field::setDirect( Vector vec ) {
@@ -607,4 +622,23 @@ void Field::drawPlayer( ) const {
 		_drawer->setCircle( x, y, PLAYER_SIZE, WHITE, 150, true );
 		_drawer->setCircle( x, y, PLAYER_SIZE, _player_color[ i ] );
 	}
+}
+
+void Field::drawInfo( ) const {
+	int lx = 50;
+	int rx = 500;
+	int ly = 300;
+	int ry = 500;
+
+	DrawBox( lx, ly, rx, ry, 0xffffff, FALSE );
+
+	for ( int i = 0; i < INFO_TEXT_MAX; i++ ) {
+		double x = lx + ( rx - lx ) / 2;
+		double y = ly + 20 + i * 30;
+		_drawer->setString( true, x, y, _info[ i ].col, _info[ i ].str );
+	}
+}
+
+void Field::drawRound( ) const {
+	_drawer->setString( false, 20, 20, RED, "ROUND : " + std::to_string( _turn / TURN_MAX ) + "  TURN : " + std::to_string( _turn ), Drawer::BIG );
 }

@@ -160,6 +160,7 @@ void Game::selectPlayerPos( ) {
 }
 
 void Game::updatePlayerPhase( ) {
+	_field->setInfoText( "あなたの配置をしてください" );
 	selectPlayerPos( );
 
 	if ( !_player_selected ) {
@@ -182,9 +183,11 @@ void Game::updatePlayerPhase( ) {
 
 void Game::inputTmpMirror( ) {
 	if ( _client->getOrder( ) != _player_num ) {
+		_field->setInfoText( "相手が鏡を配置しています", RED );
 		return;
 	}
-	
+
+	_field->setInfoText( "あなたのターンです", RED );
 	bool hit = false;
 	hit = _field->isHitFieldPos( );
 
@@ -217,6 +220,9 @@ void Game::inputTmpMirror( ) {
 }
 
 void Game::updateMirrorPhase( ) {
+	_field->setInfoText( "鏡を配置してください。" );
+	_field->setInfoText( "もう一度右クリックで向きを変えられます" );
+
 	inputTmpMirror( );
 
 	if ( !_tmp_mirror.flag ) {
@@ -289,6 +295,7 @@ void Game::updateJudgePhase( ) {
 			_field->nextTurn( );
 		}
 		_turn++;
+		_field->setTurn( _turn );
 	} else {
 		//負け
 		_data->setScene( RESULT );
@@ -326,7 +333,7 @@ void Game::recvAttackPhase( ) {
 		return;
 	}
 
-	if ( _field->getTurn( ) == _turn ) {
+	if ( _attack_phase_recv ) {
 		return;
 	}
 
@@ -340,7 +347,6 @@ void Game::recvAttackPhase( ) {
 		}
 		_field->setMirrorPoint( player_num, x, y, angle );
 	}
-	_field->setTurn( _turn );
 
 	_attack_phase_recv = true;
 }

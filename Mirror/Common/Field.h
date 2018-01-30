@@ -20,6 +20,7 @@ const int START_POS_X = WIDTH / 3 * 2 - SQUARE_SIZE * FIELD_COL / 2;
 const int START_POS_Y = HEIGHT / 2 - SQUARE_SIZE * FIELD_ROW / 2;
 const int DISTANCE = SQUARE_SIZE;
 const int DISTANCE_HALF = SQUARE_SIZE / 2;
+const int INFO_TEXT_MAX = 3;
 
 class Field : public Base {
 public:
@@ -78,6 +79,11 @@ public:
 		double x;
 		double y;
 	};
+
+	struct Info {
+		std::string str;
+		COLOR col;
+	};
 public:
 	Field( GlobalDataPtr data );
 	virtual ~Field( );
@@ -89,6 +95,7 @@ public:
 	void update( );
 
 public:
+	void setInfoText( std::string str, COLOR col = YELLOW );
 	void updateLazerVector( Vector vec );
 	void setTurn( int turn );
 	void setPlayerNum( int num );
@@ -121,6 +128,7 @@ public:
 	bool isSelectedMirror( ) const;
 
 private:
+	void resetInfo( );
 	void setDirect( Vector vec );
 
 private:
@@ -132,17 +140,21 @@ private:
 	void drawMirror( ) const;
 	void drawPlayerPos( ) const;
 	void drawPlayer( ) const;
+	void drawInfo( ) const;
+	void drawRound( ) const;
 
 private:
 	std::map< int, Mirror > _mirrors;
+	std::array< Info, INFO_TEXT_MAX > _info;
 	std::array< int, PLAYER_NUM > _player_pos_no;
 	std::array< PlayerPos, PLAYER_POSITION * 2 > _select_player_pos;
 	std::array< COLOR, PLAYER_NUM >_player_color;
+	int _turn;
 	bool _player_selected;
 	bool _mirror_selected;
 	bool _reflection;
+	int _info_idx;
 	int _tmp_player_pos;
-	int _turn;
 	int _dead_flag;
 	int _player_num;
 	int _player_pos_hit_num;
