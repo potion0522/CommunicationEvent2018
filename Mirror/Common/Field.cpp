@@ -46,10 +46,11 @@ void Field::initialize( ) {
 	_player_num = -1;
 	_player_pos_hit_num = -1;
 	_field_pos_hit_num = -1;
-	_lazer_pos = -1;
+	_lazer_point_idx = -1;
 	_direct = DIR( );
 	_tmp_mirror = Mirror( );
 	std::map< int, Mirror >( ).swap( _mirrors );
+	_reflection_point = Vector( );
 	_phase = SET_PLAYER_PHASE;
 	for ( int i = 0; i < PLAYER_POSITION * 2; i++ ) {
 		if ( i < PLAYER_POSITION ) {
@@ -87,8 +88,7 @@ void Field::nextRound( ) {
 	_field_pos_hit_num = -1;
 	_direct = DIR( );
 	_tmp_mirror = Mirror( );
-	std::array< int, 2 >( ).swap( _dir_board );
-	std::map< int, Mirror >( ).swap( _mirrors );
+	_reflection_point = Vector( );
 }
 
 void Field::update( ) {
@@ -194,6 +194,10 @@ int Field::getDeadPlayer( ) const {
 	return _dead_flag;
 }
 
+int Field::getLazerPointIdx( ) const {
+	return _lazer_point_idx;
+}
+
 void Field::setTurn( int turn ) {
 	_turn = turn;
 }
@@ -236,6 +240,7 @@ void Field::updateLazerVector( Vector vec ) {
 		double b = mirror_y - vec.y;
 		double c = a * a + b * b;
 		if ( c <= ( lazer_r + MIRROR_R ) * ( lazer_r + MIRROR_R ) ) {
+			already = true;
 			Vector next_dir = Vector( );
 			switch ( _direct ) {
 			case DIR_UP :
@@ -253,14 +258,15 @@ void Field::updateLazerVector( Vector vec ) {
 			}
 			if ( !_reflection ) {
 				setDirect( next_dir );
+				_reflection_point.x = mirror_x;
+				_reflection_point.y = mirror_y;
 				_reflection = true;
-			} else {
-				already = true;
 				break;
 			}
 		}
 	}
 	if ( !already ) {
+		_reflection_point = Vector( );
 		_reflection = false;
 	}
 
@@ -338,9 +344,9 @@ void Field::setPlayerPoint( int idx, int pos ) {
 }
 
 void Field::setLazerPoint( int pos ) {
-	_lazer_pos = pos;
+	_lazer_point_idx = pos;
 	Vector dir = Vector( );
-	if ( _lazer_pos < PLAYER_POSITION ) {
+	if ( _lazer_point_idx < PLAYER_POSITION ) {
 		dir.x = 1;
 		dir.y = 0;
 	} else {
@@ -369,9 +375,6 @@ void Field::setMirrorPoint( int player_num, int x, int y, MIRROR_ANGLE angle ) {
 		angle
 	};
 
-	if ( _mirrors.size( ) > MIRROR_MAX ) {
-		return;
-	}
 	_mirrors[ idx ] = mirror;
 }
 
@@ -385,11 +388,11 @@ void Field::mirrorPosSelected( ) {
 
 Field::Vector Field::getLazerPoint( ) const {
 	Vector vec = Vector( );
-	if ( _lazer_pos < PLAYER_POSITION ) {
+	if ( _lazer_point_idx < PLAYER_POSITION ) {
 		vec.x = PLAYER_POS_X;
-		vec.y = PLAYER_POS_Y + ( _lazer_pos + 1 ) * SQUARE_SIZE;
+		vec.y = PLAYER_POS_Y + ( _lazer_point_idx + 1 ) * SQUARE_SIZE;
 	} else {
-		vec.x = PLAYER_POS_X + ( _lazer_pos % PLAYER_POSITION + 1 ) * SQUARE_SIZE;
+		vec.x = PLAYER_POS_X + ( _lazer_point_idx % PLAYER_POSITION + 1 ) * SQUARE_SIZE;
 		vec.y = PLAYER_POS_Y;
 	}
 
@@ -418,6 +421,10 @@ Field::Vector Field::getNextDirect( ) const {
 	}
 
 	return vec;
+}
+
+Field::Vector Field::getReflectionPoint( ) const {
+	return _reflection_point;
 }
 
 BATTLE_PHASE Field::getPhase( ) const{
@@ -468,12 +475,12 @@ void Field::drawField( ) const {
 
 void Field::drawArmament( ) const {
 	//–C‘ä•`‰æ
-	if ( _lazer_pos < 0 ) {
+	if ( _lazer_point_idx < 0 ) {
 		return;
 	}
 
-	double x = _select_player_pos[ _lazer_pos ].x;
-	double y = _select_player_pos[ _lazer_pos ].y;
+	double x = _select_player_pos[ _lazer_point_idx ].x;
+	double y = _select_player_pos[ _lazer_point_idx ].y;
 
 	_drawer->setCircle( x, y, CIRCLE_SIZE, PURPLE, 150, true );
 }

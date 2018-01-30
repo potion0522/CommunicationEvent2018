@@ -103,6 +103,7 @@ public:
 public:
 	Vector getLazerPoint( ) const;
 	Vector getNextDirect( ) const;
+	Vector getReflectionPoint( ) const;
 	BATTLE_PHASE getPhase( ) const;
 	int getTurn( ) const;
 	int getPlayerPoint( int idx ) const;
@@ -111,6 +112,7 @@ public:
 	int getPlayerPosHitNum( ) const;
 	int getFieldPosHitNum( ) const;
 	int getDeadPlayer( ) const;
+	int getLazerPointIdx( ) const;
 	bool isHitPlayerPos( );
 	bool isSelectedPlayer( ) const;
 	bool isHitFieldPos( );
@@ -132,7 +134,6 @@ private:
 
 private:
 	std::map< int, Mirror > _mirrors;
-	std::array< int, 2 > _dir_board;	//x, y
 	std::array< int, PLAYER_NUM > _player_pos_no;
 	std::array< PlayerPos, PLAYER_POSITION * 2 > _select_player_pos;
 	std::array< COLOR, PLAYER_NUM >_player_color;
@@ -144,13 +145,14 @@ private:
 	int _player_num;
 	int _player_pos_hit_num;
 	int _field_pos_hit_num;
-	int _lazer_pos;
 	int _hit_mirror_num;
 	int _distance;
+	int _lazer_point_idx;
 	HCURSOR _cur_hand;
 	BATTLE_PHASE _phase;
 	DIR _direct;
 	Mirror _tmp_mirror;
+	Vector _reflection_point;
 
 	//‰æ‘œŠÖ˜A
 	ImageProperty _decision_button;

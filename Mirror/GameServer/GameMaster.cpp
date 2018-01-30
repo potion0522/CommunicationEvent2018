@@ -106,6 +106,31 @@ int GameMaster::getOrderIdx( int order ) const {
 	return idx;
 }
 
+int GameMaster::calcLazerPoint( int exclusion ) {
+	int player_one = _field->getPlayerPoint( 0 );
+	int player_two = _field->getPlayerPoint( 1 );
+	std::map< int, int > point;
+	for ( int i = 0; i < PLAYER_POSITION * 2; i++ ) {
+		point[ i ] = i;
+	}
+
+	point.erase( player_one );
+	point.erase( player_two );
+
+	if ( exclusion != -1 ) {
+		point.erase( exclusion );
+	}
+
+	int rand = _data->getRandom( 0, ( int )point.size( ) );
+	std::map< int, int >::iterator ite;
+	ite = point.begin( );
+	for ( int i = 0; i < rand - 1; i++ ) {
+		ite++;
+	}
+
+	return ite->second;
+}
+
 void GameMaster::updatePlayerPhase( ) {
 	int idx = getWaitingIdx( );
 	_server->setOrder( -1 );
@@ -124,25 +149,9 @@ void GameMaster::updatePlayerPhase( ) {
 		_client_data[ i ].fin = false;
 	}
 
-	int dif = 0;
-	int player_one = _field->getPlayerPoint( 0 );
-	int player_two = _field->getPlayerPoint( 1 );
-	std::map< int, int > point;
-	for ( int i = 0; i < PLAYER_POSITION * 2; i++ ) {
-		point[ i ] = i;
-	}
-
-	point.erase( player_one );
-	point.erase( player_two );
-
-	int rand = _data->getRandom( 0, PLAYER_POSITION * 2 - 2 );
-	std::map< int, int >::iterator ite;
-	ite = point.begin( );
-	for ( int i = 0; i < rand - 1; i++ ) {
-		ite++;
-	}
-
-	_server->setLazerPos( ite->second );
+	int lazer = calcLazerPoint( );
+	_server->setLazerPos( lazer );
+	_field->setLazerPoint( lazer );
 }
 
 void GameMaster::updateMirrorPhase( ) {
@@ -214,6 +223,11 @@ void GameMaster::updateJudgePhase( ) {
 		_phase = SET_MIRROR_PHASE;
 		_field->setPhase( _phase );
 		_server->setBattlePhase( _phase );
+
+		int lazer = calcLazerPoint( _field->getLazerPointIdx( ) );
+		_field->setLazerPoint( lazer );
+		_server->setLazerPos( lazer );
+
 		int one = _client_data[ 0 ].player_pos;
 		int two = _client_data[ 1 ].player_pos;
 		std::array< Data, PLAYER_NUM >( ).swap( _client_data );

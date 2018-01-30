@@ -28,6 +28,7 @@ private:
 	void orderPlayer( );
 	int getWaitingIdx( ) const;
 	int getOrderIdx( int order ) const;
+	int calcLazerPoint( int exclusion = -1 );
 	void updatePlayerPhase( );
 	void updateMirrorPhase( );
 	void updateAttackPhase( );

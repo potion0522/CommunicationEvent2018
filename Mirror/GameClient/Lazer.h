@@ -23,7 +23,6 @@ public:
 
 private:
 	void updateUnitVector( );
-	void updateLazer( );
 
 private:
 	bool _fin;

@@ -58,11 +58,6 @@ void Lazer::update( ) {
 	double draw_x = _start.x + _dir_vec.x;
 	double draw_y = _start.y + _dir_vec.y;
 	_drawer->setLine( _start.x, _start.y, draw_x, draw_y );
-
-	DebugPtr debug = _data->getDebugPtr( );
-	if ( debug->getFlag( ) ) {
-		debug->addLog( "DISTANCE : " + std::to_string( _field->getDistance( ) ) );
-	}
 }
 
 bool Lazer::isFinish( ) const {
@@ -75,8 +70,9 @@ void Lazer::updateUnitVector( ) {
 		return;
 	}
 	_unit = unit;
-	_start.x = _start.x + _dir_vec.x;
-	_start.y = _start.y + _dir_vec.y;
-	_dir_vec.x = 0;
-	_dir_vec.y = 0;
+	Field::Vector pos = _field->getReflectionPoint( );
+	if ( pos.x != 0 && pos.y != 0 ) {
+		_start = pos;
+	}
+	_dir_vec = Field::Vector( );
 }
