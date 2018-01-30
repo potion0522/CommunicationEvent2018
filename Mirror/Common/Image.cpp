@@ -26,6 +26,7 @@ void Image::initialize( ) {
 		switch ( ( IMAGE )i ) {
 		case NONE_IMAGE   : add.name = "none"  ; break;
 		case BUTTON_IMAGE : add.name = "button"; break;
+		case CUTIN_IMAGE  : add.name = "cutin" ; break;
 		default	:
 			{
 				DebugPtr debug( new Debug( NULL ) );

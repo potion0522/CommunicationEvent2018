@@ -60,11 +60,11 @@ void Drawer::initialize( ) {
 }
 
 void Drawer::update( ) {
+	drawBlinkCircle( );
+	drawCircle( );
+	drawLine( );
 	drawImage( );
 	drawString( );
-	drawLine( );
-	drawCircle( );
-	drawBlinkCircle( );
 	reset( );
 }
 

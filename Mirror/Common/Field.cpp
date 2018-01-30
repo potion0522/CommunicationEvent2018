@@ -39,6 +39,7 @@ void Field::initialize( ) {
 	_player_selected = false;
 	_mirror_selected = false;
 	_reflection = false;
+	_tmp_player_pos = -1;
 	_turn = 0;
 	_dead_flag = -1;
 	_hit_mirror_num = -1;
@@ -92,6 +93,7 @@ void Field::update( ) {
 	drawField( );
 	drawPlayer( );
 	drawArmament( );
+	drawDecisionButton( );
 
 	if ( _phase == SET_PLAYER_PHASE ) {
 		drawPlayerPos( );
@@ -102,7 +104,6 @@ void Field::update( ) {
 	}
 
 	if ( !_mirror_selected ) {
-		drawDecisionButton( );
 		drawTmpMirror( );
 	}
 	drawMirror( );
@@ -166,12 +167,6 @@ bool Field::isHitFieldPos( ) {
 }
 
 bool Field::isHitDecisionButton( ) const {
-	if ( !_tmp_mirror.flag ) {
-		return false;
-	}
-	if ( _mirror_selected ) {
-		return false;
-	}
 	int mouse_x = _data->getMouseX( );
 	int mouse_y = _data->getMouseY( );
 
@@ -353,6 +348,10 @@ void Field::setLazerPoint( int pos ) {
 	setDirect( dir );
 }
 
+void Field::setTmpPlayerPoint( ) {
+	_tmp_player_pos = getPlayerPosHitNum( );
+}
+
 void Field::setTmpMirrorPoint( int player_num, int x, int y, MIRROR_ANGLE angle ) {
 	_tmp_mirror.player_num = player_num;
 	_tmp_mirror.x = x;
@@ -430,6 +429,10 @@ BATTLE_PHASE Field::getPhase( ) const{
 
 int Field::getTurn( ) const {
 	return _turn;
+}
+
+int Field::getTmpPlayerPoint( ) const {
+	return _tmp_player_pos;
 }
 
 int Field::getPlayerPoint( int idx ) const {
@@ -567,6 +570,12 @@ void Field::drawPlayerPos( ) const {
 		double x = _select_player_pos[ i ].x;
 		double y = _select_player_pos[ i ].y;
 		if ( _player_num == i / PLAYER_POSITION ) {
+			if ( getTmpPlayerPoint( ) == i ) {
+				_drawer->setCircle( x, y, PLAYER_SIZE, WHITE, 150, true );
+				_drawer->setCircle( x, y, PLAYER_SIZE, _player_color[ i / PLAYER_POSITION ] );
+				continue;
+			}
+
 			if ( getPlayerPosHitNum( ) == i ) {
 				_drawer->setCircle( x, y, CIRCLE_SIZE, WHITE, 255, true );
 				SetCursor( _cur_hand );

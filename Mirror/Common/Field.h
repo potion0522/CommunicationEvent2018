@@ -95,6 +95,7 @@ public:
 	void setPhase( BATTLE_PHASE phase );
 	void setPlayerPoint( int idx, int pos );
 	void setLazerPoint( int pos );
+	void setTmpPlayerPoint( );
 	void setTmpMirrorPoint( int player_num, int x, int y, MIRROR_ANGLE angle );
 	void setMirrorPoint( int player_num, int x, int y, MIRROR_ANGLE angle );
 	void playerPosSelected( );
@@ -106,6 +107,7 @@ public:
 	Vector getReflectionPoint( ) const;
 	BATTLE_PHASE getPhase( ) const;
 	int getTurn( ) const;
+	int getTmpPlayerPoint( ) const;
 	int getPlayerPoint( int idx ) const;
 	int getHitMirrorIdx( ) const;
 	int getPlayerPosHitNum( ) const;
@@ -139,6 +141,7 @@ private:
 	bool _player_selected;
 	bool _mirror_selected;
 	bool _reflection;
+	int _tmp_player_pos;
 	int _turn;
 	int _dead_flag;
 	int _player_num;
