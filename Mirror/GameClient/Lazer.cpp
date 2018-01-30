@@ -50,24 +50,11 @@ void Lazer::update( ) {
 	_dir_vec.x += x;
 	_dir_vec.y -= y;
 
-	double length = sqrt( x * x + y * y );
-	_distance -= length;
-	if ( _distance <= 0 ) {
-		_dir_vec.x -= _unit.x * fabsf( ( float )_distance );
-		_dir_vec.y += _unit.y * fabsf( ( float )_distance );
+	Field::Vector tmp = { _start.x + _dir_vec.x, _start.y + _dir_vec.y };
+	_field->updateLazerVector( tmp );
+	updateUnitVector( );
 
-		Field::Vector tmp = { _start.x + _dir_vec.x, _start.y + _dir_vec.y };
-		_field->updateLazerVector( tmp );
-		updateUnitVector( );
-		_distance = _field->getDistance( );
-		if ( _distance == DISTANCE_HALF + 1 ) {
-			_start.x += _dir_vec.x;
-			_start.y += _dir_vec.y;
-			_dir_vec.x = 0;
-			_dir_vec.y = 0;
-		}
-	}
-
+	//•`‰æ
 	double draw_x = _start.x + _dir_vec.x;
 	double draw_y = _start.y + _dir_vec.y;
 	_drawer->setLine( _start.x, _start.y, draw_x, draw_y );
@@ -83,22 +70,13 @@ bool Lazer::isFinish( ) const {
 }
 
 void Lazer::updateUnitVector( ) {
-	_unit = _field->getNextDirect( );
-}
-
-void Lazer::updateLazer( ) {
-	updateStartPos( );
-	convReflectionVector( );
-}
-
-void Lazer::updateStartPos( ) {
-	_start.x = ( int )( _start.x + _dir_vec.x );
-	_start.y = ( int )( _start.y + _dir_vec.y );
-}
-
-void Lazer::convReflectionVector( ) {
-	//Field::Vector normal = _field->getNormalVector( _unit.x, _unit.y );
-//	Field::Vector ref = _unit.getReflection( normal );
-//	updateUnitVector( ref );
-	_dir_vec = { 0 };
+	Field::Vector unit = _field->getNextDirect( );
+	if ( unit.x == _unit.x && unit.y == _unit.y ) {
+		return;
+	}
+	_unit = unit;
+	_start.x = _start.x + _dir_vec.x;
+	_start.y = _start.y + _dir_vec.y;
+	_dir_vec.x = 0;
+	_dir_vec.y = 0;
 }

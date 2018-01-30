@@ -24,8 +24,6 @@ public:
 private:
 	void updateUnitVector( );
 	void updateLazer( );
-	void updateStartPos( );
-	void convReflectionVector( );
 
 private:
 	bool _fin;

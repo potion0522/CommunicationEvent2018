@@ -150,7 +150,6 @@ private:
 	HCURSOR _cur_hand;
 	BATTLE_PHASE _phase;
 	DIR _direct;
-	Vector _dir_vec;
 	Mirror _tmp_mirror;
 
 	//‰æ‘œŠÖ˜A

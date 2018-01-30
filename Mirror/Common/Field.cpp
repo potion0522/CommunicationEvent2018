@@ -7,6 +7,7 @@
 #include <random>
 
 const int MOUSE_R = 5;
+const int MIRROR_R = 10;
 const int CIRCLE_SIZE = SQUARE_SIZE / 5 * 2;
 const int PLAYER_POS_X = START_POS_X - SQUARE_SIZE / 2;
 const int PLAYER_POS_Y = START_POS_Y - SQUARE_SIZE / 2;
@@ -47,7 +48,6 @@ void Field::initialize( ) {
 	_field_pos_hit_num = -1;
 	_lazer_pos = -1;
 	_direct = DIR( );
-	_dir_vec = Vector( );
 	_tmp_mirror = Mirror( );
 	std::map< int, Mirror >( ).swap( _mirrors );
 	_phase = SET_PLAYER_PHASE;
@@ -67,12 +67,12 @@ void Field::initialize( ) {
 
 	Png image = _image->getPng( BUTTON_IMAGE, 0 );
 	_decision_button = ImageProperty( );
-	_decision_button.cx = 100;
-	_decision_button.cy = 100;
+	_decision_button.cx = WIDTH / 5;
+	_decision_button.cy = HEIGHT / 5;
 	_decision_button.lx = _decision_button.cx - image.width / 2;
 	_decision_button.rx = _decision_button.cx + image.width / 2;
-	_decision_button.ly = _decision_button.cx - image.height / 2;
-	_decision_button.ry = _decision_button.cx + image.height / 2;
+	_decision_button.ly = _decision_button.cy - image.height / 2;
+	_decision_button.ry = _decision_button.cy + image.height / 2;
 	_decision_button.png = image.png;
 }
 
@@ -86,7 +86,6 @@ void Field::nextRound( ) {
 	_distance = 0;
 	_field_pos_hit_num = -1;
 	_direct = DIR( );
-	_dir_vec = Vector( );
 	_tmp_mirror = Mirror( );
 	std::array< int, 2 >( ).swap( _dir_board );
 	std::map< int, Mirror >( ).swap( _mirrors );
@@ -152,8 +151,8 @@ bool Field::isHitFieldPos( ) {
 	if ( _mirror_selected ) {
 		return false;
 	}
-	double mouse_x = ( double )_data->getMouseX( );
-	double mouse_y = ( double )_data->getMouseY( );
+	int mouse_x = _data->getMouseX( );
+	int mouse_y = _data->getMouseY( );
 	for ( int i = 0; i < FIELD_ROW; i++ ) {
 		for ( int j = 0; j < FIELD_COL; j++ ) {
 			double table_left = START_POS_X + j * SQUARE_SIZE;
@@ -176,8 +175,8 @@ bool Field::isHitDecisionButton( ) const {
 	if ( _mirror_selected ) {
 		return false;
 	}
-	double mouse_x = ( double )_data->getMouseX( );
-	double mouse_y = ( double )_data->getMouseY( );
+	int mouse_x = _data->getMouseX( );
+	int mouse_y = _data->getMouseY( );
 
 	if ( _decision_button.lx < mouse_x && mouse_x < _decision_button.rx &&
 		 _decision_button.ly < mouse_y && mouse_y < _decision_button.ry ) {
@@ -204,12 +203,10 @@ void Field::setPlayerNum( int num ) {
 }
 
 void Field::updateLazerVector( Vector vec ) {
-	_dir_vec = vec;
 	int x = ( int )( vec.x - START_POS_X );
 	int y = ( int )( vec.y - START_POS_Y );
 
 	if ( x < 0 || y < 0 || x > START_POS_X + SQUARE_SIZE * FIELD_COL || y > START_POS_Y + SQUARE_SIZE * FIELD_ROW ) {
-		_distance = 1;
 		//ÉvÉåÉCÉÑÅ[ÇÃìñÇΩÇËîªíË
 		for ( int i = 0; i < PLAYER_NUM; i++ ) {
 			int pos = getPlayerPoint( i );
@@ -225,6 +222,49 @@ void Field::updateLazerVector( Vector vec ) {
 		return;
 	}
 
+	//ãæ
+	std::map< int, Mirror >::iterator ite;
+	ite = _mirrors.begin( );
+
+	bool already = false;
+	for ( ite; ite != _mirrors.end( ); ite++ ) {
+		double mirror_x = START_POS_X + ite->second.x * SQUARE_SIZE + SQUARE_SIZE * 0.5;
+		double mirror_y = START_POS_Y + ite->second.y * SQUARE_SIZE + SQUARE_SIZE * 0.5;
+		double lazer_r = 1;
+
+		double a = mirror_x - vec.x;
+		double b = mirror_y - vec.y;
+		double c = a * a + b * b;
+		if ( c <= ( lazer_r + MIRROR_R ) * ( lazer_r + MIRROR_R ) ) {
+			Vector next_dir = Vector( );
+			switch ( _direct ) {
+			case DIR_UP :
+				ite->second.angle == RIGHT ? next_dir.x = 1 : next_dir.x = -1;
+				break;
+			case DIR_DOWN :
+				ite->second.angle == RIGHT ? next_dir.x = -1 : next_dir.x = 1;
+				break;
+			case DIR_RIGHT :
+				ite->second.angle == RIGHT ? next_dir.y = 1 : next_dir.y = -1;
+				break;
+			case DIR_LEFT :
+				ite->second.angle == RIGHT ? next_dir.y = -1 : next_dir.y = 1;
+				break;			
+			}
+			if ( !_reflection ) {
+				setDirect( next_dir );
+				_reflection = true;
+			} else {
+				already = true;
+				break;
+			}
+		}
+	}
+	if ( !already ) {
+		_reflection = false;
+	}
+
+/*
 	x /= SQUARE_SIZE;
 	y /= SQUARE_SIZE;
 
@@ -268,7 +308,7 @@ void Field::updateLazerVector( Vector vec ) {
 	_distance = DISTANCE;
 	if ( field[ _dir_board[ 0 ] + _dir_board[ 1 ] * FIELD_COL ] != ' ' ) {
 		_distance = DISTANCE_HALF;
-	}
+	}*/
 }
 
 void Field::setDirect( Vector vec ) {
@@ -447,7 +487,7 @@ void Field::drawTmpMirror( ) const {
 		double sx = START_POS_X + x * SQUARE_SIZE + SQUARE_SIZE * 0.5;
 		double sy = START_POS_Y + y * SQUARE_SIZE + SQUARE_SIZE * 0.5;
 
-		COLOR col = ( _tmp_mirror.player_num == 0 ? RED : BLUE );
+		COLOR col = ( _player_num == 0 ? RED : BLUE );
 		_drawer->setLine( sx, sy, sx + line * 1, sy - line * 1, col, 150 );
 		_drawer->setLine( sx, sy, sx - line * 1, sy + line * 1, col, 150 );
 	}
