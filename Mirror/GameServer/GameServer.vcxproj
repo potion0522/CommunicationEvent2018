@@ -156,6 +156,7 @@
     <ClCompile Include="GameMaster.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Log.cpp" />
+    <ClCompile Include="ResultServer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.vcxproj">
@@ -166,6 +167,7 @@
     <ClInclude Include="Connector.h" />
     <ClInclude Include="GameMaster.h" />
     <ClInclude Include="Log.h" />
+    <ClInclude Include="ResultServer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

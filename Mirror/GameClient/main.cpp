@@ -29,7 +29,7 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	SetDrawScreen( DX_SCREEN_BACK );
 
 	{
-		GlobalDataPtr data( new GlobalData( ) );
+		GlobalDataPtr data( new GlobalData( CLIENT ) );
 		DirectionPtr direction( new Direction( CLIENT, data ) );
 
 		//計算クラス
@@ -41,18 +41,21 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 		LazerPtr lazer( new Lazer( data ) );
 		ResultClientPtr result( new ResultClient( data, game ) );
 
+		direction->add( ALL, data );
 		direction->add( TITLE, title );
 		direction->add( CONNECT, console );
 		direction->add( BATTLE, game );
 		direction->add( BATTLE, field );
 		direction->add( RESULT, result );
 
-		//data->setScene( BATTLE );
-		direction->initialize( );
 		// GlobalData のフラグが 0 であれば全プロセス終了
 		while ( data->getFlag( ) ) {
 			if ( ScreenFlip( ) != 0 || ProcessMessage( ) != 0 || ClearDrawScreen( ) != 0 ) {
 				break;
+			}
+			if ( data->getInitFlag( ) ) {
+				direction->initialize( );
+				data->setScene( TITLE );
 			}
 			direction->run( );
 		}

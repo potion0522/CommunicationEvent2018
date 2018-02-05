@@ -34,6 +34,7 @@ private:
 	void printLog( );
 	void printActiveClass( );
 	void printScene( );
+	void drawMyIp( );
 	void initLog( );
 	void initActiveClass( );
 
@@ -43,6 +44,7 @@ private:
 	FILE *_fp;
 	std::vector< std::string > _log;
 	std::vector< std::string > _active_class;
+	std::string _my_ip;
 
 	GlobalDataPtr _data;
 	ColorPtr _color;

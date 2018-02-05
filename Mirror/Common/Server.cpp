@@ -20,9 +20,7 @@ void Server::initialize( ) {
 		_handles[ i ] = -1;
 		_recving[ i ] = false;
 	}
-	if ( _handle_udp < 0 ) {
-		_handle_udp = MakeUDPSocket( -1 );
-	}
+	_handle_udp = -1;
 
 	_send_data_udp = NetWorkData( );
 	_send_data_udp.player_pos[ 0 ] = -1;
@@ -99,6 +97,10 @@ void Server::sendDataUdp( ) {
 		if ( _handles[ i ] < 0 ) {
 			continue;
 		}
+		if ( _handle_udp < 0 ) {
+			_handle_udp = MakeUDPSocket( -1 );
+		}
+
 		IPDATA ip;
 		GetNetWorkIP( _handles[ i ], &ip );
 		NetWorkSendUDP( _handle_udp, ip, UDP_PORT, &_send_data_udp, sizeof( NetWorkData ) ); 
@@ -138,7 +140,23 @@ bool Server::isRecving( int idx ) const {
 	return _recving[ idx ];
 }
 
-std::string Server::getMachineIpStr( int idx ) {
+std::string Server::getServerIpStr( ) {
+	IPDATA ip;
+	GetMyIPAddress( &ip );
+
+	std::string str = "";
+	str += std::to_string( ip.d1 );
+	str += ".";
+	str += std::to_string( ip.d2 );
+	str += ".";
+	str += std::to_string( ip.d3 );
+	str += ".";
+	str += std::to_string( ip.d4 );
+
+	return str;
+}
+
+std::string Server::getClientIpStr( int idx ) {
 	std::string ip = "";
 	if ( _handles[ idx ] > 0 ) {
 		IPDATA tmp;
@@ -244,6 +262,5 @@ void Server::disConnect( ) {
 
 	NetWorkRecvBufferClear( _handle_udp );
 	DeleteUDPSocket( _handle_udp );
-
 	StopListenNetWork( );
 }

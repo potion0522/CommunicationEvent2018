@@ -1,5 +1,6 @@
 #pragma once
 #include "Base.h"
+#include "DxLib.h"
 #include "smart_ptr.h"
 #include "const.h"
 
@@ -15,12 +16,12 @@ PTR( Field );
 
 class GlobalData : public Base {
 public:
-	GlobalData( );
+	GlobalData( MACHINE_TYPE type );
 	virtual ~GlobalData( );
 
 public:
 	std::string getTag( );
-	void initialize( MACHINE_TYPE type );
+	void initialize( );
 	void update( );
 
 public:
@@ -34,9 +35,12 @@ public:
 	SCENE getScene( ) const;
 	MACHINE_TYPE getMachineType( ) const;
 	bool getCommandFlag( ) const;
+	bool getInitFlag( ) const;
 
 public:
 	void setCommandFlag( bool flag );
+	void setInitFlag( );
+	void foldInitFlag( );
 	void setPtr( DebugPtr ptr );
 	void setPtr( ServerPtr ptr );
 	void setPtr( ClientPtr ptr );
@@ -53,6 +57,7 @@ private:
 	SCENE _scene;
 	MACHINE_TYPE _type;
 	bool _command_flag;
+	bool _init;
 
 	UpdateKeyPtr _key;
 	MouseEventPtr _mouse;

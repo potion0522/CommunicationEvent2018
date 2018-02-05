@@ -5,6 +5,8 @@
 
 Console::Console( GlobalDataPtr data ) :
 _data( data ) {
+	_client = _data->getClientPtr( );
+	_drawer = _data->getDrawerPtr( );
 }
 
 Console::~Console( ) {
@@ -19,9 +21,6 @@ std::string Console::getTag( ) {
 
 void Console::initialize( ) {
 	setFlag( 1 );
-	_client = _data->getClientPtr( );
-	_drawer = _data->getDrawerPtr( );
-	_recving_udp = false;
 }
 
 void Console::update( ) {
@@ -77,8 +76,4 @@ void Console::matching( ) {
 			_data->setScene( BATTLE );
 		}
 	}
-}
-
-bool Console::isRecvingData( ) const {
-	return _recving_udp;
 }

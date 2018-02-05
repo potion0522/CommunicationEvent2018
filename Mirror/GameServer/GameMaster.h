@@ -23,6 +23,9 @@ public:
 	void initialize( );
 	void update( );
 
+public:
+	int getWinner( ) const;
+
 private:
 	void commandExecution( );
 	void orderPlayer( );

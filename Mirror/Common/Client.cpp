@@ -215,6 +215,22 @@ void Client::setAlive( bool alive ) {
 	_send_data_tcp.alive = alive;
 }
 
+std::string Client::getClientIpStr( ) {
+	IPDATA ip;
+	GetMyIPAddress( &ip );
+
+	std::string str = "";
+	str += std::to_string( ip.d1 );
+	str += ".";
+	str += std::to_string( ip.d2 );
+	str += ".";
+	str += std::to_string( ip.d3 );
+	str += ".";
+	str += std::to_string( ip.d4 );
+
+	return str;
+}
+
 int Client::getPlayerNum( ) const {
 	return _player_num;
 }

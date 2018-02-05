@@ -238,6 +238,9 @@ void GameMaster::updateJudgePhase( ) {
 		_client_data[ 1 ].player_pos = two;
 		_dice = false;
 		_turn++;
+	} else {
+		//Ÿ•‰‚ ‚èI
+		_data->setScene( RESULT );
 	}
 }
 
@@ -350,4 +353,8 @@ void GameMaster::commandExecution( ) {
 			_log->add( "       angle " + angle );
 		}
 	}
+}
+
+int GameMaster::getWinner( ) const {
+	return _winner;
 }

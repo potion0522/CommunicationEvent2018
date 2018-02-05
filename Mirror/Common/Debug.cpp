@@ -30,6 +30,11 @@ void Debug::initialize( ) {
 	_active_y = ACTIVE_CLASS_INIT_Y;
 	initLog( );
 	initActiveClass( );
+
+	switch ( _data->getMachineType( ) ) {
+	case SERVER: _my_ip = _data->getServerPtr( )->getServerIpStr( );
+	case CLIENT: _my_ip = _data->getClientPtr( )->getClientIpStr( );
+	}
 }
 
 std::string Debug::getTag( ) {
@@ -61,6 +66,7 @@ void Debug::update( ) {
 	printActiveClass( );
 	printScene( );
 	drawMousePoint( );
+	drawMyIp( );
 	//DrawCircle( WIDTH / 2, HEIGHT /2, 5, _color->getColor( RED ), TRUE );
 
 	if ( _data->getKeyState( KEY_INPUT_RETURN ) == 1 && !_data->getCommandFlag( ) ) {
@@ -160,6 +166,11 @@ void Debug::printScene( ) {
 	}
 
 	_drawer->setString( false, SCENE_X, Y_POS, WHITE, "SCENE  : " + str );
+}
+
+void Debug::drawMyIp( ) {
+	_drawer->setString( false, ACTIVE_CLASS_X, _active_y, YELLOW, "MyIP : " + _my_ip );
+	_active_y += Y_POS;
 }
 
 void Debug::initLog( ) {

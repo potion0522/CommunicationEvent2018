@@ -5,10 +5,12 @@
     <ClCompile Include="Log.cpp" />
     <ClCompile Include="GameMaster.cpp" />
     <ClCompile Include="Connector.cpp" />
+    <ClCompile Include="ResultServer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Log.h" />
     <ClInclude Include="GameMaster.h" />
     <ClInclude Include="Connector.h" />
+    <ClInclude Include="ResultServer.h" />
   </ItemGroup>
 </Project>

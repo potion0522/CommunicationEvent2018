@@ -8,6 +8,8 @@ Connector::Connector( GlobalDataPtr data, LogPtr log, CommandPtr command ) :
 _data( data ),
 _log( log ),
 _command( command ) {
+	setFlag( 1 );
+	_server = _data->getServerPtr( );
 }
 
 Connector::~Connector( ) {
@@ -21,8 +23,6 @@ std::string Connector::getTag( ) {
 }
 
 void Connector::initialize( ) {
-	setFlag( 1 );
-	_server = _data->getServerPtr( );
 	for ( int i = 0; i < MACHINE_MAX; i++ ) {
 		_connect_state[ i ] = NOT_CONNECTING;
 	}
@@ -62,7 +62,7 @@ void Connector::updateConnectState( ) {
 		}
 
 		//‰‰ñÚ‘±‚Ì‚Ý
-		log = "Connect " + _server->getMachineIpStr( i );
+		log = "Connect " + _server->getClientIpStr( i );
 		_connect_state[ i ] = CONNECTING;
 		_log->add( log );
 	}

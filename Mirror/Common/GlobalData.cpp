@@ -8,7 +8,23 @@
 #include "Drawer.h"
 #include <random>
 
-GlobalData::GlobalData( ) {
+GlobalData::GlobalData( MACHINE_TYPE type ) :
+_type( type ) {
+	_key =   UpdateKeyPtr( new UpdateKey( ) );
+	_mouse = MouseEventPtr( new MouseEvent( ) );
+	_image = ImagePtr( new Image( ) );
+	_drawer = DrawerPtr( new Drawer( ) );
+	_debug = NULL;
+
+	switch ( _type ) {
+	case SERVER	: _server = ServerPtr( new Server( ) )		; break;
+	case CLIENT	: _client = ClientPtr( new Client( ) )		; break;
+	case TEST	: _debug  = DebugPtr ( new Debug( NULL ) )	; break;
+	}
+
+	initialize( );
+
+	_init = true;
 }
 
 GlobalData::~GlobalData( ) {
@@ -18,23 +34,18 @@ std::string GlobalData::getTag( ) {
 	return "GLOBALDATA";
 }
 
-void GlobalData::initialize( MACHINE_TYPE type ) {
+void GlobalData::initialize( ) {
 	setFlag( 1 );
 	_scene = TITLE;
 	_command_flag = false;
 
-	_key =   UpdateKeyPtr( new UpdateKey( ) );
-	_mouse = MouseEventPtr( new MouseEvent( ) );
-	_image = ImagePtr( new Image( ) );
-	_drawer = DrawerPtr( new Drawer( ) );
-	_debug = NULL;
-	_type = type;
-
 	switch ( _type ) {
-	case SERVER	: _server = ServerPtr( new Server( ) )		; break;
-	case CLIENT	: _client = ClientPtr( new Client( ) )		; break;
-	case TEST	: _debug  = DebugPtr ( new Debug( NULL ) )	; break;
+	case SERVER	: _server->disConnect( ); break;
+	case CLIENT	: _client->disConnect( ); break;
+	case TEST	: _debug 	; break;
 	}
+
+	foldInitFlag( );
 }
 
 void GlobalData::update( ) {
@@ -89,8 +100,20 @@ bool GlobalData::getCommandFlag( ) const {
 	return _command_flag;
 }
 
+bool GlobalData::getInitFlag( ) const {
+	return _init;
+}
+
 void GlobalData::setCommandFlag( bool flag ) {
 	_command_flag = flag;
+}
+
+void GlobalData::setInitFlag( ) {
+	_init = true;
+}
+
+void GlobalData::foldInitFlag( ) {
+	_init = false;
 }
 
 void GlobalData::setPtr( DebugPtr ptr ) {

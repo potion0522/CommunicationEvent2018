@@ -29,4 +29,8 @@ void ResultClient::update( ) {
 		//”s–k
 		_drawer->setString( true, WIDTH / 2, HEIGHT / 2, RED, "‚ ‚È‚½‚Ì•‰‚¯", Drawer::BIG );
 	}
+
+	if ( _data->getKeyState( KEY_INPUT_SPACE ) == 1 ) {
+		_data->setScene( TITLE );
+	}
 }

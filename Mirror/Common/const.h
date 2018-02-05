@@ -53,6 +53,7 @@ enum COLOR {
 };
 
 enum SCENE {
+	ALL,
 	NONE,
 	TITLE,
 	CONNECT,

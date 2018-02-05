@@ -40,6 +40,7 @@ public:
 	void setAlive( bool alive );
 
 public:
+	std::string getClientIpStr( );
 	int getPlayerNum( ) const;
 	int getLazerPoint( ) const;
 	int getOrder( ) const;

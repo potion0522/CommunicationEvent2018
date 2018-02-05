@@ -17,16 +17,11 @@ public:
 	void initialize( );
 	void update( );
 
-public:
-	bool isRecvingData( ) const;
-
 private:
 	void ready( );
 	void matching( );
 
 private:
-	bool _recving_udp;
-
 	GlobalDataPtr _data;
 	ClientPtr _client;
 	DrawerPtr _drawer;

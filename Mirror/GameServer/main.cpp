@@ -7,6 +7,7 @@
 #include "GameMaster.h"
 #include "Command.h"
 #include "Debug.h"
+#include "ResultServer.h"
 
 /**********************************************************
 *														  *
@@ -28,7 +29,7 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	SetDrawScreen( DX_SCREEN_BACK );
 
 	{
-		GlobalDataPtr data( new GlobalData( ) );
+		GlobalDataPtr data( new GlobalData( SERVER ) );
 		DirectionPtr direction( new Direction( SERVER, data ) );
 
 		CommandPtr command( new Command( data ) );
@@ -36,18 +37,24 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 		LogPtr log( new Log( data ) );
 		ConnectorPtr connector( new Connector( data, log, command ) );
 		GameMasterPtr master( new GameMaster( data, connector, log, command ) );
+		ResultServerPtr result( new ResultServer( data, master ) );
 
+		direction->add( ALL, data );
 		direction->add( CONNECT, connector );
 		direction->add( CONNECT, master );
-		data->setScene( CONNECT );
+		direction->add( RESULT, result );
 
-		direction->initialize( );
-		data->getDebugPtr( )->setFlag( 1 );
 		// GlobalData のフラグが 0 であれば全プロセス終了
 		while ( data->getFlag( ) ) {
 			if ( ScreenFlip( ) != 0 || ProcessMessage( ) != 0 || ClearDrawScreen( ) != 0 ) {
 				break;
 			}
+			if ( data->getInitFlag( ) ) {
+				direction->initialize( );
+				data->getDebugPtr( )->setFlag( 1 );
+				data->setScene( CONNECT );
+			}
+
 			command->update( );
 			direction->run( );
 		}

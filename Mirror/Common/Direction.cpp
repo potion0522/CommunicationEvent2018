@@ -11,11 +11,10 @@
 Direction::Direction( MACHINE_TYPE type, GlobalDataPtr data ) :
 _data( data ) {
 	_scene = NONE;
-	_data->initialize( type );
 	_debug = DebugPtr( new Debug( _data ) );
 	_data->setPtr( _debug );
-	add( SCENE_MAX, _data->getDrawerPtr( ) );
-	add( SCENE_MAX, _debug );
+	add( ALL, _data->getDrawerPtr( ) );
+	add( ALL, _debug );
 	switch ( type ) {
 	case SERVER: add( CONNECT, _data->getServerPtr( ) ); break;
 	case CLIENT: add( CONNECT, _data->getClientPtr( ) ); break;
@@ -38,7 +37,6 @@ void Direction::initialize( ) {
 }
 
 void Direction::update( ) {
-	_data->update( );
 	SCENE scene = _data->getScene( );
 	if ( _scene != scene ) {
 		_scene = scene;
@@ -81,12 +79,12 @@ void Direction::run( ) {
 	ite = _exe.begin( );
 	for ( ite; ite != _exe.end( ); ite++ ) {
 		SCENE ite_scene = ite->first;
-		if ( ite_scene != _scene && ite_scene != SCENE_MAX ) {
+		if ( ite_scene != _scene && ite_scene != ALL ) {
 			if ( ite_scene != CONNECT ) {
 				continue;
 			}
 		}
-		if ( ite_scene == CONNECT && _scene < CONNECT ) {
+		if ( ite_scene == CONNECT && ( _scene > BATTLE || _scene < CONNECT ) ) {
 			continue;
 		}
 

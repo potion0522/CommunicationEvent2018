@@ -39,6 +39,7 @@ void Game::initialize( ) {
 	_phase = SET_PLAYER_PHASE;
 	_tmp_mirror = Field::Mirror( );
 
+	std::array< ImageProperty, CUTIN_PHASE >( ).swap( _cutin );
 	ImagePtr image_ptr = _data->getImagePtr( );
 	for ( int i = 0; i < CUTIN_PHASE; i++ ) {
 		Png image = image_ptr->getPng( CUTIN_IMAGE, i );
