@@ -175,6 +175,10 @@ void Game::updatePlayerPhase( ) {
 		return;
 	}
 
+	if ( _field->isSelectedPlayer( ) ) {
+		return;
+	}
+
 	_field->playerPosSelected( );
 	_field->setPlayerPoint( _player_num, _field->getTmpPlayerPoint( ) );
 	_client->setPlayerPos( _field->getPlayerPoint( _player_num ) );
@@ -221,7 +225,7 @@ void Game::inputTmpMirror( ) {
 
 void Game::updateMirrorPhase( ) {
 	_field->setInfoText( "鏡を配置してください。" );
-	_field->setInfoText( "もう一度右クリックで向きを変えられます" );
+	_field->setInfoText( "もう一度左クリックで向きを変えられます" );
 
 	inputTmpMirror( );
 
