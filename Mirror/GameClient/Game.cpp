@@ -301,6 +301,7 @@ void Game::updateJudgePhase( ) {
 		}
 		_turn++;
 		_field->setTurn( _turn );
+		_lazer->clearLazerImage( );
 	} else {
 		//•‰‚¯
 		_data->setScene( RESULT );

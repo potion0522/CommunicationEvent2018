@@ -3,6 +3,7 @@
 #include "smart_ptr.h"
 #include "Field.h"
 #include <string>
+#include <vector>
 
 PTR( Lazer );
 PTR( GlobalData );
@@ -20,9 +21,11 @@ public:
 	void update( );
 public:
 	bool isFinish( ) const;
+	void clearLazerImage( );
 
 private:
 	void updateUnitVector( );
+	double getLazerImageAngle( );
 
 private:
 	bool _fin;
@@ -30,6 +33,8 @@ private:
 	Field::Vector _start;
 	Field::Vector _dir_vec;
 	Field::Vector _unit;
+	int _lazer_image;
+	std::vector< ImageProperty > _lazer;
 
 	GlobalDataPtr _data;
 	DrawerPtr _drawer;
