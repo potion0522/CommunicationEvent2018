@@ -105,6 +105,7 @@ public:
 	void setTmpPlayerPoint( );
 	void setTmpMirrorPoint( int player_num, int x, int y, MIRROR_ANGLE angle );
 	void setMirrorPoint( int player_num, int x, int y, MIRROR_ANGLE angle );
+	void deleteMirrorPoint( int idx );
 	void playerPosSelected( );
 	void mirrorPosSelected( );
 

@@ -271,52 +271,6 @@ void Field::updateLazerVector( Vector vec ) {
 		_reflection_point = Vector( );
 		_reflection = false;
 	}
-
-/*
-	x /= SQUARE_SIZE;
-	y /= SQUARE_SIZE;
-
-	if ( _distance == DISTANCE_HALF && !_reflection ) {
-		std::map< int, Mirror >::iterator ite;
-		ite = _mirrors.begin( );
-		for ( ite; ite != _mirrors.end( ); ite++ ) {
-			int mirror_x = ite->second.x;
-			int mirror_y = ite->second.y;
-			if ( mirror_x != x || mirror_y != y ) {
-				continue;
-			}
-			MIRROR_ANGLE mirror_angle = ite->second.angle;
-			Vector next_dir = Vector( );
-			switch ( _direct ) {
-			case DIR_UP :
-				mirror_angle == RIGHT ? next_dir.x = 1 : next_dir.x = -1;
-				break;
-			case DIR_DOWN :
-				mirror_angle == RIGHT ? next_dir.x = -1 : next_dir.x = 1;
-				break;
-			case DIR_RIGHT :
-				mirror_angle == RIGHT ? next_dir.y = 1 : next_dir.y = -1;
-				break;
-			case DIR_LEFT :
-				mirror_angle == RIGHT ? next_dir.y = -1 : next_dir.y = 1;
-				break;			
-			}
-			setDirect( next_dir );
-			_distance = DISTANCE_HALF + 1;
-			_reflection = true;
-			return;
-		}
-
-	}
-	_dir_board[ 0 ] = x;
-	_dir_board[ 1 ] = y;
-
-	_reflection = false;
-
-	_distance = DISTANCE;
-	if ( field[ _dir_board[ 0 ] + _dir_board[ 1 ] * FIELD_COL ] != ' ' ) {
-		_distance = DISTANCE_HALF;
-	}*/
 }
 
 void Field::resetInfo( ) {
@@ -378,15 +332,27 @@ void Field::setTmpMirrorPoint( int player_num, int x, int y, MIRROR_ANGLE angle 
 void Field::setMirrorPoint( int player_num, int x, int y, MIRROR_ANGLE angle ) {
 	int idx = x + y * FIELD_COL;
 	field[ x + y * FIELD_COL ] = ( angle == RIGHT ? 'R' : 'L' );
-	Mirror mirror = {
-		true,
-		player_num,
-		x,
-		y,
-		angle
-	};
+	Mirror mirror = { true, player_num, x, y, angle };
+
+	std::map< int, Mirror >::iterator ite;
+	ite = _mirrors.begin( );
+	for ( ite; ite != _mirrors.end( ); ite++ ) {
+		Mirror tmp = ite->second;
+		if ( tmp.x == mirror.x &&
+			 tmp.y == mirror.y &&
+			 tmp.angle == mirror.angle ) {
+			deleteMirrorPoint( idx );
+			return;
+		}
+	}
 
 	_mirrors[ idx ] = mirror;
+}
+
+void Field::deleteMirrorPoint( int idx ) {
+	if ( _mirrors.find( idx ) != _mirrors.end( ) ) {
+		_mirrors.erase( idx );
+	}
 }
 
 void Field::playerPosSelected( ) {
@@ -512,6 +478,7 @@ void Field::drawTmpMirror( ) const {
 	if ( !_tmp_mirror.flag ) {
 		return;
 	}
+
 	//‹¾•`‰æ
 	for ( int i = 0; i < FIELD_ROW; i++ ) {
 		for ( int j = 0; j < FIELD_COL; j++ ) {

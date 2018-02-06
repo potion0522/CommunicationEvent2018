@@ -30,6 +30,7 @@ void Lazer::initialize( ) {
 	_unit = Field::Vector( );
 	_start = _field->getLazerPoint( );
 	updateUnitVector( );
+	std::vector< ImageProperty >( ).swap( _lazer );
 
 	ImagePtr image_ptr = _data->getImagePtr( );
 	_lazer_image = image_ptr->getPng( BATTLE_IMAGE, 0 ).png;

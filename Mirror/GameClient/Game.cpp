@@ -39,16 +39,8 @@ void Game::initialize( ) {
 	_phase = SET_PLAYER_PHASE;
 	_tmp_mirror = Field::Mirror( );
 
-	std::array< ImageProperty, CUTIN_PHASE >( ).swap( _cutin );
-	ImagePtr image_ptr = _data->getImagePtr( );
-	for ( int i = 0; i < CUTIN_PHASE; i++ ) {
-		Png image = image_ptr->getPng( CUTIN_IMAGE, i );
-		_cutin[ i ].cx = image.width / 2 * -1;
-		_cutin[ i ].cy = HEIGHT / 2;
-		_cutin[ i ].lx = image.width / 2;
-		_cutin[ i ].ly = image.height / 2;
-		_cutin[ i ].png = image.png;
-	}
+	std::array< ImageProperty, CUTIN_MAX >( ).swap( _cutin );
+	setCutin( );
 }
 
 void Game::update( ) {
@@ -83,6 +75,8 @@ void Game::update( ) {
 		calcPhaseCutin( );
 		drawPhaseCutin( );
 		return;
+	} else {
+		setCutin( );
 	}
 
 	switch ( _phase ) {
@@ -140,6 +134,19 @@ void Game::drawPhaseCutin( ) const {
 		return;
 	}
 	_drawer->setImage( _cutin[ ( int )_phase ] );
+}
+
+void Game::setCutin( ) {
+	ImagePtr image_ptr = _data->getImagePtr( );
+	for ( int i = 0; i < CUTIN_MAX; i++ ) {
+		Png image = image_ptr->getPng( CUTIN_IMAGE, i );
+		_cutin[ i ].cx = image.width / 2 * -1;
+		_cutin[ i ].cy = HEIGHT / 2;
+		_cutin[ i ].lx = image.width / 2;
+		_cutin[ i ].ly = image.height / 2;
+		_cutin[ i ].png = image.png;
+		_cutin[ i ].cnt = 0;
+	}
 }
 
 void Game::selectPlayerPos( ) {
@@ -244,7 +251,6 @@ void Game::updateMirrorPhase( ) {
 	if ( !_data->getClickLeft( ) ) {
 		return;
 	}
-	_field->setMirrorPoint( _player_num, _tmp_mirror.x, _tmp_mirror.y, _tmp_mirror.angle );
 
 	_field->mirrorPosSelected( );
 
@@ -343,15 +349,21 @@ void Game::recvAttackPhase( ) {
 		return;
 	}
 
+	std::array< Field::Mirror, PLAYER_NUM > mirror;
 	for ( int i = 0; i < PLAYER_NUM; i++ ) {
-		int player_num = _client->getStcPlayerNum( i );
-		int x = _client->getStcX( i );
-		int y = _client->getStcY( i );
-		MIRROR_ANGLE angle = _client->getStcAngle( i );
-		if ( !_client->getStcFlag( i ) ) {
-			continue;
-		}
-		_field->setMirrorPoint( player_num, x, y, angle );
+		mirror[ i ].player_num = _client->getStcPlayerNum( i );
+		mirror[ i ].x = _client->getStcX( i );
+		mirror[ i ].y = _client->getStcY( i );
+		mirror[ i ].angle = _client->getStcAngle( i );
+	}
+
+	if ( mirror[ 0 ].x == mirror[ 1 ].x &&
+		 mirror[ 0 ].y == mirror[ 1 ].y &&
+		 mirror[ 0 ].angle == mirror[ 1 ].angle ) {
+		_field->deleteMirrorPoint( mirror[ 0 ].x + mirror[ 0 ].y * FIELD_COL );
+	} else {
+		_field->setMirrorPoint( mirror[ 0 ].player_num, mirror[ 0 ].x, mirror[ 0 ].y, mirror[ 0 ].angle );
+		_field->setMirrorPoint( mirror[ 1 ].player_num, mirror[ 1 ].x, mirror[ 1 ].y, mirror[ 1 ].angle );
 	}
 
 	_attack_phase_recv = true;

@@ -13,9 +13,14 @@ PTR( Drawer );
 PTR( Field );
 PTR( Lazer );
 
-const int CUTIN_PHASE = 3;
-
 class Game : public Base {
+private:
+	enum CUTIN {
+		SET_PLAYER_CUTIN,
+		SET_MIRROR_CUTIN,
+		ATTACK_CUTIN,
+		CUTIN_MAX
+	};
 public:
 	Game( GlobalDataPtr data );
 	virtual ~Game( );
@@ -32,6 +37,7 @@ private:
 	void calcPhaseCutin( );
 	void drawPhaseCutin( ) const;
 private:
+	void setCutin( );
 	void selectPlayerPos( );
 	void updatePlayerPhase( );
 	void updateMirrorPhase( );
@@ -55,7 +61,7 @@ private:
 	int  _player_num;
 	BATTLE_PHASE _phase;
 	Field::Mirror _tmp_mirror;
-	std::array< ImageProperty, CUTIN_PHASE > _cutin;
+	std::array< ImageProperty, CUTIN_MAX > _cutin;
 
 	GlobalDataPtr _data;
 	ClientPtr _client;
