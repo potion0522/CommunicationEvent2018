@@ -23,7 +23,7 @@ void ResultServer::initialize( ) {
 }
 
 void ResultServer::update( ) {
-	_drawer->setString( false, WIDTH / 2, HEIGHT / 2, RED, std::to_string( _cnt / 60 * 2 ), Drawer::SUPER_BIG );
+	_drawer->setString( false, WIDTH / 2, HEIGHT / 2, RED, std::to_string( ( _cnt / ( 60 * 2 ) ) + 1 ), Drawer::SUPER_BIG );
 
 	if ( _cnt <= 0 ) {
 		_data->setInitFlag( );

@@ -22,6 +22,7 @@ std::string Lazer::getTag( ) {
 }
 
 void Lazer::initialize( ) {
+	_lazer_update = false;
 	_fin = false;
 	_distance = 1;
 	_start = Field::Vector( );
@@ -54,6 +55,7 @@ void Lazer::update( ) {
 	_dir_vec.x += x;
 	_dir_vec.y -= y;
 
+	_lazer_update = false;
 	Field::Vector tmp = { _start.x + _dir_vec.x, _start.y + _dir_vec.y };
 	_field->updateLazerVector( tmp );
 	updateUnitVector( );
@@ -65,7 +67,9 @@ void Lazer::update( ) {
 	lazer.angle = getLazerImageAngle( );
 	lazer.png = _lazer_image;
 
-	_lazer.push_back( lazer );
+	if ( !_lazer_update ) {
+		_lazer.push_back( lazer );
+	}
 
 	//•`‰æ
 	double draw_x = _start.x + _dir_vec.x;
@@ -97,6 +101,7 @@ void Lazer::updateUnitVector( ) {
 		_start = pos;
 	}
 	_dir_vec = Field::Vector( );
+	_lazer_update = true;
 }
 
 double Lazer::getLazerImageAngle( ) {

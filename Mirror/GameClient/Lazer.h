@@ -28,6 +28,7 @@ private:
 	double getLazerImageAngle( );
 
 private:
+	bool _lazer_update;
 	bool _fin;
 	double _distance;
 	Field::Vector _start;
