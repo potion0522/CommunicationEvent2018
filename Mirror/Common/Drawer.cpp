@@ -9,10 +9,6 @@ const int SIZE_NORMAL       = 18;
 const int SIZE_LITTLE_BIG   = 25;
 const int SIZE_BIG          = 35;
 const int SIZE_SUPER_BIG    = 100;
-const int BLINK_WAIT        = 2;
-const int GRADATION_SPEED   = 1;
-const int COL_MIN           = 0;
-const int COL_MAX           = 255;
 
 Drawer::Drawer( ) {
 	setFlag( 1 );
@@ -44,9 +40,6 @@ std::string Drawer::getTag( ) {
 }
 
 void Drawer::initialize( ) {
-	_blink = GetColor( 0, 0, 0 );
-	_colcode = 0;
-	_color_change_speed = GRADATION_SPEED;
 	for ( int i = 0; i < FONT_TYPE_MAX; i++ ) {
 		_handle_font[ i ] = -1;
 		switch ( ( FONTSIZE_TYPE )i ) {
@@ -60,21 +53,11 @@ void Drawer::initialize( ) {
 }
 
 void Drawer::update( ) {
-	drawBlinkCircle( );
 	drawCircle( );
 	drawLine( );
 	drawImage( );
 	drawString( );
 	reset( );
-}
-
-int Drawer::getBlink( ) {
-	_colcode += _color_change_speed;
-	if ( _colcode <= COL_MIN || _colcode >= COL_MAX ) {
-		_color_change_speed *= -1;
-	}
-	_blink = GetColor( _colcode / BLINK_WAIT, _colcode / BLINK_WAIT, _colcode / BLINK_WAIT );
-	return _blink;
 }
 
 void Drawer::drawImage( ) {
@@ -165,20 +148,6 @@ void Drawer::drawCircle( ) {
 	SetDrawMode( DX_DRAWMODE_NEAREST );
 }
 
-void Drawer::drawBlinkCircle( ) {
-	std::list< BlinkCircleProperty >::iterator ite;
-	ite = _blinkcircle.begin( );
-	if ( _blinkcircle.size( ) < 1 ) {
-		return;
-	}
-
-	SetDrawMode( DX_DRAWMODE_BILINEAR );
-	for ( ite; ite != _blinkcircle.end( ); ite++ ) {
-		DrawCircleAA( ite->bx, ite->by, ite->br, 32, getBlink( ), TRUE );
-	}
-	SetDrawMode( DX_DRAWMODE_NEAREST );
-}
-
 void Drawer::setImage( ImageProperty png ) {
 	_images.push_back( png );
 }
@@ -206,11 +175,6 @@ void Drawer::setCircle( double x, double y, double r, COLOR col, int brt, bool i
 	_circle.push_back( circle );
 }
 
-void Drawer::setBlinkCircle( double x, double y, double r ) {
-	BlinkCircleProperty blinkcircle = { ( float )x, ( float )y, ( float )r };
-	_blinkcircle.push_back( blinkcircle );
-}
-
 int Drawer::getStringW( FONTSIZE_TYPE type, std::string str ) const {
 	return GetDrawFormatStringWidthToHandle( _handle_font[ type ], str.c_str( ) );
 }
@@ -236,9 +200,5 @@ void Drawer::reset( ) {
 	size = ( int )_circle.size( );
 	if ( size > 0 ) {
 		std::list< CircleProperty >( ).swap( _circle );
-	}
-	size = ( int )_blinkcircle.size( );
-	if ( size > 0 ) {
-		std::list< BlinkCircleProperty >( ).swap( _blinkcircle );
 	}
 }

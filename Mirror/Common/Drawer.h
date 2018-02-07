@@ -34,17 +34,14 @@ public:
 	void setString( bool flag, double x, double y, COLOR col, std::string str, FONTSIZE_TYPE type = NORMAL, int brt = 255 );
 	void setLine( double sx, double sy, double ex, double ey, COLOR col = WHITE, int brt = 255 );
 	void setCircle( double x, double y, double r, COLOR col = WHITE, int brt = 255, bool isfill = false );
-	void setBlinkCircle( double x, double y, double r );
 	int getStringW( FONTSIZE_TYPE type, std::string str ) const;
 	int getStringH( FONTSIZE_TYPE type ) const;
 
 private:
-	int getBlink( );
 	void drawImage( );
 	void drawString( );
 	void drawLine( );
 	void drawCircle( );
-	void drawBlinkCircle( );
 	void reset( );
 
 private:
@@ -72,22 +69,12 @@ private:
 		int brt;
 		bool isFill;
 	};
-	struct BlinkCircleProperty {
-		float bx;//íÜêS
-		float by;
-		float br;//îºåa
-		bool isFillBlink;
-	};
 	int _handle_font[ FONT_TYPE_MAX ];
-	int _blink;
-	int _colcode;
-	int _color_change_speed;
 	std::array< int, FONT_TYPE_MAX > _size;
 	std::list< StringProperty > _strings;
 	std::list< ImageProperty > _images;
 	std::list< LineProperty > _lines;
 	std::list< CircleProperty > _circle;
-	std::list< BlinkCircleProperty > _blinkcircle;
 
 	ColorPtr _color;
 };

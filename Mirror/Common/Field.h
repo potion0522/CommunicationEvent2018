@@ -143,6 +143,7 @@ private:
 	void drawPlayer( ) const;
 	void drawInfo( ) const;
 	void drawRound( ) const;
+	void drawSettingPlayer( ) const;
 
 private:
 	std::map< int, Mirror > _mirrors;

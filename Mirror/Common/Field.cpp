@@ -98,6 +98,7 @@ void Field::update( ) {
 	drawDecisionButton( );
 	drawInfo( );
 	drawRound( );
+	drawSettingPlayer( );
 	resetInfo( );
 
 	if ( _phase == SET_PLAYER_PHASE ) {
@@ -562,9 +563,8 @@ void Field::drawPlayerPos( ) const {
 				_drawer->setCircle( x, y, CIRCLE_SIZE, WHITE, 255, true );
 				SetCursor( _cur_hand );
 			} else {
-				//_drawer->setBlinkCircle( x, y, CIRCLE_SIZE - 1 );
-				SetDrawBlendMode( DX_BLENDMODE_ALPHA, ( int )( ( sin( _data->getCount( ) * 0.06 ) + 1 ) * 64 + 156 ) );//透明化
-				_drawer->setCircle( x, y, CIRCLE_SIZE, WHITE, 255, true );
+				SetDrawBlendMode( DX_BLENDMODE_ALPHA, 0 );
+				_drawer->setCircle( x, y, CIRCLE_SIZE, WHITE, ( int )( ( sin( _data->getCount( ) * 0.06 ) + 1 ) * 64 + 50 ), true );
 				SetDrawBlendMode( DX_BLENDMODE_NOBLEND, 0 );
 			}
 		}
@@ -611,4 +611,16 @@ void Field::drawInfo( ) const {
 
 void Field::drawRound( ) const {
 	_drawer->setString( false, 20, 20, RED, "ROUND : " + std::to_string( _turn / TURN_MAX ) + "  TURN : " + std::to_string( _turn ), Drawer::BIG );
+}
+
+
+void Field::drawSettingPlayer( ) const{
+	int x = START_POS_X + 50;
+	int y1 = START_POS_Y + FIELD_ROW * SQUARE_SIZE + SQUARE_SIZE / 2;
+	int y2 = y1 + 30;
+	int r = CIRCLE_SIZE / 3;
+	_drawer->setCircle( x, y1, r, RED, 255, true );
+	_drawer->setString( false, x + 10, y1 + 3, WHITE, " ---- 少女思考中...", Drawer::LITTLE_BIG );
+	_drawer->setCircle( x, y2, r, BLUE, 255, true );
+	_drawer->setString( false, x + 10, y2 + 3, WHITE, " ---- 少女思考中...", Drawer::LITTLE_BIG );
 }
