@@ -605,12 +605,12 @@ void Field::drawInfo( ) const {
 	for ( int i = 0; i < INFO_TEXT_MAX; i++ ) {
 		double x = lx + ( rx - lx ) / 2;
 		double y = ly + 20 + i * 30;
-		_drawer->setString( true, x, y, _info[ i ].col, _info[ i ].str );
+		_drawer->setBackString( true, x, y, _info[ i ].col, _info[ i ].str );
 	}
 }
 
 void Field::drawRound( ) const {
-	_drawer->setString( false, 20, 20, RED, "ROUND : " + std::to_string( _turn / TURN_MAX ) + "  TURN : " + std::to_string( _turn ), Drawer::BIG );
+	_drawer->setFrontString( false, 20, 20, RED, "ROUND : " + std::to_string( _turn / TURN_MAX ) + "  TURN : " + std::to_string( _turn ), Drawer::BIG );
 }
 
 
@@ -620,7 +620,8 @@ void Field::drawSettingPlayer( ) const{
 	int y2 = y1 + 30;
 	int r = CIRCLE_SIZE / 3;
 	_drawer->setCircle( x, y1, r, RED, 255, true );
-	_drawer->setString( false, x + 10, y1 + 3, WHITE, " ---- 少女思考中...", Drawer::LITTLE_BIG );
+	_drawer->setFrontString( false, x + 10, y1 + 3, WHITE, " ---- 少女思考中...", Drawer::LITTLE_BIG );
 	_drawer->setCircle( x, y2, r, BLUE, 255, true );
-	_drawer->setString( false, x + 10, y2 + 3, WHITE, " ---- 少女思考中...", Drawer::LITTLE_BIG );
+	_drawer->setFrontString( false, x + 10, y2 + 3, WHITE, " ---- 少女思考中...", Drawer::LITTLE_BIG );
+	_drawer->setFrontString( false, 20, 20, RED, "ROUND : " + std::to_string( _turn / TURN_MAX ) + "  TURN : " + std::to_string( _turn ), Drawer::BIG );
 }

@@ -19,7 +19,7 @@ Command::~Command( ) {
 }
 
 void Command::update( ) {
-	_drawer->setString( false, COMMAND_X, COMMAND_Y, WHITE, _command );
+	_drawer->setFrontString( false, COMMAND_X, COMMAND_Y, WHITE, _command );
 	clearWord( );
 
 	for ( int i = 0; i < KEY_MAX; i++ ) {

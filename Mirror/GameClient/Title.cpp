@@ -37,7 +37,7 @@ void Title::update( ) {
 		client->initialize( );
 	}
 
-	_drawer->setImage( _back );
-	_drawer->setString( true, WIDTH / 2, HEIGHT / 3, YELLOW, "MIRROR", Drawer::SUPER_BIG );
-	_drawer->setString( true, WIDTH / 2, HEIGHT / 2, RED, "Press \"Z\" Key" );
+	_drawer->setBackImage( _back );
+	_drawer->setFrontString( true, WIDTH / 2, HEIGHT / 3, YELLOW, "MIRROR", Drawer::SUPER_BIG );
+	_drawer->setFrontString( true, WIDTH / 2, HEIGHT / 2, RED, "Press \"Z\" Key" );
 }
