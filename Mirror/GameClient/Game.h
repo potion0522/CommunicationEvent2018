@@ -35,7 +35,9 @@ public:
 
 private:
 	void calcPhaseCutin( );
+	void calcPlayerCutin( );
 	void drawPhaseCutin( ) const;
+	void drawPlayerCutin( ) const;
 private:
 	void setCutin( );
 	void selectPlayerPos( );
@@ -63,9 +65,9 @@ private:
 	int  _player_num;
 	BATTLE_PHASE _phase;
 	Field::Mirror _tmp_mirror;
-	ImageProperty _cutin_back_image;
+	ImageProperty _background_cutin_image;
 	std::array< ImageProperty, CUTIN_MAX > _phase_cutin_image;
-	std::array< ImageProperty, PLAYER_NUM > _player_cutin_string;
+	std::array< ImageProperty, PLAYER_NUM > _player_cutin_image;
 
 	GlobalDataPtr _data;
 	ClientPtr _client;
