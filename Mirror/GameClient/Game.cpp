@@ -302,9 +302,7 @@ void Game::updateJudgePhase( ) {
 		_judge_phase_recv = false;
 		_send_live = false;
 		_tmp_mirror = Field::Mirror( );
-		if ( _turn % TURN_MAX == 0 ) {
-			_field->nextTurn( );
-		}
+		_field->nextTurn( );
 		_turn++;
 		_field->setTurn( _turn );
 		_lazer->clearLazerImage( );

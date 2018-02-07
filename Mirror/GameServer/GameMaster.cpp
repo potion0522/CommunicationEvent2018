@@ -31,6 +31,9 @@ void GameMaster::initialize( ) {
 	_winner = -1;
 	_turn = 1;
 	std::array< Data, PLAYER_NUM >( ).swap( _client_data );
+	for ( int i = 0; i < PLAYER_NUM; i++ ) {
+		_client_data[ i ].order = i + 1;
+	}
 	_phase = SET_PLAYER_PHASE;
 	_server->setBattlePhase( _phase );
 	_field->setPhase( _phase );
@@ -72,11 +75,8 @@ void GameMaster::update( ) {
 }
 
 void GameMaster::orderPlayer( ) {
-	std::random_device rd;
-	int idx = rd( ) % 2;
-	_client_data[ idx ].order = 1;
-	idx = ( idx + 1 ) % 2;
-	_client_data[ idx ].order = 2;
+	_client_data[ 0 ].order = _turn % 2 + 1;
+	_client_data[ 1 ].order = ( _turn + 1 ) % 2 + 1;
 	_dice = true;
 }
 
@@ -243,9 +243,9 @@ void GameMaster::updateJudgePhase( ) {
 		_phase = SET_MIRROR_PHASE;
 		_field->setPhase( _phase );
 		_server->setBattlePhase( _phase );
+		_field->nextTurn( );
 
 		if ( _turn % TURN_MAX == 0 ) {
-			_field->nextTurn( );
 			int lazer = calcLazerPoint( _field->getLazerPointIdx( ) );
 			_field->setLazerPoint( lazer );
 			_server->setLazerPos( lazer );
@@ -258,6 +258,7 @@ void GameMaster::updateJudgePhase( ) {
 		_client_data[ 1 ].player_pos = two;
 		_dice = false;
 		_turn++;
+		orderPlayer( );
 	} else {
 		//Ÿ•‰‚ ‚èI
 		_data->setScene( RESULT );
