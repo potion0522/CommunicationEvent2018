@@ -57,11 +57,15 @@ private:
 	bool _send_live;
 	bool _win;
 	bool _phase_cutin;
+	bool _player_cutin;
 	int  _turn;
+	int _order;
 	int  _player_num;
 	BATTLE_PHASE _phase;
 	Field::Mirror _tmp_mirror;
-	std::array< ImageProperty, CUTIN_MAX > _cutin;
+	ImageProperty _cutin_back_image;
+	std::array< ImageProperty, CUTIN_MAX > _phase_cutin_image;
+	std::array< ImageProperty, PLAYER_NUM > _player_cutin_string;
 
 	GlobalDataPtr _data;
 	ClientPtr _client;

@@ -24,10 +24,11 @@ void Image::initialize( ) {
 
 		//ディレクトリ名を入力
 		switch ( ( IMAGE )i ) {
-		case NONE_IMAGE   : add.name = "none"   ; break;
-		case BUTTON_IMAGE : add.name = "button" ; break;
-		case CUTIN_IMAGE  : add.name = "cutin"  ; break;
-		case BATTLE_IMAGE : add.name = "battle" ; break;
+		case NONE_IMAGE          : add.name = "none"         ; break;
+		case BUTTON_IMAGE        : add.name = "button"       ; break;
+		case CUTIN_STRING_IMAGE  : add.name = "cutinString"  ; break;
+		case CUTIN_IMAGE         : add.name = "cutinImage"   ; break;
+		case BATTLE_IMAGE        : add.name = "battle"       ; break;
 		default	:
 			{
 				DebugPtr debug( new Debug( NULL ) );
