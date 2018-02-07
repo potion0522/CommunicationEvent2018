@@ -562,7 +562,10 @@ void Field::drawPlayerPos( ) const {
 				_drawer->setCircle( x, y, CIRCLE_SIZE, WHITE, 255, true );
 				SetCursor( _cur_hand );
 			} else {
-				_drawer->setBlinkCircle( x, y, CIRCLE_SIZE - 1 );
+				//_drawer->setBlinkCircle( x, y, CIRCLE_SIZE - 1 );
+				SetDrawBlendMode( DX_BLENDMODE_ALPHA, ( int )( ( sin( _data->getCount( ) * 0.06 ) + 1 ) * 64 + 156 ) );//“§–¾‰»
+				_drawer->setCircle( x, y, CIRCLE_SIZE, WHITE, 255, true );
+				SetDrawBlendMode( DX_BLENDMODE_NOBLEND, 0 );
 			}
 		}
 		_drawer->setCircle( x, y, CIRCLE_SIZE, ( COLOR )( RED + i / PLAYER_POSITION ) );

@@ -7,6 +7,7 @@
 #include "Client.h"
 #include "Drawer.h"
 #include <random>
+#include <limits.h>
 
 GlobalData::GlobalData( MACHINE_TYPE type ) :
 _type( type ) {
@@ -38,6 +39,7 @@ void GlobalData::initialize( ) {
 	setFlag( 1 );
 	_scene = TITLE;
 	_command_flag = false;
+	_count = 0;
 
 	switch ( _type ) {
 	case SERVER	: _server->disConnect( ); break;
@@ -56,6 +58,10 @@ void GlobalData::update( ) {
 
 	_key->update( );
 	_mouse->update( );
+	_count++;
+	if ( _count >= INT_MAX ) {
+		_count = 0;
+	}
 }
 
 void GlobalData::setScene( SCENE scene ) {
@@ -86,6 +92,10 @@ int GlobalData::getRandom( int min, int max ) const {
 	std::random_device rd;
 	int random = min + rd( ) % ( max - min + 1 );
 	return random;
+}
+
+int GlobalData::getCount( ) const{
+	return _count;
 }
 
 SCENE GlobalData::getScene( ) const {

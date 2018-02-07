@@ -32,6 +32,7 @@ public:
 	bool getClickLeft( ) const;
 	bool getClickRight( ) const;
 	int getRandom( int min, int max ) const;
+	int getCount( ) const;
 	SCENE getScene( ) const;
 	MACHINE_TYPE getMachineType( ) const;
 	bool getCommandFlag( ) const;
@@ -58,6 +59,7 @@ private:
 	MACHINE_TYPE _type;
 	bool _command_flag;
 	bool _init;
+	int _count;
 
 	UpdateKeyPtr _key;
 	MouseEventPtr _mouse;
