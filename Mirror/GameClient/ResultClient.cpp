@@ -24,10 +24,10 @@ void ResultClient::initialize( ) {
 void ResultClient::update( ) {
 	if ( _win ) {
 		//Ÿ—˜
-		_drawer->setString( true, WIDTH / 2, HEIGHT / 2, RED, "‚ ‚È‚½‚ÌŸ‚¿", Drawer::BIG );
+		_drawer->setFrontString( true, WIDTH / 2, HEIGHT / 2, RED, "‚ ‚È‚½‚ÌŸ‚¿", Drawer::BIG );
 	} else {
 		//”s–k
-		_drawer->setString( true, WIDTH / 2, HEIGHT / 2, RED, "‚ ‚È‚½‚Ì•‰‚¯", Drawer::BIG );
+		_drawer->setFrontString( true, WIDTH / 2, HEIGHT / 2, RED, "‚ ‚È‚½‚Ì•‰‚¯", Drawer::BIG );
 	}
 
 	if ( _data->getKeyState( KEY_INPUT_RETURN ) == 1 ) {

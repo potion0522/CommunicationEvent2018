@@ -39,7 +39,8 @@ private:
 	void drawPhaseCutin( ) const;
 	void drawPlayerCutin( ) const;
 private:
-	void setCutin( );
+	void setPhaseCutin( );
+	void setPlayerCutin( );
 	void selectPlayerPos( );
 	void updatePlayerPhase( );
 	void updateMirrorPhase( );

@@ -51,8 +51,8 @@ void Console::ready( ) {
 	std::string finding = "- Connect Server -";
 	std::string ip = _client->getSeverIP( );
 	int size_rate = _drawer->getStringH( Drawer::BIG );
-	_drawer->setString( true, WIDTH / 2, HEIGHT / 2 - size_rate, YELLOW, finding, Drawer::BIG );
-	_drawer->setString( true, WIDTH / 2, HEIGHT / 2, WHITE, ip );
+	_drawer->setFrontString( true, WIDTH / 2, HEIGHT / 2 - size_rate, YELLOW, finding, Drawer::BIG );
+	_drawer->setFrontString( true, WIDTH / 2, HEIGHT / 2, WHITE, ip );
 }
 
 void Console::matching( ) {
@@ -69,7 +69,7 @@ void Console::matching( ) {
 	}
 
 	std::string matching = "- Matching -";
-	_drawer->setString( true, WIDTH / 2, HEIGHT / 2 - 60, YELLOW, matching, Drawer::BIG );
+	_drawer->setFrontString( true, WIDTH / 2, HEIGHT / 2 - 60, YELLOW, matching, Drawer::BIG );
 
 	if ( _client->isRecvingTcp( ) ) {
 		if ( _client->isMatching( ) ) {

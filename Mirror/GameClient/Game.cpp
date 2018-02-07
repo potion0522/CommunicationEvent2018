@@ -42,7 +42,8 @@ void Game::initialize( ) {
 	_order = -1;
 
 	std::array< ImageProperty, CUTIN_MAX >( ).swap( _phase_cutin_image );
-	setCutin( );
+	setPhaseCutin( );
+	setPlayerCutin( );
 }
 
 void Game::update( ) {
@@ -166,9 +167,8 @@ void Game::drawPlayerCutin( ) const {
 	_drawer->setImage( _player_cutin_image[ ( _player_num == _order ) ] );
 }
 
-void Game::setCutin( ) {
+void Game::setPhaseCutin( ) {
 	ImagePtr image_ptr = _data->getImagePtr( );
-
 	{//フェーズカットインの文字
 		for ( int i = 0; i < CUTIN_MAX; i++ ) {
 			Png image = image_ptr->getPng( CUTIN_STRING_IMAGE, i );
@@ -180,7 +180,10 @@ void Game::setCutin( ) {
 			_phase_cutin_image[ i ].cnt = 0;
 		}
 	}
+}
 
+void Game::setPlayerCutin( ) {
+	ImagePtr image_ptr = _data->getImagePtr( );
 	{//背景イメージ
 		Png image = image_ptr->getPng( CUTIN_IMAGE, 0 );
 		_background_cutin_image.cx = image.width / 2 * -1;
@@ -247,7 +250,7 @@ void Game::updatePlayerPhase( ) {
 	_client->setPlayerPos( _field->getPlayerPoint( _player_num ) );
 	_client->sendTcp( );
 
-	setCutin( );
+	setPhaseCutin( );
 }
 
 void Game::inputTmpMirror( ) {
@@ -257,7 +260,11 @@ void Game::inputTmpMirror( ) {
 	if ( _order != order ) {
 		_order = order;
 		_player_cutin = false;
+		setPlayerCutin( );
 	}
+
+	_field->setInfoText( "鏡を配置してください。" );
+	_field->setInfoText( "もう一度左クリックで向きを変えられます" );
 
 	//どっちが設置しているかのカットイン
 	if ( !_player_cutin ) {
@@ -302,8 +309,6 @@ void Game::inputTmpMirror( ) {
 }
 
 void Game::updateMirrorPhase( ) {
-	_field->setInfoText( "鏡を配置してください。" );
-	_field->setInfoText( "もう一度左クリックで向きを変えられます" );
 
 	inputTmpMirror( );
 
@@ -334,7 +339,9 @@ void Game::updateMirrorPhase( ) {
 
 	_tmp_mirror = Field::Mirror( );
 	_lazer->initialize( );
-	setCutin( );
+	setPhaseCutin( );
+	setPlayerCutin( );
+	_player_cutin = false;
 }
 
 void Game::updateAttackPhase( ) {
@@ -356,7 +363,7 @@ void Game::updateAttackPhase( ) {
 	_client->setAlive( alive );
 	_client->sendTcp( );
 	_send_live = true;
-	setCutin( );
+	setPhaseCutin( );
 }
 
 void Game::updateJudgePhase( ) {

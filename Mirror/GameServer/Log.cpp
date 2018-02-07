@@ -42,8 +42,8 @@ void Log::isLogPring( ) {
 		if ( i == 0 ) {
 			col = YELLOW;
 		}
-		_drawer->setString( false,  LOG_X, y, col, _log[ i ] );
-		_drawer->setString( false, time_x, y, col, _log_time[ i ] );
+		_drawer->setFrontString( false,  LOG_X, y, col, _log[ i ] );
+		_drawer->setFrontString( false, time_x, y, col, _log_time[ i ] );
 	}
 }
 

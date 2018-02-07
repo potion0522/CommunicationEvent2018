@@ -127,14 +127,14 @@ void Debug::commandExecution( ) {
 void Debug::drawMousePoint( ) {
 	int x = _data->getMouseX( );
 	int y = _data->getMouseY( );
-	_drawer->setString( false, MOUSE_X, MOUSE_Y, WHITE, "x : " + std::to_string( x ) + " y : " + std::to_string( y ) );
+	_drawer->setFrontString( false, MOUSE_X, MOUSE_Y, WHITE, "x : " + std::to_string( x ) + " y : " + std::to_string( y ) );
 }
 
 void Debug::printLog( ) {
 	int size = ( int )_log.size( );
 
 	for ( int i = 0; i < size; i++ ) {
-		_drawer->setString( false, LOG_X, _log_y, WHITE, "Log : " + _log[ i ] );
+		_drawer->setFrontString( false, LOG_X, _log_y, WHITE, "Log : " + _log[ i ] );
 		_log_y += Y_POS;
 	}
 }
@@ -147,7 +147,7 @@ void Debug::printActiveClass( ) {
 	}
 
 	for ( int i = 0; i < size; i++ ) {
-		_drawer->setString( false, ACTIVE_CLASS_X, _active_y, RED, "Active : " + _active_class[ i ] );
+		_drawer->setFrontString( false, ACTIVE_CLASS_X, _active_y, RED, "Active : " + _active_class[ i ] );
 		_active_y += Y_POS;
 	}
 }
@@ -165,11 +165,11 @@ void Debug::printScene( ) {
 	default		: str = "please set scene"	; break;
 	}
 
-	_drawer->setString( false, SCENE_X, Y_POS, WHITE, "SCENE  : " + str );
+	_drawer->setFrontString( false, SCENE_X, Y_POS, WHITE, "SCENE  : " + str );
 }
 
 void Debug::drawMyIp( ) {
-	_drawer->setString( false, ACTIVE_CLASS_X, _active_y, YELLOW, "MyIP : " + _my_ip );
+	_drawer->setFrontString( false, ACTIVE_CLASS_X, _active_y, YELLOW, "MyIP : " + _my_ip );
 	_active_y += Y_POS;
 }
 

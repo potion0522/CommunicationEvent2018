@@ -60,11 +60,13 @@ void Drawer::initialize( ) {
 }
 
 void Drawer::update( ) {
+	drawBackImage( );
 	drawBlinkCircle( );
 	drawCircle( );
 	drawLine( );
+	drawBackString( );
 	drawImage( );
-	drawString( );
+	drawFrontString( );
 	reset( );
 }
 
@@ -103,11 +105,28 @@ void Drawer::drawImage( ) {
 	}
 }
 
-void Drawer::drawString( ) {
+void Drawer::drawFrontString( ) {
 	std::list< StringProperty >::iterator ite;
-	ite = _strings.begin( );
+	ite = _front_strings.begin( );
 
-	for ( ite; ite != _strings.end( ); ite++ ) {
+	for ( ite; ite != _front_strings.end( ); ite++ ) {
+		if ( ite->brt < 255 ) {
+			SetDrawBlendMode( DX_BLENDMODE_ALPHA, ite->brt );
+		}
+
+		DrawFormatStringFToHandle( ite->x, ite->y, _color->getColor( ite->col ), ite->handle, "%s", ite->str.c_str( ) );
+
+		if ( ite->brt < 255 ) {
+			SetDrawBlendMode( DX_BLENDMODE_NOBLEND, 0 );
+		}
+	}
+}
+
+void Drawer::drawBackString( ) {
+	std::list< StringProperty >::iterator ite;
+	ite = _back_strings.begin( );
+
+	for ( ite; ite != _back_strings.end( ); ite++ ) {
 		if ( ite->brt < 255 ) {
 			SetDrawBlendMode( DX_BLENDMODE_ALPHA, ite->brt );
 		}
@@ -165,6 +184,28 @@ void Drawer::drawCircle( ) {
 	SetDrawMode( DX_DRAWMODE_NEAREST );
 }
 
+void Drawer::drawBackImage( ) {
+	if ( _back_image.png < 0 ) {
+		DebugPtr debug( new Debug( NULL ) );
+		debug->error( "drawer->drawBackImage : ‰æ‘œƒnƒ“ƒhƒ‹‚ª‚ ‚è‚Ü‚¹‚ñ" );
+	}
+
+	bool brend = false;
+	if ( _back_image.brt < 255 ) {
+		brend = true;
+	}
+
+	if ( brend ) {
+		SetDrawBlendMode( DX_BLENDMODE_ALPHA, _back_image.brt );
+	}
+
+	DrawRotaGraphF( ( float )_back_image.cx, ( float )_back_image.cy, _back_image.size, _back_image.angle, _back_image.png, TRUE );
+
+	if ( brend ) {
+		SetDrawBlendMode( DX_BLENDMODE_NOBLEND, 0 );
+	}
+}
+
 void Drawer::drawBlinkCircle( ) {
 	std::list< BlinkCircleProperty >::iterator ite;
 	ite = _blinkcircle.begin( );
@@ -179,11 +220,15 @@ void Drawer::drawBlinkCircle( ) {
 	SetDrawMode( DX_DRAWMODE_NEAREST );
 }
 
+void Drawer::setBackImage( ImageProperty png ) {
+	_back_image = png;
+}
+
 void Drawer::setImage( ImageProperty png ) {
 	_images.push_back( png );
 }
 
-void Drawer::setString( bool flag, double x, double y, COLOR col, std::string str, Drawer::FONTSIZE_TYPE type, int brt ) {
+void Drawer::setFrontString( bool flag, double x, double y, COLOR col, std::string str, Drawer::FONTSIZE_TYPE type, int brt ) {
 	//“n‚³‚ê‚½ x, y ‚ª•`‰æ‚·‚é‚Æ‚«‚É•¶Žš—ñ‚Ì’†‰›‚É‚È‚é‚æ‚¤‚É‚·‚é
 	if ( flag ) {
 		int len = ( int )str.length( );
@@ -193,7 +238,20 @@ void Drawer::setString( bool flag, double x, double y, COLOR col, std::string st
 	double h = GetDrawFormatStringWidthToHandle( _handle_font[ type ], "‚ " );
 	y -= h / 2;
 	StringProperty tmp = { ( float )x, ( float )y, col, str, brt, _handle_font[ type ] };
-	_strings.push_back( tmp );
+	_front_strings.push_back( tmp );
+}
+
+void Drawer::setBackString( bool flag, double x, double y, COLOR col, std::string str, Drawer::FONTSIZE_TYPE type, int brt ) {
+	//“n‚³‚ê‚½ x, y ‚ª•`‰æ‚·‚é‚Æ‚«‚É•¶Žš—ñ‚Ì’†‰›‚É‚È‚é‚æ‚¤‚É‚·‚é
+	if ( flag ) {
+		int len = ( int )str.length( );
+		double w = GetDrawFormatStringWidthToHandle( _handle_font[ type ], str.c_str( ) );
+		x -= w / 2;
+	}
+	double h = GetDrawFormatStringWidthToHandle( _handle_font[ type ], "‚ " );
+	y -= h / 2;
+	StringProperty tmp = { ( float )x, ( float )y, col, str, brt, _handle_font[ type ] };
+	_back_strings.push_back( tmp );
 }
 
 void Drawer::setLine( double sx, double sy, double ex, double ey, COLOR col, int brt ) {
@@ -220,14 +278,20 @@ int Drawer::getStringH( FONTSIZE_TYPE type ) const {
 }
 
 void Drawer::reset( ) {
+	_back_image = ImageProperty( );
+
 	int size = 0;
 	size = ( int )_images.size( );
 	if ( size > 0 ) {
 		std::list< ImageProperty >( ).swap( _images );
 	}
-	size = ( int )_strings.size( );
+	size = ( int )_front_strings.size( );
 	if ( size > 0 ) {
-		std::list< StringProperty >( ).swap( _strings );
+		std::list< StringProperty >( ).swap( _front_strings );
+	}
+	size = ( int )_back_strings.size( );
+	if ( size > 0 ) {
+		std::list< StringProperty >( ).swap( _back_strings );
 	}
 	size = ( int )_lines.size( );
 	if ( size > 0 ) {
