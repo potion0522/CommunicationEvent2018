@@ -11,6 +11,7 @@ const double PI = 3.14;
 const int KEY_MAX = 256;
 const int PLAYER_NUM = 2;
 const int TURN_MAX = 3;
+const int ITEM_MAX = 3;
 
 const int TCP_PORT = 9850;
 const int UDP_PORT = 9900;
@@ -44,8 +45,8 @@ enum MACHINE_TYPE {
 };
 
 enum COLOR {
-	WHITE,
 	BLACK,
+	WHITE,
 	RED,
 	BLUE,
 	WATER,
@@ -70,6 +71,7 @@ enum IMAGE {
 	CUTIN_STRING_IMAGE,
 	CUTIN_BACK_IMAGE,
 	BATTLE_IMAGE,
+	ITEM_IMAGE,
 	IMAGE_DIR_MAX
 };
 

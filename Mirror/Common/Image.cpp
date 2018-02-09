@@ -29,6 +29,7 @@ void Image::initialize( ) {
 		case CUTIN_STRING_IMAGE  : add.name = "cutinString"  ; break;
 		case CUTIN_BACK_IMAGE    : add.name = "cutinImage"   ; break;
 		case BATTLE_IMAGE        : add.name = "battle"       ; break;
+		case ITEM_IMAGE          : add.name = "item"         ; break;
 		default	:
 			{
 				DebugPtr debug( new Debug( NULL ) );

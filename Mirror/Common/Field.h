@@ -20,7 +20,7 @@ const int START_POS_X = WIDTH / 3 * 2 - SQUARE_SIZE * FIELD_COL / 2;
 const int START_POS_Y = HEIGHT / 2 - SQUARE_SIZE * FIELD_ROW / 2;
 const int DISTANCE = SQUARE_SIZE;
 const int DISTANCE_HALF = SQUARE_SIZE / 2;
-const int INFO_TEXT_MAX = 3;
+const int INFO_TEXT_MAX = 4;
 
 class Field : public Base {
 public:
@@ -76,13 +76,19 @@ public:
 	};
 
 	struct PlayerPos {
-		double x;
-		double y;
+		float x;
+		float y;
 	};
 
 	struct Info {
 		std::string str;
 		COLOR col;
+	};
+
+	struct Item {
+		bool flag;
+		float x;
+		float y;
 	};
 public:
 	Field( GlobalDataPtr data );
@@ -109,6 +115,8 @@ public:
 	void playerPosSelected( );
 	void mirrorPosSelected( );
 	void mirrorPosNotSelected( );
+	void selectItem( int idx );
+	void useItem( );
 
 public:
 	Vector getLazerPoint( ) const;
@@ -123,6 +131,8 @@ public:
 	int getFieldPosHitNum( ) const;
 	int getDeadPlayer( ) const;
 	int getLazerPointIdx( ) const;
+	int getSelectItem( ) const;
+	int getHitItemIdx( ) const;
 	bool isHitPlayerPos( );
 	bool isSelectedPlayer( ) const;
 	bool isHitFieldPos( );
@@ -145,6 +155,7 @@ private:
 	void drawInfo( ) const;
 	void drawRound( ) const;
 	void drawSettingPlayer( ) const;
+	void drawItem( ) const;
 
 private:
 	std::map< int, Mirror > _mirrors;
@@ -152,6 +163,7 @@ private:
 	std::array< int, PLAYER_NUM > _player_pos_no;
 	std::array< PlayerPos, PLAYER_POSITION * 2 > _select_player_pos;
 	std::array< COLOR, PLAYER_NUM >_player_color;
+	std::array< Item, ITEM_MAX > _item;
 	int _turn;
 	bool _player_selected;
 	bool _mirror_selected;
@@ -164,6 +176,7 @@ private:
 	int _field_pos_hit_num;
 	int _hit_mirror_num;
 	int _lazer_point_idx;
+	int _select_item;
 	HCURSOR _cur_hand;
 	BATTLE_PHASE _phase;
 	DIR _direct;
@@ -172,6 +185,7 @@ private:
 
 	//‰æ‘œŠÖ˜A
 	ImageProperty _decision_button;
+	ImageProperty _pin;
 
 	GlobalDataPtr _data;
 	DrawerPtr _drawer;

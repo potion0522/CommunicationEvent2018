@@ -27,7 +27,7 @@ std::string GameMaster::getTag( ) {
 
 void GameMaster::initialize( ) {
 	_matching = false;
-	_dice = false;
+	_dice = true;
 	_use_item = false;
 	_winner = -1;
 	_turn = 1;
@@ -83,11 +83,12 @@ void GameMaster::update( ) {
 	case ATTACK_PHASE		: inputAttackPhase( ); break;
 	case JUDGE_PHASE		: checkCallBack   ( ); break;
 	}
+
 }
 
 void GameMaster::orderPlayer( ) {
-	_client_data[ 0 ].order = _turn % 2 + 1;
-	_client_data[ 1 ].order = ( _turn + 1 ) % 2 + 1;
+	_client_data[ 0 ].order = ( _turn + 1 ) % 2 + 1;
+	_client_data[ 1 ].order = _turn % 2 + 1;
 	_dice = true;
 }
 
@@ -150,6 +151,10 @@ void GameMaster::updatePlayerPhase( ) {
 		return;
 	}
 
+	for ( int i = 0; i < PLAYER_NUM; i++ ) {
+		_field->setPlayerPoint( i, _client_data[ i ].player_pos );
+	}
+
 	_phase = SET_MIRROR_PHASE;
 	_server->setBattlePhase( _phase );
 	_field->setPhase( _phase );
@@ -160,7 +165,6 @@ void GameMaster::updatePlayerPhase( ) {
 
 	for ( int i = 0; i < MACHINE_MAX; i++ ) {
 		_server->setPlayerPos( i, _client_data[ i ].player_pos );
-		_field->setPlayerPoint( i, _client_data[ i ].player_pos );
 		_client_data[ i ].fin = false;
 	}
 }
@@ -346,11 +350,12 @@ void GameMaster::invocationItem( ) {
 			int lazer = calcLazerPoint( _field->getLazerPointIdx( ) );
 			_field->setLazerPoint( lazer );
 			_server->setLazerPos( lazer );
-			_server->setItemFlag( true );
-			_server->setItem( _item );
 		}
 		break;
 	}
+
+	_server->setItem( _item );
+	_server->setItemFlag( true );
 }
 
 void GameMaster::checkItemFlag( ) {

@@ -12,6 +12,8 @@ const int CIRCLE_SIZE = SQUARE_SIZE / 5 * 2;
 const int PLAYER_POS_X = START_POS_X - SQUARE_SIZE / 2;
 const int PLAYER_POS_Y = START_POS_Y - SQUARE_SIZE / 2;
 const int PLAYER_SIZE = CIRCLE_SIZE / 2;
+const int ITEM_POS_X = 125;
+const int ITEM_POS_Y = 600;
 
 char field[ FIELD_COL * FIELD_ROW + 1 ] = 
 "     "
@@ -26,6 +28,21 @@ _data( data ) {
 	_drawer = _data->getDrawerPtr( );
 	_image = _data->getImagePtr( );
 	_cur_hand  = LoadCursor( NULL, IDC_HAND );
+
+	Png image = _image->getPng( BUTTON_IMAGE, 0 );
+	_decision_button = ImageProperty( );
+	_decision_button.cx = WIDTH / 5;
+	_decision_button.cy = HEIGHT / 5;
+	_decision_button.lx = _decision_button.cx - image.width / 2;
+	_decision_button.rx = _decision_button.cx + image.width / 2;
+	_decision_button.ly = _decision_button.cy - image.height / 2;
+	_decision_button.ry = _decision_button.cy + image.height / 2;
+	_decision_button.png = image.png;
+
+	image = _image->getPng( ITEM_IMAGE, 0 );
+	_pin = ImageProperty( );
+	_pin.flag = 0;
+	_pin.png = image.png;
 }
 
 Field::~Field( ) {
@@ -48,6 +65,7 @@ void Field::initialize( ) {
 	_player_pos_hit_num = -1;
 	_field_pos_hit_num = -1;
 	_lazer_point_idx = -1;
+	_select_item = -1;
 	_direct = DIR( );
 	_tmp_mirror = Mirror( );
 	std::map< int, Mirror >( ).swap( _mirrors );
@@ -56,27 +74,22 @@ void Field::initialize( ) {
 	_phase = SET_PLAYER_PHASE;
 	for ( int i = 0; i < PLAYER_POSITION * 2; i++ ) {
 		if ( i < PLAYER_POSITION ) {
-			_select_player_pos[ i ].x = PLAYER_POS_X;
-			_select_player_pos[ i ].y = PLAYER_POS_Y + ( i + 1 ) * SQUARE_SIZE;
+			_select_player_pos[ i ].x = ( float )PLAYER_POS_X;
+			_select_player_pos[ i ].y = ( float )PLAYER_POS_Y + ( i + 1 ) * SQUARE_SIZE;
 		} else {
-			_select_player_pos[ i ].x = PLAYER_POS_X + ( i - PLAYER_POSITION + 1 ) * SQUARE_SIZE;
-			_select_player_pos[ i ].y = PLAYER_POS_Y;
+			_select_player_pos[ i ].x = ( float )PLAYER_POS_X + ( i - PLAYER_POSITION + 1 ) * SQUARE_SIZE;
+			_select_player_pos[ i ].y = ( float )PLAYER_POS_Y;
 		}
 	}
 	for ( int i = 0; i < PLAYER_NUM; i++ ) {
 		_player_pos_no[ i ] = -1;
 		_player_color[ i ] = ( COLOR )( i + ( int )RED );
 	}
-
-	Png image = _image->getPng( BUTTON_IMAGE, 0 );
-	_decision_button = ImageProperty( );
-	_decision_button.cx = WIDTH / 5;
-	_decision_button.cy = HEIGHT / 5;
-	_decision_button.lx = _decision_button.cx - image.width / 2;
-	_decision_button.rx = _decision_button.cx + image.width / 2;
-	_decision_button.ly = _decision_button.cy - image.height / 2;
-	_decision_button.ry = _decision_button.cy + image.height / 2;
-	_decision_button.png = image.png;
+	for ( int i = 0; i < ITEM_MAX; i++ ) {
+		_item[ i ].flag = true;
+		_item[ i ].x = ( float )( ITEM_POS_X + i * SQUARE_SIZE + SQUARE_SIZE * 0.5 );
+		_item[ i ].y = ( float )ITEM_POS_Y;
+	}
 }
 
 void Field::nextTurn( ) {
@@ -92,6 +105,17 @@ void Field::nextTurn( ) {
 }
 
 void Field::update( ) {
+	if ( _select_item > -1 ) {
+		resetInfo( );
+		switch ( _select_item ) {
+		case 0:
+			setInfoText( "レーザーの位置を強制的に変更します", RED );
+			setInfoText( "ターン経過はなく", RED );
+			setInfoText( "このターンのやり直しができます", RED );
+			break;
+		}
+	}
+
 	drawField( );
 	drawPlayer( );
 	drawArmament( );
@@ -99,6 +123,8 @@ void Field::update( ) {
 	drawInfo( );
 	drawRound( );
 	drawSettingPlayer( );
+	drawItem( );
+
 	resetInfo( );
 
 	if ( _phase == SET_PLAYER_PHASE ) {
@@ -183,6 +209,25 @@ bool Field::isHitDecisionButton( ) const {
 	return false;
 }
 
+int Field::getHitItemIdx( ) const {
+	int mouse_x = _data->getMouseX( );
+	int mouse_y = _data->getMouseY( );
+
+	for ( int i = 0; i < ITEM_MAX; i++ ) {
+		if ( !_item[ i ].flag ) {
+			continue;
+		}
+		double a = mouse_x - _item[ i ].x;
+		double b = mouse_y - _item[ i ].y;
+		double c = sqrt( a * a + b * b );
+		if ( c <= MOUSE_R + CIRCLE_SIZE ) {
+			return i;
+		}
+	}
+
+	return -1;
+}
+
 bool Field::isSelectedMirror( ) const {
 	return _mirror_selected;
 }
@@ -193,6 +238,10 @@ int Field::getDeadPlayer( ) const {
 
 int Field::getLazerPointIdx( ) const {
 	return _lazer_point_idx;
+}
+
+int Field::getSelectItem( ) const {
+	return _select_item;
 }
 
 void Field::setTurn( int turn ) {
@@ -257,7 +306,7 @@ void Field::updateLazerVector( Vector vec ) {
 				break;
 			case DIR_LEFT :
 				ite->second.angle == RIGHT ? next_dir.y = -1 : next_dir.y = 1;
-				break;			
+				break;
 			}
 			if ( !_reflection ) {
 				setDirect( next_dir );
@@ -366,6 +415,26 @@ void Field::mirrorPosSelected( ) {
 
 void Field::mirrorPosNotSelected( ) {
 	_mirror_selected = false;
+}
+
+void Field::selectItem( int idx ) {
+	_select_item = idx;
+	if ( idx != -1 ) {
+		_pin.flag = 1;
+		_pin.cx = _item[ idx ].x;
+		_pin.cy = _item[ idx ].y;
+	} else {
+		_pin.flag = 0;
+	}
+}
+
+void Field::useItem( ) {
+	if ( _select_item < 0 ) {
+		return;
+	}
+	_item[ _select_item ].flag = false;
+	_pin.flag = 0;
+	_select_item = -1;
 }
 
 Field::Vector Field::getLazerPoint( ) const {
@@ -617,7 +686,6 @@ void Field::drawRound( ) const {
 	_drawer->setFrontString( false, 20, 20, RED, "ROUND : " + std::to_string( _turn / TURN_MAX ) + "  TURN : " + std::to_string( _turn ), Drawer::BIG );
 }
 
-
 void Field::drawSettingPlayer( ) const{
 	int x = START_POS_X + 50;
 	int y1 = START_POS_Y + FIELD_ROW * SQUARE_SIZE + SQUARE_SIZE / 2;
@@ -628,4 +696,19 @@ void Field::drawSettingPlayer( ) const{
 	_drawer->setCircle( x, y2, r, BLUE, 255, true );
 	_drawer->setFrontString( false, x + 10, y2 + 3, WHITE, " ---- 少女思考中...", Drawer::LITTLE_BIG );
 	_drawer->setFrontString( false, 20, 20, RED, "ROUND : " + std::to_string( _turn / TURN_MAX ) + "  TURN : " + std::to_string( _turn ), Drawer::BIG );
+}
+
+void Field::drawItem( ) const {
+	//アイテム
+	for ( int i = 0; i < ITEM_MAX; i++ ) {
+		if ( !_item[ i ].flag ) {
+			continue;
+		}
+
+		_drawer->setCircle( _item[ i ].x, _item[ i ].y, CIRCLE_SIZE, ( COLOR )( WHITE + i ) );
+	}
+	//ピン
+	if ( _pin.flag > 0 ) {
+		_drawer->setImage( _pin );
+	}
 }

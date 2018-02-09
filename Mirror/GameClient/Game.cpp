@@ -79,6 +79,7 @@ void Game::update( ) {
 		_turn_finish = false;
 	}
 
+	//フェーズを取得
 	if ( _field->getPhase( ) != _phase ) {
  		_field->setPhase( _phase );
 	}
@@ -88,6 +89,7 @@ void Game::update( ) {
 		_field->setPlayerNum( _player_num );
 	}
 
+	//フェーズカットイン
 	if ( _phase < JUDGE_PHASE && !_phase_cutin ) {
 		_cutin_image.png = _cutin_png[ ( int )_phase ];
 		_background_cutin_image.png = _background_cutin_png[ ( int )NORMAL ];
@@ -98,6 +100,7 @@ void Game::update( ) {
 		return;
 	}
 
+	//アイテムチェック
 	checkItemFlag( );
 	if ( _use_item ) {
 		invocationItem( );
@@ -109,6 +112,7 @@ void Game::update( ) {
 		case SET_MIRROR_PHASE: 
 			recvMirrorPhase( );
 			if ( _mirror_phase_recv ) {
+				updateItemCalc( );
 				updateMirrorPhase( );
 			}
 			break;
@@ -221,6 +225,8 @@ void Game::selectPlayerPos( ) {
 
 void Game::updatePlayerPhase( ) {
 	_field->setInfoText( "あなたの配置をしてください" );
+	_field->setInfoText( "" );
+	_field->setInfoText( "選択後、決定を押してください" );
 	selectPlayerPos( );
 
 	if ( !_player_selected ) {
@@ -447,6 +453,32 @@ void Game::recvJudgePhase( ) {
 		return;
 	}
 	_judge_phase_recv = true;
+}
+
+void Game::updateItemCalc( ) {
+	if ( _order != _player_num ) {
+		return;
+	}
+
+	int idx = _field->getHitItemIdx( );
+
+	if ( !_data->getClickLeft( ) ) {
+		return;
+	}
+
+	if ( !_field->isHitDecisionButton( ) ) {
+		_field->selectItem( idx );
+		return;
+	}
+
+	if ( _field->getSelectItem( ) < 0 ) {
+		return;
+	}
+
+	_field->useItem( );
+	_client->setItemFlag( true );
+	_client->setItem( _field->getSelectItem( ) );
+	_client->sendTcp( );
 }
 
 void Game::invocationItem( ) {

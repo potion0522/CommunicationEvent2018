@@ -56,6 +56,7 @@ private:
 	void recvMirrorPhase( );
 	void recvAttackPhase( );
 	void recvJudgePhase( );
+	void updateItemCalc( );
 	void invocationItem( );
 	void checkItemFlag( );
 
