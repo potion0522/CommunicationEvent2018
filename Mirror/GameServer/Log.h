@@ -19,6 +19,7 @@ public:
 
 public:
 	void add( std::string log );
+	void reset( );
 
 private:
 	void isLogPring( );

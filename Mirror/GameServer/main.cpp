@@ -37,7 +37,7 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 		LogPtr log( new Log( data ) );
 		ConnectorPtr connector( new Connector( data, log, command ) );
 		GameMasterPtr master( new GameMaster( data, connector, log, command ) );
-		ResultServerPtr result( new ResultServer( data, master ) );
+		ResultServerPtr result( new ResultServer( data, master, log ) );
 
 		direction->add( ALL, data );
 		direction->add( CONNECT, connector );

@@ -35,7 +35,6 @@ void Log::isLogPring( ) {
 		size = i + 1;
 	}
 
-	ColorPtr color( new Color( ) );
 	for ( int i = 0; i < size; i++ ) {
 		int time_x = LOG_X - _drawer->getStringW( Drawer::NORMAL, _log_time[ i ] );
 		int y = HEIGHT - 20 * ( i + 1 );
@@ -66,4 +65,9 @@ void Log::add( std::string log ) {
 	}
 	_log_time[ 0 ] = log_time;
 	_log[ 0 ] = log;
+}
+
+void Log::reset( ) {
+	std::array< std::string, SERVER_CONSOLE_LOG_MAX >( ).swap( _log_time );
+	std::array< std::string, SERVER_CONSOLE_LOG_MAX >( ).swap( _log );
 }

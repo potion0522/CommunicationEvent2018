@@ -6,11 +6,12 @@
 PTR( ResultServer );
 PTR( GlobalData );
 PTR( GameMaster );
+PTR( Log );
 PTR( Drawer );
 
 class ResultServer : public Base {
 public:
-	ResultServer( GlobalDataPtr data, GameMasterPtr game );
+	ResultServer( GlobalDataPtr data, GameMasterPtr game, LogPtr log );
 	virtual ~ResultServer( );
 
 public:
@@ -24,6 +25,7 @@ private:
 
 	GlobalDataPtr _data;
 	GameMasterPtr _game;
+	LogPtr _log;
 	DrawerPtr _drawer;
 };
 

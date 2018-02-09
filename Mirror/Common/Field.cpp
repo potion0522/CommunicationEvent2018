@@ -107,11 +107,18 @@ void Field::nextTurn( ) {
 void Field::update( ) {
 	if ( _select_item > -1 ) {
 		resetInfo( );
-		switch ( _select_item ) {
-		case 0:
+		switch ( ( ITEM )_select_item ) {
+		case LAZER_RESET:
 			setInfoText( "レーザーの位置を強制的に変更します", RED );
 			setInfoText( "ターン経過はなく", RED );
 			setInfoText( "このターンのやり直しができます", RED );
+			break;
+
+		case DOUBLE_MIRROR:
+			setInfoText( "鏡を2枚配置できます", RED );
+			setInfoText( "最初に配置した鏡は", RED );
+			setInfoText( "相手にも見える状態になります", RED );
+			setInfoText( "鏡を1枚、配置した状態で決定をしてください", WATER );
 			break;
 		}
 	}
@@ -144,9 +151,9 @@ void Field::update( ) {
 	}
 }
 
-bool Field::isHitPlayerPos( ) {
+void Field::hitPlayerPos( ) {
 	if ( _player_num < 0 ) {
-		return false;
+		return;
 	}
 	double mouse_x = _data->getMouseX( );
 	double mouse_y = _data->getMouseY( );
@@ -162,23 +169,23 @@ bool Field::isHitPlayerPos( ) {
 		double distance = sqrt( ( mouse_x - x ) * ( mouse_x - x ) + ( mouse_y - y ) * ( mouse_y - y ) );
 		if ( distance <= CIRCLE_SIZE + MOUSE_R ) {
 			_player_pos_hit_num = i;
-			return true;
+			return;
 		}
 	}
 	_player_pos_hit_num = -1;
-	return false;
+	return;
 }
 
 bool Field::isSelectedPlayer( ) const {
 	return _player_selected;
 }
 
-bool Field::isHitFieldPos( ) {
+void Field::hitFieldPos( ) {
 	if ( _player_num < 0 ) {
-		return false;
+		return;
 	}
 	if ( _mirror_selected ) {
-		return false;
+		return;
 	}
 	int mouse_x = _data->getMouseX( );
 	int mouse_y = _data->getMouseY( );
@@ -189,12 +196,12 @@ bool Field::isHitFieldPos( ) {
 			if ( table_left < mouse_x && mouse_x   < table_left + SQUARE_SIZE &&
 				 table_top  < mouse_y && mouse_y < table_top  + SQUARE_SIZE ) {
 				_field_pos_hit_num = j + i * FIELD_COL;
-				return true;
+				return;
 			}
 		}
 	}
 	_field_pos_hit_num = -1;
-	return false;
+	return;
 }
 
 bool Field::isHitDecisionButton( ) const {
@@ -369,6 +376,10 @@ void Field::setLazerPoint( int pos ) {
 
 void Field::setTmpPlayerPoint( ) {
 	_tmp_player_pos = getPlayerPosHitNum( );
+}
+
+void Field::resetTmpMirror( ) {
+	_tmp_mirror = Mirror( );
 }
 
 void Field::setTmpMirrorPoint( int player_num, int x, int y, MIRROR_ANGLE angle ) {

@@ -20,7 +20,7 @@ const int START_POS_X = WIDTH / 3 * 2 - SQUARE_SIZE * FIELD_COL / 2;
 const int START_POS_Y = HEIGHT / 2 - SQUARE_SIZE * FIELD_ROW / 2;
 const int DISTANCE = SQUARE_SIZE;
 const int DISTANCE_HALF = SQUARE_SIZE / 2;
-const int INFO_TEXT_MAX = 4;
+const int INFO_TEXT_MAX = 6;
 
 class Field : public Base {
 public:
@@ -103,12 +103,15 @@ public:
 public:
 	void setInfoText( std::string str, COLOR col = YELLOW );
 	void updateLazerVector( Vector vec );
+	void hitPlayerPos( );
+	void hitFieldPos( );
 	void setTurn( int turn );
 	void setPlayerNum( int num );
 	void setPhase( BATTLE_PHASE phase );
 	void setPlayerPoint( int idx, int pos );
 	void setLazerPoint( int pos );
 	void setTmpPlayerPoint( );
+	void resetTmpMirror( );
 	void setTmpMirrorPoint( int player_num, int x, int y, MIRROR_ANGLE angle );
 	void setMirrorPoint( int player_num, int x, int y, MIRROR_ANGLE angle );
 	void deleteMirrorPoint( int idx );
@@ -133,9 +136,7 @@ public:
 	int getLazerPointIdx( ) const;
 	int getSelectItem( ) const;
 	int getHitItemIdx( ) const;
-	bool isHitPlayerPos( );
 	bool isSelectedPlayer( ) const;
-	bool isHitFieldPos( );
 	bool isHitDecisionButton( ) const;
 	bool isSelectedMirror( ) const;
 

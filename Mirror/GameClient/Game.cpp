@@ -208,32 +208,35 @@ void Game::resetStringCutin( ) {
 }
 
 void Game::selectPlayerPos( ) {
-	bool hit = false;
-	hit = _field->isHitPlayerPos( );
+	//ヒットしているポジションを探す
+	_field->hitPlayerPos( );
 
-	if ( !hit ) {
-		return;
-	}
 	int pos = _field->getPlayerPosHitNum( );
-	if ( pos < 0 ) {
-		return;
-	}
+
 	if ( !_data->getClickLeft( ) ) {
 		return;
 	}
+
+	if ( _field->isHitDecisionButton( ) ) {
+		return;
+	}
+
 	_field->setTmpPlayerPoint( );
-	_player_selected = true;
+
+	_player_selected = false;
+	if ( pos != -1 ) {
+		_player_selected = true;
+	}
 }
 
 void Game::updatePlayerPhase( ) {
 	_field->setInfoText( "あなたの配置をしてください" );
-	_field->setInfoText( "" );
-	_field->setInfoText( "選択後、決定を押してください" );
 	selectPlayerPos( );
 
 	if ( !_player_selected ) {
 		return;
 	}
+	_field->setInfoText( "決定を押して確定してください", RED );
 
 	if ( !_field->isHitDecisionButton( ) ) {
 		return;
@@ -292,22 +295,28 @@ void Game::inputTmpMirror( ) {
 		_field->setInfoText( "2枚目を配置してください", RED );
 	}
 
-	bool hit = false;
-	hit = _field->isHitFieldPos( );
+	//ヒットしているマスを探す
+	_field->hitFieldPos( );
+	int pos = _field->getFieldPosHitNum( );
 
-	if ( !hit ) {
+	if ( _field->isHitDecisionButton( ) ) {
 		return;
 	}
 
-	int pos = _field->getFieldPosHitNum( );
-	if ( pos < 0 ) {
+	if ( _field->getHitItemIdx( ) != -1 ) {
 		return;
 	}
 
 	if ( !_data->getClickLeft( ) ) {
 		return;
 	}
-	
+
+	if ( pos < 0 ) {
+		_tmp_mirror = Field::Mirror( );
+		_field->resetTmpMirror( );
+		return;
+	}
+
 	int x = pos % FIELD_COL;
 	int y = pos / FIELD_COL;
 	if ( _tmp_mirror.x == x && _tmp_mirror.y == y ) {
@@ -481,6 +490,10 @@ void Game::updateItemCalc( ) {
 	int idx = _field->getHitItemIdx( );
 
 	if ( !_data->getClickLeft( ) ) {
+		return;
+	}
+
+	if ( _field->getFieldPosHitNum( ) != -1 ) {
 		return;
 	}
 
