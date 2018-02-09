@@ -5,6 +5,7 @@
 
 Console::Console( GlobalDataPtr data ) :
 _data( data ) {
+	setFlag( 1 );
 	_client = _data->getClientPtr( );
 	_drawer = _data->getDrawerPtr( );
 }
@@ -20,7 +21,6 @@ std::string Console::getTag( ) {
 }
 
 void Console::initialize( ) {
-	setFlag( 1 );
 }
 
 void Console::update( ) {

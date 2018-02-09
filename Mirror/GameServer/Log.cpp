@@ -10,14 +10,15 @@ const int CHARA_SIZE = 20;
 
 Log::Log( GlobalDataPtr data ) :
 _data( data ) {
-	initialize( );
+	_drawer = _data->getDrawerPtr( );
 }
 
 Log::~Log( ) {
 }
 
 void Log::initialize( ) {
-	_drawer = _data->getDrawerPtr( );
+	std::array< std::string, SERVER_CONSOLE_LOG_MAX >( ).swap( _log_time );
+	std::array< std::string, SERVER_CONSOLE_LOG_MAX >( ).swap( _log );
 }
 
 void Log::update( ) {

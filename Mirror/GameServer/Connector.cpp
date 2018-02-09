@@ -35,8 +35,8 @@ void Connector::initialize( ) {
 
 void Connector::update( ) {
 	commandExecution( );
+	updateConnectState( );
 	if ( !_command_matching ) {
-		updateConnectState( );
 		updateMatchingState( );
 		sendState( );
 	}
@@ -52,8 +52,13 @@ void Connector::updateConnectState( ) {
 			if ( _connect_state[ i ] == CONNECTING ) {
 				log = "DisConnect Machine [ " + std::to_string( i ) + " ]";
 				_log->add( log );
+				//ƒoƒgƒ‹’†‚Å‚ ‚ê‚Î
+				if ( _data->getScene( ) > CONNECT && _data->getScene( ) < RESULT ) {
+					_data->setInitFlag( );
+				}
 			}
 			_connect_state[ i ] = NOT_CONNECTING;
+
 			continue;
 		}
 
@@ -90,6 +95,9 @@ void Connector::sendState( ) {
 	}
 	_server->sendDataTcp( _matching );
 	_sending_state = _matching;
+	if ( _matching ) {
+		_data->setScene( BATTLE );
+	}
 }
 
 void Connector::commandExecution( ) {

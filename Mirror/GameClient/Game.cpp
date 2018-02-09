@@ -37,13 +37,22 @@ void Game::initialize( ) {
 	_phase_cutin = false;
 	_player_cutin = false;
 	_player_num = 0;
+	_cutin_spd_rate = 1.0f;
 	_phase = SET_PLAYER_PHASE;
 	_tmp_mirror = Field::Mirror( );
 	_order = -1;
 
-	std::array< ImageProperty, CUTIN_MAX >( ).swap( _phase_cutin_image );
-	setPhaseCutin( );
-	setPlayerCutin( );
+	ImagePtr image_ptr = _data->getImagePtr( );
+	for ( int i = 0; i < CUTIN_MAX + PLAYER_NUM; i++ ) {
+		_cutin_png[ i ] = image_ptr->getPng( CUTIN_STRING_IMAGE, i ).png;
+	}
+	for ( int i = 0; i < BACKGROUND_CUTIN_MAX; i++ ) {
+		_background_cutin_png[ i ] = image_ptr->getPng( CUTIN_BACK_IMAGE, i ).png;
+	}
+	_background_cutin_image = ImageProperty( );
+	_cutin_image  = ImageProperty( );
+	resetBackCutin( );
+	resetStringCutin( );
 }
 
 void Game::update( ) {
@@ -60,6 +69,8 @@ void Game::update( ) {
 
 	BATTLE_PHASE phase = _client->getBattlePhase( );
 	if ( _phase != phase ) {
+		resetBackCutin( );
+		resetStringCutin( );
 		_phase = phase;
 		_phase_cutin = false;
 		_turn_finish = false;
@@ -74,9 +85,13 @@ void Game::update( ) {
 		_field->setPlayerNum( _player_num );
 	}
 
-	if ( !_phase_cutin ) {
-		calcPhaseCutin( );
-		drawPhaseCutin( );
+	if ( _phase < JUDGE_PHASE && !_phase_cutin ) {
+		_cutin_image.png = _cutin_png[ ( int )_phase ];
+		_background_cutin_image.png = _background_cutin_png[ ( int )NORMAL ];
+		drawBackCutin( );
+		drawStringCutin( );
+		calcBackCutin( );
+		calcStringCutin( );
 		return;
 	}
 
@@ -108,84 +123,54 @@ void Game::update( ) {
 	}
 }
 
-void Game::calcPhaseCutin( ) {
-	if ( _phase > ATTACK_PHASE ) {
-		_phase_cutin = true;
-		return;
-	}
-
-	int idx = ( int )_phase;
-
-	if ( _phase_cutin_image[ idx ].cx < WIDTH / 2 ) {
-		_phase_cutin_image[ idx ].cx += CUTIN_SPEED;
+void Game::calcBackCutin( ) {
+	if ( _background_cutin_image.cx < WIDTH / 2 ) {
+		_background_cutin_image.cx += CUTIN_SPEED * _cutin_spd_rate;
 	} else {
-		if ( _phase_cutin_image[ idx ].cnt < WAIT_TIME ) {
-			_phase_cutin_image[ idx ].cnt++;
-			return;
-		}
-		_phase_cutin_image[ idx ].cx += CUTIN_SPEED;
-
-		if ( _phase_cutin_image[ idx ].cx > WIDTH + _phase_cutin_image[ idx ].lx ) {
-			_phase_cutin = true;
-		}
-	}
-}
-
-void Game::calcPlayerCutin( ) {
-	int idx = ( _player_num == _order );
-
-	if ( _player_cutin_image[ idx ].cx < WIDTH / 2 ) {
-		_player_cutin_image[ idx ].cx += CUTIN_SPEED * 1.5;
-		_background_cutin_image.cx += CUTIN_SPEED * 1.5;
-	} else {
-		if ( _player_cutin_image[ idx ].cnt < WAIT_TIME ) {
-			_player_cutin_image[ idx ].cnt++;
+		if ( _background_cutin_image.cnt < WAIT_TIME ) {
 			_background_cutin_image.cnt++;
 			return;
 		}
-		_player_cutin_image[ idx ].cx += CUTIN_SPEED;
-		_background_cutin_image.cx += CUTIN_SPEED;
+		_background_cutin_image.cx += CUTIN_SPEED * _cutin_spd_rate;
 
-		if ( _player_cutin_image[ idx ].cx > WIDTH + _player_cutin_image[ idx ].lx ) {
+		if ( _background_cutin_image.cx > WIDTH + _background_cutin_image.lx ) {
 			_player_cutin = true;
+			_cutin_spd_rate = 1.0f;
+			resetBackCutin( );
 		}
 	}
 }
 
-void Game::drawPhaseCutin( ) const {
-	if ( _phase_cutin ) {
-		return;
+void Game::calcStringCutin( ) {
+	if ( _cutin_image.cx < WIDTH / 2 ) {
+		_cutin_image.cx += CUTIN_SPEED * _cutin_spd_rate;
+	} else {
+		if ( _cutin_image.cnt < WAIT_TIME ) {
+			_cutin_image.cnt++;
+			return;
+		}
+		_cutin_image.cx += CUTIN_SPEED * _cutin_spd_rate;
+
+		if ( _cutin_image.cx > WIDTH + _cutin_image.lx ) {
+			_phase_cutin = true;
+			_cutin_spd_rate = 1.0f;
+			resetStringCutin( );
+		}
 	}
-	_drawer->setImage( _phase_cutin_image[ ( int )_phase ] );
 }
 
-void Game::drawPlayerCutin( ) const {
-	if ( _player_cutin ) {
-		return;
-	}
+void Game::drawBackCutin( ) const {
 	_drawer->setImage( _background_cutin_image );
-	_drawer->setImage( _player_cutin_image[ ( _player_num == _order ) ] );
 }
 
-void Game::setPhaseCutin( ) {
-	ImagePtr image_ptr = _data->getImagePtr( );
-	{//フェーズカットインの文字
-		for ( int i = 0; i < CUTIN_MAX; i++ ) {
-			Png image = image_ptr->getPng( CUTIN_STRING_IMAGE, i );
-			_phase_cutin_image[ i ].cx = image.width / 2 * -1;
-			_phase_cutin_image[ i ].cy = HEIGHT / 2;
-			_phase_cutin_image[ i ].lx = image.width / 2;
-			_phase_cutin_image[ i ].ly = image.height / 2;
-			_phase_cutin_image[ i ].png = image.png;
-			_phase_cutin_image[ i ].cnt = 0;
-		}
-	}
+void Game::drawStringCutin( ) const {
+	_drawer->setImage( _cutin_image );
 }
 
-void Game::setPlayerCutin( ) {
+void Game::resetBackCutin( ) {
 	ImagePtr image_ptr = _data->getImagePtr( );
 	{//背景イメージ
-		Png image = image_ptr->getPng( CUTIN_IMAGE, 0 );
+		Png image = image_ptr->getPng( CUTIN_BACK_IMAGE, 0 );
 		_background_cutin_image.cx = image.width / 2 * -1;
 		_background_cutin_image.cy = HEIGHT / 2;
 		_background_cutin_image.lx = image.width / 2;
@@ -193,17 +178,18 @@ void Game::setPlayerCutin( ) {
 		_background_cutin_image.png = image.png;
 		_background_cutin_image.cnt = 0;
 	}
+}
 
-	{//プレイヤーカットイン
-		for ( int i = 0; i < PLAYER_NUM; i++ ) {
-			Png image = image_ptr->getPng( CUTIN_STRING_IMAGE, CUTIN_MAX + i );
-			_player_cutin_image[ i ].cx = image.width / 2 * -1;
-			_player_cutin_image[ i ].cy = HEIGHT / 2;
-			_player_cutin_image[ i ].lx = image.width / 2;
-			_player_cutin_image[ i ].ly = image.height / 2;
-			_player_cutin_image[ i ].png = image.png;
-			_player_cutin_image[ i ].cnt = 0;
-		}
+void Game::resetStringCutin( ) {
+	ImagePtr image_ptr = _data->getImagePtr( );
+	{//フェーズカットインの文字
+		Png image = image_ptr->getPng( CUTIN_STRING_IMAGE, 0 );
+		_cutin_image.cx = image.width / 2 * -1;
+		_cutin_image.cy = HEIGHT / 2;
+		_cutin_image.lx = image.width / 2;
+		_cutin_image.ly = image.height / 2;
+		_cutin_image.png = image.png;
+		_cutin_image.cnt = 0;
 	}
 }
 
@@ -249,8 +235,6 @@ void Game::updatePlayerPhase( ) {
 	_field->setPlayerPoint( _player_num, _field->getTmpPlayerPoint( ) );
 	_client->setPlayerPos( _field->getPlayerPoint( _player_num ) );
 	_client->sendTcp( );
-
-	setPhaseCutin( );
 }
 
 void Game::inputTmpMirror( ) {
@@ -258,9 +242,11 @@ void Game::inputTmpMirror( ) {
 	int order = _client->getOrder( );
 
 	if ( _order != order ) {
+		resetBackCutin( );
+		resetStringCutin( );
 		_order = order;
+		_cutin_spd_rate = 1.5f;
 		_player_cutin = false;
-		setPlayerCutin( );
 	}
 
 	_field->setInfoText( "鏡を配置してください。" );
@@ -268,8 +254,12 @@ void Game::inputTmpMirror( ) {
 
 	//どっちが設置しているかのカットイン
 	if ( !_player_cutin ) {
-		calcPlayerCutin( );
-		drawPlayerCutin( );
+		_cutin_image.png = _cutin_png[ ( int )CUTIN_MAX + ( _player_num == _order ) ];
+		_background_cutin_image.png = _background_cutin_png[ PLAYER ];
+		drawBackCutin( );
+		drawStringCutin( );
+		calcBackCutin( );
+		calcStringCutin( );
 		return;
 	}
 
@@ -339,8 +329,6 @@ void Game::updateMirrorPhase( ) {
 
 	_tmp_mirror = Field::Mirror( );
 	_lazer->initialize( );
-	setPhaseCutin( );
-	setPlayerCutin( );
 	_player_cutin = false;
 }
 
@@ -363,7 +351,6 @@ void Game::updateAttackPhase( ) {
 	_client->setAlive( alive );
 	_client->sendTcp( );
 	_send_live = true;
-	setPhaseCutin( );
 }
 
 void Game::updateJudgePhase( ) {
@@ -379,6 +366,7 @@ void Game::updateJudgePhase( ) {
 		_mirror_phase_recv = false;
 		_attack_phase_recv = false;
 		_judge_phase_recv = false;
+		_order = -1;
 		_send_live = false;
 		_tmp_mirror = Field::Mirror( );
 		_field->nextTurn( );

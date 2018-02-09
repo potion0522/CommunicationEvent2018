@@ -1,6 +1,7 @@
 #include "Client.h"
 
 Client::Client( ) {
+	setFlag( 1 );
 }
 
 Client::~Client( ) {
@@ -12,7 +13,6 @@ std::string Client::getTag( ) {
 }
 
 void Client::initialize( ) {
-	setFlag( 1 );
 	_phase = READY;
 	_connecting_tcp = false;
 	_recving_tcp = false;

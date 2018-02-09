@@ -41,7 +41,7 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 		direction->add( ALL, data );
 		direction->add( CONNECT, connector );
-		direction->add( CONNECT, master );
+		direction->add( BATTLE, master );
 		direction->add( RESULT, result );
 
 		// GlobalData のフラグが 0 であれば全プロセス終了

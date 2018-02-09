@@ -31,6 +31,6 @@ void ResultClient::update( ) {
 	}
 
 	if ( _data->getKeyState( KEY_INPUT_RETURN ) == 1 ) {
-		_data->setScene( TITLE );
+		_data->setInitFlag( );
 	}
 }

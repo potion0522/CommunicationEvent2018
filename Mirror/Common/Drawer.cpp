@@ -24,6 +24,16 @@ Drawer::Drawer( ) {
 	idx++;
 	_size[ idx ] = SIZE_SUPER_BIG;
 	idx++;
+	for ( int i = 0; i < FONT_TYPE_MAX; i++ ) {
+		_handle_font[ i ] = -1;
+		switch ( ( FONTSIZE_TYPE )i ) {
+		case SMALL      : _handle_font[ i ] = CreateFontToHandle( "MS –¾’©", _size[ i ], -1, DX_FONTTYPE_NORMAL ); break;
+		case NORMAL     : _handle_font[ i ] = CreateFontToHandle( "MS –¾’©", _size[ i ], -1, DX_FONTTYPE_NORMAL ); break;
+		case LITTLE_BIG : _handle_font[ i ] = CreateFontToHandle( "MS –¾’©", _size[ i ], -1, DX_FONTTYPE_NORMAL ); break;
+		case BIG        : _handle_font[ i ] = CreateFontToHandle( "MS –¾’©", _size[ i ], -1, DX_FONTTYPE_NORMAL ); break;
+		case SUPER_BIG  : _handle_font[ i ] = CreateFontToHandle( "MS –¾’©", _size[ i ], -1, DX_FONTTYPE_NORMAL ); break;
+		}
+	}
 }
 
 Drawer::~Drawer( ) {
@@ -40,16 +50,6 @@ std::string Drawer::getTag( ) {
 }
 
 void Drawer::initialize( ) {
-	for ( int i = 0; i < FONT_TYPE_MAX; i++ ) {
-		_handle_font[ i ] = -1;
-		switch ( ( FONTSIZE_TYPE )i ) {
-		case SMALL      : _handle_font[ i ] = CreateFontToHandle( "MS –¾’©", _size[ i ], -1, DX_FONTTYPE_NORMAL ); break;
-		case NORMAL     : _handle_font[ i ] = CreateFontToHandle( "MS –¾’©", _size[ i ], -1, DX_FONTTYPE_NORMAL ); break;
-		case LITTLE_BIG : _handle_font[ i ] = CreateFontToHandle( "MS –¾’©", _size[ i ], -1, DX_FONTTYPE_NORMAL ); break;
-		case BIG        : _handle_font[ i ] = CreateFontToHandle( "MS –¾’©", _size[ i ], -1, DX_FONTTYPE_NORMAL ); break;
-		case SUPER_BIG  : _handle_font[ i ] = CreateFontToHandle( "MS –¾’©", _size[ i ], -1, DX_FONTTYPE_NORMAL ); break;
-		}
-	}
 }
 
 void Drawer::update( ) {

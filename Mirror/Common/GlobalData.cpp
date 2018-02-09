@@ -11,6 +11,7 @@
 
 GlobalData::GlobalData( MACHINE_TYPE type ) :
 _type( type ) {
+	setFlag( 1 );
 	_key =   UpdateKeyPtr( new UpdateKey( ) );
 	_mouse = MouseEventPtr( new MouseEvent( ) );
 	_image = ImagePtr( new Image( ) );
@@ -36,7 +37,6 @@ std::string GlobalData::getTag( ) {
 }
 
 void GlobalData::initialize( ) {
-	setFlag( 1 );
 	_scene = TITLE;
 	_command_flag = false;
 	_count = 0;

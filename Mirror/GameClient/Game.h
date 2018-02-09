@@ -15,11 +15,17 @@ PTR( Lazer );
 
 class Game : public Base {
 private:
+	static const int BACKGROUND_CUTIN_MAX = 2;
 	enum CUTIN {
 		SET_PLAYER_CUTIN,
 		SET_MIRROR_CUTIN,
 		ATTACK_CUTIN,
 		CUTIN_MAX
+	};
+
+	enum CUTIN_BACK_COLOR {
+		NORMAL,
+		PLAYER,
 	};
 public:
 	Game( GlobalDataPtr data );
@@ -34,13 +40,13 @@ public:
 	bool isWin( ) const;
 
 private:
-	void calcPhaseCutin( );
-	void calcPlayerCutin( );
-	void drawPhaseCutin( ) const;
-	void drawPlayerCutin( ) const;
+	void calcBackCutin( );
+	void calcStringCutin( );
+	void drawBackCutin( ) const;
+	void drawStringCutin( ) const;
 private:
-	void setPhaseCutin( );
-	void setPlayerCutin( );
+	void resetBackCutin( );
+	void resetStringCutin( );
 	void selectPlayerPos( );
 	void updatePlayerPhase( );
 	void updateMirrorPhase( );
@@ -64,11 +70,13 @@ private:
 	int  _turn;
 	int _order;
 	int  _player_num;
+	float _cutin_spd_rate;
 	BATTLE_PHASE _phase;
 	Field::Mirror _tmp_mirror;
+	std::array< int, CUTIN_MAX + PLAYER_NUM > _cutin_png;
+	std::array< int, BACKGROUND_CUTIN_MAX > _background_cutin_png;
 	ImageProperty _background_cutin_image;
-	std::array< ImageProperty, CUTIN_MAX > _phase_cutin_image;
-	std::array< ImageProperty, PLAYER_NUM > _player_cutin_image;
+	ImageProperty _cutin_image;
 
 	GlobalDataPtr _data;
 	ClientPtr _client;

@@ -16,16 +16,16 @@ const int MOUSE_Y = 20;
 
 Debug::Debug( GlobalDataPtr data ) :
 _data( data ){
+	setFlag( 0 );
+	_command = CommandPtr( new Command( _data ) );
+	_color = ColorPtr( new Color( ) );
+	_drawer = _data->getDrawerPtr( );
 }
 
 Debug::~Debug( ) {
 }
 
 void Debug::initialize( ) {
-	setFlag( 0 );
-	_command = CommandPtr( new Command( _data ) );
-	_color = ColorPtr( new Color( ) );
-	_drawer = _data->getDrawerPtr( );
 	_log_y = Y_POS;
 	_active_y = ACTIVE_CLASS_INIT_Y;
 	initLog( );
