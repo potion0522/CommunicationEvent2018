@@ -332,6 +332,15 @@ void GameMaster::updateItemCalc( ) {
 		return;
 	}
 
+	for ( int i = 0; i < PLAYER_NUM; i++ ) {
+		_client_data[ i ].fin = false;
+	}
+	if ( ( ITEM )_item == DOUBLE_MIRROR ) {
+		if ( _client_data[ _item_user ].order == PLAYER_NUM ) {
+			_client_data[ ( _item_user + 1 ) % PLAYER_NUM ].fin = true;
+		}
+	}
+
 	_use_item = false;
 	_item = 0;
 	_phase = SET_MIRROR_PHASE;
@@ -339,10 +348,6 @@ void GameMaster::updateItemCalc( ) {
 	_server->setItemFlag( false );
 	_server->setItem( 0 );
 	_field->setPhase( _phase );
-
-	for ( int i = 0; i < PLAYER_NUM; i++ ) {
-		_client_data[ i ].fin = false;
-	}
 }
 
 void GameMaster::invocationItem( ) {
@@ -447,7 +452,7 @@ void GameMaster::commandExecution( ) {
 
 	if ( _command->getWord( 1 ) == "ITEM" ) {
 		int value = atoi( _command->getWord( 2 ).c_str( ) );
-		if ( value < ITEM_MAX ) {
+		if ( value < ( int )ITEM_MAX ) {
 			_item = value;
 			_use_item = true;
 			invocationItem( );
