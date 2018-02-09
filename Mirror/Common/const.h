@@ -7,6 +7,8 @@ const int SCREEN_HEIGHT = 1080;
 const int WIDTH = 1280;
 const int HEIGHT = 720;
 
+const int FRAME = 60;
+
 const double PI = 3.14;
 const int KEY_MAX = 256;
 const int PLAYER_NUM = 2;

@@ -9,6 +9,7 @@
 
 PTR( Field );
 PTR( GlobalData );
+PTR( Client );
 PTR( Drawer );
 PTR( Image );
 
@@ -155,7 +156,7 @@ private:
 	void drawPlayer( ) const;
 	void drawInfo( ) const;
 	void drawRound( ) const;
-	void drawSettingPlayer( ) const;
+	void drawSettingPlayer( ) ;
 	void drawItem( ) const;
 
 private:
@@ -189,6 +190,7 @@ private:
 	ImageProperty _pin;
 
 	GlobalDataPtr _data;
+	ClientPtr _client;
 	DrawerPtr _drawer;
 	ImagePtr _image;
 };

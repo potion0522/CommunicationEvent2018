@@ -4,6 +4,7 @@
 #include "const.h"
 #include "DxLib.h"
 #include "Image.h"
+#include "Client.h"
 #include <random>
 
 const int MOUSE_R = 5;
@@ -27,6 +28,7 @@ _data( data ) {
 	setFlag( 1 );
 	_drawer = _data->getDrawerPtr( );
 	_image = _data->getImagePtr( );
+	_client = _data->getClientPtr( );
 	_cur_hand  = LoadCursor( NULL, IDC_HAND );
 
 	Png image = _image->getPng( BUTTON_IMAGE, 0 );
@@ -129,13 +131,16 @@ void Field::update( ) {
 	drawDecisionButton( );
 	drawInfo( );
 	drawRound( );
-	drawSettingPlayer( );
 	drawItem( );
 
 	resetInfo( );
 
 	if ( _phase == SET_PLAYER_PHASE ) {
 		drawPlayerPos( );
+	}
+	
+	if ( _phase == SET_MIRROR_PHASE ) {
+		drawSettingPlayer( );
 	}
 
 	if ( _phase < SET_MIRROR_PHASE ) {
@@ -228,6 +233,7 @@ int Field::getHitItemIdx( ) const {
 		double b = mouse_y - _item[ i ].y;
 		double c = sqrt( a * a + b * b );
 		if ( c <= MOUSE_R + CIRCLE_SIZE ) {
+			SetCursor( _cur_hand );
 			return i;
 		}
 	}
@@ -556,6 +562,7 @@ void Field::drawTmpMirror( ) const {
 		double sy = START_POS_Y + y * SQUARE_SIZE + SQUARE_SIZE * 0.5;
 
 		COLOR col = ( _player_num == 0 ? RED : BLUE );
+		SetCursor( _cur_hand );
 		_drawer->setLine( sx, sy, sx + line * 1, sy - line * 1, col, 150 );
 		_drawer->setLine( sx, sy, sx - line * 1, sy + line * 1, col, 150 );
 	}
@@ -593,6 +600,9 @@ void Field::drawTmpMirror( ) const {
 }
 
 void Field::drawDecisionButton( ) const {
+	if ( isHitDecisionButton( ) ) {
+		SetCursor( _cur_hand );
+	}
 	_drawer->setImage( _decision_button );
 }
 
@@ -697,15 +707,43 @@ void Field::drawRound( ) const {
 	_drawer->setFrontString( false, 20, 20, RED, "ROUND : " + std::to_string( _turn / TURN_MAX ) + "  TURN : " + std::to_string( _turn ), Drawer::BIG );
 }
 
-void Field::drawSettingPlayer( ) const{
-	int x = START_POS_X + 50;
-	int y1 = START_POS_Y + FIELD_ROW * SQUARE_SIZE + SQUARE_SIZE / 2;
-	int y2 = y1 + 30;
+void Field::drawSettingPlayer( ) {
+	int x = START_POS_X + 60;
+	int y = 0;
+	int y_red = START_POS_Y + FIELD_ROW * SQUARE_SIZE + SQUARE_SIZE / 2;
+	int y_blue = y_red + 30;
 	int r = CIRCLE_SIZE / 3;
-	_drawer->setCircle( x, y1, r, RED, 255, true );
-	_drawer->setFrontString( false, x + 10, y1 + 3, WHITE, " ---- 少女思考中...", Drawer::LITTLE_BIG );
-	_drawer->setCircle( x, y2, r, BLUE, 255, true );
-	_drawer->setFrontString( false, x + 10, y2 + 3, WHITE, " ---- 少女思考中...", Drawer::LITTLE_BIG );
+	int brt = 0;
+	std::string str = "  ---- 少女思考中";
+	std::string dot;
+	switch ( _data->getCount( ) / FRAME % 4 ) {
+		case 0:		dot = "";		break;
+		case 1:		dot = ".";		break;
+		case 2:		dot = "..";		break;
+		case 3:		dot = "...";	break;
+	}
+	SetDrawBlendMode( DX_BLENDMODE_ALPHA, 0 );
+	_drawer->setCircle( x, y_red,  r, RED,  ( int )( ( sin( _data->getCount( ) * 0.06 ) + 1 ) * 64 + 50 ), true );
+	_drawer->setCircle( x, y_blue, r, BLUE, ( int )( ( sin( _data->getCount( ) * 0.06 ) + 1 ) * 64 + 50 ), true );
+	SetDrawBlendMode( DX_BLENDMODE_NOBLEND, 0 );
+	if ( _player_num != _client->getOrder( ) ) {
+		if( _player_num == 0 ){
+			y = y_blue;
+			_drawer->setCircle( x, y_red, r, RED, 255, true );
+		} else {
+			y = y_red;
+			_drawer->setCircle( x, y_blue, r, BLUE, 255, true );
+		}
+	} else {
+		if ( _player_num == 0 ) {
+			y = y_red;
+			_drawer->setCircle( x, y_blue, r, BLUE, 255, true );
+		} else {
+			y = y_blue;
+			_drawer->setCircle( x, y_red, r, RED, 255, true );
+		}
+	}
+	_drawer->setFrontString( false, x, y + 3, WHITE, str + dot, Drawer::LITTLE_BIG );
 	_drawer->setFrontString( false, 20, 20, RED, "ROUND : " + std::to_string( _turn / TURN_MAX ) + "  TURN : " + std::to_string( _turn ), Drawer::BIG );
 }
 
