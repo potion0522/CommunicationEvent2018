@@ -104,34 +104,35 @@ void Game::update( ) {
 	checkItemFlag( );
 	if ( _use_item ) {
 		invocationItem( );
-	} else {
-		switch ( _phase ) {
-		case SET_PLAYER_PHASE:
-			updatePlayerPhase( );
-			break;
-		case SET_MIRROR_PHASE: 
-			recvMirrorPhase( );
-			if ( _mirror_phase_recv ) {
-				updateItemCalc( );
-				updateMirrorPhase( );
-			}
-			break;
-		case ATTACK_PHASE:
-			recvAttackPhase( );
-			if ( _attack_phase_recv ) {
-				updateAttackPhase( );
-			}
-			break;
-		case JUDGE_PHASE:
-			if ( _turn_finish ) {
-				break;
-			}
-			recvJudgePhase( );
-			if ( _judge_phase_recv ) {
-				updateJudgePhase( );
-			}
+		return;
+	}
+
+	switch ( _phase ) {
+	case SET_PLAYER_PHASE:
+		updatePlayerPhase( );
+		break;
+	case SET_MIRROR_PHASE: 
+		recvMirrorPhase( );
+		if ( _mirror_phase_recv ) {
+			updateItemCalc( );
+			updateMirrorPhase( );
+		}
+		break;
+	case ATTACK_PHASE:
+		recvAttackPhase( );
+		if ( _attack_phase_recv ) {
+			updateAttackPhase( );
+		}
+		break;
+	case JUDGE_PHASE:
+		if ( _turn_finish ) {
 			break;
 		}
+		recvJudgePhase( );
+		if ( _judge_phase_recv ) {
+			updateJudgePhase( );
+		}
+		break;
 	}
 }
 
@@ -460,6 +461,10 @@ void Game::updateItemCalc( ) {
 		return;
 	}
 
+	if ( !_player_cutin ) {
+		return;
+	}
+
 	int idx = _field->getHitItemIdx( );
 
 	if ( !_data->getClickLeft( ) ) {
@@ -475,10 +480,11 @@ void Game::updateItemCalc( ) {
 		return;
 	}
 
-	_field->useItem( );
 	_client->setItemFlag( true );
 	_client->setItem( _field->getSelectItem( ) );
 	_client->sendTcp( );
+
+	_field->useItem( );
 }
 
 void Game::invocationItem( ) {
@@ -502,27 +508,33 @@ void Game::invocationItem( ) {
 			_send_live = false;
 			_tmp_mirror = Field::Mirror( );
 			_field->nextTurn( );
+			resetBackCutin( );
+			resetStringCutin( );
 		}
 		break;
 	}
 	_client->setItemFlag( false );
+	_client->setItem( 0 );
 	_client->sendTcp( );
 	_item_callback = true;
-
-	_use_item = false;
-	_item = 0;
 }
 
 void Game::checkItemFlag( ) {
 	if ( !_client->isRecvingUdp( ) ) {
 		return;
 	}
-	if ( !_client->isItemFlag( ) ) {
-		return;
+
+	bool use = _client->isItemFlag( );
+
+	if ( use != _use_item ) {
+		_use_item = use;
+		if ( !_use_item ) {
+			return;
+		}
+		_item = _client->getItem( );
+		_item_callback = false;
 	}
-	_item = _client->getItem( );
-	_use_item = true;
-	_item_callback = false;
+
 }
 
 bool Game::isWin( ) const {

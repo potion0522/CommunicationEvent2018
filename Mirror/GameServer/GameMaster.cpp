@@ -59,12 +59,17 @@ void GameMaster::update( ) {
 		orderPlayer( );
 	}
 
-	if ( !_use_item ) {
-		checkItemFlag( );
-		invocationItem( );
-	} else {
+	//アイテムチェック
+	bool use = _use_item;
+	checkItemFlag( );
+	if ( use != _use_item && _use_item ) {
+		return;
+	}
+
+	if ( _use_item ) {
 		checkCallBack( );
 		updateItemCalc( );
+		_server->sendDataUdp( );
 		return;
 	}
 
@@ -75,6 +80,7 @@ void GameMaster::update( ) {
 	case JUDGE_PHASE		: updateJudgePhase ( ); break;
 	}
 
+
 	_server->sendDataUdp( );
 
 	switch ( _phase ) {
@@ -83,7 +89,6 @@ void GameMaster::update( ) {
 	case ATTACK_PHASE		: inputAttackPhase( ); break;
 	case JUDGE_PHASE		: checkCallBack   ( ); break;
 	}
-
 }
 
 void GameMaster::orderPlayer( ) {
@@ -330,8 +335,8 @@ void GameMaster::updateItemCalc( ) {
 	_item = 0;
 	_phase = SET_MIRROR_PHASE;
 	_server->setBattlePhase( _phase );
-	_server->setItemFlag( _use_item );
-	_server->setItem( _item );
+	_server->setItemFlag( false );
+	_server->setItem( 0 );
 	_field->setPhase( _phase );
 
 	for ( int i = 0; i < PLAYER_NUM; i++ ) {
@@ -340,10 +345,6 @@ void GameMaster::updateItemCalc( ) {
 }
 
 void GameMaster::invocationItem( ) {
-	if ( !_use_item ) {
-		return;
-	}
-
 	switch ( _item ) {
 	case 0:
 		{//レーザーの位置を変更
@@ -359,19 +360,21 @@ void GameMaster::invocationItem( ) {
 }
 
 void GameMaster::checkItemFlag( ) {
+	bool use = false;
 	for ( int i = 0; i < MACHINE_MAX; i++ ) {
-		if ( !_server->isRecving( i ) ) {
-			continue;
-		}
 		if ( !_server->isItemFlag( i ) ) {
 			continue;
 		}
 
 		_item = _server->getItem( i );
-		_use_item = true;
+		use = true;
+		break;
 	}
 
-	if ( _use_item ) {
+	if ( use != _use_item && use ) {
+		_use_item = use;
+		invocationItem( );
+
 		for ( int i = 0; i < MACHINE_MAX; i++ ) {
 			_client_data[ i ].fin = false;
 		}
@@ -400,6 +403,7 @@ void GameMaster::commandExecution( ) {
 		_log->add( "player 1 flag true" );
 	}
 
+	///////////////////////////////////////////////////
 	if ( _command->getWordNum( ) < 2 ) {
 		return;
 	}
@@ -407,6 +411,7 @@ void GameMaster::commandExecution( ) {
 	if ( _command->getWord( 0 ) != "SET" ) {
 		return;
 	}
+
 	if ( _command->getWord( 1 ) == "PLAYER" ) {
 		std::string pos = _command->getWord( 2 );
 		if ( ( int )pos.size( ) > 1 ) {
@@ -420,6 +425,20 @@ void GameMaster::commandExecution( ) {
 		}
 	}
 
+	if ( _command->getWord( 1 ) == "ITEM" ) {
+		int value = atoi( _command->getWord( 2 ).c_str( ) );
+		if ( value < ITEM_MAX ) {
+			_item = value;
+			_use_item = true;
+			invocationItem( );
+			for ( int i = 0; i < MACHINE_MAX; i++ ) {
+				_client_data[ i ].fin = false;
+			}
+			_log->add( "set item " + _command->getWord( 2 ) );
+		}
+	}
+
+	///////////////////////////////////////////////////
 	if ( _command->getWordNum( ) < 5 ) {
 		return;
 	}
