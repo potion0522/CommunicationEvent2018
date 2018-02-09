@@ -31,6 +31,8 @@ public:
 public:
 	void setOrder( int order );
 	void setPlayerPos( int pos );
+	void setItemFlag( bool flag );
+	void setItem( int item );
 	void setCtsPlayerNum( );
 	void setCtsFlag( bool flag );
 	void setCtsX( int x );
@@ -43,6 +45,8 @@ public:
 	std::string getClientIpStr( );
 	int getPlayerNum( ) const;
 	int getLazerPoint( ) const;
+	bool isItemFlag( ) const;
+	int getItem( ) const;
 	int getOrder( ) const;
 	int getPlayerPos( int idx ) const;
 	bool getStcFlag( int idx ) const;

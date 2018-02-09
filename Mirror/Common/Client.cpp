@@ -187,6 +187,14 @@ void Client::setPlayerPos( int pos ) {
 	_send_data_tcp.player_pos[ _player_num ] = ( unsigned char )pos;
 }
 
+void Client::setItemFlag( bool flag ) {
+	_send_data_tcp.item_flag = flag;
+}
+
+void Client::setItem( int item ) {
+	_send_data_tcp.item = ( unsigned char )item;
+}
+
 void Client::setCtsPlayerNum( ) {
 	_send_data_tcp.cts.player_num = _player_num;
 }
@@ -237,6 +245,14 @@ int Client::getPlayerNum( ) const {
 
 int Client::getLazerPoint( ) const {
 	return ( int )_recv_data_udp.lazer_pos;
+}
+
+bool Client::isItemFlag( ) const {
+	return _recv_data_udp.item_flag;
+}
+
+int Client::getItem( ) const {
+	return ( int )_recv_data_udp.item;
 }
 
 int Client::getOrder( ) const {

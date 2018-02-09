@@ -39,7 +39,10 @@ private:
 	void inputPlayerPhase( );
 	void inputMirrorPhase( );
 	void inputAttackPhase( );
-	void inputJudgePhase( );
+	void checkCallBack( );
+	void updateItemCalc( );
+	void invocationItem( );
+	void checkItemFlag( );
 
 private:
 	struct Data {
@@ -56,6 +59,8 @@ private:
 
 	bool _matching;
 	bool _dice;
+	bool _use_item;
+	int _item;
 	int _winner;
 	int _turn;
 	BATTLE_PHASE _phase;

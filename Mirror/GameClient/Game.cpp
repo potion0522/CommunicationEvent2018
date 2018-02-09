@@ -36,8 +36,11 @@ void Game::initialize( ) {
 	_win = false;
 	_phase_cutin = false;
 	_player_cutin = false;
+	_use_item = false;
+	_item_callback = false;
 	_player_num = 0;
 	_cutin_spd_rate = 1.0f;
+	_item = 0;
 	_phase = SET_PLAYER_PHASE;
 	_tmp_mirror = Field::Mirror( );
 	_order = -1;
@@ -95,31 +98,36 @@ void Game::update( ) {
 		return;
 	}
 
-	switch ( _phase ) {
-	case SET_PLAYER_PHASE:
-		updatePlayerPhase( );
-		break;
-	case SET_MIRROR_PHASE: 
-		recvMirrorPhase( );
-		if ( _mirror_phase_recv ) {
-			updateMirrorPhase( );
-		}
-		break;
-	case ATTACK_PHASE:
-		recvAttackPhase( );
-		if ( _attack_phase_recv ) {
-			updateAttackPhase( );
-		}
-		break;
-	case JUDGE_PHASE:
-		if ( _turn_finish ) {
+	checkItemFlag( );
+	if ( _use_item ) {
+		invocationItem( );
+	} else {
+		switch ( _phase ) {
+		case SET_PLAYER_PHASE:
+			updatePlayerPhase( );
+			break;
+		case SET_MIRROR_PHASE: 
+			recvMirrorPhase( );
+			if ( _mirror_phase_recv ) {
+				updateMirrorPhase( );
+			}
+			break;
+		case ATTACK_PHASE:
+			recvAttackPhase( );
+			if ( _attack_phase_recv ) {
+				updateAttackPhase( );
+			}
+			break;
+		case JUDGE_PHASE:
+			if ( _turn_finish ) {
+				break;
+			}
+			recvJudgePhase( );
+			if ( _judge_phase_recv ) {
+				updateJudgePhase( );
+			}
 			break;
 		}
-		recvJudgePhase( );
-		if ( _judge_phase_recv ) {
-			updateJudgePhase( );
-		}
-		break;
 	}
 }
 
@@ -362,7 +370,7 @@ void Game::updateJudgePhase( ) {
 		_win = true;
 	} else if ( winner == ( unsigned char )-1 ) {
 		//勝敗なし
-		_field->mirrorPosSelected( );
+		_field->mirrorPosNotSelected( );
 		_mirror_phase_recv = false;
 		_attack_phase_recv = false;
 		_judge_phase_recv = false;
@@ -439,6 +447,50 @@ void Game::recvJudgePhase( ) {
 		return;
 	}
 	_judge_phase_recv = true;
+}
+
+void Game::invocationItem( ) {
+	if ( _item_callback ) {
+		return;
+	}
+
+	switch ( _item ) {
+	case 0:
+		{//レーザーの位置を変更
+			int lazer_pos = _client->getLazerPoint( );
+			if ( lazer_pos == ( unsigned char )-1 ) {
+				return;
+			}
+			_field->setLazerPoint( lazer_pos );
+			_field->mirrorPosNotSelected( );
+			_mirror_phase_recv = false;
+			_attack_phase_recv = false;
+			_judge_phase_recv = false;
+			_order = -1;
+			_send_live = false;
+			_tmp_mirror = Field::Mirror( );
+			_field->nextTurn( );
+		}
+		break;
+	}
+	_client->setItemFlag( false );
+	_client->sendTcp( );
+	_item_callback = true;
+
+	_use_item = false;
+	_item = 0;
+}
+
+void Game::checkItemFlag( ) {
+	if ( !_client->isRecvingUdp( ) ) {
+		return;
+	}
+	if ( !_client->isItemFlag( ) ) {
+		return;
+	}
+	_item = _client->getItem( );
+	_use_item = true;
+	_item_callback = false;
 }
 
 bool Game::isWin( ) const {

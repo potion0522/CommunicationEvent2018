@@ -30,6 +30,8 @@ public:
 	void setOrder( int order );
 	void setPlayerPos( int idx, int pos );
 	void setLazerPos( int pos );
+	void setItemFlag( bool flag );
+	void setItem( int item );
 	void setStcFlag( int idx, bool flag );
 	void setStcPlayerNum( int idx, int player_num );
 	void setStcX( int idx, int x );
@@ -41,6 +43,8 @@ public:
 public:
 	int getOrder( int idx ) const;
 	int getPlayerPos( int idx ) const;
+	bool isItemFlag( int idx ) const;
+	int getItem( int idx ) const;
 	bool getCtsFlag( int idx ) const;
 	int getCtsX( int idx ) const;
 	int getCtsY( int idx ) const;

@@ -186,6 +186,14 @@ void Server::setLazerPos( int pos ) {
 	_send_data_udp.lazer_pos = ( unsigned char )pos;
 }
 
+void Server::setItemFlag( bool flag ) {
+	_send_data_udp.item_flag = flag;
+}
+
+void Server::setItem( int item ) {
+	_send_data_udp.item = ( unsigned char )item;
+}
+
 void Server::setStcFlag( int idx, bool flag ) {
 	_send_data_udp.stc[ idx ].flag = flag;
 }
@@ -220,6 +228,14 @@ int Server::getOrder( int idx ) const {
 
 int Server::getPlayerPos( int idx ) const {
 	return ( int )_recv_data_tcp[ idx ].player_pos[ idx ];
+}
+
+bool Server::isItemFlag( int idx ) const {
+	return _recv_data_tcp[ idx ].item_flag;
+}
+
+int Server::getItem( int idx ) const {
+	return ( int )_recv_data_tcp[ idx ].item;
 }
 
 bool Server::getCtsFlag( int idx ) const {

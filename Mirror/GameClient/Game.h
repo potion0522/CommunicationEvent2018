@@ -56,6 +56,8 @@ private:
 	void recvMirrorPhase( );
 	void recvAttackPhase( );
 	void recvJudgePhase( );
+	void invocationItem( );
+	void checkItemFlag( );
 
 private:
 	bool _player_selected;
@@ -67,10 +69,13 @@ private:
 	bool _win;
 	bool _phase_cutin;
 	bool _player_cutin;
+	bool _use_item;
+	bool _item_callback;
 	int  _turn;
 	int _order;
 	int  _player_num;
 	float _cutin_spd_rate;
+	int _item;
 	BATTLE_PHASE _phase;
 	Field::Mirror _tmp_mirror;
 	std::array< int, CUTIN_MAX + PLAYER_NUM > _cutin_png;

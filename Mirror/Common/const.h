@@ -30,6 +30,8 @@ struct NetWorkData {
 	unsigned char lazer_pos;
 	unsigned char phase;
 	unsigned char order;
+	bool item_flag;
+	unsigned char item;
 	SendMirrorData cts;
 	SendMirrorData stc[ PLAYER_NUM ];
 	bool fin;

@@ -361,7 +361,11 @@ void Field::playerPosSelected( ) {
 }
 
 void Field::mirrorPosSelected( ) {
-	_mirror_selected = !_mirror_selected;
+	_mirror_selected = true;
+}
+
+void Field::mirrorPosNotSelected( ) {
+	_mirror_selected = false;
 }
 
 Field::Vector Field::getLazerPoint( ) const {

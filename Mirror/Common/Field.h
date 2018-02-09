@@ -108,6 +108,7 @@ public:
 	void deleteMirrorPoint( int idx );
 	void playerPosSelected( );
 	void mirrorPosSelected( );
+	void mirrorPosNotSelected( );
 
 public:
 	Vector getLazerPoint( ) const;
