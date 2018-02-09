@@ -85,7 +85,7 @@ void Field::initialize( ) {
 		_player_pos_no[ i ] = -1;
 		_player_color[ i ] = ( COLOR )( i + ( int )RED );
 	}
-	for ( int i = 0; i < ITEM_MAX; i++ ) {
+	for ( int i = 0; i < ( int )ITEM_MAX; i++ ) {
 		_item[ i ].flag = true;
 		_item[ i ].x = ( float )( ITEM_POS_X + i * SQUARE_SIZE + SQUARE_SIZE * 0.5 );
 		_item[ i ].y = ( float )ITEM_POS_Y;
@@ -220,7 +220,7 @@ int Field::getHitItemIdx( ) const {
 	int mouse_x = _data->getMouseX( );
 	int mouse_y = _data->getMouseY( );
 
-	for ( int i = 0; i < ITEM_MAX; i++ ) {
+	for ( int i = 0; i < ( int )ITEM_MAX; i++ ) {
 		if ( !_item[ i ].flag ) {
 			continue;
 		}
@@ -711,7 +711,7 @@ void Field::drawSettingPlayer( ) const{
 
 void Field::drawItem( ) const {
 	//ƒAƒCƒeƒ€
-	for ( int i = 0; i < ITEM_MAX; i++ ) {
+	for ( int i = 0; i < ( int )ITEM_MAX; i++ ) {
 		if ( !_item[ i ].flag ) {
 			continue;
 		}

@@ -34,8 +34,8 @@ void Game::initialize( ) {
 	_turn_finish = false;
 	_send_live = false;
 	_win = false;
-	_phase_cutin = false;
-	_player_cutin = false;
+	_cutin = false;
+	_change_phase = true;
 	_use_item = false;
 	_item_callback = false;
 	_double_mirror = false;
@@ -47,10 +47,10 @@ void Game::initialize( ) {
 	_order = -1;
 
 	ImagePtr image_ptr = _data->getImagePtr( );
-	for ( int i = 0; i < CUTIN_MAX + PLAYER_NUM; i++ ) {
+	for ( int i = 0; i < CUTIN_MAX + PLAYER_NUM + ITEM_MAX; i++ ) {
 		_cutin_png[ i ] = image_ptr->getPng( CUTIN_STRING_IMAGE, i ).png;
 	}
-	for ( int i = 0; i < BACKGROUND_CUTIN_MAX; i++ ) {
+	for ( int i = 0; i < CUTIN_BACK_MAX; i++ ) {
 		_background_cutin_png[ i ] = image_ptr->getPng( CUTIN_BACK_IMAGE, i ).png;
 	}
 	_background_cutin_image = ImageProperty( );
@@ -71,16 +71,17 @@ void Game::update( ) {
 		debug->addLog( "Order Num  : " + std::to_string( _client->getOrder( ) ) );
 	}
 
+	//フェイズを取得
 	BATTLE_PHASE phase = _client->getBattlePhase( );
 	if ( _phase != phase ) {
 		resetBackCutin( );
 		resetStringCutin( );
 		_phase = phase;
-		_phase_cutin = false;
+		_change_phase = true;
+		_cutin = false;
 		_turn_finish = false;
 	}
 
-	//フェイズを取得
 	if ( _field->getPhase( ) != _phase ) {
  		_field->setPhase( _phase );
 	}
@@ -91,9 +92,9 @@ void Game::update( ) {
 	}
 
 	//フェイズカットイン
-	if ( _phase < JUDGE_PHASE && !_phase_cutin ) {
+	if ( _phase < JUDGE_PHASE && !_cutin && _change_phase ) {
 		_cutin_image.png = _cutin_png[ ( int )_phase ];
-		_background_cutin_image.png = _background_cutin_png[ ( int )NORMAL ];
+		_background_cutin_image.png = _background_cutin_png[ ( int )CUTIN_BACK_NORMAL ];
 		drawBackCutin( );
 		drawStringCutin( );
 		calcBackCutin( );
@@ -104,6 +105,18 @@ void Game::update( ) {
 	//アイテムチェック
 	checkItemFlag( );
 	if ( _use_item ) {
+		if ( !_cutin ) {
+			//アイテムカットイン
+			_cutin_spd_rate = 1.8f;
+			_cutin_image.png = _cutin_png[ ( int )( CUTIN_MAX + PLAYER_NUM + _item ) ];
+			_background_cutin_image.png = _background_cutin_png[ ( int )CUTIN_BACK_ITEM ];
+			drawBackCutin( );
+			drawStringCutin( );
+			calcBackCutin( );
+			calcStringCutin( );
+			return;
+		}
+
 		invocationItem( );
 		return;
 	}
@@ -148,7 +161,8 @@ void Game::calcBackCutin( ) {
 		_background_cutin_image.cx += CUTIN_SPEED * _cutin_spd_rate;
 
 		if ( _background_cutin_image.cx > WIDTH + _background_cutin_image.lx ) {
-			_player_cutin = true;
+			_cutin = true;
+			_change_phase = false;
 			_cutin_spd_rate = 1.0f;
 			resetBackCutin( );
 		}
@@ -166,7 +180,8 @@ void Game::calcStringCutin( ) {
 		_cutin_image.cx += CUTIN_SPEED * _cutin_spd_rate;
 
 		if ( _cutin_image.cx > WIDTH + _cutin_image.lx ) {
-			_phase_cutin = true;
+			_cutin = true;
+			_change_phase = false;
 			_cutin_spd_rate = 1.0f;
 			resetStringCutin( );
 		}
@@ -265,13 +280,13 @@ void Game::inputTmpMirror( ) {
 		resetStringCutin( );
 		_order = order;
 		_cutin_spd_rate = 1.5f;
-		_player_cutin = false;
+		_cutin = false;
 	}
 
 	//どっちが設置しているかのカットイン
-	if ( !_player_cutin ) {
+	if ( !_cutin ) {
 		_cutin_image.png = _cutin_png[ ( int )CUTIN_MAX + ( _player_num == _order ) ];
-		_background_cutin_image.png = _background_cutin_png[ PLAYER ];
+		_background_cutin_image.png = _background_cutin_png[ ( int )CUTIN_BACK_PLAYER ];
 		drawBackCutin( );
 		drawStringCutin( );
 		calcBackCutin( );
@@ -363,7 +378,7 @@ void Game::updateMirrorPhase( ) {
 	}
 
 	_client->sendTcp( );
-	_player_cutin = false;
+	_cutin = false;
 	_tmp_mirror = Field::Mirror( );
 	_lazer->initialize( );
 }
@@ -483,7 +498,7 @@ void Game::updateItemCalc( ) {
 		return;
 	}
 
-	if ( !_player_cutin ) {
+	if ( !_cutin ) {
 		return;
 	}
 
@@ -589,6 +604,7 @@ void Game::checkItemFlag( ) {
 		}
 		_item = _client->getItem( );
 		_item_callback = false;
+		_cutin = false;
 	}
 
 }
