@@ -72,6 +72,7 @@ private:
 	bool _player_cutin;
 	bool _use_item;
 	bool _item_callback;
+	bool _double_mirror;
 	int  _turn;
 	int _order;
 	int  _player_num;

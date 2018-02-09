@@ -32,6 +32,7 @@ void GameMaster::initialize( ) {
 	_winner = -1;
 	_turn = 1;
 	_item = 0;
+	_item_user = 0;
 	std::array< Data, PLAYER_NUM >( ).swap( _client_data );
 	for ( int i = 0; i < PLAYER_NUM; i++ ) {
 		_client_data[ i ].order = i + 1;
@@ -353,9 +354,27 @@ void GameMaster::invocationItem( ) {
 			_server->setLazerPos( lazer );
 		}
 		break;
+
+	case 1:
+		{//‹¾2–‡İ’u
+			Data data = Data( );
+			data.player_num = _item_user;
+			data.x = _server->getCtsX( _item_user );
+			data.y = _server->getCtsY( _item_user );
+			data.angle = _server->getCtsAngle( _item_user );
+			_field->setMirrorPoint( _item_user, data.x, data.y, data.angle );
+
+			_server->setStcPlayerNum( _item_user, data.player_num );
+			_server->setStcX( _item_user, data.x );
+			_server->setStcY( _item_user, data.y );
+			_server->setStcAngle( _item_user, data.angle );
+			_server->setStcFlag( _item_user, true );
+		}
+		break;
 	}
 
 	_server->setItem( _item );
+	_server->setItemUser( _item_user );
 	_server->setItemFlag( true );
 }
 
@@ -367,6 +386,7 @@ void GameMaster::checkItemFlag( ) {
 		}
 
 		_item = _server->getItem( i );
+		_item_user = _server->getItemUser( i );
 		use = true;
 		break;
 	}

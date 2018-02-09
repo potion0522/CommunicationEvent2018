@@ -38,6 +38,7 @@ void Game::initialize( ) {
 	_player_cutin = false;
 	_use_item = false;
 	_item_callback = false;
+	_double_mirror = false;
 	_player_num = 0;
 	_cutin_spd_rate = 1.0f;
 	_item = 0;
@@ -79,7 +80,7 @@ void Game::update( ) {
 		_turn_finish = false;
 	}
 
-	//フェーズを取得
+	//フェイズを取得
 	if ( _field->getPhase( ) != _phase ) {
  		_field->setPhase( _phase );
 	}
@@ -89,7 +90,7 @@ void Game::update( ) {
 		_field->setPlayerNum( _player_num );
 	}
 
-	//フェーズカットイン
+	//フェイズカットイン
 	if ( _phase < JUDGE_PHASE && !_phase_cutin ) {
 		_cutin_image.png = _cutin_png[ ( int )_phase ];
 		_background_cutin_image.png = _background_cutin_png[ ( int )NORMAL ];
@@ -114,8 +115,8 @@ void Game::update( ) {
 	case SET_MIRROR_PHASE: 
 		recvMirrorPhase( );
 		if ( _mirror_phase_recv ) {
-			updateItemCalc( );
 			updateMirrorPhase( );
+			updateItemCalc( );
 		}
 		break;
 	case ATTACK_PHASE:
@@ -264,9 +265,6 @@ void Game::inputTmpMirror( ) {
 		_player_cutin = false;
 	}
 
-	_field->setInfoText( "鏡を配置してください。" );
-	_field->setInfoText( "もう一度左クリックで向きを変えられます" );
-
 	//どっちが設置しているかのカットイン
 	if ( !_player_cutin ) {
 		_cutin_image.png = _cutin_png[ ( int )CUTIN_MAX + ( _player_num == _order ) ];
@@ -278,8 +276,20 @@ void Game::inputTmpMirror( ) {
 		return;
 	}
 
-	if ( _order != _player_num ) {
+	if ( _field->isSelectedMirror( ) ) {
 		return;
+	}
+
+	if ( _order != _player_num ) {
+		_field->setInfoText( "相手が配置しています", RED );
+		return;
+	}
+	_field->setInfoText( "鏡を配置してください。" );
+	_field->setInfoText( "もう一度左クリックで向きを変えられます" );
+	if ( !_double_mirror ) {
+		_field->setInfoText( "あなたのターンです", RED );
+	} else {
+		_field->setInfoText( "2枚目を配置してください", RED );
 	}
 
 	bool hit = false;
@@ -314,7 +324,6 @@ void Game::inputTmpMirror( ) {
 }
 
 void Game::updateMirrorPhase( ) {
-
 	inputTmpMirror( );
 
 	if ( !_tmp_mirror.flag ) {
@@ -333,18 +342,21 @@ void Game::updateMirrorPhase( ) {
 	}
 
 	_field->mirrorPosSelected( );
-
+	
 	_client->setCtsPlayerNum( );
 	_client->setCtsAngle( _tmp_mirror.angle );
 	_client->setCtsX( _tmp_mirror.x );
 	_client->setCtsY( _tmp_mirror.y );
 	_client->setCtsFlag( true );
 
-	_client->sendTcp( );
+	if ( _field->getSelectItem( ) != -1 ) {
+		return;
+	}
 
+	_client->sendTcp( );
+	_player_cutin = false;
 	_tmp_mirror = Field::Mirror( );
 	_lazer->initialize( );
-	_player_cutin = false;
 }
 
 void Game::updateAttackPhase( ) {
@@ -383,6 +395,7 @@ void Game::updateJudgePhase( ) {
 		_judge_phase_recv = false;
 		_order = -1;
 		_send_live = false;
+		_double_mirror = false;
 		_tmp_mirror = Field::Mirror( );
 		_field->nextTurn( );
 		_turn++;
@@ -476,12 +489,19 @@ void Game::updateItemCalc( ) {
 		return;
 	}
 
-	if ( _field->getSelectItem( ) < 0 ) {
+	int item = _field->getSelectItem( );
+	if ( item < 0 ) {
 		return;
+	}
+	if ( item == ( int )DOUBLE_MIRROR ) {
+		if ( !_field->isSelectedMirror( ) ) {
+			return;
+		}
 	}
 
 	_client->setItemFlag( true );
 	_client->setItem( _field->getSelectItem( ) );
+	_client->setItemUser( );
 	_client->sendTcp( );
 
 	_field->useItem( );
@@ -492,8 +512,8 @@ void Game::invocationItem( ) {
 		return;
 	}
 
-	switch ( _item ) {
-	case 0:
+	switch ( ( ITEM )_item ) {
+	case LAZER_RESET:
 		{//レーザーの位置を変更
 			int lazer_pos = _client->getLazerPoint( );
 			if ( lazer_pos == ( unsigned char )-1 ) {
@@ -512,7 +532,30 @@ void Game::invocationItem( ) {
 			resetStringCutin( );
 		}
 		break;
+
+	case DOUBLE_MIRROR:
+		{//鏡2枚配置
+			int idx = _client->getItemUser( );
+			Field::Mirror mirror = Field::Mirror( );
+			mirror.x = _client->getStcX( idx );
+			mirror.y = _client->getStcY( idx );
+			mirror.angle = _client->getStcAngle( idx );
+			mirror.player_num = idx;
+
+			_field->setMirrorPoint( mirror.player_num, mirror.x, mirror.y, mirror.angle );
+
+			if ( idx == _player_num ) {
+				_field->mirrorPosNotSelected( );
+				_tmp_mirror = Field::Mirror( );
+				_field->nextTurn( );
+				_double_mirror = true;
+				resetBackCutin( );
+				resetStringCutin( );
+			}
+		}
+		break;
 	}
+
 	_client->setItemFlag( false );
 	_client->setItem( 0 );
 	_client->sendTcp( );

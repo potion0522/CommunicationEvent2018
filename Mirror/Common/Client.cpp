@@ -195,8 +195,12 @@ void Client::setItem( int item ) {
 	_send_data_tcp.item = ( unsigned char )item;
 }
 
+void Client::setItemUser( ) {
+	_send_data_tcp.item_user = ( unsigned char )_player_num;
+}
+
 void Client::setCtsPlayerNum( ) {
-	_send_data_tcp.cts.player_num = _player_num;
+	_send_data_tcp.cts.player_num = ( unsigned char )_player_num;
 }
 
 void Client::setCtsFlag( bool flag ) {
@@ -253,6 +257,10 @@ bool Client::isItemFlag( ) const {
 
 int Client::getItem( ) const {
 	return ( int )_recv_data_udp.item;
+}
+
+int Client::getItemUser( ) const {
+	return ( int )_recv_data_udp.item_user;
 }
 
 int Client::getOrder( ) const {

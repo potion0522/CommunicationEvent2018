@@ -194,6 +194,10 @@ void Server::setItem( int item ) {
 	_send_data_udp.item = ( unsigned char )item;
 }
 
+void Server::setItemUser( int user ) {
+	_send_data_udp.item_user = ( unsigned char )user;
+}
+
 void Server::setStcFlag( int idx, bool flag ) {
 	_send_data_udp.stc[ idx ].flag = flag;
 }
@@ -236,6 +240,10 @@ bool Server::isItemFlag( int idx ) const {
 
 int Server::getItem( int idx ) const {
 	return ( int )_recv_data_tcp[ idx ].item;
+}
+
+int Server::getItemUser( int idx ) const {
+	return ( int )_recv_data_tcp[ idx ].item_user;
 }
 
 bool Server::getCtsFlag( int idx ) const {

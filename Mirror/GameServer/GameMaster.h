@@ -61,6 +61,7 @@ private:
 	bool _dice;
 	bool _use_item;
 	int _item;
+	int _item_user;
 	int _winner;
 	int _turn;
 	BATTLE_PHASE _phase;

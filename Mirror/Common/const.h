@@ -33,7 +33,9 @@ struct NetWorkData {
 	unsigned char order;
 	bool item_flag;
 	unsigned char item;
+	unsigned char item_user;
 	SendMirrorData cts;
+	SendMirrorData second_cts;
 	SendMirrorData stc[ PLAYER_NUM ];
 	bool fin;
 };
@@ -86,4 +88,9 @@ enum BATTLE_PHASE {
 	SET_MIRROR_PHASE,
 	ATTACK_PHASE,
 	JUDGE_PHASE,
+};
+
+enum ITEM {
+	LAZER_RESET,
+	DOUBLE_MIRROR,
 };
