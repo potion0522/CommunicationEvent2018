@@ -713,7 +713,7 @@ void Field::drawSettingPlayer( ) {
 	int y_red = START_POS_Y + FIELD_ROW * SQUARE_SIZE + SQUARE_SIZE / 2;
 	int y_blue = y_red + 30;
 	int r = CIRCLE_SIZE / 3;
-	int brt = 0;
+	int brt = ( int )( ( sin( _data->getCount( ) * 0.06 ) + 1 ) * 64 + 50 );
 	std::string str = "  ---- ­—vl’†";
 	std::string dot;
 	switch ( _data->getCount( ) / FRAME % 4 ) {
@@ -723,8 +723,8 @@ void Field::drawSettingPlayer( ) {
 		case 3:		dot = "...";	break;
 	}
 	SetDrawBlendMode( DX_BLENDMODE_ALPHA, 0 );
-	_drawer->setCircle( x, y_red,  r, RED,  ( int )( ( sin( _data->getCount( ) * 0.06 ) + 1 ) * 64 + 50 ), true );
-	_drawer->setCircle( x, y_blue, r, BLUE, ( int )( ( sin( _data->getCount( ) * 0.06 ) + 1 ) * 64 + 50 ), true );
+	_drawer->setCircle( x, y_red,  r, RED,  brt, true );
+	_drawer->setCircle( x, y_blue, r, BLUE, brt, true );
 	SetDrawBlendMode( DX_BLENDMODE_NOBLEND, 0 );
 	if ( _player_num != _client->getOrder( ) ) {
 		if( _player_num == 0 ){
