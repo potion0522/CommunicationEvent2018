@@ -122,6 +122,11 @@ void Field::update( ) {
 			setInfoText( "相手にも見える状態になります", RED );
 			setInfoText( "鏡を1枚、配置した状態で決定をしてください", WATER );
 			break;
+
+		case REVERSE_MIRROR:
+			setInfoText( "配置されている全ての鏡の向きを反転させます", RED );
+			setInfoText( "使用したターンは鏡が設置できません", WATER );
+			break;
 		}
 	}
 
@@ -452,6 +457,15 @@ void Field::useItem( ) {
 	_item[ _select_item ].flag = false;
 	_pin.flag = 0;
 	_select_item = -1;
+}
+
+void Field::reverseMirror( ) {
+	std::map< int, Mirror >::iterator ite;
+	ite = _mirrors.begin( );
+
+	for ( ite; ite != _mirrors.end( ); ite++ ) {
+		ite->second.angle = ( MIRROR_ANGLE )( ( ( int )ite->second.angle + 1 ) % ( int )MIRROR_ANGLE_MAX );
+	}
 }
 
 Field::Vector Field::getLazerPoint( ) const {

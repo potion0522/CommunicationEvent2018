@@ -46,6 +46,7 @@ private:
 
 private:
 	struct Data {
+		bool flag;
 		bool alive;
 		int player_pos;
 		int player_num;

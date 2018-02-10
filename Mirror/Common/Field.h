@@ -121,6 +121,7 @@ public:
 	void mirrorPosNotSelected( );
 	void selectItem( int idx );
 	void useItem( );
+	void reverseMirror( );
 
 public:
 	Vector getLazerPoint( ) const;

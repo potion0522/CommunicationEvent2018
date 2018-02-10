@@ -216,7 +216,7 @@ void GameMaster::updateMirrorPhase( ) {
 		_server->setStcX( i, data.x );
 		_server->setStcY( i, data.y );
 		_server->setStcAngle( i, data.angle );
-		_server->setStcFlag( i, true );
+		_server->setStcFlag( i, data.flag );
 
 		idx = ( idx + 1 ) % PLAYER_NUM;
 	}
@@ -298,6 +298,7 @@ void GameMaster::inputPlayerPhase( ) {
 void GameMaster::inputMirrorPhase( ) {
 	for ( int i = 0; i < MACHINE_MAX; i++ ) {
 		if ( _server->isRecving( i ) ) {
+			_client_data[ i ].flag = _server->getCtsFlag( i );
 			_client_data[ i ].player_num = i;
 			_client_data[ i ].x = _server->getCtsX( i );
 			_client_data[ i ].y = _server->getCtsY( i );
@@ -335,10 +336,15 @@ void GameMaster::updateItemCalc( ) {
 	for ( int i = 0; i < PLAYER_NUM; i++ ) {
 		_client_data[ i ].fin = false;
 	}
+
 	if ( ( ITEM )_item == DOUBLE_MIRROR ) {
 		if ( _client_data[ _item_user ].order == PLAYER_NUM ) {
 			_client_data[ ( _item_user + 1 ) % PLAYER_NUM ].fin = true;
 		}
+	}
+
+	if ( ( ITEM )_item == REVERSE_MIRROR ) {
+		_client_data[ _item_user ].fin = true;
 	}
 
 	_use_item = false;
@@ -352,7 +358,7 @@ void GameMaster::updateItemCalc( ) {
 
 void GameMaster::invocationItem( ) {
 	switch ( _item ) {
-	case 0:
+	case LAZER_RESET:
 		{//レーザーの位置を変更
 			int lazer = calcLazerPoint( _field->getLazerPointIdx( ) );
 			_field->setLazerPoint( lazer );
@@ -360,7 +366,7 @@ void GameMaster::invocationItem( ) {
 		}
 		break;
 
-	case 1:
+	case DOUBLE_MIRROR:
 		{//鏡2枚設置
 			Data data = Data( );
 			data.player_num = _item_user;
@@ -374,6 +380,11 @@ void GameMaster::invocationItem( ) {
 			_server->setStcY( _item_user, data.y );
 			_server->setStcAngle( _item_user, data.angle );
 			_server->setStcFlag( _item_user, true );
+		}
+		break;
+
+	case REVERSE_MIRROR:
+		{//全鏡反転
 		}
 		break;
 	}
@@ -484,6 +495,7 @@ void GameMaster::commandExecution( ) {
 		int val_y = atoi( y.c_str( ) );
 		if ( 0 <= val_x && val_x < FIELD_COL &&
 			 0 <= val_y && val_y < FIELD_ROW ) {
+			_client_data[ 1 ].flag = true;
 			_client_data[ 1 ].player_num = 1;
 			_client_data[ 1 ].x = val_x;
 			_client_data[ 1 ].y = val_y;

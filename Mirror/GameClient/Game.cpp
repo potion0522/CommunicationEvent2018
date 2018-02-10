@@ -39,6 +39,7 @@ void Game::initialize( ) {
 	_use_item = false;
 	_item_callback = false;
 	_double_mirror = false;
+	_reverse_mirror = false;
 	_player_num = 0;
 	_cutin_spd_rate = 1.0f;
 	_item = 0;
@@ -105,7 +106,7 @@ void Game::update( ) {
 	//アイテムチェック
 	checkItemFlag( );
 	if ( _use_item ) {
-		if ( !_cutin ) {
+		if ( !_cutin && _item != REVERSE_MIRROR ) {
 			//アイテムカットイン
 			_cutin_spd_rate = 1.8f;
 			_cutin_image.png = _cutin_png[ ( int )( CUTIN_MAX + PLAYER_NUM + _item ) ];
@@ -155,6 +156,7 @@ void Game::calcBackCutin( ) {
 		_background_cutin_image.cx += CUTIN_SPEED * _cutin_spd_rate;
 	} else {
 		if ( _background_cutin_image.cnt < WAIT_TIME ) {
+			_background_cutin_image.cx = WIDTH / 2;
 			_background_cutin_image.cnt++;
 			return;
 		}
@@ -174,6 +176,7 @@ void Game::calcStringCutin( ) {
 		_cutin_image.cx += CUTIN_SPEED * _cutin_spd_rate;
 	} else {
 		if ( _cutin_image.cnt < WAIT_TIME ) {
+			_cutin_image.cx = WIDTH / 2;
 			_cutin_image.cnt++;
 			return;
 		}
@@ -294,14 +297,15 @@ void Game::inputTmpMirror( ) {
 		return;
 	}
 
-	if ( _field->isSelectedMirror( ) ) {
-		return;
-	}
-
 	if ( _order != _player_num ) {
 		_field->setInfoText( "相手が配置しています", RED );
 		return;
 	}
+
+	if ( _field->isSelectedMirror( ) ) {
+		return;
+	}
+
 	_field->setInfoText( "鏡を配置してください。" );
 	_field->setInfoText( "もう一度左クリックで向きを変えられます" );
 	if ( !_double_mirror ) {
@@ -371,7 +375,10 @@ void Game::updateMirrorPhase( ) {
 	_client->setCtsAngle( _tmp_mirror.angle );
 	_client->setCtsX( _tmp_mirror.x );
 	_client->setCtsY( _tmp_mirror.y );
-	_client->setCtsFlag( true );
+	_client->setCtsFlag( _tmp_mirror.flag );
+
+	_tmp_mirror = Field::Mirror( );
+	_field->resetTmpMirror( );
 
 	if ( _field->getSelectItem( ) != -1 ) {
 		return;
@@ -379,11 +386,27 @@ void Game::updateMirrorPhase( ) {
 
 	_client->sendTcp( );
 	_cutin = false;
-	_tmp_mirror = Field::Mirror( );
-	_lazer->initialize( );
 }
 
 void Game::updateAttackPhase( ) {
+	if ( _reverse_mirror ) {
+		_field->reverseMirror( );
+		_reverse_mirror = false;
+		_cutin = false;
+		_cutin_spd_rate = 1.8f;
+		resetBackCutin( );
+		resetStringCutin( );
+	}
+	if ( !_cutin ) {
+		_cutin_image.png = _cutin_png[ ( int )( CUTIN_MAX + PLAYER_NUM + REVERSE_MIRROR ) ];
+		_background_cutin_image.png = _background_cutin_png[ ( int )CUTIN_BACK_ITEM ];
+		drawBackCutin( );
+		drawStringCutin( );
+		calcBackCutin( );
+		calcStringCutin( );
+		return;
+	}
+
 	_lazer->update( );
 	if ( !_lazer->isFinish( ) ) {
 		return;
@@ -468,21 +491,32 @@ void Game::recvAttackPhase( ) {
 
 	std::array< Field::Mirror, PLAYER_NUM > mirror;
 	for ( int i = 0; i < PLAYER_NUM; i++ ) {
+		mirror[ i ].flag = _client->getStcFlag( i );
 		mirror[ i ].player_num = _client->getStcPlayerNum( i );
 		mirror[ i ].x = _client->getStcX( i );
 		mirror[ i ].y = _client->getStcY( i );
 		mirror[ i ].angle = _client->getStcAngle( i );
 	}
 
-	if ( mirror[ 0 ].x == mirror[ 1 ].x &&
-		 mirror[ 0 ].y == mirror[ 1 ].y &&
-		 mirror[ 0 ].angle == mirror[ 1 ].angle ) {
-		_field->deleteMirrorPoint( mirror[ 0 ].x + mirror[ 0 ].y * FIELD_COL );
-	} else {
-		_field->setMirrorPoint( mirror[ 0 ].player_num, mirror[ 0 ].x, mirror[ 0 ].y, mirror[ 0 ].angle );
-		_field->setMirrorPoint( mirror[ 1 ].player_num, mirror[ 1 ].x, mirror[ 1 ].y, mirror[ 1 ].angle );
+	bool del = false;
+	if ( mirror[ 0 ].flag && mirror[ 1 ].flag ) {
+		if ( mirror[ 0 ].x == mirror[ 1 ].x &&
+			 mirror[ 0 ].y == mirror[ 1 ].y &&
+			 mirror[ 0 ].angle == mirror[ 1 ].angle ) {
+			_field->deleteMirrorPoint( mirror[ 0 ].x + mirror[ 0 ].y * FIELD_COL );
+			del = true;
+		}
 	}
 
+	if ( !del ) {
+		for ( int i = 0; i < PLAYER_NUM; i++ ) {
+			if ( mirror[ i ].flag ) {
+				_field->setMirrorPoint( mirror[ i ].player_num, mirror[ i ].x, mirror[ i ].y, mirror[ i ].angle );
+			}
+		}
+	}
+
+	_lazer->initialize( );
 	_attack_phase_recv = true;
 }
 
@@ -580,6 +614,12 @@ void Game::invocationItem( ) {
 				resetBackCutin( );
 				resetStringCutin( );
 			}
+		}
+		break;
+
+	case REVERSE_MIRROR:
+		{
+			_reverse_mirror = true;
 		}
 		break;
 	}
