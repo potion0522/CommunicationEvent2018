@@ -345,6 +345,9 @@ void GameMaster::updateItemCalc( ) {
 
 	if ( ( ITEM )_item == REVERSE_MIRROR ) {
 		_client_data[ _item_user ].fin = true;
+		if ( _client_data[ _item_user ].order == PLAYER_NUM ) {
+			_client_data[ ( _item_user + 1 ) % PLAYER_NUM ].fin = true;
+		}
 	}
 
 	_use_item = false;
