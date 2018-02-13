@@ -81,11 +81,19 @@ int GlobalData::getMouseY( ) const {
 }
 
 bool GlobalData::getClickLeft( ) const {
-	return _mouse->getLeftClick( );
+	return _mouse->getClickLeft( );
 }
 
 bool GlobalData::getClickRight( ) const {
-	return _mouse->getRightClick( );
+	return _mouse->getClickRight( );
+}
+
+int GlobalData::getClickingLeft( ) const {
+	return _mouse->getClickingLeft( );
+}
+
+int GlobalData::getClickingRight( ) const {
+	return _mouse->getClickingRight( );
 }
 
 int GlobalData::getRandom( int min, int max ) const {

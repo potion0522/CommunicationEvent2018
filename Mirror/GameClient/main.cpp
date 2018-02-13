@@ -44,8 +44,8 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 		direction->add( ALL, data );
 		direction->add( TITLE, title );
 		direction->add( CONNECT, console );
-		direction->add( BATTLE, game );
 		direction->add( BATTLE, field );
+		direction->add( BATTLE, game );
 		direction->add( RESULT, result );
 
 		// GlobalData のフラグが 0 であれば全プロセス終了

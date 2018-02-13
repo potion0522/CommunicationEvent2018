@@ -45,7 +45,8 @@ void Game::initialize( ) {
 	_item = 0;
 	_phase = SET_PLAYER_PHASE;
 	_tmp_mirror = Field::Mirror( );
-	_order = -1;
+	_order = ( unsigned char )-1;
+	_clicking = 0;
 
 	ImagePtr image_ptr = _data->getImagePtr( );
 	for ( int i = 0; i < CUTIN_MAX + PLAYER_NUM + ITEM_MAX; i++ ) {
@@ -128,6 +129,7 @@ void Game::update( ) {
 		break;
 	case SET_MIRROR_PHASE: 
 		recvMirrorPhase( );
+		_field->setOrder( _order );
 		if ( _mirror_phase_recv ) {
 			updateMirrorPhase( );
 			updateItemCalc( );
@@ -225,8 +227,12 @@ void Game::resetStringCutin( ) {
 	}
 }
 
-void Game::selectPlayerPos( ) {
+void Game::selectPlayerPos( bool *select ) {
 	//ヒットしているポジションを探す
+	if ( _field->getTmpPlayerPoint( ) != -1 ) {
+		*select = true;
+	}
+
 	_field->hitPlayerPos( );
 
 	int pos = _field->getPlayerPosHitNum( );
@@ -241,26 +247,38 @@ void Game::selectPlayerPos( ) {
 
 	_field->setTmpPlayerPoint( );
 
-	_player_selected = false;
+	*select = false;
 	if ( pos != -1 ) {
-		_player_selected = true;
+		*select = true;
 	}
 }
 
 void Game::updatePlayerPhase( ) {
-	_field->setInfoText( "あなたの配置をしてください" );
-	selectPlayerPos( );
-
-	if ( !_player_selected ) {
+	if ( _player_selected ) {
 		return;
 	}
+
+	_field->setInfoText( "あなたの配置をしてください" );
+
+	bool select = false;
+	selectPlayerPos( &select );
+
+	if ( !select ) {
+		return;
+	}
+
 	_field->setInfoText( "決定を押して確定してください", RED );
 
-	if ( !_field->isHitDecisionButton( ) ) {
+	_field->changeClickButton( );
+	
+	int clicking = _data->getClickingLeft( );
+	if ( clicking > 0 || ( clicking < 1 && _clicking < 1 ) ) {
+		_clicking = clicking;
 		return;
 	}
 
-	if ( !_data->getClickLeft( ) ) {
+	if ( !_field->isHitDecisionButton( ) ) {
+		_clicking = 0;
 		return;
 	}
 
@@ -272,6 +290,8 @@ void Game::updatePlayerPhase( ) {
 	_field->setPlayerPoint( _player_num, _field->getTmpPlayerPoint( ) );
 	_client->setPlayerPos( _field->getPlayerPoint( _player_num ) );
 	_client->sendTcp( );
+
+	_player_selected = true;
 }
 
 void Game::inputTmpMirror( ) {
@@ -358,14 +378,16 @@ void Game::updateMirrorPhase( ) {
 		return;
 	}
 
-	bool hit = false;
-	hit = _field->isHitDecisionButton( );
-
-	if ( !hit ) {
+	_field->changeClickButton( );
+	
+	int clicking = _data->getClickingLeft( );
+	if ( clicking > 0 || ( clicking < 1 && _clicking < 1 ) ) {
+		_clicking = clicking;
 		return;
 	}
 
-	if ( !_data->getClickLeft( ) ) {
+	if ( !_field->isHitDecisionButton( ) ) {
+		_clicking = 0;
 		return;
 	}
 

@@ -30,6 +30,7 @@ void Image::initialize( ) {
 		case CUTIN_BACK_IMAGE    : add.name = "cutinImage"   ; break;
 		case BATTLE_IMAGE        : add.name = "battle"       ; break;
 		case ITEM_IMAGE          : add.name = "item"         ; break;
+		case PLAYER_IMAGE        : add.name = "player"       ; break;
 		default	:
 			{
 				DebugPtr debug( new Debug( NULL ) );

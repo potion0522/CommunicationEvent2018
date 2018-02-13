@@ -48,7 +48,7 @@ private:
 private:
 	void resetBackCutin( );
 	void resetStringCutin( );
-	void selectPlayerPos( );
+	void selectPlayerPos( bool *select );
 	void updatePlayerPhase( );
 	void updateMirrorPhase( );
 	void inputTmpMirror( );
@@ -80,6 +80,7 @@ private:
 	int  _player_num;
 	float _cutin_spd_rate;
 	int _item;
+	int _clicking;
 	BATTLE_PHASE _phase;
 	Field::Mirror _tmp_mirror;
 	std::array< int, CUTIN_MAX + PLAYER_NUM + ITEM_MAX > _cutin_png;

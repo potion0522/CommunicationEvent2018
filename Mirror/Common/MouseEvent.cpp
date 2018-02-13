@@ -46,16 +46,24 @@ int MouseEvent::getPointY( ) const {
 	return _point.y;
 }
 
-bool MouseEvent::getLeftClick( ) const {
+bool MouseEvent::getClickLeft( ) const {
 	if ( _click_left == 1 ) {
 		return true;
 	}
 	return false;
 }
 
-bool MouseEvent::getRightClick( ) const {
+bool MouseEvent::getClickRight( ) const {
 	if ( _click_right == 1 ) {
 		return true;
 	}
 	return false;
+}
+
+int MouseEvent::getClickingLeft( ) const {
+	return _click_left;
+}
+
+int MouseEvent::getClickingRight( ) const {
+	return _click_right;
 }

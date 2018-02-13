@@ -2,9 +2,7 @@
 #include "GlobalData.h"
 #include "Drawer.h"
 #include "const.h"
-#include "DxLib.h"
 #include "Image.h"
-#include "Client.h"
 #include <random>
 
 const int MOUSE_R = 5;
@@ -15,6 +13,8 @@ const int PLAYER_POS_Y = START_POS_Y - SQUARE_SIZE / 2;
 const int PLAYER_SIZE = CIRCLE_SIZE / 2;
 const int ITEM_POS_X = 125;
 const int ITEM_POS_Y = 600;
+const int BUTTON_X = WIDTH / 5;
+const int BUTTON_Y = HEIGHT / 5;
 
 char field[ FIELD_COL * FIELD_ROW + 1 ] = 
 "     "
@@ -28,23 +28,22 @@ _data( data ) {
 	setFlag( 1 );
 	_drawer = _data->getDrawerPtr( );
 	_image = _data->getImagePtr( );
-	_client = _data->getClientPtr( );
 	_cur_hand  = LoadCursor( NULL, IDC_HAND );
 
-	Png image = _image->getPng( BUTTON_IMAGE, 0 );
-	_decision_button = ImageProperty( );
-	_decision_button.cx = WIDTH / 5;
-	_decision_button.cy = HEIGHT / 5;
-	_decision_button.lx = _decision_button.cx - image.width / 2;
-	_decision_button.rx = _decision_button.cx + image.width / 2;
-	_decision_button.ly = _decision_button.cy - image.height / 2;
-	_decision_button.ry = _decision_button.cy + image.height / 2;
-	_decision_button.png = image.png;
+	for ( int i = 0; i < BUTTON_IMAGE_NUM; i++ ) {
+		_button_image[ i ] = _image->getPng( BUTTON_IMAGE, i ).png;
+	}
 
-	image = _image->getPng( ITEM_IMAGE, 0 );
+	Png png = Png( );
+	png = _image->getPng( ITEM_IMAGE, 0 );
 	_pin = ImageProperty( );
 	_pin.flag = 0;
-	_pin.png = image.png;
+	_pin.png = png.png;
+
+	png = _image->getPng( BUTTON_IMAGE, 0 );
+	_button.cx = BUTTON_X;
+	_button.cy = BUTTON_Y;
+	_button.png = png.png;
 }
 
 Field::~Field( ) {
@@ -59,6 +58,7 @@ void Field::initialize( ) {
 	_player_selected = false;
 	_mirror_selected = false;
 	_reflection = false;
+	_order = ( unsigned char )-1;
 	_info_idx = 0;
 	_tmp_player_pos = -1;
 	_dead_flag = -1;
@@ -98,6 +98,7 @@ void Field::nextTurn( ) {
 	_phase = SET_MIRROR_PHASE;
 	_mirror_selected = false;
 	_reflection = false;
+	_order = ( unsigned char )-1;
 	_dead_flag = -1;
 	_hit_mirror_num = -1;
 	_field_pos_hit_num = -1;
@@ -145,7 +146,9 @@ void Field::update( ) {
 	}
 	
 	if ( _phase == SET_MIRROR_PHASE ) {
-		drawSettingPlayer( );
+		if ( _order != ( unsigned char )-1 ) {
+			drawSettingPlayer( );
+		}
 	}
 
 	if ( _phase < SET_MIRROR_PHASE ) {
@@ -218,8 +221,14 @@ bool Field::isHitDecisionButton( ) const {
 	int mouse_x = _data->getMouseX( );
 	int mouse_y = _data->getMouseY( );
 
-	if ( _decision_button.lx < mouse_x && mouse_x < _decision_button.rx &&
-		 _decision_button.ly < mouse_y && mouse_y < _decision_button.ry ) {
+	Png png = _image->getPng( BUTTON_IMAGE, 0 );
+	int lx = BUTTON_X - png.width / 2;
+	int rx = BUTTON_X + png.width / 2;
+	int ly = BUTTON_Y - png.height / 2;
+	int ry = BUTTON_Y + png.height / 2;
+
+	if ( lx < mouse_x && mouse_x < rx &&
+		 ly < mouse_y && mouse_y < ry ) {
 		return true;
 	}
 
@@ -364,6 +373,10 @@ void Field::setDirect( Vector vec ) {
 	}
 }
 
+void Field::setOrder( int order ) {
+	_order = order;
+}
+
 void Field::setPhase( BATTLE_PHASE phase ) {
 	_phase = phase;
 }
@@ -466,6 +479,16 @@ void Field::reverseMirror( ) {
 	for ( ite; ite != _mirrors.end( ); ite++ ) {
 		ite->second.angle = ( MIRROR_ANGLE )( ( ( int )ite->second.angle + 1 ) % ( int )MIRROR_ANGLE_MAX );
 	}
+}
+
+void Field::changeClickButton( ) {
+	int idx = _player_num * PLAYER_NUM;
+
+	if ( _data->getClickingLeft( ) > 0 && isHitDecisionButton( ) ) {
+		idx++;
+	}
+
+	_button.png = _image->getPng( BUTTON_IMAGE, idx ).png;
 }
 
 Field::Vector Field::getLazerPoint( ) const {
@@ -617,7 +640,8 @@ void Field::drawDecisionButton( ) const {
 	if ( isHitDecisionButton( ) ) {
 		SetCursor( _cur_hand );
 	}
-	_drawer->setImage( _decision_button );
+
+	_drawer->setImage( _button );
 }
 
 void Field::drawMirror( ) const {
@@ -671,9 +695,7 @@ void Field::drawPlayerPos( ) const {
 				_drawer->setCircle( x, y, CIRCLE_SIZE, WHITE, 255, true );
 				SetCursor( _cur_hand );
 			} else {
-				SetDrawBlendMode( DX_BLENDMODE_ALPHA, 0 );
 				_drawer->setCircle( x, y, CIRCLE_SIZE, WHITE, ( int )( ( sin( _data->getCount( ) * 0.06 ) + 1 ) * 64 + 50 ), true );
-				SetDrawBlendMode( DX_BLENDMODE_NOBLEND, 0 );
 			}
 		}
 		_drawer->setCircle( x, y, CIRCLE_SIZE, ( COLOR )( RED + i / PLAYER_POSITION ) );
@@ -685,6 +707,7 @@ void Field::drawPlayer( ) const {
 		return;
 	}
 
+	ImagePtr image_ptr = _data->getImagePtr( );
 	for ( int i = 0; i < PLAYER_NUM; i++ ) {
 		int pos = getPlayerPoint( i );
 		if ( pos < 0 ) {
@@ -697,18 +720,22 @@ void Field::drawPlayer( ) const {
 		x = _select_player_pos[ pos ].x;
 		y = _select_player_pos[ pos ].y;
 
-		_drawer->setCircle( x, y, PLAYER_SIZE, WHITE, 150, true );
-		_drawer->setCircle( x, y, PLAYER_SIZE, _player_color[ i ] );
+		ImageProperty image = ImageProperty( );
+		Png png = image_ptr->getPng( PLAYER_IMAGE, i );
+		image.png = png.png;
+		image.cx = x;
+		image.cy = y;
+		_drawer->setImage( image );
 	}
 }
 
 void Field::drawInfo( ) const {
 	int lx = 50;
-	int rx = 500;
 	int ly = 300;
+	int rx = 500;
 	int ry = 500;
 
-	DrawBox( lx, ly, rx, ry, 0xffffff, FALSE );
+	_drawer->setBox( lx, ly, rx, ry );
 
 	for ( int i = 0; i < INFO_TEXT_MAX; i++ ) {
 		double x = lx + ( rx - lx ) / 2;
@@ -736,11 +763,9 @@ void Field::drawSettingPlayer( ) {
 		case 2:		dot = "..";		break;
 		case 3:		dot = "...";	break;
 	}
-	SetDrawBlendMode( DX_BLENDMODE_ALPHA, 0 );
 	_drawer->setCircle( x, y_red,  r, RED,  brt, true );
 	_drawer->setCircle( x, y_blue, r, BLUE, brt, true );
-	SetDrawBlendMode( DX_BLENDMODE_NOBLEND, 0 );
-	if ( _player_num != _client->getOrder( ) ) {
+	if ( _order != _player_num ) {
 		if( _player_num == 0 ){
 			y = y_blue;
 			_drawer->setCircle( x, y_red, r, RED, 255, true );

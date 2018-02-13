@@ -1,6 +1,5 @@
 #pragma once
 #include "Base.h"
-#include "DxLib.h"
 #include "smart_ptr.h"
 #include "const.h"
 
@@ -31,6 +30,8 @@ public:
 	int getMouseY( ) const;
 	bool getClickLeft( ) const;
 	bool getClickRight( ) const;
+	int getClickingLeft( ) const;
+	int getClickingRight( ) const;
 	int getRandom( int min, int max ) const;
 	int getCount( ) const;
 	SCENE getScene( ) const;

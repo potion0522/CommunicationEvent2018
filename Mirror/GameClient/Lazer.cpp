@@ -109,17 +109,17 @@ double Lazer::getLazerImageAngle( ) {
 	double angle = 0;
 	if ( _unit.x != 0 ) {
 		if ( _unit.x < 0 ) {
-			angle = PI;
+			angle = PI / 2;
 		} else {
-			angle = 0;
+			angle = PI / 2 * 3;
 		}
 	}
 
 	if ( _unit.y != 0 ) {
 		if ( _unit.y < 0 ) {
-			angle = PI / 2;
+			angle = PI;
 		} else {
-			angle = PI / 2 * 3;
+			angle = 0;
 		}	
 	}
 

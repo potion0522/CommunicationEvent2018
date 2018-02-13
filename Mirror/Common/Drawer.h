@@ -36,17 +36,18 @@ public:
 	void setBackString( bool flag, double x, double y, COLOR col, std::string str, FONTSIZE_TYPE type = NORMAL, int brt = 255 );
 	void setLine( double sx, double sy, double ex, double ey, COLOR col = WHITE, int brt = 255 );
 	void setCircle( double x, double y, double r, COLOR col = WHITE, int brt = 255, bool isfill = false );
+	void setBox( double lx, double ly, double rx, double ry, COLOR col = WHITE );
 	int getStringW( FONTSIZE_TYPE type, std::string str ) const;
 	int getStringH( FONTSIZE_TYPE type ) const;
 
 private:
-	int getBlink( );
 	void drawBackImage( );
 	void drawImage( );
 	void drawFrontString( );
 	void drawBackString( );
 	void drawLine( );
 	void drawCircle( );
+	void drawBox( );
 	void reset( );
 
 private:
@@ -74,6 +75,13 @@ private:
 		int brt;
 		bool isFill;
 	};
+	struct BoxProperty {
+		float lx;
+		float ly;
+		float rx;
+		float ry;
+		COLOR col;
+	};
 	int _handle_font[ FONT_TYPE_MAX ];
 	int _blink;
 	int _colcode;
@@ -84,7 +92,8 @@ private:
 	std::list< StringProperty > _back_strings;  //‰æ‘œ‚Ì‚µ‚½‚É•\Ž¦
 	std::list< ImageProperty > _images;
 	std::list< LineProperty > _lines;
-	std::list< CircleProperty > _circle;
+	std::list< CircleProperty > _circles;
+	std::list< BoxProperty > _boxes;
 
 	ColorPtr _color;
 };

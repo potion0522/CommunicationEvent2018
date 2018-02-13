@@ -9,7 +9,6 @@
 
 PTR( Field );
 PTR( GlobalData );
-PTR( Client );
 PTR( Drawer );
 PTR( Image );
 
@@ -19,13 +18,11 @@ const int FIELD_ROW = 5;
 const int FIELD_COL = 5;
 const int START_POS_X = WIDTH / 3 * 2 - SQUARE_SIZE * FIELD_COL / 2;
 const int START_POS_Y = HEIGHT / 2 - SQUARE_SIZE * FIELD_ROW / 2;
-const int DISTANCE = SQUARE_SIZE;
-const int DISTANCE_HALF = SQUARE_SIZE / 2;
 const int INFO_TEXT_MAX = 6;
+const int BUTTON_IMAGE_NUM = 4;
 
 class Field : public Base {
 public:
-
 	struct Vector { 
 		double x;
 		double y;
@@ -116,12 +113,14 @@ public:
 	void setTmpMirrorPoint( int player_num, int x, int y, MIRROR_ANGLE angle );
 	void setMirrorPoint( int player_num, int x, int y, MIRROR_ANGLE angle );
 	void deleteMirrorPoint( int idx );
+	void setOrder( int order );
 	void playerPosSelected( );
 	void mirrorPosSelected( );
 	void mirrorPosNotSelected( );
 	void selectItem( int idx );
 	void useItem( );
 	void reverseMirror( );
+	void changeClickButton( );
 
 public:
 	Vector getLazerPoint( ) const;
@@ -157,7 +156,7 @@ private:
 	void drawPlayer( ) const;
 	void drawInfo( ) const;
 	void drawRound( ) const;
-	void drawSettingPlayer( ) ;
+	void drawSettingPlayer( );
 	void drawItem( ) const;
 
 private:
@@ -171,6 +170,7 @@ private:
 	bool _player_selected;
 	bool _mirror_selected;
 	bool _reflection;
+	int _order;
 	int _info_idx;
 	int _tmp_player_pos;
 	int _dead_flag;
@@ -187,11 +187,11 @@ private:
 	Vector _reflection_point;
 
 	//‰æ‘œŠÖ˜A
-	ImageProperty _decision_button;
+	std::array< int, BUTTON_IMAGE_NUM > _button_image;
+	ImageProperty _button;
 	ImageProperty _pin;
 
 	GlobalDataPtr _data;
-	ClientPtr _client;
 	DrawerPtr _drawer;
 	ImagePtr _image;
 };

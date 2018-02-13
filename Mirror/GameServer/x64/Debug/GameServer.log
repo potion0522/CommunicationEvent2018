@@ -1,8 +1,2 @@
-﻿  ResultServer.cpp
-  Log.cpp
-  main.cpp
-  GameMaster.cpp
-  Connector.cpp
-  コードを生成中...
-  GameServer.vcxproj -> C:\Users\student\Desktop\CommunicationEvent2018\Mirror\x64\Debug\GameServer.exe
+﻿  GameServer.vcxproj -> C:\Users\student\Desktop\CommunicationEvent2018\Mirror\x64\Debug\GameServer.exe
   GameServer.vcxproj -> C:\Users\student\Desktop\CommunicationEvent2018\Mirror\x64\Debug\GameServer.pdb (Full PDB)

@@ -54,9 +54,10 @@ void Drawer::initialize( ) {
 
 void Drawer::update( ) {
 	drawBackImage( );
-	drawCircle( );
-	drawLine( );
 	drawBackString( );
+	drawCircle( );
+	drawBox( );
+	drawLine( );
 	drawImage( );
 	drawFrontString( );
 	reset( );
@@ -147,13 +148,13 @@ void Drawer::drawLine( ) {
 
 void Drawer::drawCircle( ) {
 	std::list< CircleProperty >::iterator ite;
-	ite = _circle.begin( );
-	if( _circle.size( ) < 1 ) {
+	ite = _circles.begin( );
+	if( _circles.size( ) < 1 ) {
 		return;
 	}
 
 	SetDrawMode(  DX_DRAWMODE_BILINEAR );
-	for( ite; ite != _circle.end( ); ite++ ) {
+	for( ite; ite != _circles.end( ); ite++ ) {
 
 		if ( ite->brt < 255 ) {
 			SetDrawBlendMode( DX_BLENDMODE_ALPHA, ite->brt );
@@ -165,6 +166,18 @@ void Drawer::drawCircle( ) {
 		}
 	}
 	SetDrawMode( DX_DRAWMODE_NEAREST );
+}
+
+void Drawer::drawBox( ) {
+	std::list< BoxProperty >::iterator ite;
+	ite = _boxes.begin( );
+	if( _boxes.size( ) < 1 ) {
+		return;
+	}
+
+	for( ite; ite != _boxes.end( ); ite++ ) {
+		DrawBoxAA( ite->lx, ite->ly, ite->rx, ite->ry, _color->getColor( ite->col ), FALSE );
+	}
 }
 
 void Drawer::drawBackImage( ) {
@@ -230,7 +243,12 @@ void Drawer::setLine( double sx, double sy, double ex, double ey, COLOR col, int
 
 void Drawer::setCircle( double x, double y, double r, COLOR col, int brt, bool isfill ) {
 	CircleProperty circle = { ( float )x, ( float )y, ( float )r, col, brt, isfill };
-	_circle.push_back( circle );
+	_circles.push_back( circle );
+}
+
+void Drawer::setBox( double lx, double ly, double rx, double ry, COLOR col ){
+	BoxProperty box = { ( float )lx, ( float )ly, ( float )rx, ( float )ry, col };
+	_boxes.push_back( box );
 }
 
 int Drawer::getStringW( FONTSIZE_TYPE type, std::string str ) const {
@@ -261,8 +279,12 @@ void Drawer::reset( ) {
 	if ( size > 0 ) {
 		std::list< LineProperty >( ).swap( _lines );
 	}
-	size = ( int )_circle.size( );
+	size = ( int )_circles.size( );
 	if ( size > 0 ) {
-		std::list< CircleProperty >( ).swap( _circle );
+		std::list< CircleProperty >( ).swap( _circles );
+	}
+	size = ( int )_boxes.size( );
+	if ( size > 0 ) {
+		std::list< BoxProperty >( ).swap( _boxes );
 	}
 }

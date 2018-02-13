@@ -16,8 +16,10 @@ private:
 public:
 	int getPointX( ) const;
 	int getPointY( ) const;
-	bool getLeftClick( ) const;
-	bool getRightClick( ) const;
+	bool getClickLeft( ) const;
+	bool getClickRight( ) const;
+	int getClickingLeft( ) const;
+	int getClickingRight( ) const;
 
 private:
 	int _mouse;

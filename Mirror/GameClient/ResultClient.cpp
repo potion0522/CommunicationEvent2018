@@ -2,11 +2,13 @@
 #include "GlobalData.h"
 #include "Game.h"
 #include "Drawer.h"
+#include "KeyBoard.h"
 
 ResultClient::ResultClient( GlobalDataPtr data, GamePtr game ) :
 _data( data ),
 _game( game ) {
 	_drawer = _data->getDrawerPtr( );
+	_keyboard = KeyBoardPtr( new KeyBoard( ) );
 	setFlag( 1 );
 }
 
@@ -30,7 +32,7 @@ void ResultClient::update( ) {
 		_drawer->setFrontString( true, WIDTH / 2, HEIGHT / 2, RED, "‚ ‚È‚½‚Ì•‰‚¯", Drawer::BIG );
 	}
 
-	if ( _data->getKeyState( KEY_INPUT_RETURN ) == 1 ) {
+	if ( _data->getKeyState( _keyboard->getKeyCode( KeyBoard::ENTER_KEY ) ) == 1 ) {
 		_data->setInitFlag( );
 	}
 }
