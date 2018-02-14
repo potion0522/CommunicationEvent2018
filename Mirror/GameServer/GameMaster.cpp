@@ -29,6 +29,7 @@ void GameMaster::initialize( ) {
 	_matching = false;
 	_dice = true;
 	_use_item = false;
+	_reverse_mirror = false;
 	_winner = -1;
 	_turn = 1;
 	_item = 0;
@@ -80,7 +81,6 @@ void GameMaster::update( ) {
 	case ATTACK_PHASE		: updateAttackPhase( ); break;
 	case JUDGE_PHASE		: updateJudgePhase ( ); break;
 	}
-
 
 	_server->sendDataUdp( );
 
@@ -192,10 +192,12 @@ void GameMaster::updateMirrorPhase( ) {
 
 	//æ‚èÁ‚µ‚©‚Ç‚¤‚©‚ğ”»’f
 	bool break_mirror = false;
-	if ( _client_data[ 0 ].x == _client_data[ 1 ].x &&
-		 _client_data[ 0 ].y == _client_data[ 1 ].y &&
-		 _client_data[ 0 ].angle == _client_data[ 1 ].angle ) {
-		break_mirror = true;
+	if ( _client_data[ 0 ].flag && _client_data[ 1 ].flag ) {
+		if ( _client_data[ 0 ].x == _client_data[ 1 ].x &&
+			 _client_data[ 0 ].y == _client_data[ 1 ].y &&
+			 _client_data[ 0 ].angle == _client_data[ 1 ].angle ) {
+			break_mirror = true;
+		}
 	}
 
 	if ( break_mirror ) {
@@ -203,10 +205,17 @@ void GameMaster::updateMirrorPhase( ) {
 	} else {
 		for ( int i = 0; i < PLAYER_NUM; i++ ) {
 			Data data = _client_data[ idx ];
-			_field->setMirrorPoint( idx, data.x, data.y, data.angle );
+			if ( data.flag ) {
+				_field->setMirrorPoint( idx, data.x, data.y, data.angle );
+			}
 
 			idx = ( idx + 1 ) % PLAYER_NUM;
 		}
+	}
+
+	if ( _reverse_mirror ) {
+		_field->reverseMirror( );
+		_reverse_mirror = false;
 	}
 
 	idx = getOrderIdx( 1 );
@@ -388,6 +397,7 @@ void GameMaster::invocationItem( ) {
 
 	case REVERSE_MIRROR:
 		{//‘S‹¾”½“]
+			_reverse_mirror = true;
 		}
 		break;
 	}

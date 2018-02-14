@@ -61,6 +61,7 @@ private:
 	bool _matching;
 	bool _dice;
 	bool _use_item;
+	bool _reverse_mirror;
 	int _item;
 	int _item_user;
 	int _winner;
