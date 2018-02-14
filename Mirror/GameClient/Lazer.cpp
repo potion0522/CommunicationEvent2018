@@ -6,7 +6,7 @@
 #include <math.h>
 
 const double LAZER_SPEED = 15;
-const int WAIT_TIME = 300;
+const int WAIT_TIME = 120;
 
 Lazer::Lazer( GlobalDataPtr data ) :
 _data( data ) {
@@ -113,7 +113,9 @@ void Lazer::update( ) {
 	drawRefrecEffect( );
 
 	if ( _dead_flag ) {
-		drawDeadEffect( );
+		if ( _dead_pnt.cnt < DEAD_EFFECT_MAX - 1 ) {
+			drawDeadEffect( );
+		}
 	}
 
 	//clearBomEffect( );
@@ -170,7 +172,6 @@ void Lazer::clearBomEffect( ) {
 			clear = true;
 		}
 	}
-
 }
 
 double Lazer::getLazerImageAngle( ) {
@@ -222,7 +223,5 @@ void Lazer::drawDeadEffect( ) {
 	image.png = _dead_effect_images[ _dead_pnt.cnt ];
 	_drawer->setImage( image );
 
-	if ( _dead_pnt.cnt < DEAD_EFFECT_MAX - 1 ) {
-		_dead_pnt.cnt++;
-	}
+	_dead_pnt.cnt = _wait / ( DEAD_EFFECT_MAX / 2 );
 }
