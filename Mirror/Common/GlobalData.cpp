@@ -52,7 +52,7 @@ void GlobalData::initialize( ) {
 
 void GlobalData::update( ) {
 	if ( _debug == NULL ) {
-		DebugPtr debug( new Debug( NULL ) );
+		DebugPtr debug( new Debug( ) );
 		debug->error( "GlobalData.cpp->update : クラスポインタがNULLのものがあります。" );
 	}
 

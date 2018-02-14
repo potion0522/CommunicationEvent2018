@@ -182,7 +182,7 @@ void Drawer::drawBox( ) {
 
 void Drawer::drawBackImage( ) {
 	if ( _back_image.png < 0 ) {
-		DebugPtr debug( new Debug( NULL ) );
+		DebugPtr debug( new Debug( ) );
 		debug->error( "drawer->drawBackImage : ‰æ‘œƒnƒ“ƒhƒ‹‚ª‚ ‚è‚Ü‚¹‚ñ" );
 	}
 

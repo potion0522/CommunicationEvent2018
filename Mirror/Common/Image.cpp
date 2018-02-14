@@ -34,7 +34,7 @@ void Image::initialize( ) {
 		case EFFECT_IMAGE        : add.name = "effect"       ; break;
 		default	:
 			{
-				DebugPtr debug( new Debug( NULL ) );
+				DebugPtr debug( new Debug( ) );
 				debug->error( "Image->initialize : _dir_numの数値が大きすぎるか、ディレクトリ名の追加忘れです" );
 			}
 		}
@@ -62,13 +62,13 @@ Png Image::getPng( IMAGE item, int num ) const {
 	Png tmp;
 	memset( &tmp, 0, sizeof( Png ) );
 	if ( item > IMAGE_DIR_MAX - 1 ) {
-		DebugPtr debug( new Debug( NULL ) );
+		DebugPtr debug( new Debug( ) );
 		debug->error( "Image->getPng : 列挙型の追加忘れの可能性があります" );
 	}
 
 	int size = ( int )_data[ dir ].png.size( );
 	if ( size < num ) {
-		DebugPtr debug( new Debug( NULL ) );
+		DebugPtr debug( new Debug( ) );
 		debug->error( "Image->getPng : 要素がオーバーしています" );
 	}
 	return _data[ dir ].png[ num ];
@@ -78,7 +78,7 @@ void Image::check( int png ) const {
 	if ( png != -1 ) {
 		return;
 	} else {
-		DebugPtr debug( new Debug( NULL ) );
+		DebugPtr debug( new Debug( ) );
 		debug->error( "Image->check : 画像読み込みエラー!!" );
 	}
 }
@@ -127,7 +127,7 @@ void Image::inputFileName( std::string path ) {
 	handle = FindFirstFile( ( path + "*" ).c_str( ), &find );
 
 	if ( handle == INVALID_HANDLE_VALUE ) {
-		DebugPtr debug( new Debug( NULL ) );
+		DebugPtr debug( new Debug( ) );
 		FindClose( handle );
 		debug->error( "Image->inputFileName : " + path + "が存在しません。\n"
 					  "基底ディレクトリの指定が間違っているかファイルが存在しない可能性があります。" );
