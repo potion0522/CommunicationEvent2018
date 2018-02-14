@@ -147,7 +147,7 @@ private:
 
 private:
 	//DrawŒn
-	void drawField( ) const;
+	void drawField( );
 	void drawArmament( ) const;
 	void drawTmpMirror( ) const;
 	void drawDecisionButton( ) const;
@@ -189,6 +189,7 @@ private:
 	//‰æ‘œŠÖ˜A
 	std::array< int, BUTTON_IMAGE_NUM > _button_image;
 	ImageProperty _button;
+	ImageProperty _table;
 	ImageProperty _pin;
 
 	GlobalDataPtr _data;

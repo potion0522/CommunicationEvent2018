@@ -44,6 +44,9 @@ _data( data ) {
 	_button.cx = BUTTON_X;
 	_button.cy = BUTTON_Y;
 	_button.png = png.png;
+
+	png = _image->getPng( BATTLE_IMAGE, 1 );
+	_table.png = png.png;
 }
 
 Field::~Field( ) {
@@ -559,22 +562,16 @@ int Field::getFieldPosHitNum( ) const {
 	return _field_pos_hit_num;
 }
 
-void Field::drawField( ) const {
+void Field::drawField( ) {
 	//フィールド描画
-	for ( int i = 0; i < FIELD_ROW + 1; i++ ) {
-		int sx = START_POS_X;
-		int sy = START_POS_Y + i * SQUARE_SIZE;
-		int ex = START_POS_X + SQUARE_SIZE * FIELD_COL;
-		int ey = sy;
-		_drawer->setLine( sx, sy, ex, ey, YELLOW );
+	for ( int i = 0; i < FIELD_ROW; i++ ) {
+		for ( int j = 0; j < FIELD_COL; j++ ) {
+			_table.cx = START_POS_X + j * SQUARE_SIZE + SQUARE_SIZE * 0.5;
+			_table.cy = START_POS_Y + i * SQUARE_SIZE + SQUARE_SIZE * 0.5;
+			_drawer->setImage( _table );
+		}
 	}
-	for ( int i = 0; i < FIELD_COL + 1; i++ ) {
-		int sx = START_POS_X + i * SQUARE_SIZE;
-		int sy = START_POS_Y;
-		int ex = sx;
-		int ey = sy + SQUARE_SIZE * FIELD_ROW;
-		_drawer->setLine( sx, sy, ex, ey, YELLOW );
-	}
+
 }
 
 void Field::drawArmament( ) const {
