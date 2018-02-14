@@ -560,15 +560,21 @@ void Game::updateItemCalc( ) {
 
 	int idx = _field->getHitItemIdx( );
 
-	if ( !_data->getClickLeft( ) ) {
+	_field->changeClickButton( );
+	
+	int clicking = _data->getClickingLeft( );
+	if ( clicking > 0 || ( clicking < 1 && _clicking < 1 ) ) {
+		_clicking = clicking;
 		return;
 	}
 
 	if ( _field->getFieldPosHitNum( ) != -1 ) {
+		_clicking = 0;
 		return;
 	}
 
 	if ( !_field->isHitDecisionButton( ) ) {
+		_clicking = 0;
 		_field->selectItem( idx );
 		return;
 	}
