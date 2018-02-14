@@ -15,6 +15,7 @@ PTR( Command );
 class Debug : public Base {
 public:
 	Debug( GlobalDataPtr data );
+	Debug( );
 	virtual ~Debug( );
 
 public:

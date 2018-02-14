@@ -22,6 +22,9 @@ _data( data ){
 	_drawer = _data->getDrawerPtr( );
 }
 
+Debug::Debug( ) {
+}
+
 Debug::~Debug( ) {
 }
 

@@ -165,7 +165,9 @@ void Field::update( ) {
 	if ( !_mirror_selected ) {
 		drawTmpMirror( );
 	}
+
 	drawMirror( );
+	
 	if ( _phase < ATTACK_PHASE ) {
 		return;
 	}
@@ -593,23 +595,27 @@ void Field::drawArmament( ) const {
 }
 
 void Field::drawTmpMirror( ) const {
-	ImageProperty image = ImageProperty( );
+	ImageProperty tmp_mirror = ImageProperty( );
+	
 	if ( getFieldPosHitNum( ) != -1 ) {
 		SetCursor( _cur_hand );
 		int pos = getFieldPosHitNum( );
 		int x = pos % FIELD_COL;
 		int y = pos / FIELD_COL;
-		image.cx = START_POS_X + x * SQUARE_SIZE + SQUARE_SIZE * 0.5;
-		image.cy = START_POS_Y + y * SQUARE_SIZE + SQUARE_SIZE * 0.5;
-		image.brt = 100;
-		image.png = _mirror_image[ _player_num ];
-		_drawer->setImage( image );
+		tmp_mirror.cx = START_POS_X + x * SQUARE_SIZE + SQUARE_SIZE * 0.5;
+		tmp_mirror.cy = START_POS_Y + y * SQUARE_SIZE + SQUARE_SIZE * 0.5;
+		tmp_mirror.brt = ( int )( ( sin( _data->getCount( ) * 0.06 ) + 1 ) * 40 + 100 );
+		tmp_mirror.png = _mirror_image[ _player_num ];
 	}
 
 	if ( !_tmp_mirror.flag ) {
-		return;
+		if ( getFieldPosHitNum( ) != -1 ) {
+			_drawer->setImage( tmp_mirror );
+		}
+		return; 
 	}
 
+	ImageProperty image = ImageProperty( );
 	//‹¾•`‰æ
 	for ( int i = 0; i < FIELD_ROW; i++ ) {
 		for ( int j = 0; j < FIELD_COL; j++ ) {
@@ -627,6 +633,10 @@ void Field::drawTmpMirror( ) const {
 			image.png = _mirror_image[ _player_num ];
 			_drawer->setImage( image );
 		}
+	}
+
+	if ( getFieldPosHitNum( ) != -1 ) {
+		_drawer->setImage( tmp_mirror );
 	}
 }
 
