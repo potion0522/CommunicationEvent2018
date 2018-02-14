@@ -36,7 +36,6 @@ struct NetWorkData {
 	unsigned char item;
 	unsigned char item_user;
 	SendMirrorData cts;
-	SendMirrorData second_cts;
 	SendMirrorData stc[ PLAYER_NUM ];
 	bool fin;
 };
