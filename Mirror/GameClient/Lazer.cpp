@@ -12,6 +12,13 @@ _data( data ) {
 	setFlag( 1 );
 	_drawer = _data->getDrawerPtr( );
 	_field = _data->getFieldPtr( );
+
+	ImagePtr image_ptr = _data->getImagePtr( );
+	_lazer_image = image_ptr->getPng( BATTLE_IMAGE, 0 ).png;
+
+	for ( int i = 0; i < BOM_EFFECT_MAX; i++ ) {
+		_bom_images[ i ] = image_ptr->getPng( EFFECT_IMAGE, i ).png;
+	}
 }
 
 Lazer::~Lazer( ) {
@@ -31,9 +38,7 @@ void Lazer::initialize( ) {
 	_start = _field->getLazerPoint( );
 	updateUnitVector( );
 	std::vector< ImageProperty >( ).swap( _lazer );
-
-	ImagePtr image_ptr = _data->getImagePtr( );
-	_lazer_image = image_ptr->getPng( BATTLE_IMAGE, 0 ).png;
+	std::list< Coordinate >( ).swap( _reflec_pnt );
 }
 
 void Lazer::update( ) {
@@ -81,6 +86,9 @@ void Lazer::update( ) {
 	for ( int i = 0; i < size; i++ ) {
 		_drawer->setImage( _lazer[ i ] );
 	}
+	drawRefrecEffect( );
+
+	//clearBomEffect( );
 }
 
 bool Lazer::isFinish( ) const {
@@ -103,6 +111,38 @@ void Lazer::updateUnitVector( ) {
 	}
 	_dir_vec = Field::Vector( );
 	_lazer_update = true;
+
+	//エフェクトをセット
+	Coordinate coordinate = Coordinate( );
+	coordinate.x = ( short int )_start.x;
+	coordinate.y = ( short int )_start.y;
+	_reflec_pnt.push_back( coordinate );
+}
+
+void Lazer::clearBomEffect( ) {
+	int size = ( int )_reflec_pnt.size( );
+	if ( size < 1 ) {
+		return;
+	}
+
+	std::list< Coordinate >::iterator ite;
+	bool clear = false;
+	while ( !clear ) {
+		size = ( int )_reflec_pnt.size( );
+		if ( size < 1 ) {
+			return;
+		}
+
+		ite = _reflec_pnt.begin( );
+		for ( ite; ite != _reflec_pnt.end( ); ite++ ) {
+			if ( ite->cnt >= BOM_EFFECT_MAX ) {
+				_reflec_pnt.erase( ite );
+				break;
+			}
+			clear = true;
+		}
+	}
+
 }
 
 double Lazer::getLazerImageAngle( ) {
@@ -124,4 +164,25 @@ double Lazer::getLazerImageAngle( ) {
 	}
 
 	return angle;
+}
+
+void Lazer::drawRefrecEffect( ) {
+	int size = ( int )_reflec_pnt.size( );
+	if ( size < 1 ) {
+		return;
+	}
+
+	std::list< Coordinate >::iterator ite;
+	ite = _reflec_pnt.begin( );
+	for ( ite; ite != _reflec_pnt.end( ); ite++ ) {
+		ImageProperty image = ImageProperty( );
+		image.cx = ite->x;
+		image.cy = ite->y;
+		image.png = _bom_images[ ite->cnt ];
+		_drawer->setImage( image );
+
+		if ( ite->cnt < BOM_EFFECT_MAX - 1 ) {
+			ite->cnt++;
+		}
+	}
 }

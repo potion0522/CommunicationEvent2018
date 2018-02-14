@@ -31,6 +31,7 @@ void Image::initialize( ) {
 		case BATTLE_IMAGE        : add.name = "battle"       ; break;
 		case ITEM_IMAGE          : add.name = "item"         ; break;
 		case PLAYER_IMAGE        : add.name = "player"       ; break;
+		case EFFECT_IMAGE        : add.name = "effect"       ; break;
 		default	:
 			{
 				DebugPtr debug( new Debug( NULL ) );
