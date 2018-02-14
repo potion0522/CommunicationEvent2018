@@ -98,3 +98,9 @@ enum ITEM {
 	REVERSE_MIRROR,
 	ITEM_MAX
 };
+
+enum SOUND {
+	BGM_SOUND,
+	EFFECT_SOUND,
+	SOUND_MAX
+};

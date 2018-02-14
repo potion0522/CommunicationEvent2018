@@ -8,12 +8,15 @@ public:
 
 	virtual void setFlag( int flag );
 	virtual int getFlag( ) const;
+	virtual void setSoundFlag( int flag );
+	virtual int getSoundFlag( ) const;
 	virtual void update( ) = 0;
 	virtual void initialize( );
 	virtual std::string getTag( ) = 0;
 
 private:
 	int _flag;
+	int _soundflag;
 
 public:
 	struct ImageProperty {
@@ -31,5 +34,12 @@ public:
 		int brt = 255;
 		int cnt;
 		int png;
+	};
+	struct SoundProperty {
+		int soundflag;
+		bool isLoop;
+		bool top;
+		int volume = -1;
+		int wav;
 	};
 };

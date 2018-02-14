@@ -83,9 +83,6 @@ private:
 		COLOR col;
 	};
 	int _handle_font[ FONT_TYPE_MAX ];
-	int _blink;
-	int _colcode;
-	int _color_change_speed;
 	ImageProperty _back_image;
 	std::array< int, FONT_TYPE_MAX > _size;
 	std::list< StringProperty > _front_strings;  //‰æ‘œ‚Ìã‚É•\¦
