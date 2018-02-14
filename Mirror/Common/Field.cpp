@@ -713,6 +713,10 @@ void Field::drawPlayer( ) const {
 
 	ImagePtr image_ptr = _data->getImagePtr( );
 	for ( int i = 0; i < PLAYER_NUM; i++ ) {
+		if ( _dead_flag == i ) {
+			continue;
+		}
+
 		int pos = getPlayerPoint( i );
 		if ( pos < 0 ) {
 			continue;
