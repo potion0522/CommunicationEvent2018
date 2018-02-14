@@ -15,6 +15,7 @@ const int ITEM_POS_X = 125;
 const int ITEM_POS_Y = 600;
 const int BUTTON_X = WIDTH / 5;
 const int BUTTON_Y = HEIGHT / 5;
+const int MIRROR_IMAGE_IDX = 2;
 
 char field[ FIELD_COL * FIELD_ROW + 1 ] = 
 "     "
@@ -47,7 +48,9 @@ _data( data ) {
 
 	_table_image = _image->getPng( BATTLE_IMAGE, 1 ).png;
 
-	_mirror_image = _image->getPng( BATTLE_IMAGE, 2 ).png;
+	for ( int i = 0; i < PLAYER_NUM; i++ ) {
+		_mirror_image[ i ] = _image->getPng( BATTLE_IMAGE, MIRROR_IMAGE_IDX + i ).png;
+	}
 }
 
 Field::~Field( ) {
@@ -598,7 +601,8 @@ void Field::drawTmpMirror( ) const {
 		int y = pos / FIELD_COL;
 		image.cx = START_POS_X + x * SQUARE_SIZE + SQUARE_SIZE * 0.5;
 		image.cy = START_POS_Y + y * SQUARE_SIZE + SQUARE_SIZE * 0.5;
-		image.png = _mirror_image;
+		image.brt = 100;
+		image.png = _mirror_image[ _player_num ];
 		_drawer->setImage( image );
 	}
 
@@ -620,7 +624,7 @@ void Field::drawTmpMirror( ) const {
 			image.cx = START_POS_X + j * SQUARE_SIZE + SQUARE_SIZE * 0.5;
 			image.cy = START_POS_Y + i * SQUARE_SIZE + SQUARE_SIZE * 0.5;
 			image.angle = angle;
-			image.png = _mirror_image;
+			image.png = _mirror_image[ _player_num ];
 			_drawer->setImage( image );
 		}
 	}
@@ -651,7 +655,7 @@ void Field::drawMirror( ) const {
 		image.cx = START_POS_X + mirror.x * SQUARE_SIZE + SQUARE_SIZE * 0.5;
 		image.cy = START_POS_Y + mirror.y * SQUARE_SIZE + SQUARE_SIZE * 0.5;
 		image.angle = angle;
-		image.png = _mirror_image;
+		image.png = _mirror_image[ mirror.player_num ];
 		_drawer->setImage( image );
 	}
 }
