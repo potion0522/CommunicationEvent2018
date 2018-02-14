@@ -219,7 +219,7 @@ void Lazer::drawDeadEffect( ) {
 	ImageProperty image = ImageProperty( );
 	image.cx = _dead_pnt.x;
 	image.cy = _dead_pnt.y;
-	image.png = _dead_effect_images[ image.cnt ];
+	image.png = _dead_effect_images[ _dead_pnt.cnt ];
 	_drawer->setImage( image );
 
 	if ( _dead_pnt.cnt < DEAD_EFFECT_MAX - 1 ) {
