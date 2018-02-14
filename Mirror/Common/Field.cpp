@@ -679,18 +679,18 @@ void Field::drawPlayerPos( ) const {
 	}
 
 	ImagePtr image_ptr = _data->getImagePtr( );
+	
 	for ( int i = 0; i < PLAYER_POSITION * 2; i++ ) {
+		ImageProperty image = ImageProperty( );
 		double x = _select_player_pos[ i ].x;
 		double y = _select_player_pos[ i ].y;
-		
+		Png png = image_ptr->getPng( PLAYER_IMAGE, i / PLAYER_POSITION );
+		image.png = png.png;
+		image.cx = x;
+		image.cy = y;
 		
 		if ( _player_num == i / PLAYER_POSITION ) {
 			if ( getTmpPlayerPoint( ) == i ) {		
-				ImageProperty image = ImageProperty( );
-				Png png = image_ptr->getPng( PLAYER_IMAGE, _player_num );
-				image.png = png.png;
-				image.cx = x;
-				image.cy = y;
 				_drawer->setImage( image );
 				continue;
 			}
