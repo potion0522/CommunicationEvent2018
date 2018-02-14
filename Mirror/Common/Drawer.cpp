@@ -67,7 +67,7 @@ void Drawer::drawImage( ) {
 	std::list< ImageProperty >::iterator ite;
 	ite = _images.begin( );
 	for ( ite; ite != _images.end( ); ite++ ) {
-		if ( ite->png < 0 ) {
+		if ( ite->png < 1 ) {
 			DebugPtr debug( new Debug( NULL ) );
 			debug->error( "drawer->drawImage : ‰æ‘œƒnƒ“ƒhƒ‹‚ª‚ ‚è‚Ü‚¹‚ñ" );
 		}

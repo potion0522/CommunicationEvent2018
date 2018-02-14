@@ -41,7 +41,7 @@ void Command::update( ) {
 		std::string( ).swap( _command );
 	}
 
-	if ( _data->getKeyState( _keyboard->getKeyCode( KeyBoard::BACK_KEY ) ) == 1 ) {
+	if ( _data->getKeyState( _keyboard->getKeyCode( KeyBoard::ESC_KEY ) ) == 1 ) {
 		setFlag( 0 );
 		std::string( ).swap( _command );
 		clearWord( );

@@ -187,9 +187,10 @@ private:
 	Vector _reflection_point;
 
 	//‰æ‘œŠÖ˜A
+	int _table_image;
+	int _mirror_image;
 	std::array< int, BUTTON_IMAGE_NUM > _button_image;
 	ImageProperty _button;
-	ImageProperty _table;
 	ImageProperty _pin;
 
 	GlobalDataPtr _data;

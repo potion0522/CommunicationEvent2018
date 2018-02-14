@@ -45,8 +45,9 @@ _data( data ) {
 	_button.cy = BUTTON_Y;
 	_button.png = png.png;
 
-	png = _image->getPng( BATTLE_IMAGE, 1 );
-	_table.png = png.png;
+	_table_image = _image->getPng( BATTLE_IMAGE, 1 ).png;
+
+	_mirror_image = _image->getPng( BATTLE_IMAGE, 2 ).png;
 }
 
 Field::~Field( ) {
@@ -566,9 +567,11 @@ void Field::drawField( ) {
 	//フィールド描画
 	for ( int i = 0; i < FIELD_ROW; i++ ) {
 		for ( int j = 0; j < FIELD_COL; j++ ) {
-			_table.cx = START_POS_X + j * SQUARE_SIZE + SQUARE_SIZE * 0.5;
-			_table.cy = START_POS_Y + i * SQUARE_SIZE + SQUARE_SIZE * 0.5;
-			_drawer->setImage( _table );
+			ImageProperty image = ImageProperty( );
+			image.cx = START_POS_X + j * SQUARE_SIZE + SQUARE_SIZE * 0.5;
+			image.cy = START_POS_Y + i * SQUARE_SIZE + SQUARE_SIZE * 0.5;
+			image.png = _table_image;
+			_drawer->setImage( image );
 		}
 	}
 
@@ -587,18 +590,16 @@ void Field::drawArmament( ) const {
 }
 
 void Field::drawTmpMirror( ) const {
+	ImageProperty image = ImageProperty( );
 	if ( getFieldPosHitNum( ) != -1 ) {
+		SetCursor( _cur_hand );
 		int pos = getFieldPosHitNum( );
 		int x = pos % FIELD_COL;
 		int y = pos / FIELD_COL;
-		double line = SQUARE_SIZE / 2;
-		double sx = START_POS_X + x * SQUARE_SIZE + SQUARE_SIZE * 0.5;
-		double sy = START_POS_Y + y * SQUARE_SIZE + SQUARE_SIZE * 0.5;
-
-		COLOR col = ( _player_num == 0 ? RED : BLUE );
-		SetCursor( _cur_hand );
-		_drawer->setLine( sx, sy, sx + line * 1, sy - line * 1, col, 150 );
-		_drawer->setLine( sx, sy, sx - line * 1, sy + line * 1, col, 150 );
+		image.cx = START_POS_X + x * SQUARE_SIZE + SQUARE_SIZE * 0.5;
+		image.cy = START_POS_Y + y * SQUARE_SIZE + SQUARE_SIZE * 0.5;
+		image.png = _mirror_image;
+		_drawer->setImage( image );
 	}
 
 	if ( !_tmp_mirror.flag ) {
@@ -611,24 +612,16 @@ void Field::drawTmpMirror( ) const {
 			if ( _tmp_mirror.x != j || _tmp_mirror.y != i ) {
 				continue;
 			}
-			Vector angle = Vector( );
-			switch ( _tmp_mirror.angle ) {
-				case RIGHT: 
-					angle.x = 1;
-					angle.y = 1;
-					break;
-				case LEFT:
-					angle.x = -1;	
-					angle.y = 1;
-					break;
+			image = ImageProperty( );
+			float angle = 0;
+			if ( _tmp_mirror.angle != RIGHT ) {
+				angle = ( float )PI / 2;
 			}
-			double line = SQUARE_SIZE / 2;
-			double sx = START_POS_X + _tmp_mirror.x * SQUARE_SIZE + SQUARE_SIZE * 0.5;
-			double sy = START_POS_Y + _tmp_mirror.y * SQUARE_SIZE + SQUARE_SIZE * 0.5;
-
-			COLOR col = ( _tmp_mirror.player_num == 0 ? RED : BLUE );
-			_drawer->setLine( sx, sy, sx + line * angle.x, sy - line * angle.y, col );
-			_drawer->setLine( sx, sy, sx - line * angle.x, sy + line * angle.y, col );
+			image.cx = START_POS_X + j * SQUARE_SIZE + SQUARE_SIZE * 0.5;
+			image.cy = START_POS_Y + i * SQUARE_SIZE + SQUARE_SIZE * 0.5;
+			image.angle = angle;
+			image.png = _mirror_image;
+			_drawer->setImage( image );
 		}
 	}
 }
@@ -642,31 +635,24 @@ void Field::drawDecisionButton( ) const {
 }
 
 void Field::drawMirror( ) const {
+	
 	//鏡描画
 	for ( int i = 0; i < FIELD_ROW * FIELD_COL; i++ ) {
 		if ( _mirrors.find( i ) == _mirrors.end( ) ) {
 			continue;
 		}
 		Mirror mirror = _mirrors.find( i )->second;
-		Vector angle = Vector( );
-				switch ( mirror.angle ) {
-				case RIGHT: 
-					angle.x = 1;
-					angle.y = 1;
-					break;
-				case LEFT:
-					angle.x = -1;	
-					angle.y = 1;
-					break;
-			}
+		ImageProperty image = ImageProperty( );
 
-			double line = SQUARE_SIZE / 2;
-			double sx = START_POS_X + mirror.x * SQUARE_SIZE + SQUARE_SIZE * 0.5;
-			double sy = START_POS_Y + mirror.y * SQUARE_SIZE + SQUARE_SIZE * 0.5;
-
-			COLOR col = ( mirror.player_num == 0 ? RED : BLUE );
-			_drawer->setLine( sx, sy, sx + line * angle.x, sy - line * angle.y, col );
-			_drawer->setLine( sx, sy, sx - line * angle.x, sy + line * angle.y, col );
+		float angle = 0;
+		if ( mirror.angle != RIGHT ) {
+			angle = ( float )PI / 2;
+		}
+		image.cx = START_POS_X + mirror.x * SQUARE_SIZE + SQUARE_SIZE * 0.5;
+		image.cy = START_POS_Y + mirror.y * SQUARE_SIZE + SQUARE_SIZE * 0.5;
+		image.angle = angle;
+		image.png = _mirror_image;
+		_drawer->setImage( image );
 	}
 }
 
