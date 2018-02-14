@@ -68,7 +68,7 @@ void Drawer::drawImage( ) {
 	ite = _images.begin( );
 	for ( ite; ite != _images.end( ); ite++ ) {
 		if ( ite->png < 1 ) {
-			DebugPtr debug( new Debug( NULL ) );
+			DebugPtr debug( new Debug( ) );
 			debug->error( "drawer->drawImage : ‰æ‘œƒnƒ“ƒhƒ‹‚ª‚ ‚è‚Ü‚¹‚ñ" );
 		}
 
