@@ -15,11 +15,8 @@ _data( data ) {
 	_field = _data->getFieldPtr( );
 
 	ImagePtr image_ptr = _data->getImagePtr( );
-	_lazer_image = image_ptr->getPng( BATTLE_IMAGE, 0 ).png;
-
-	for ( int i = 0; i < BOM_EFFECT_MAX; i++ ) {
-		_bom_images[ i ] = image_ptr->getPng( EFFECT_IMAGE, i ).png;
-	}
+	_lazer_image = image_ptr->getPng( LAZER_IMAGE, 0 ).png;
+	_lazer_reflect_image = image_ptr->getPng( LAZER_IMAGE, 1 ).png;
 
 	for ( int i = 0; i < DEAD_EFFECT_MAX; i++ ) {
 		_dead_effect_images[ i ] = image_ptr->getPng( EFFECT_IMAGE, i ).png;
@@ -134,6 +131,9 @@ void Lazer::updateUnitVector( ) {
 	if ( unit.x == _unit.x && unit.y == _unit.y ) {
 		return;
 	}
+	Field::Vector tmp = Field::Vector( );
+	tmp = _unit;
+
 	_unit = unit;
 	Field::Vector pos = _field->getReflectionPoint( );
 	if ( pos.x != 0 && pos.y != 0 ) {
@@ -144,6 +144,7 @@ void Lazer::updateUnitVector( ) {
 
 	//エフェクトをセット
 	Coordinate coordinate = Coordinate( );
+	coordinate.angle = ( float )getReflectEffectAngle( tmp, _unit );
 	coordinate.x = ( short int )_start.x;
 	coordinate.y = ( short int )_start.y;
 	_reflec_pnt.push_back( coordinate );
@@ -195,6 +196,65 @@ double Lazer::getLazerImageAngle( ) {
 	return angle;
 }
 
+Field::Vector Lazer::convNormalVector( Field::Vector vec ) {
+	Field::Vector normal = vec;
+	double length = sqrt( vec.x * vec.x + vec.y * vec.y );
+
+	normal.x /= length;
+	normal.y /= length;
+
+	return normal;
+}
+
+Field::DIR Lazer::convVectorToDir( Field::Vector vec ) {
+	//左手座標で計算
+	Field::DIR direct = Field::DIR( );
+
+	if ( vec.x != 0 ) {
+		if ( vec.x < 0 ) {
+			direct = Field::DIR_LEFT;
+		} else {
+			direct = Field::DIR_RIGHT;
+		}
+	}
+
+	if ( vec.y != 0 ) {
+		if ( vec.y < 0 ) {
+			direct = Field::DIR_UP;
+		} else {
+			direct = Field::DIR_DOWN;
+		}
+	}
+	return direct;
+}
+
+double Lazer::getReflectEffectAngle( Field::Vector old_vec, Field::Vector new_vec ) {
+	//NEを基準に
+	Field::Vector before = convNormalVector( old_vec );
+	Field::Vector after = convNormalVector( new_vec );
+	Field::DIR old_dir = convVectorToDir( before );
+	Field::DIR new_dir = convVectorToDir( after );
+
+	double angle = 0;
+	//左手座標で上下逆のため注意
+	switch ( old_dir ) {
+	case Field::DIR_UP:
+		( new_dir == Field::DIR_RIGHT ) ? angle = 0 : angle = -PI * 0.5;
+		break;
+	case Field::DIR_DOWN:
+		( new_dir == Field::DIR_RIGHT ) ? angle = PI * 0.5 : angle = PI;
+		break;
+	case Field::DIR_RIGHT:
+		( new_dir == Field::DIR_UP ) ? angle = PI : angle = -PI * 0.5;
+		break;
+	case Field::DIR_LEFT:
+		( new_dir == Field::DIR_UP ) ? angle = PI * 0.5 : angle = 0;
+		break;
+	}
+
+	return angle;
+}
+
 void Lazer::drawRefrecEffect( ) {
 	int size = ( int )_reflec_pnt.size( );
 	if ( size < 1 ) {
@@ -207,12 +267,14 @@ void Lazer::drawRefrecEffect( ) {
 		ImageProperty image = ImageProperty( );
 		image.cx = ite->x;
 		image.cy = ite->y;
-		image.png = _bom_images[ ite->cnt ];
-		_drawer->setImage( image );
-
-		if ( ite->cnt < BOM_EFFECT_MAX - 1 ) {
+		image.angle = ite->angle;
+		image.png = _lazer_reflect_image;
+		if ( ite->cnt < 10 ) {
 			ite->cnt++;
 		}
+		image.size = ite->cnt * 0.1;
+
+		_drawer->setImage( image );
 	}
 }
 

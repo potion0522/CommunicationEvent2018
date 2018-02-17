@@ -20,6 +20,7 @@ private:
 		short int cnt;
 		short int x;
 		short int y;
+		float angle;
 	};
 public:
 	Lazer( GlobalDataPtr data );
@@ -37,6 +38,9 @@ private:
 	void updateUnitVector( );
 	void clearBomEffect( );
 	double getLazerImageAngle( );
+	Field::DIR convVectorToDir( Field::Vector vec );
+	Field::Vector convNormalVector( Field::Vector vec );
+	double getReflectEffectAngle( Field::Vector old_vec, Field::Vector new_vec );
 
 private:
 	void drawRefrecEffect( );
@@ -56,7 +60,7 @@ private:
 
 	//‰æ‘œ
 	int _lazer_image;
-	std::array< int, BOM_EFFECT_MAX > _bom_images;
+	int _lazer_reflect_image;
 	std::array< int, DEAD_EFFECT_MAX > _dead_effect_images;
 	std::vector< ImageProperty > _lazer;
 

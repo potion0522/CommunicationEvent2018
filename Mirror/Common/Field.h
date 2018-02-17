@@ -85,6 +85,7 @@ public:
 
 	struct Item {
 		bool flag;
+		short int type;
 		float x;
 		float y;
 	};
@@ -187,11 +188,11 @@ private:
 	Vector _reflection_point;
 
 	//‰æ‘œŠÖ˜A
-	int _table_image;
-	std::array< int, PLAYER_NUM > _mirror_image;
-	std::array< int, BUTTON_IMAGE_NUM > _button_image;
-	ImageProperty _button;
-	ImageProperty _pin;
+	int _table_handle;
+	std::array< int, PLAYER_NUM > _mirror_handle;
+	std::array< int, BUTTON_IMAGE_NUM > _button_handle;
+	ImageProperty _button_image;
+	ImageProperty _pin_image;
 
 	GlobalDataPtr _data;
 	DrawerPtr _drawer;

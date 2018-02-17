@@ -32,6 +32,7 @@ void Image::initialize( ) {
 		case ITEM_IMAGE          : add.name = "item"         ; break;
 		case PLAYER_IMAGE        : add.name = "player"       ; break;
 		case EFFECT_IMAGE        : add.name = "effect"       ; break;
+		case LAZER_IMAGE        : add.name = "lazer"       ; break;
 		default	:
 			{
 				DebugPtr debug( new Debug( ) );

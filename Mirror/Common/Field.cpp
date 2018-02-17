@@ -32,24 +32,24 @@ _data( data ) {
 	_cur_hand  = LoadCursor( NULL, IDC_HAND );
 
 	for ( int i = 0; i < BUTTON_IMAGE_NUM; i++ ) {
-		_button_image[ i ] = _image->getPng( BUTTON_IMAGE, i ).png;
+		_button_handle[ i ] = _image->getPng( BUTTON_IMAGE, i ).png;
 	}
 
 	Png png = Png( );
 	png = _image->getPng( ITEM_IMAGE, 0 );
-	_pin = ImageProperty( );
-	_pin.flag = 0;
-	_pin.png = png.png;
+	_pin_image = ImageProperty( );
+	_pin_image.flag = 0;
+	_pin_image.png = png.png;
 
 	png = _image->getPng( BUTTON_IMAGE, 0 );
-	_button.cx = BUTTON_X;
-	_button.cy = BUTTON_Y;
-	_button.png = png.png;
+	_button_image.cx = BUTTON_X;
+	_button_image.cy = BUTTON_Y;
+	_button_image.png = png.png;
 
-	_table_image = _image->getPng( BATTLE_IMAGE, 1 ).png;
+	_table_handle = _image->getPng( BATTLE_IMAGE, 0 ).png;
 
 	for ( int i = 0; i < PLAYER_NUM; i++ ) {
-		_mirror_image[ i ] = _image->getPng( BATTLE_IMAGE, MIRROR_IMAGE_IDX + i ).png;
+		_mirror_handle[ i ] = _image->getPng( BATTLE_IMAGE, 1 + i ).png;
 	}
 }
 
@@ -464,11 +464,11 @@ void Field::mirrorPosNotSelected( ) {
 void Field::selectItem( int idx ) {
 	_select_item = idx;
 	if ( idx != -1 ) {
-		_pin.flag = 1;
-		_pin.cx = _item[ idx ].x;
-		_pin.cy = _item[ idx ].y;
+		_pin_image.flag = 1;
+		_pin_image.cx = _item[ idx ].x;
+		_pin_image.cy = _item[ idx ].y;
 	} else {
-		_pin.flag = 0;
+		_pin_image.flag = 0;
 	}
 }
 
@@ -477,7 +477,7 @@ void Field::useItem( ) {
 		return;
 	}
 	_item[ _select_item ].flag = false;
-	_pin.flag = 0;
+	_pin_image.flag = 0;
 	_select_item = -1;
 }
 
@@ -497,7 +497,7 @@ void Field::changeClickButton( ) {
 		idx++;
 	}
 
-	_button.png = _image->getPng( BUTTON_IMAGE, idx ).png;
+	_button_image.png = _image->getPng( BUTTON_IMAGE, idx ).png;
 }
 
 Field::Vector Field::getLazerPoint( ) const {
@@ -575,7 +575,7 @@ void Field::drawField( ) {
 			ImageProperty image = ImageProperty( );
 			image.cx = START_POS_X + j * SQUARE_SIZE + SQUARE_SIZE * 0.5;
 			image.cy = START_POS_Y + i * SQUARE_SIZE + SQUARE_SIZE * 0.5;
-			image.png = _table_image;
+			image.png = _table_handle;
 			_drawer->setImage( image );
 		}
 	}
@@ -605,7 +605,7 @@ void Field::drawTmpMirror( ) const {
 		tmp_mirror.cx = START_POS_X + x * SQUARE_SIZE + SQUARE_SIZE * 0.5;
 		tmp_mirror.cy = START_POS_Y + y * SQUARE_SIZE + SQUARE_SIZE * 0.5;
 		tmp_mirror.brt = ( int )( ( sin( _data->getCount( ) * 0.06 ) + 1 ) * 40 + 100 );
-		tmp_mirror.png = _mirror_image[ _player_num ];
+		tmp_mirror.png = _mirror_handle[ _player_num ];
 	}
 
 	if ( !_tmp_mirror.flag ) {
@@ -630,7 +630,7 @@ void Field::drawTmpMirror( ) const {
 			image.cx = START_POS_X + j * SQUARE_SIZE + SQUARE_SIZE * 0.5;
 			image.cy = START_POS_Y + i * SQUARE_SIZE + SQUARE_SIZE * 0.5;
 			image.angle = angle;
-			image.png = _mirror_image[ _player_num ];
+			image.png = _mirror_handle[ _player_num ];
 			_drawer->setImage( image );
 		}
 	}
@@ -645,7 +645,7 @@ void Field::drawDecisionButton( ) const {
 		SetCursor( _cur_hand );
 	}
 
-	_drawer->setImage( _button );
+	_drawer->setImage( _button_image );
 }
 
 void Field::drawMirror( ) const {
@@ -665,7 +665,7 @@ void Field::drawMirror( ) const {
 		image.cx = START_POS_X + mirror.x * SQUARE_SIZE + SQUARE_SIZE * 0.5;
 		image.cy = START_POS_Y + mirror.y * SQUARE_SIZE + SQUARE_SIZE * 0.5;
 		image.angle = angle;
-		image.png = _mirror_image[ mirror.player_num ];
+		image.png = _mirror_handle[ mirror.player_num ];
 		_drawer->setImage( image );
 	}
 }
@@ -804,7 +804,7 @@ void Field::drawItem( ) const {
 		_drawer->setCircle( _item[ i ].x, _item[ i ].y, CIRCLE_SIZE, ( COLOR )( WHITE + i ) );
 	}
 	//ƒsƒ“
-	if ( _pin.flag > 0 ) {
-		_drawer->setImage( _pin );
+	if ( _pin_image.flag > 0 ) {
+		_drawer->setImage( _pin_image );
 	}
 }

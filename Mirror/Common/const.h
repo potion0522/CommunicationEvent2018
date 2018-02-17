@@ -13,6 +13,7 @@ const double PI = 3.14;
 const int KEY_MAX = 256;
 const int PLAYER_NUM = 2;
 const int TURN_MAX = 3;
+const int ITEM_POSSESSION_MAX = 3;
 
 const int TCP_PORT = 9850;
 const int UDP_PORT = 9900;
@@ -76,6 +77,7 @@ enum IMAGE {
 	ITEM_IMAGE,
 	PLAYER_IMAGE,
 	EFFECT_IMAGE,
+	LAZER_IMAGE,
 	IMAGE_DIR_MAX
 };
 
