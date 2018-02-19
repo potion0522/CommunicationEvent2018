@@ -99,7 +99,7 @@ void Field::initialize( ) {
 	ite = item_data.begin( );
 	int cnt = 0;
 	for ( ite; ite != item_data.end( ); ite++ ) {
-		if ( atoi( ite->value.c_str( ) ) < 1 ) {
+		if ( atoi( ite->values[ 0 ].c_str( ) ) < 1 ) {
 			continue;
 		}
 		if ( cnt >= ITEM_POSSESSION_MAX ) {
