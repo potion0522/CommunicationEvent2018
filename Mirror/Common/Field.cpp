@@ -159,6 +159,7 @@ void Field::update( ) {
 			setInfoText( "最初に配置した鏡は", RED );
 			setInfoText( "相手にも見える状態になります", RED );
 			setInfoText( "鏡を1枚、配置した状態で決定をしてください", WATER );
+			setInfoText( "先攻のプレイヤーのみ発動できます", WATER );
 			break;
 
 		case REVERSE_MIRROR:

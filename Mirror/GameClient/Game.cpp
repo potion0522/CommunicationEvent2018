@@ -589,6 +589,17 @@ void Game::updateItemCalc( ) {
 		if ( !_field->isSelectedMirror( ) ) {
 			return;
 		}
+		int order = 0;
+		if ( !_player_num ) {
+			order = ( _turn + 1 ) % 2 + 1;
+		} else {
+			order = _turn % 2 + 1;
+		}
+
+		if ( order != 1 ) {
+			_field->mirrorPosNotSelected( );
+			return;
+		}
 	}
 
 	_client->setItemFlag( true );
