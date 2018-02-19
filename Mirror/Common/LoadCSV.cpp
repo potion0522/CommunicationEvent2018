@@ -35,6 +35,8 @@ void LoadCSV::read( std::vector< CsvData > &list, std::string path ) {
 			data.tag = str.substr( 0, pos );
 			
 			std::string values = str.substr( pos + 1, str.length( ) - pos );
+			pos = ( int )values.find( "\r\n" );
+			values = values.substr( 0, pos );
 
 			findComma( data.values, values );
 
@@ -95,6 +97,7 @@ void LoadCSV::findComma( std::vector< std::string > &value, std::string str ) {
 	int pos = ( int )str.find_first_of( ',' );
 
 	if ( pos < 0 ) {
+		value.push_back( str );
 		return;
 	}
 
