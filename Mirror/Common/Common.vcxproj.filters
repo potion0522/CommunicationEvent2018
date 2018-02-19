@@ -46,6 +46,12 @@
     <ClCompile Include="Field.cpp">
       <Filter>Global</Filter>
     </ClCompile>
+    <ClCompile Include="Sound.cpp">
+      <Filter>Global</Filter>
+    </ClCompile>
+    <ClCompile Include="Soundplayer.cpp">
+      <Filter>Sound</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Base.h">
@@ -96,6 +102,12 @@
     <ClInclude Include="Field.h">
       <Filter>Global</Filter>
     </ClInclude>
+    <ClInclude Include="Sound.h">
+      <Filter>Global</Filter>
+    </ClInclude>
+    <ClInclude Include="Soundplayer.h">
+      <Filter>Sound</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="BaseClass">
@@ -115,6 +127,9 @@
     </Filter>
     <Filter Include="Drawer">
       <UniqueIdentifier>{dc5c1283-b7ba-4152-ac2b-efe6851d9ce0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sound">
+      <UniqueIdentifier>{b8435ac3-6ef8-473e-a5e9-556b7d4ebd76}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

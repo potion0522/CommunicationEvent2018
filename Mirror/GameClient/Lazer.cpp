@@ -5,7 +5,7 @@
 #include "Image.h"
 #include <math.h>
 
-const double LAZER_SPEED = 15;
+const double LAZER_SPEED = 20;
 const int WAIT_TIME = 120;
 
 Lazer::Lazer( GlobalDataPtr data ) :
