@@ -22,6 +22,10 @@ private:
 		short int y;
 		float angle;
 	};
+	struct ImageSize {
+		short int width;
+		short int height;
+	};
 public:
 	Lazer( GlobalDataPtr data );
 	virtual ~Lazer( );
@@ -63,6 +67,7 @@ private:
 	int _lazer_reflect_image;
 	std::array< int, DEAD_EFFECT_MAX > _dead_effect_images;
 	std::vector< ImageProperty > _lazer;
+	ImageSize _lazer_size;
 
 	GlobalDataPtr _data;
 	DrawerPtr _drawer;

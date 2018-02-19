@@ -4,6 +4,7 @@
 #include "Debug.h"
 #include "Image.h"
 #include <math.h>
+#include "DxLib.h"
 
 const double LAZER_SPEED = 20;
 const int WAIT_TIME = 120;
@@ -16,6 +17,9 @@ _data( data ) {
 
 	ImagePtr image_ptr = _data->getImagePtr( );
 	_lazer_image = image_ptr->getPng( LAZER_IMAGE, 0 ).png;
+	_lazer_size.width = image_ptr->getPng( LAZER_IMAGE, 0 ).width;
+	_lazer_size.height = image_ptr->getPng( LAZER_IMAGE, 0 ).height;
+
 	_lazer_reflect_image = image_ptr->getPng( LAZER_IMAGE, 1 ).png;
 
 	for ( int i = 0; i < DEAD_EFFECT_MAX; i++ ) {
@@ -86,13 +90,17 @@ void Lazer::update( ) {
 
 		_lazer_update = false;
 		Field::Vector tmp = { _start.x + _dir_vec.x, _start.y + _dir_vec.y };
-		_field->updateLazerVector( tmp );
+		_field->updateLazerVector( tmp, LAZER_SPEED );
 		updateUnitVector( );
 
 		//‰æ‘œ
 		ImageProperty lazer;
 		lazer.cx = tmp.x;
 		lazer.cy = tmp.y;
+		lazer.lx = lazer.cx - _lazer_size.width / 2;
+		lazer.ly = lazer.cy - _lazer_size.height / 2;
+		lazer.rx = lazer.cx + _lazer_size.width / 2;
+		lazer.ry = lazer.cy + _lazer_size.height / 2;
 		lazer.angle = getLazerImageAngle( );
 		lazer.png = _lazer_image;
 
@@ -105,7 +113,9 @@ void Lazer::update( ) {
 	//•`‰æ
 	int size = ( int )_lazer.size( );
 	for ( int i = 0; i < size; i++ ) {
-		_drawer->setImage( _lazer[ i ] );
+		//_drawer->setImage( _lazer[ i ] );
+		DrawRotaGraph3( ( int )_lazer[ i ].cx, ( int )_lazer[ i ].cy, _lazer_size.width / 2, _lazer_size.height / 2, 1, LAZER_SPEED / _lazer_size.height, _lazer[ i ].angle, _lazer[ i ].png, TRUE, TRUE );
+		//DrawRectExtendGraph( ( int )_lazer[ i ].lx, ( int )_lazer[ i ].ly, ( int )_lazer[ i ].rx, ( int )_lazer[ i ].ry, 0, 0, _lazer_size.width, ( int )LAZER_SPEED, _lazer[ i ].png, TRUE );
 	}
 	drawRefrecEffect( );
 

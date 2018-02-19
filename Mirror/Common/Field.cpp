@@ -3,6 +3,7 @@
 #include "Drawer.h"
 #include "const.h"
 #include "Image.h"
+#include "LoadCSV.h"
 #include <random>
 
 const int MOUSE_R = 5;
@@ -16,6 +17,7 @@ const int ITEM_POS_Y = 600;
 const int BUTTON_X = WIDTH / 5;
 const int BUTTON_Y = HEIGHT / 5;
 const int MIRROR_IMAGE_IDX = 2;
+const int PIN_IDX = 1;
 
 char field[ FIELD_COL * FIELD_ROW + 1 ] = 
 "     "
@@ -36,20 +38,23 @@ _data( data ) {
 	}
 
 	Png png = Png( );
-	png = _image->getPng( ITEM_IMAGE, 0 );
-	_pin_image = ImageProperty( );
-	_pin_image.flag = 0;
-	_pin_image.png = png.png;
-
+	//ボタン
 	png = _image->getPng( BUTTON_IMAGE, 0 );
 	_button_image.cx = BUTTON_X;
 	_button_image.cy = BUTTON_Y;
 	_button_image.png = png.png;
 
+	//フィールド
 	_table_handle = _image->getPng( BATTLE_IMAGE, 0 ).png;
 
+	//ミラー
 	for ( int i = 0; i < PLAYER_NUM; i++ ) {
 		_mirror_handle[ i ] = _image->getPng( BATTLE_IMAGE, 1 + i ).png;
+	}
+
+	//アイテム
+	for ( int i = PIN_IDX; i < ITEM_MAX/* + PIN_IDX*/; i++ ) {
+		_item_handle[ i/* - PIN_IDX*/ ] = _image->getPng( ITEM_IMAGE, i ).png;
 	}
 }
 
@@ -79,8 +84,32 @@ void Field::initialize( ) {
 	_tmp_mirror = Mirror( );
 	std::map< int, Mirror >( ).swap( _mirrors );
 	std::array< Info, INFO_TEXT_MAX >( ).swap( _info );
+	std::array< Item, ITEM_POSSESSION_MAX >( ).swap( _item );
 	_reflection_point = Vector( );
 	_phase = SET_PLAYER_PHASE;
+
+	//CSV読み込み
+	std::vector< CsvData > item_data;
+	std::vector< CsvData >( ).swap( item_data );
+	LoadCSVPtr load( new LoadCSV( ) );
+	load->read( item_data, "item" );
+
+	//アイテムを読み込む
+	std::vector< CsvData >::iterator ite;
+	ite = item_data.begin( );
+	int cnt = 0;
+	for ( ite; ite != item_data.end( ); ite++ ) {
+		if ( atoi( ite->value.c_str( ) ) < 1 ) {
+			continue;
+		}
+		if ( cnt >= ITEM_POSSESSION_MAX ) {
+			break;
+		}
+		_item[ cnt ].flag = true;
+		_item[ cnt ].type = ( short int )std::distance( item_data.begin( ), ite );
+		cnt++;
+	}
+
 	for ( int i = 0; i < PLAYER_POSITION * 2; i++ ) {
 		if ( i < PLAYER_POSITION ) {
 			_select_player_pos[ i ].x = ( float )PLAYER_POS_X;
@@ -94,8 +123,9 @@ void Field::initialize( ) {
 		_player_pos_no[ i ] = -1;
 		_player_color[ i ] = ( COLOR )( i + ( int )RED );
 	}
+
+	//アイテムのポジション設定
 	for ( int i = 0; i < ( int )ITEM_MAX; i++ ) {
-		_item[ i ].flag = true;
 		_item[ i ].x = ( float )( ITEM_POS_X + i * SQUARE_SIZE + SQUARE_SIZE * 0.5 );
 		_item[ i ].y = ( float )ITEM_POS_Y;
 	}
@@ -162,11 +192,10 @@ void Field::update( ) {
 		return;
 	}
 
+	drawMirror( );
 	if ( !_mirror_selected ) {
 		drawTmpMirror( );
 	}
-
-	drawMirror( );
 	
 	if ( _phase < ATTACK_PHASE ) {
 		return;
@@ -252,10 +281,14 @@ int Field::getHitItemIdx( ) const {
 		if ( !_item[ i ].flag ) {
 			continue;
 		}
-		double a = mouse_x - _item[ i ].x;
-		double b = mouse_y - _item[ i ].y;
-		double c = sqrt( a * a + b * b );
-		if ( c <= MOUSE_R + CIRCLE_SIZE ) {
+
+		float lx = ( float )( _item[ i ].x - SQUARE_SIZE * 0.5 );
+		float ly = ( float )( _item[ i ].y - SQUARE_SIZE * 0.5 );
+		float rx = ( float )( _item[ i ].x + SQUARE_SIZE * 0.5 );
+		float ry = ( float )( _item[ i ].y + SQUARE_SIZE * 0.5 );
+
+		if ( lx <= mouse_x && mouse_x <= rx &&
+			 ly <= mouse_y && mouse_y <= ry ) {
 			SetCursor( _cur_hand );
 			return i;
 		}
@@ -294,7 +327,7 @@ void Field::setInfoText( std::string str, COLOR col ) {
 	_info_idx = ( _info_idx + 1 ) % INFO_TEXT_MAX;
 }
 
-void Field::updateLazerVector( Vector vec ) {
+void Field::updateLazerVector( Vector vec, double spd ) {
 	int x = ( int )( vec.x - START_POS_X );
 	int y = ( int )( vec.y - START_POS_Y );
 
@@ -462,22 +495,25 @@ void Field::mirrorPosNotSelected( ) {
 }
 
 void Field::selectItem( int idx ) {
-	_select_item = idx;
-	if ( idx != -1 ) {
-		_pin_image.flag = 1;
-		_pin_image.cx = _item[ idx ].x;
-		_pin_image.cy = _item[ idx ].y;
-	} else {
-		_pin_image.flag = 0;
+	if ( idx < 0 ) {
+		_select_item = -1;
+		return;
 	}
+	_select_item = ( int )_item[ idx ].type;
 }
 
 void Field::useItem( ) {
 	if ( _select_item < 0 ) {
 		return;
 	}
-	_item[ _select_item ].flag = false;
-	_pin_image.flag = 0;
+	std::array< Item, ITEM_POSSESSION_MAX >::iterator ite;
+	ite = _item.begin( );
+	for ( ite; ite != _item.end( ); ite++ ) {
+		if ( ite->type == _select_item ) {
+			ite->flag = false;
+			break;
+		}
+	}
 	_select_item = -1;
 }
 
@@ -796,15 +832,27 @@ void Field::drawSettingPlayer( ) {
 
 void Field::drawItem( ) const {
 	//アイテム
-	for ( int i = 0; i < ( int )ITEM_MAX; i++ ) {
+	for ( int i = 0; i < ITEM_POSSESSION_MAX; i++ ) {
 		if ( !_item[ i ].flag ) {
 			continue;
 		}
 
-		_drawer->setCircle( _item[ i ].x, _item[ i ].y, CIRCLE_SIZE, ( COLOR )( WHITE + i ) );
-	}
-	//ピン
-	if ( _pin_image.flag > 0 ) {
-		_drawer->setImage( _pin_image );
+		ImageProperty image = ImageProperty( );
+		image.cx = _item[ i ].x;
+		image.cy = _item[ i ].y;
+		image.flag = _item[ i ].flag;
+		image.png = _item_handle[ _item[ i ].type ];
+		image.brt = 100;
+
+		if ( _phase == SET_MIRROR_PHASE ) {
+			if ( _item[ i ].type == _select_item ) {
+				image.brt = 255;
+			}
+			if ( i == getHitItemIdx( ) ) {
+				image.brt = 255;
+			}
+		}
+
+		_drawer->setImage( image );
 	}
 }

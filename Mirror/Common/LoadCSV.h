@@ -6,8 +6,8 @@
 PTR( LoadCSV );
 
 struct CsvData {
-	std::string name;
-	std::string info;
+	std::string tag;
+	std::string value;
 };
 
 class LoadCSV {
@@ -16,5 +16,6 @@ public:
 	virtual ~LoadCSV( );
 
 public:
+	//QÆ‚Å’l‚ğ’¼Ú“ü‚ê‚é‚½‚ßˆø”•K{
 	void read( std::vector< CsvData > &list, std::string file_name );
 };

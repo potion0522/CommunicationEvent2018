@@ -101,7 +101,7 @@ public:
 
 public:
 	void setInfoText( std::string str, COLOR col = YELLOW );
-	void updateLazerVector( Vector vec );
+	void updateLazerVector( Vector vec, double spd );
 	void hitPlayerPos( );
 	void hitFieldPos( );
 	void setTurn( int turn );
@@ -166,7 +166,7 @@ private:
 	std::array< int, PLAYER_NUM > _player_pos_no;
 	std::array< PlayerPos, PLAYER_POSITION * 2 > _select_player_pos;
 	std::array< COLOR, PLAYER_NUM >_player_color;
-	std::array< Item, ITEM_MAX > _item;
+	std::array< Item, ITEM_POSSESSION_MAX > _item;
 	int _turn;
 	bool _player_selected;
 	bool _mirror_selected;
@@ -191,8 +191,8 @@ private:
 	int _table_handle;
 	std::array< int, PLAYER_NUM > _mirror_handle;
 	std::array< int, BUTTON_IMAGE_NUM > _button_handle;
+	std::array< int, ITEM_MAX > _item_handle;
 	ImageProperty _button_image;
-	ImageProperty _pin_image;
 
 	GlobalDataPtr _data;
 	DrawerPtr _drawer;
