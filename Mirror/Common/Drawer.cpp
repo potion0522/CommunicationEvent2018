@@ -64,24 +64,32 @@ void Drawer::update( ) {
 }
 
 void Drawer::drawImage( ) {
-	std::list< ImageProperty >::iterator ite;
+	std::list< ExtendImageProperty >::iterator ite;
 	ite = _images.begin( );
 	for ( ite; ite != _images.end( ); ite++ ) {
-		if ( ite->png < 1 ) {
+		ImageProperty image = ite->base;
+		if ( image.png < 1 ) {
 			DebugPtr debug( new Debug( ) );
 			debug->error( "drawer->drawImage : ‰æ‘œƒnƒ“ƒhƒ‹‚ª‚ ‚è‚Ü‚¹‚ñ" );
 		}
 
 		bool brend = false;
-		if ( ite->brt < 255 ) {
+		if ( image.brt < 255 ) {
 			brend = true;
 		}
 
 		if ( brend ) {
-			SetDrawBlendMode( DX_BLENDMODE_ALPHA, ite->brt );
+			SetDrawBlendMode( DX_BLENDMODE_ALPHA, image.brt );
 		}
 
-		DrawRotaGraphF( ( float )ite->cx, ( float )ite->cy, ite->size, ite->angle, ite->png, TRUE );
+		//‰æ‘œŠg‘å—¦(•‚¾‚¯A‚‚³‚¾‚¯)•Ï‚¦‚éê‡
+		if ( ite->extend ) {
+			//•ÏŒ`‚µ‚Ä•`‰æ
+			DrawRotaGraph3F( ( float )image.cx, ( float )image.cy, ite->image_cx, ite->image_cy, ite->extend_width, ite->extend_height, image.angle, image.png, TRUE, TRUE );
+		} else {
+			//’Êí•`‰æ
+			DrawRotaGraphF( ( float )image.cx, ( float )image.cy, image.size, image.angle, image.png, TRUE );
+		}
 
 		if ( brend ) {
 			SetDrawBlendMode( DX_BLENDMODE_NOBLEND, 0 );
@@ -207,7 +215,9 @@ void Drawer::setBackImage( ImageProperty png ) {
 }
 
 void Drawer::setImage( ImageProperty png ) {
-	_images.push_back( png );
+	ExtendImageProperty image = ExtendImageProperty( );
+	image.base = png;
+	_images.push_back( image );
 }
 
 void Drawer::setFrontString( bool flag, double x, double y, COLOR col, std::string str, Drawer::FONTSIZE_TYPE type, int brt ) {
@@ -251,6 +261,17 @@ void Drawer::setBox( double lx, double ly, double rx, double ry, COLOR col ){
 	_boxes.push_back( box );
 }
 
+void Drawer::setExtendImage( ImageProperty base, float image_cx, float image_cy, double extend_width, double extend_height ) {
+	ExtendImageProperty image = ExtendImageProperty( );
+	image.extend = true;
+	image.base = base;
+	image.image_cx = image_cx;
+	image.image_cy = image_cy;
+	image.extend_width = extend_width;
+	image.extend_height = extend_height;
+	_images.push_back( image );
+}
+
 int Drawer::getStringW( FONTSIZE_TYPE type, std::string str ) const {
 	return GetDrawFormatStringWidthToHandle( _handle_font[ type ], str.c_str( ) );
 }
@@ -265,7 +286,7 @@ void Drawer::reset( ) {
 	int size = 0;
 	size = ( int )_images.size( );
 	if ( size > 0 ) {
-		std::list< ImageProperty >( ).swap( _images );
+		std::list< ExtendImageProperty >( ).swap( _images );
 	}
 	size = ( int )_front_strings.size( );
 	if ( size > 0 ) {

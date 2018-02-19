@@ -23,8 +23,8 @@ private:
 		float angle;
 	};
 	struct ImageSize {
-		short int width;
-		short int height;
+		float width;
+		float height;
 	};
 public:
 	Lazer( GlobalDataPtr data );

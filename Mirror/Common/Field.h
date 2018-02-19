@@ -2,6 +2,7 @@
 #include "smart_ptr.h"
 #include "Base.h"
 #include "const.h"
+#include <math.h>
 #include <string>
 #include <array>
 #include <map>
@@ -26,6 +27,32 @@ public:
 	struct Vector { 
 		double x;
 		double y;
+		Vector normalize( ) {
+			Vector vec = Vector( );
+			vec.x = x;
+			vec.y = y;
+
+			double length = sqrt( vec.x * vec.x + vec.y * vec.y );
+
+			Vector normal = Vector( );
+			normal.x = vec.x / length;
+			normal.y = vec.y / length;
+
+			//ŽlŽÌŒÜ“ü
+			int tmp = ( int )( normal.x * 10 ) % 10;
+			if ( tmp > 4 ) {
+				normal.x += 1;
+			}
+			normal.x = ( int )normal.x;
+
+			tmp = ( int )( normal.y * 10 ) % 10;
+			if ( tmp > 4 ) {
+				normal.y += 1;
+			}
+			normal.y = ( int )normal.y;
+
+			return normal;
+		}
 		/*
 		Vector getReflection( Vector vec ) {
 			// R = F - 2dot( F, N )N

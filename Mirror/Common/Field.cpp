@@ -355,12 +355,29 @@ void Field::updateLazerVector( Vector vec, double spd ) {
 	for ( ite; ite != _mirrors.end( ); ite++ ) {
 		double mirror_x = START_POS_X + ite->second.x * SQUARE_SIZE + SQUARE_SIZE * 0.5;
 		double mirror_y = START_POS_Y + ite->second.y * SQUARE_SIZE + SQUARE_SIZE * 0.5;
-		double lazer_r = 1;
+		double lazer_r = 16;
 
-		double a = mirror_x - vec.x;
-		double b = mirror_y - vec.y;
-		double c = a * a + b * b;
-		if ( c <= ( lazer_r + MIRROR_R ) * ( lazer_r + MIRROR_R ) ) {
+		Vector past = vec;
+		Vector normal = vec.normalize( );
+		past.x -= normal.x * spd;
+		past.y -= normal.y * spd;
+
+		bool hit = false;
+		for ( past; ( past.x != vec.x || past.y != vec.y ); ) {
+			double a = mirror_x - past.x;
+			double b = mirror_y - past.y;
+			double c = sqrt( a * a + b * b );
+
+			if ( c <= ( lazer_r + MIRROR_R ) ) {
+				hit = true;
+				break;
+			}
+
+			past.x += normal.x;
+			past.y += normal.y;
+		}
+
+		if ( hit ) {
 			already = true;
 			Vector next_dir = Vector( );
 			switch ( _direct ) {

@@ -59,6 +59,8 @@ void Game::initialize( ) {
 	_cutin_image  = ImageProperty( );
 	resetBackCutin( );
 	resetStringCutin( );
+
+	_field->setPlayerNum( _client->getPlayerNum( ) );
 }
 
 void Game::update( ) {
