@@ -162,9 +162,9 @@ void Field::nextTurn( ) {
 }
 
 void Field::update( ) {
-	if ( _select_item > -1 ) {
+	if ( _select_item != -1 ) {
 		resetInfo( );
-		switch ( ( ITEM )_select_item ) {
+		switch ( ( ITEM )_item[ _select_item ].type ) {
 		case LAZER_RESET:
 			setInfoText( "レーザーの位置を強制的に変更します", RED );
 			setInfoText( "ターン経過はなく", RED );
@@ -328,7 +328,10 @@ int Field::getLazerPointIdx( ) const {
 }
 
 int Field::getSelectItem( ) const {
-	return _select_item;
+	if ( _select_item < 0 ) {
+		return -1;
+	}
+	return _item[ _select_item ].type;
 }
 
 void Field::setTurn( int turn ) {
@@ -530,25 +533,22 @@ void Field::mirrorPosNotSelected( ) {
 }
 
 void Field::selectItem( int idx ) {
-	if ( idx < 0 ) {
-		_select_item = -1;
-		return;
-	}
-	_select_item = ( int )_item[ idx ].type;
+	_select_item = idx;
 }
 
 void Field::useItem( ) {
 	if ( _select_item < 0 ) {
 		return;
 	}
-	std::array< Item, ITEM_POSSESSION_MAX >::iterator ite;
-	ite = _item.begin( );
-	for ( ite; ite != _item.end( ); ite++ ) {
-		if ( ite->type == _select_item ) {
-			ite->flag = false;
-			break;
-		}
-	}
+	//std::array< Item, ITEM_POSSESSION_MAX >::iterator ite;
+	//ite = _item.begin( );
+	//for ( ite; ite != _item.end( ); ite++ ) {
+	//	if ( ite->type == _select_item ) {
+	//		ite->flag = false;
+	//		break;
+	//	}
+	//}
+	_item[ _select_item ].flag = false;
 	_select_item = -1;
 }
 
@@ -824,7 +824,7 @@ void Field::drawInfo( ) const {
 }
 
 void Field::drawRound( ) const {
-	_drawer->setFrontString( false, 20, 20, RED, "ROUND : " + std::to_string( _turn / TURN_MAX ) + "  TURN : " + std::to_string( _turn ), Drawer::BIG );
+	_drawer->setFrontString( false, 20, 20, RED, "ROUND : " + std::to_string( ( ( _turn - 1 ) / TURN_MAX ) + 1 ) + "  TURN : " + std::to_string( _turn ), Drawer::BIG );
 }
 
 void Field::drawSettingPlayer( ) {
@@ -862,7 +862,6 @@ void Field::drawSettingPlayer( ) {
 		}
 	}
 	_drawer->setFrontString( false, x, y + 3, WHITE, str + dot, Drawer::LITTLE_BIG );
-	_drawer->setFrontString( false, 20, 20, RED, "ROUND : " + std::to_string( _turn / TURN_MAX ) + "  TURN : " + std::to_string( _turn ), Drawer::BIG );
 }
 
 void Field::drawItem( ) const {
@@ -880,7 +879,7 @@ void Field::drawItem( ) const {
 		image.brt = 100;
 
 		if ( _phase == SET_MIRROR_PHASE ) {
-			if ( _item[ i ].type == _select_item ) {
+			if ( i == _select_item ) {
 				image.brt = 255;
 			}
 			if ( i == getHitItemIdx( ) ) {

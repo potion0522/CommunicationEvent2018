@@ -113,14 +113,15 @@ void Lazer::update( ) {
 	int size = ( int )_lazer.size( );
 	for ( int i = 0; i < size; i++ ) {
 		_drawer->setExtendImage( _lazer[ i ], _lazer_size.width / 2, _lazer_size.height / 2, 1, LAZER_SPEED / _lazer_size.height );
-		//DrawRotaGraph3( ( int )_lazer[ i ].cx, ( int )_lazer[ i ].cy, _lazer_size.width / 2, _lazer_size.height / 2, 1,
-		//	LAZER_SPEED / _lazer_size.height, _lazer[ i ].angle, _lazer[ i ].png, TRUE, TRUE );
 	}
 	drawRefrecEffect( );
 
 	if ( _dead_flag ) {
 		if ( _dead_pnt.cnt < DEAD_EFFECT_MAX - 1 ) {
 			drawDeadEffect( );
+		} else {
+			std::vector< ImageProperty >( ).swap( _lazer );
+			std::list< Coordinate >( ).swap( _reflec_pnt );
 		}
 	}
 
@@ -270,7 +271,7 @@ void Lazer::drawRefrecEffect( ) {
 		return;
 	}
 
-	const int ANIMATION_TIME = 4;
+	const int ANIMATION_TIME = 5;
 
 	std::list< Coordinate >::iterator ite;
 	ite = _reflec_pnt.begin( );

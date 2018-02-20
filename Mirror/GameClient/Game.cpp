@@ -577,7 +577,9 @@ void Game::updateItemCalc( ) {
 
 	if ( !_field->isHitDecisionButton( ) ) {
 		_clicking = 0;
-		_field->selectItem( idx );
+		if ( _field->getFieldPosHitNum( ) < 0 ) {
+			_field->selectItem( idx );
+		}
 		return;
 	}
 
