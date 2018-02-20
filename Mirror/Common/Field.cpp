@@ -124,7 +124,7 @@ void Field::initialize( ) {
 	}
 
 	//アイテムのポジション設定
-	for ( int i = 0; i < ( int )ITEM_MAX; i++ ) {
+	for ( int i = 0; i < ITEM_POSSESSION_MAX; i++ ) {
 		_item[ i ].x = ( float )( ITEM_POS_X + i * SQUARE_SIZE + SQUARE_SIZE * 0.5 );
 		_item[ i ].y = ( float )ITEM_POS_Y;
 	}
@@ -797,7 +797,7 @@ void Field::drawInfo( ) const {
 	int rx = 500;
 	int ry = 500;
 
-	_drawer->setBox( lx, ly, rx, ry );
+	_drawer->setFrontBox( lx, ly, rx, ry );
 
 	for ( int i = 0; i < INFO_TEXT_MAX; i++ ) {
 		double x = lx + ( rx - lx ) / 2;

@@ -167,12 +167,13 @@ void Debug::printScene( ) {
 	SCENE scene = _data->getScene( );
 
 	switch ( scene ) {
-	case NONE   : str = "NONE   " ; break;
-	case TITLE  : str = "TITLE  " ; break;
-	case CONNECT: str = "CONNECT" ; break;
-	case BATTLE : str = "BATTLE " ; break;
-	case RESULT : str = "RESULT " ; break;
-	default		: str = "please set scene"	; break;
+	case NONE        : str = "NONE   "     ; break;
+	case TITLE       : str = "TITLE  "     ; break;
+	case CONNECT     : str = "CONNECT"     ; break;
+	case BATTLE      : str = "BATTLE "     ; break;
+	case RESULT      : str = "RESULT "     ; break;
+	case SELECT_ITEM : str = "SELECT_ITEM" ; break;
+	default          : str = "NONE"        ; break;
 	}
 
 	_drawer->setFrontString( false, SCENE_X, Y_POS, WHITE, "SCENE  : " + str );

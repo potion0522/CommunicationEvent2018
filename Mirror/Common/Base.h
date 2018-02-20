@@ -35,6 +35,11 @@ public:
 		int cnt;
 		int png;
 	};
+	struct LightImageProperty {
+		double cx;
+		double cy;
+		int png;
+	};
 	struct SoundProperty {
 		int soundflag;
 		bool isLoop;

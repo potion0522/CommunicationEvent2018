@@ -56,10 +56,11 @@ void Drawer::update( ) {
 	drawBackImage( );
 	drawBackString( );
 	drawCircle( );
-	drawBox( );
+	drawBackBox( );
 	drawLine( );
 	drawImage( );
 	drawFrontString( );
+	drawFrontBox( );
 	reset( );
 }
 
@@ -176,18 +177,29 @@ void Drawer::drawCircle( ) {
 	SetDrawMode( DX_DRAWMODE_NEAREST );
 }
 
-void Drawer::drawBox( ) {
+void Drawer::drawFrontBox( ) {
 	std::list< BoxProperty >::iterator ite;
-	ite = _boxes.begin( );
-	if( _boxes.size( ) < 1 ) {
+	ite = _front_boxes.begin( );
+	if( _front_boxes.size( ) < 1 ) {
 		return;
 	}
 
-	for( ite; ite != _boxes.end( ); ite++ ) {
+	for( ite; ite != _front_boxes.end( ); ite++ ) {
 		DrawBoxAA( ite->lx, ite->ly, ite->rx, ite->ry, _color->getColor( ite->col ), FALSE );
 	}
 }
 
+void Drawer::drawBackBox( ) {
+	std::list< BoxProperty >::iterator ite;
+	ite = _back_boxes.begin( );
+	if( _back_boxes.size( ) < 1 ) {
+		return;
+	}
+
+	for( ite; ite != _back_boxes.end( ); ite++ ) {
+		DrawBoxAA( ite->lx, ite->ly, ite->rx, ite->ry, _color->getColor( ite->col ), FALSE );
+	}
+}
 void Drawer::drawBackImage( ) {
 	if ( _back_image.png < 0 ) {
 		DebugPtr debug( new Debug( ) );
@@ -256,9 +268,14 @@ void Drawer::setCircle( double x, double y, double r, COLOR col, int brt, bool i
 	_circles.push_back( circle );
 }
 
-void Drawer::setBox( double lx, double ly, double rx, double ry, COLOR col ){
+void Drawer::setFrontBox( double lx, double ly, double rx, double ry, COLOR col ){
 	BoxProperty box = { ( float )lx, ( float )ly, ( float )rx, ( float )ry, col };
-	_boxes.push_back( box );
+	_front_boxes.push_back( box );
+}
+
+void Drawer::setBackBox( double lx, double ly, double rx, double ry, COLOR col ){
+	BoxProperty box = { ( float )lx, ( float )ly, ( float )rx, ( float )ry, col };
+	_back_boxes.push_back( box );
 }
 
 void Drawer::setExtendImage( ImageProperty base, float image_cx, float image_cy, double extend_width, double extend_height ) {
@@ -304,8 +321,12 @@ void Drawer::reset( ) {
 	if ( size > 0 ) {
 		std::list< CircleProperty >( ).swap( _circles );
 	}
-	size = ( int )_boxes.size( );
+	size = ( int )_front_boxes.size( );
 	if ( size > 0 ) {
-		std::list< BoxProperty >( ).swap( _boxes );
+		std::list< BoxProperty >( ).swap( _front_boxes );
+	}
+	size = ( int )_back_boxes.size( );
+	if ( size > 0 ) {
+		std::list< BoxProperty >( ).swap( _back_boxes );
 	}
 }

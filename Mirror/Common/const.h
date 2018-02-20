@@ -6,6 +6,8 @@ const int SCREEN_HEIGHT = 1080;
 //‰ð‘œ“x
 const int WIDTH = 1280;
 const int HEIGHT = 720;
+const float WIDTH_F = ( float )WIDTH;
+const float HEIGHT_F = ( float )HEIGHT;
 
 const int FRAME = 60;
 

@@ -36,7 +36,8 @@ public:
 	void setBackString( bool flag, double x, double y, COLOR col, std::string str, FONTSIZE_TYPE type = NORMAL, int brt = 255 );
 	void setLine( double sx, double sy, double ex, double ey, COLOR col = WHITE, int brt = 255 );
 	void setCircle( double x, double y, double r, COLOR col = WHITE, int brt = 255, bool isfill = false );
-	void setBox( double lx, double ly, double rx, double ry, COLOR col = WHITE );
+	void setFrontBox( double lx, double ly, double rx, double ry, COLOR col = WHITE );
+	void setBackBox( double lx, double ly, double rx, double ry, COLOR col = WHITE );
 	void setExtendImage( ImageProperty base, float image_cx, float image_cy, double extend_width, double extend_height );
 	int getStringW( FONTSIZE_TYPE type, std::string str ) const;
 	int getStringH( FONTSIZE_TYPE type ) const;
@@ -48,7 +49,8 @@ private:
 	void drawBackString( );
 	void drawLine( );
 	void drawCircle( );
-	void drawBox( );
+	void drawFrontBox( );
+	void drawBackBox( );
 	void reset( );
 
 private:
@@ -101,7 +103,8 @@ private:
 	std::list< ExtendImageProperty > _images;
 	std::list< LineProperty > _lines;
 	std::list< CircleProperty > _circles;
-	std::list< BoxProperty > _boxes;
+	std::list< BoxProperty > _back_boxes;
+	std::list< BoxProperty > _front_boxes;
 
 	ColorPtr _color;
 };

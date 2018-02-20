@@ -1,5 +1,6 @@
 #include "MouseEvent.h"
 #include "DxLib.h"
+#include <limits.h>
 
 MouseEvent::MouseEvent( ) {
 	initialize( );
@@ -24,7 +25,7 @@ void MouseEvent::update( ) {
 
 void MouseEvent::calcLeftClick( ) {
 	if ( _mouse & MOUSE_INPUT_LEFT ) {
-		_click_left++;
+		_click_left = ( _click_left + 1 ) % INT_MAX;
 		return;
 	}
 	_click_left = 0;
@@ -32,7 +33,7 @@ void MouseEvent::calcLeftClick( ) {
 
 void MouseEvent::calcRightClick( ) {
 	if ( _mouse & MOUSE_INPUT_RIGHT ) {
-		_click_right++;
+		_click_right = ( _click_right + 1 ) % INT_MAX;
 		return;
 	}
 	_click_right = 0;
