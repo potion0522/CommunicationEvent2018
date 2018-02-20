@@ -93,20 +93,37 @@ void Field::initialize( ) {
 	LoadCSVPtr load( new LoadCSV( ) );
 	load->read( item_data, "item" );
 
-	//アイテムを読み込む
-	std::vector< CsvData >::iterator ite;
-	ite = item_data.begin( );
-	int cnt = 0;
-	for ( ite; ite != item_data.end( ); ite++ ) {
-		if ( atoi( ite->values[ 0 ].c_str( ) ) < 1 ) {
-			continue;
+	{//アイテムを読み込む
+		std::array< int, ITEM_MAX > values;
+		std::array< int, ITEM_MAX >( ).swap( values );
+
+		std::vector< CsvData >::iterator ite;
+		ite = item_data.begin( );
+
+		//値を詰める
+		for ( ite; ite != item_data.end( ); ite++ ) {
+			values[ ( int )std::distance( item_data.begin( ), ite ) ] = atoi( ite->values[ 0 ].c_str( ) );
 		}
-		if ( cnt >= ITEM_POSSESSION_MAX ) {
-			break;
+
+		//反映
+		int idx = 0;
+		int value_idx = 0;
+		while ( true ) {
+			if ( values[ value_idx ] > 0 ) {
+				_item[ idx ].flag = true;
+				_item[ idx ].type = value_idx;
+				values[ value_idx ]--;
+				idx++;
+				if ( idx >= ITEM_POSSESSION_MAX ) {
+					break;
+				}
+				continue;
+			}
+			value_idx++;
+			if ( value_idx >= ITEM_MAX ) {
+				break;
+			}
 		}
-		_item[ cnt ].flag = true;
-		_item[ cnt ].type = ( short int )std::distance( item_data.begin( ), ite );
-		cnt++;
 	}
 
 	for ( int i = 0; i < PLAYER_POSITION * 2; i++ ) {

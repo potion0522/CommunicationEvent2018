@@ -26,11 +26,13 @@ void ResultClient::initialize( ) {
 void ResultClient::update( ) {
 	if ( _win ) {
 		//Ÿ—˜
-		_drawer->setFrontString( true, WIDTH / 2, HEIGHT / 2, RED, "‚ ‚È‚½‚ÌŸ‚¿", Drawer::BIG );
+		_drawer->setFrontString( true, WIDTH / 2, HEIGHT / 3, RED, "‚ ‚È‚½‚ÌŸ‚¿", Drawer::SUPER_BIG );
 	} else {
 		//”s–k
-		_drawer->setFrontString( true, WIDTH / 2, HEIGHT / 2, RED, "‚ ‚È‚½‚Ì•‰‚¯", Drawer::BIG );
+		_drawer->setFrontString( true, WIDTH / 2, HEIGHT / 3, RED, "‚ ‚È‚½‚Ì•‰‚¯", Drawer::SUPER_BIG );
 	}
+
+	_drawer->setFrontString( true, WIDTH / 2, HEIGHT / 5 * 3, YELLOW, "Press \"ENTER\" Key", Drawer::BIG );
 
 	if ( _data->getKeyState( _keyboard->getKeyCode( KeyBoard::ENTER_KEY ) ) == 1 ) {
 		_data->setInitFlag( );

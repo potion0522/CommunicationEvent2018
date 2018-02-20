@@ -57,9 +57,6 @@ void Debug::error( std::string err ) {
 
 	fprintf_s( _fp, "[ %s ] %s", buf, err.c_str( ) );
 	fclose( _fp );
-
-	DxLib_End( );
-	exit( 0 );
 }
 
 void Debug::update( ) {

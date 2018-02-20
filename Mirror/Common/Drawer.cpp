@@ -86,7 +86,7 @@ void Drawer::drawImage( ) {
 		//‰æ‘œŠg‘å—¦(•‚¾‚¯A‚‚³‚¾‚¯)•Ï‚¦‚éê‡
 		if ( ite->extend ) {
 			//•ÏŒ`‚µ‚Ä•`‰æ
-			DrawRotaGraph3F( ( float )image.cx, ( float )image.cy, ite->image_cx, ite->image_cy, ite->extend_width, ite->extend_height, image.angle, image.png, TRUE, TRUE );
+			DrawRotaGraph3F( ( float )image.cx, ( float )image.cy, ite->image_cx, ite->image_cy, ite->extend_width, ite->extend_height, image.angle, image.png, TRUE, FALSE );
 		} else {
 			//’Êí•`‰æ
 			DrawRotaGraphF( ( float )image.cx, ( float )image.cy, image.size, image.angle, image.png, TRUE );

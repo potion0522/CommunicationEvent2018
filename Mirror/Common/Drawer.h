@@ -38,6 +38,7 @@ public:
 	void setCircle( double x, double y, double r, COLOR col = WHITE, int brt = 255, bool isfill = false );
 	void setFrontBox( double lx, double ly, double rx, double ry, COLOR col = WHITE );
 	void setBackBox( double lx, double ly, double rx, double ry, COLOR col = WHITE );
+	//ベースプロパティ, 画像の中心X, 画像の中心Y, 最終的な横幅, 最終的な高さ
 	void setExtendImage( ImageProperty base, float image_cx, float image_cy, double extend_width, double extend_height );
 	int getStringW( FONTSIZE_TYPE type, std::string str ) const;
 	int getStringH( FONTSIZE_TYPE type ) const;
@@ -60,8 +61,8 @@ private:
 		bool extend = false;
 		float image_cx;//画像の中心X
 		float image_cy;//画像の中心Y
-		double extend_width;//最終的な横幅の比率
-		double extend_height;//最終的な高さの比率
+		double extend_width;//最終的な横幅
+		double extend_height;//最終的な高さ
 	};
 
 	struct StringProperty {
