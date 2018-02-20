@@ -44,7 +44,7 @@ void Console::update( ) {
 
 void Console::ready( ) {
 	if ( _data->getScene( ) != CONNECT ) {
-		_data->setScene( CONNECT );
+		_data->setInitFlag( );
 		return;
 	}
 

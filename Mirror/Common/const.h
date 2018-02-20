@@ -61,6 +61,7 @@ enum COLOR {
 enum SCENE {
 	ALL,
 	NONE,
+	SELECT_ITEM,
 	TITLE,
 	CONNECT,
 	BATTLE,

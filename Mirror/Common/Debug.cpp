@@ -9,10 +9,8 @@
 const int ACTIVE_CLASS_X = 20;
 const int LOG_X = WIDTH - 250;
 const int SCENE_X = 20;
-const int MOUSE_X = 200;
 const int Y_POS = 20;
 const int ACTIVE_CLASS_INIT_Y = 40;
-const int MOUSE_Y = 20;
 
 Debug::Debug( GlobalDataPtr data ) :
 _data( data ){
@@ -68,8 +66,8 @@ void Debug::update( ) {
 	printLog( );
 	printActiveClass( );
 	printScene( );
-	drawMousePoint( );
 	drawMyIp( );
+	drawMousePoint( );
 	//DrawCircle( WIDTH / 2, HEIGHT /2, 5, _color->getColor( RED ), TRUE );
 
 	if ( _data->getKeyState( KEY_INPUT_RETURN ) == 1 && !_data->getCommandFlag( ) ) {
@@ -119,6 +117,9 @@ void Debug::commandExecution( ) {
 			if ( str == "RESULT" ) {
 				scene = RESULT;
 			}
+			if ( str == "SELECTITEM" ) {
+				scene = SELECT_ITEM;
+			}
 
 			if ( scene != NONE ) {
 				_data->setScene( scene );
@@ -128,9 +129,15 @@ void Debug::commandExecution( ) {
 }
 
 void Debug::drawMousePoint( ) {
+	const int DRAW_X = 20;
 	int x = _data->getMouseX( );
 	int y = _data->getMouseY( );
-	_drawer->setFrontString( false, MOUSE_X, MOUSE_Y, WHITE, "x : " + std::to_string( x ) + " y : " + std::to_string( y ) );
+	_drawer->setFrontString( false, DRAW_X, _active_y, WATER, "MOUSE_POINT" );
+	_active_y += Y_POS;
+	_drawer->setFrontString( false, DRAW_X, _active_y, WATER, "X : " + std::to_string( x ) );
+	_active_y += Y_POS;
+	_drawer->setFrontString( false, DRAW_X, _active_y, WATER, "Y : " + std::to_string( y ) );
+	_active_y += Y_POS;
 }
 
 void Debug::printLog( ) {

@@ -17,7 +17,6 @@ const int ITEM_POS_Y = 600;
 const int BUTTON_X = WIDTH / 5;
 const int BUTTON_Y = HEIGHT / 5;
 const int MIRROR_IMAGE_IDX = 2;
-const int PIN_IDX = 1;
 
 char field[ FIELD_COL * FIELD_ROW + 1 ] = 
 "     "
@@ -53,8 +52,8 @@ _data( data ) {
 	}
 
 	//ƒAƒCƒeƒ€
-	for ( int i = PIN_IDX; i < ITEM_MAX/* + PIN_IDX*/; i++ ) {
-		_item_handle[ i/* - PIN_IDX*/ ] = _image->getPng( ITEM_IMAGE, i ).png;
+	for ( int i = 0; i < ITEM_MAX; i++ ) {
+		_item_handle[ i ] = _image->getPng( ITEM_IMAGE, i ).png;
 	}
 }
 
@@ -139,6 +138,7 @@ void Field::nextTurn( ) {
 	_dead_flag = -1;
 	_hit_mirror_num = -1;
 	_field_pos_hit_num = -1;
+	_select_item = -1;
 	_direct = DIR( );
 	_tmp_mirror = Mirror( );
 	_reflection_point = Vector( );

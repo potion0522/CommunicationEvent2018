@@ -8,6 +8,7 @@
 #include "Field.h"
 #include "Game.h"
 #include "ResultClient.h"
+#include "SelectItem.h"
 
 /**********************************************************
 *														  *
@@ -34,6 +35,7 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 		//ŒvŽZƒNƒ‰ƒX
 		ConsolePtr console( new Console( data ) );
+		SelectItemPtr slct_item( new SelectItem( data ) );
 		TitlePtr title( new Title( data ) );
 		FieldPtr field( new Field( data ) );
 		data->setPtr( field );
@@ -42,6 +44,7 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 		ResultClientPtr result( new ResultClient( data, game ) );
 
 		direction->add( ALL, data );
+		direction->add( SELECT_ITEM, slct_item );
 		direction->add( TITLE, title );
 		direction->add( CONNECT, console );
 		direction->add( BATTLE, field );
