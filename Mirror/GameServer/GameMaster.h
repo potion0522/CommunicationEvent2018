@@ -62,6 +62,7 @@ private:
 	bool _dice;
 	bool _use_item;
 	bool _reverse_mirror;
+	bool _field_draw_flag;
 	int _item;
 	int _item_user;
 	int _winner;

@@ -43,12 +43,6 @@ private:
 	void drawButton( ) const;
 
 private:
-	struct BoxCollider {
-		float lx;
-		float ly;
-		float rx;
-		float ry;
-	};
 	struct BoxObject {
 		BoxCollider collider;
 		LightImageProperty image;

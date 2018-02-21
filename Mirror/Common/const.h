@@ -20,6 +20,10 @@ const int ITEM_POSSESSION_MAX = 3;
 const int TCP_PORT = 9850;
 const int UDP_PORT = 9900;
 
+const short int GAME_START_BUTTON_IDX = 0;
+const short int ITEM_SELECT_BUTTON_IDX = 2;
+const short int BATTLE_BUTTON_IDX = 4;
+
 struct SendMirrorData {
 	bool flag;
 	unsigned char player_num;

@@ -32,13 +32,13 @@ _data( data ) {
 	_image = _data->getImagePtr( );
 	_cur_hand  = LoadCursor( NULL, IDC_HAND );
 
-	for ( int i = 0; i < BUTTON_IMAGE_NUM; i++ ) {
-		_button_handle[ i ] = _image->getPng( BUTTON_IMAGE, i ).png;
+	for ( int i = 0; i < BATTLE_BUTTON_IMAGE_NUM; i++ ) {
+		_button_handle[ i ] = _image->getPng( BUTTON_IMAGE, BATTLE_BUTTON_IDX + i ).png;
 	}
 
 	Png png = Png( );
 	//ƒ{ƒ^ƒ“
-	png = _image->getPng( BUTTON_IMAGE, 0 );
+	png = _image->getPng( BUTTON_IMAGE, BATTLE_BUTTON_IDX );
 	_button_image.cx = BUTTON_X;
 	_button_image.cy = BUTTON_Y;
 	_button_image.png = png.png;
@@ -277,7 +277,7 @@ bool Field::isHitDecisionButton( ) const {
 	int mouse_x = _data->getMouseX( );
 	int mouse_y = _data->getMouseY( );
 
-	Png png = _image->getPng( BUTTON_IMAGE, 0 );
+	Png png = _image->getPng( BUTTON_IMAGE, BATTLE_BUTTON_IDX );
 	int lx = BUTTON_X - png.width / 2;
 	int rx = BUTTON_X + png.width / 2;
 	int ly = BUTTON_Y - png.height / 2;
@@ -340,6 +340,7 @@ void Field::setTurn( int turn ) {
 
 void Field::setPlayerNum( int num ) {
 	_player_num = num;
+	_button_image.png = _button_handle[ _player_num * PLAYER_NUM ];
 }
 
 void Field::setInfoText( std::string str, COLOR col ) {
@@ -568,7 +569,7 @@ void Field::changeClickButton( ) {
 		idx++;
 	}
 
-	_button_image.png = _image->getPng( BUTTON_IMAGE, idx ).png;
+	_button_image.png = _image->getPng( BUTTON_IMAGE, BATTLE_BUTTON_IDX + idx ).png;
 }
 
 Field::Vector Field::getLazerPoint( ) const {

@@ -2,6 +2,7 @@
 #include "GlobalData.h"
 #include "Drawer.h"
 #include "Image.h"
+#include "KeyBoard.h"
 #include <errno.h>
 #include <assert.h>
 
@@ -63,14 +64,14 @@ _data( data ) {
 
 	{//Œˆ’èƒ{ƒ^ƒ“
 		for ( int i = 0; i < BUTTON_TYPE_MAX; i++ ) {
-			_button_handles[ i ] = image_ptr->getPng( BUTTON_IMAGE, i ).png;
+			_button_handles[ i ] = image_ptr->getPng( BUTTON_IMAGE, BATTLE_BUTTON_IDX + i ).png;
 		}
 		_button.image.cx = BUTTON_X;
 		_button.image.cy = BUTTON_Y;
-		_button.image.png = image_ptr->getPng( BUTTON_IMAGE, 0 ).png;
+		_button.image.png = image_ptr->getPng( BUTTON_IMAGE, BATTLE_BUTTON_IDX ).png;
 
-		float hulf_width  = image_ptr->getPng( BUTTON_IMAGE, 0 ).width * 0.5f;
-		float hulf_height = image_ptr->getPng( BUTTON_IMAGE, 0 ).height * 0.5f;
+		float hulf_width  = image_ptr->getPng( BUTTON_IMAGE, BATTLE_BUTTON_IDX ).width * 0.5f;
+		float hulf_height = image_ptr->getPng( BUTTON_IMAGE, BATTLE_BUTTON_IDX ).height * 0.5f;
 		_button.collider.lx = ( float )_button.image.cx - hulf_width;
 		_button.collider.rx = ( float )_button.image.cx + hulf_width;
 		_button.collider.ly = ( float )_button.image.cy - hulf_height;
@@ -127,6 +128,12 @@ void SelectItem::initialize( ) {
 }
 
 void SelectItem::update( ) {
+	KeyBoardPtr keyboard( new KeyBoard( ) );
+	if ( _data->getKeyState( keyboard->getKeyCode( KeyBoard::X_KEY ) ) == 1 ) {
+		_data->setScene( TITLE );
+		return;
+	}
+
 	//Œˆ’è‚ð‰Ÿ‚µ‚½‚ç
 	if ( _input ) {
 

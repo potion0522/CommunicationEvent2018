@@ -20,7 +20,7 @@ const int FIELD_COL = 5;
 const int START_POS_X = WIDTH / 3 * 2 - SQUARE_SIZE * FIELD_COL / 2;
 const int START_POS_Y = HEIGHT / 2 - SQUARE_SIZE * FIELD_ROW / 2;
 const int INFO_TEXT_MAX = 6;
-const int BUTTON_IMAGE_NUM = 4;
+const int BATTLE_BUTTON_IMAGE_NUM = 4;
 
 class Field : public Base {
 public:
@@ -217,7 +217,7 @@ private:
 	//‰æ‘œŠÖ˜A
 	int _table_handle;
 	std::array< int, PLAYER_NUM > _mirror_handle;
-	std::array< int, BUTTON_IMAGE_NUM > _button_handle;
+	std::array< int, BATTLE_BUTTON_IMAGE_NUM > _button_handle;
 	std::array< int, ITEM_MAX > _item_handle;
 	ImageProperty _button_image;
 

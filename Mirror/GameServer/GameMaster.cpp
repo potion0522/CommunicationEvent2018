@@ -30,6 +30,7 @@ void GameMaster::initialize( ) {
 	_dice = true;
 	_use_item = false;
 	_reverse_mirror = false;
+	_field_draw_flag = false;
 	_winner = -1;
 	_turn = 1;
 	_item = 0;
@@ -39,8 +40,12 @@ void GameMaster::initialize( ) {
 		_client_data[ i ].order = i + 1;
 	}
 	_phase = SET_PLAYER_PHASE;
+
 	_server->setBattlePhase( _phase );
+	_field->initialize( );
 	_field->setPhase( _phase );
+	_field->setPlayerNum( 1 );
+	_field->playerPosSelected( );
 }
 
 void GameMaster::update( ) {
@@ -55,6 +60,12 @@ void GameMaster::update( ) {
 	if ( !_matching ) {
 		return;
 	}
+
+	//フラグが立っていればフィールドを描画
+	if ( _field_draw_flag ) {
+		_field->update( );
+	}
+
 	commandExecution( );
 
 	if ( !_dice ) {
@@ -456,6 +467,13 @@ void GameMaster::commandExecution( ) {
 	if ( _command->getWordNum( ) < 2 ) {
 		return;
 	}
+
+	if ( _command->getWord( 0 ) == "DRAW" ) {
+		if ( _command->getWord( 1 ) == "FIELD" ) {
+			_field_draw_flag = !_field_draw_flag;
+		}
+	}
+
 
 	if ( _command->getWord( 0 ) != "SET" ) {
 		return;

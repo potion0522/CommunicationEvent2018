@@ -40,6 +40,12 @@ public:
 		double cy;
 		int png;
 	};
+	struct BoxCollider {
+		float lx;
+		float ly;
+		float rx;
+		float ry;
+	};
 	struct SoundProperty {
 		int soundflag;
 		bool isLoop;
