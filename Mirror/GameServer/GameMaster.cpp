@@ -14,6 +14,10 @@ _connector( connector ),
 _log( log ),
 _command( command ) {
 	_field = FieldPtr( new Field( _data ) );
+	_field->initialize( );
+	_field->setPhase( _phase );
+	_field->setPlayerNum( 1 );
+	_field->playerPosSelected( );
 	_server = _data->getServerPtr( );
 	setFlag( 1 );
 }

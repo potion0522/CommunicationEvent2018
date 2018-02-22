@@ -38,17 +38,20 @@ _data( data ) {
 	_drawer = _data->getDrawerPtr( );
 	_image = _data->getImagePtr( );
 	_cur_hand  = LoadCursor( NULL, IDC_HAND );
+	_table_handle = -1;
+	std::array< int, PLAYER_NUM >( ).swap( _mirror_handle );
+	std::array< int, BATTLE_BUTTON_IMAGE_NUM >( ).swap( _button_handle );
+	std::array< int, ITEM_MAX >( ).swap( _item_handle );
+	std::array< int, LAZER_TYPE_MAX >( ).swap( _lazer_handle );
+	_button_image = LightImageProperty( );
+	_lazer_image = LightImageProperty( );
+
+	Png png = Png( );
+	//ボタン
 
 	for ( int i = 0; i < BATTLE_BUTTON_IMAGE_NUM; i++ ) {
 		_button_handle[ i ] = _image->getPng( BUTTON_IMAGE, BATTLE_BUTTON_IDX + i ).png;
 	}
-
-	Png png = Png( );
-	//ボタン
-	png = _image->getPng( BUTTON_IMAGE, BATTLE_BUTTON_IDX );
-	_button_image.cx = BUTTON_X;
-	_button_image.cy = BUTTON_Y;
-	_button_image.png = png.png;
 
 	//フィールド
 	_table_handle = _image->getPng( BATTLE_IMAGE, TABLE_IDX ).png;
@@ -62,6 +65,17 @@ _data( data ) {
 	for ( int i = 0; i < ITEM_MAX; i++ ) {
 		_item_handle[ i ] = _image->getPng( ITEM_IMAGE, i ).png;
 	}
+
+	//レーザー
+	for ( int i = 0; i < LAZER_TYPE_MAX; i++ ) {
+		_lazer_handle[ i ] = _image->getPng( BATTLE_IMAGE, i ).png;
+	}
+
+	//背景	
+	_background = LightImageProperty( );
+	_background.cx = WIDTH / 2;
+	_background.cy = HEIGHT / 2;
+	_background.png = _image->getPng( BACKGROUND_IMAGE, BACKGROUND_NORMAL ).png;
 }
 
 Field::~Field( ) {
@@ -75,6 +89,7 @@ void Field::initialize( ) {
 	_turn = 1;
 	_player_selected = false;
 	_mirror_selected = false;
+	_button_lighting = false;
 	_reflection = false;
 	_order = ( unsigned char )-1;
 	_info_idx = 0;
@@ -152,6 +167,10 @@ void Field::initialize( ) {
 		_item[ i ].x = ( float )( ITEM_POS_X + i * SQUARE_SIZE + SQUARE_SIZE * 0.5 );
 		_item[ i ].y = ( float )ITEM_POS_Y;
 	}
+
+	//ボタンポジション
+	_button_image.cx = BUTTON_X;
+	_button_image.cy = BUTTON_Y;
 }
 
 void Field::nextTurn( ) {
@@ -193,6 +212,7 @@ void Field::update( ) {
 		}
 	}
 
+	drawBackGround( );
 	drawField( );
 	drawPlayer( );
 	drawArmament( );
@@ -200,8 +220,8 @@ void Field::update( ) {
 	drawInfo( );
 	drawRound( );
 	drawItem( );
-
 	resetInfo( );
+	_button_lighting = false;
 
 	if ( _phase == SET_PLAYER_PHASE ) {
 		drawPlayerPos( );
@@ -484,6 +504,13 @@ void Field::setLazerPoint( int pos ) {
 		dir.y = -1;
 	}
 	setDirect( dir );
+
+	if ( _lazer_point_idx < 0 ) {
+		return;
+	}
+	_lazer_image.cx = _select_player_pos[ _lazer_point_idx ].x;
+	_lazer_image.cy = _select_player_pos[ _lazer_point_idx ].y;
+	_lazer_image.png = _lazer_handle[ _lazer_point_idx / PLAYER_POSITION ];
 }
 
 void Field::setTmpPlayerPoint( ) {
@@ -548,14 +575,6 @@ void Field::useItem( ) {
 	if ( _select_item < 0 ) {
 		return;
 	}
-	//std::array< Item, ITEM_POSSESSION_MAX >::iterator ite;
-	//ite = _item.begin( );
-	//for ( ite; ite != _item.end( ); ite++ ) {
-	//	if ( ite->type == _select_item ) {
-	//		ite->flag = false;
-	//		break;
-	//	}
-	//}
 	_item[ _select_item ].flag = false;
 	_select_item = -1;
 }
@@ -574,9 +593,14 @@ void Field::changeClickButton( ) {
 
 	if ( _data->getClickingLeft( ) > 0 && isHitDecisionButton( ) ) {
 		idx++;
+		_button_lighting = false;
 	}
 
 	_button_image.png = _image->getPng( BUTTON_IMAGE, BATTLE_BUTTON_IDX + idx ).png;
+}
+
+void Field::activeButtonLighting( ) {
+	_button_lighting = true;
 }
 
 Field::Vector Field::getLazerPoint( ) const {
@@ -666,11 +690,7 @@ void Field::drawArmament( ) const {
 	if ( _lazer_point_idx < 0 ) {
 		return;
 	}
-
-	double x = _select_player_pos[ _lazer_point_idx ].x;
-	double y = _select_player_pos[ _lazer_point_idx ].y;
-
-	_drawer->setCircle( x, y, CIRCLE_SIZE, PURPLE, 150, true );
+	_drawer->setImage( _lazer_image );
 }
 
 void Field::drawTmpMirror( ) const {
@@ -724,7 +744,15 @@ void Field::drawDecisionButton( ) const {
 		SetCursor( _cur_hand );
 	}
 
-	_drawer->setImage( _button_image );
+	ImageProperty image = ImageProperty( );
+	image.cx = _button_image.cx;
+	image.cy = _button_image.cy;
+	image.png = _button_image.png;
+	if ( _button_lighting ) {
+		//光るようにする
+	}
+
+	_drawer->setImage( image );
 }
 
 void Field::drawMirror( ) const {
@@ -897,4 +925,8 @@ void Field::drawItem( ) const {
 
 		_drawer->setImage( image );
 	}
+}
+
+void Field::drawBackGround( ) const {
+	_drawer->setBackImage( _background );
 }

@@ -47,6 +47,14 @@ void Lazer::initialize( ) {
 	std::vector< ImageProperty >( ).swap( _lazer );
 	std::list< Coordinate >( ).swap( _reflec_pnt );
 	_dead_pnt = Coordinate( );
+
+	const short int ADJUSTMENT = ( short int )( SQUARE_SIZE * 0.4 );
+	int idx = _field->getLazerPointIdx( );
+	if ( idx / PLAYER_POSITION ) {
+		_start.y += ADJUSTMENT;
+	} else {
+		_start.x += ADJUSTMENT;
+	}
 }
 
 void Lazer::update( ) {
@@ -110,10 +118,7 @@ void Lazer::update( ) {
 
 
 	//•`‰æ
-	int size = ( int )_lazer.size( );
-	for ( int i = 0; i < size; i++ ) {
-		_drawer->setExtendImage( _lazer[ i ], _lazer_size.width / 2, _lazer_size.height / 2, 1, LAZER_SPEED / _lazer_size.height );
-	}
+	drawLazerLine( );
 	drawRefrecEffect( );
 
 	if ( _dead_flag ) {
@@ -124,8 +129,6 @@ void Lazer::update( ) {
 			std::list< Coordinate >( ).swap( _reflec_pnt );
 		}
 	}
-
-	//clearBomEffect( );
 }
 
 bool Lazer::isFinish( ) const {
@@ -158,31 +161,6 @@ void Lazer::updateUnitVector( ) {
 	coordinate.x = ( short int )_start.x;
 	coordinate.y = ( short int )_start.y;
 	_reflec_pnt.push_back( coordinate );
-}
-
-void Lazer::clearBomEffect( ) {
-	int size = ( int )_reflec_pnt.size( );
-	if ( size < 1 ) {
-		return;
-	}
-
-	std::list< Coordinate >::iterator ite;
-	bool clear = false;
-	while ( !clear ) {
-		size = ( int )_reflec_pnt.size( );
-		if ( size < 1 ) {
-			return;
-		}
-
-		ite = _reflec_pnt.begin( );
-		for ( ite; ite != _reflec_pnt.end( ); ite++ ) {
-			if ( ite->cnt >= BOM_EFFECT_MAX ) {
-				_reflec_pnt.erase( ite );
-				break;
-			}
-			clear = true;
-		}
-	}
 }
 
 double Lazer::getLazerImageAngle( ) {
@@ -265,6 +243,17 @@ double Lazer::getReflectEffectAngle( Field::Vector old_vec, Field::Vector new_ve
 	return angle;
 }
 
+void Lazer::drawLazerLine( ) const {
+	int size = ( int )_lazer.size( );
+	if ( size < 1 ) {
+		return;
+	}
+
+	for ( int i = 0; i < size; i++ ) {
+		_drawer->setExtendImage( _lazer[ i ], _lazer_size.width / 2, _lazer_size.height / 2, 1, LAZER_SPEED / _lazer_size.height );
+	}
+}
+
 void Lazer::drawRefrecEffect( ) {
 	int size = ( int )_reflec_pnt.size( );
 	if ( size < 1 ) {
@@ -295,6 +284,7 @@ void Lazer::drawDeadEffect( ) {
 	image.cx = _dead_pnt.x;
 	image.cy = _dead_pnt.y;
 	image.png = _dead_effect_images[ _dead_pnt.cnt ];
+	image.size = 1.5;
 	_drawer->setImage( image );
 
 	_dead_pnt.cnt = _wait / ( DEAD_EFFECT_MAX / 2 );

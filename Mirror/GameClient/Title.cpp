@@ -1,9 +1,9 @@
 #include "Title.h"
-#include "DxLib.h"
 #include "GlobalData.h"
 #include "Image.h"
 #include "Drawer.h"
 #include "Client.h"
+#include "const.h"
 
 Title::Title( GlobalDataPtr data ) :
 _data( data ) {
@@ -16,7 +16,14 @@ _data( data ) {
 		_back = LightImageProperty( );
 		_back.cx = WIDTH / 2;
 		_back.cy = HEIGHT / 2;
-		_back.png = image_ptr->getPng( NONE_IMAGE, 0 ).png;
+		_back.png = image_ptr->getPng( BACKGROUND_IMAGE, BACKGROUND_WHITE ).png;
+	}
+
+	{//タイトルロゴ
+		_title_logo = LightImageProperty( );
+		_title_logo.cx = WIDTH_F * 0.5;
+		_title_logo.cy = image_ptr->getPng( TITLE_IMAGE, 0 ).height * 0.5;
+		_title_logo.png = image_ptr->getPng( TITLE_IMAGE, 0 ).png;
 	}
 
 	{//ボタン
@@ -113,15 +120,11 @@ void Title::chengeNextScene( ) {
 }
 
 void Title::drawBackGround( ) const {
-	ImageProperty image = ImageProperty( );
-	image.cx = _back.cx;
-	image.cy = _back.cy;
-	image.png = _back.png;
-	_drawer->setBackImage( image );
+	_drawer->setBackImage( _back );
 }
 
 void Title::drawTitle( ) const {
-	_drawer->setFrontString( true, WIDTH_F * 0.5f, HEIGHT_F * 0.2f, RED, "M I R R O R", Drawer::SUPER_BIG );
+	_drawer->setImage( _title_logo );
 }
 
 void Title::drawButton( ) const {

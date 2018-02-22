@@ -3,6 +3,7 @@
 #include "Debug.h"
 #include "smart_ptr.h"
 #include <assert.h>
+#include <errno.h>
 
 const std::string PATH = "Resources/image/";
 
@@ -35,10 +36,13 @@ void Image::initialize( ) {
 		case LAZER_IMAGE         : add.name = "lazer"        ; break;
 		case BAR_IMAGE           : add.name = "bar"          ; break;
 		case BACKGROUND_IMAGE    : add.name = "background"   ; break;
+		case TITLE_IMAGE         : add.name = "title"        ; break;
 		default	:
 			{
+				errno_t directry_not_find = 0;
 				DebugPtr debug( new Debug( ) );
 				debug->error( "Image->initialize : _dir_numの数値が大きすぎるか、ディレクトリ名の追加忘れです" );
+				assert( directry_not_find );
 			}
 		}
 		_data.push_back( add );

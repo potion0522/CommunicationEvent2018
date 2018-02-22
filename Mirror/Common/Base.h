@@ -33,12 +33,12 @@ public:
 		int knd;
 		int brt = 255;
 		int cnt;
-		int png;
+		int png = -1;
 	};
 	struct LightImageProperty {
 		double cx;
 		double cy;
-		int png;
+		int png = -1;
 	};
 	struct BoxCollider {
 		float lx;

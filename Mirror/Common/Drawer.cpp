@@ -3,6 +3,8 @@
 #include "Color.h"
 #include "Debug.h"
 #include <math.h>
+#include <assert.h>
+#include <errno.h>
 
 const int SIZE_SMALL        = 10;
 const int SIZE_NORMAL       = 18;
@@ -69,10 +71,12 @@ void Drawer::drawImage( ) {
 	ite = _images.begin( );
 	for ( ite; ite != _images.end( ); ite++ ) {
 		ImageProperty image = ite->base;
+		errno_t image_handle = image.png;
 		if ( image.png < 1 ) {
 			DebugPtr debug( new Debug( ) );
 			debug->error( "drawer->drawImage : 画像ハンドルがありません" );
 		}
+		assert( image_handle != -1 );
 
 		bool brend = false;
 		if ( image.brt < 255 ) {
@@ -202,8 +206,7 @@ void Drawer::drawBackBox( ) {
 }
 void Drawer::drawBackImage( ) {
 	if ( _back_image.png < 0 ) {
-		DebugPtr debug( new Debug( ) );
-		debug->error( "drawer->drawBackImage : 画像ハンドルがありません" );
+		return;
 	}
 
 	bool brend = false;
@@ -226,9 +229,25 @@ void Drawer::setBackImage( ImageProperty png ) {
 	_back_image = png;
 }
 
+void Drawer::setBackImage( LightImageProperty png ) {
+	ImageProperty image = ImageProperty( );
+	image.cx = png.cx;
+	image.cy = png.cy;
+	image.png = png.png;
+	_back_image = image;
+}
+
 void Drawer::setImage( ImageProperty png ) {
 	ExtendImageProperty image = ExtendImageProperty( );
 	image.base = png;
+	_images.push_back( image );
+}
+
+void Drawer::setImage( LightImageProperty png ) {
+	ExtendImageProperty image = ExtendImageProperty( );
+	image.base.cx = png.cx;
+	image.base.cy = png.cy;
+	image.base.png = png.png;
 	_images.push_back( image );
 }
 

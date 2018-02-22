@@ -40,13 +40,13 @@ public:
 
 private:
 	void updateUnitVector( );
-	void clearBomEffect( );
 	double getLazerImageAngle( );
 	Field::DIR convVectorToDir( Field::Vector vec );
 	Field::Vector convNormalVector( Field::Vector vec );
 	double getReflectEffectAngle( Field::Vector old_vec, Field::Vector new_vec );
 
 private:
+	void drawLazerLine( ) const;
 	void drawRefrecEffect( );
 	void drawDeadEffect( );
 

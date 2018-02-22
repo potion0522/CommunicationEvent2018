@@ -44,8 +44,7 @@ std::string Debug::getTag( ) {
 
 void Debug::error( std::string err ) {
 	if ( fopen_s( &_fp, "error.txt", "w" ) != 0 ) {
-		printfDx( "Error：ファイルオープンに失敗しました。" );
-		exit( 0 );
+		return;
 	}
 	time_t now = time( NULL );
 	const int SIZE = 128;

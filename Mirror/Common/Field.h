@@ -23,6 +23,9 @@ const int INFO_TEXT_MAX = 6;
 const int BATTLE_BUTTON_IMAGE_NUM = 4;
 
 class Field : public Base {
+private:
+	static const short int LAZER_TYPE_MAX = 2;
+
 public:
 	struct Vector { 
 		double x;
@@ -149,6 +152,7 @@ public:
 	void useItem( );
 	void reverseMirror( );
 	void changeClickButton( );
+	void activeButtonLighting( );
 
 public:
 	Vector getLazerPoint( ) const;
@@ -186,6 +190,7 @@ private:
 	void drawRound( ) const;
 	void drawSettingPlayer( );
 	void drawItem( ) const;
+	void drawBackGround( ) const;
 
 private:
 	std::map< int, Mirror > _mirrors;
@@ -194,20 +199,21 @@ private:
 	std::array< PlayerPos, PLAYER_POSITION * 2 > _select_player_pos;
 	std::array< COLOR, PLAYER_NUM >_player_color;
 	std::array< Item, ITEM_POSSESSION_MAX > _item;
-	int _turn;
 	bool _player_selected;
 	bool _mirror_selected;
 	bool _reflection;
-	int _order;
-	int _info_idx;
-	int _tmp_player_pos;
-	int _dead_flag;
-	int _player_num;
-	int _player_pos_hit_num;
-	int _field_pos_hit_num;
-	int _hit_mirror_num;
-	int _lazer_point_idx;
-	int _select_item;
+	bool _button_lighting;
+	short int _turn;
+	short int _order;
+	short int _info_idx;
+	short int _tmp_player_pos;
+	short int _dead_flag;
+	short int _player_num;
+	short int _player_pos_hit_num;
+	short int _field_pos_hit_num;
+	short int _hit_mirror_num;
+	short int _lazer_point_idx;
+	short int _select_item;
 	HCURSOR _cur_hand;
 	BATTLE_PHASE _phase;
 	DIR _direct;
@@ -219,7 +225,10 @@ private:
 	std::array< int, PLAYER_NUM > _mirror_handle;
 	std::array< int, BATTLE_BUTTON_IMAGE_NUM > _button_handle;
 	std::array< int, ITEM_MAX > _item_handle;
-	ImageProperty _button_image;
+	std::array< int, LAZER_TYPE_MAX > _lazer_handle;
+	LightImageProperty _button_image;
+	LightImageProperty _background;
+	LightImageProperty _lazer_image;
 
 	GlobalDataPtr _data;
 	DrawerPtr _drawer;

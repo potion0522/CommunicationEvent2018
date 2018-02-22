@@ -291,7 +291,7 @@ void Game::updatePlayerPhase( ) {
 	}
 
 	_field->setInfoText( "Œˆ’è‚ð‰Ÿ‚µ‚ÄŠm’è‚µ‚Ä‚­‚¾‚³‚¢", RED );
-
+	_field->activeButtonLighting( );
 	_field->changeClickButton( );
 	
 	int clicking = _data->getClickingLeft( );
@@ -400,7 +400,7 @@ void Game::updateMirrorPhase( ) {
 	if ( !_tmp_mirror.flag ) {
 		return;
 	}
-
+	_field->activeButtonLighting( );
 	_field->changeClickButton( );
 	
 	int clicking = _data->getClickingLeft( );

@@ -50,7 +50,7 @@ _data( data ) {
 
 	ImagePtr image_ptr = _data->getImagePtr( );
 	{//背景(今はダミー)
-		_back_handle = image_ptr->getPng( NONE_IMAGE, 0 ).png;
+		_back_handle = image_ptr->getPng( BACKGROUND_IMAGE, BACKGROUND_WHITE ).png;
 	}
 
 	{//アイテムの画像
@@ -136,7 +136,6 @@ void SelectItem::update( ) {
 
 	//決定を押したら
 	if ( _input ) {
-
 		_drawer->setFrontString( true, WIDTH / 2, HEIGHT / 2, YELLOW, "アイテム情報を保存しています", Drawer::BIG );
 
 		//プログレスバーの表示
@@ -343,22 +342,31 @@ void SelectItem::calcButtonAction( ) {
 }
 
 void SelectItem::inputCsv( ) {
-	FILE *fp;
-	errno_t csv_open = fopen_s( &fp, path.c_str( ), "wb" );
-
-	assert( !csv_open );
-
 	std::array< int, ITEM_MAX > values;
 	std::array< int, ITEM_MAX >( ).swap( values );
 
 	//集計
+	bool empty = true;
 	for ( int i = 0; i < ITEM_POSSESSION_MAX; i++ ) {
 		if ( !_selected[ i ].flag ) {
 			continue;
 		}
 
+		empty = false;
 		values[ _selected[ i ].type ]++;
 	}
+
+	//なにも選択しなかったら
+	if ( empty ) {
+		_button_clicking = false;
+		_input = true;
+		return;
+	}
+
+	FILE *fp;
+	errno_t csv_open = fopen_s( &fp, path.c_str( ), "wb" );
+
+	assert( !csv_open );
 
 	//集計結果書き込み
 	for ( int i = 0; i < ITEM_MAX; i++ ) {

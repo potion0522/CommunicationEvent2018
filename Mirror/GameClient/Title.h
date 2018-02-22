@@ -43,6 +43,7 @@ private:
 
 	//‰æ‘œŠÖŒW
 	LightImageProperty _back;
+	LightImageProperty _title_logo;
 	std::array< BoxObject, BUTTON_TYPE_MAX > _button;
 	std::array< int, BUTTON_TYPE_MAX * 2 > _button_handles;
 

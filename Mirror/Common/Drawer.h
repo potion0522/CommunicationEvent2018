@@ -30,7 +30,11 @@ public:
 
 public:
 	void setBackImage( ImageProperty png );
+	void setBackImage( LightImageProperty png );
 	void setImage( ImageProperty png );
+	void setImage( LightImageProperty png );
+	//ベースプロパティ, 画像の中心X, 画像の中心Y, 最終的な横幅, 最終的な高さ
+	void setExtendImage( ImageProperty base, float image_cx, float image_cy, double extend_width, double extend_height );
 	//中央寄せにするかどうか, x座標, y座標, カラー, 文字列, フォントサイズ, アルファ値
 	void setFrontString( bool flag, double x, double y, COLOR col, std::string str, FONTSIZE_TYPE type = NORMAL, int brt = 255 );
 	void setBackString( bool flag, double x, double y, COLOR col, std::string str, FONTSIZE_TYPE type = NORMAL, int brt = 255 );
@@ -38,8 +42,6 @@ public:
 	void setCircle( double x, double y, double r, COLOR col = WHITE, int brt = 255, bool isfill = false );
 	void setFrontBox( double lx, double ly, double rx, double ry, COLOR col = WHITE );
 	void setBackBox( double lx, double ly, double rx, double ry, COLOR col = WHITE );
-	//ベースプロパティ, 画像の中心X, 画像の中心Y, 最終的な横幅, 最終的な高さ
-	void setExtendImage( ImageProperty base, float image_cx, float image_cy, double extend_width, double extend_height );
 	int getStringW( FONTSIZE_TYPE type, std::string str ) const;
 	int getStringH( FONTSIZE_TYPE type ) const;
 
