@@ -34,6 +34,7 @@ void Image::initialize( ) {
 		case EFFECT_IMAGE        : add.name = "effect"       ; break;
 		case LAZER_IMAGE         : add.name = "lazer"        ; break;
 		case BAR_IMAGE           : add.name = "bar"          ; break;
+		case BACKGROUND_IMAGE    : add.name = "background"   ; break;
 		default	:
 			{
 				DebugPtr debug( new Debug( ) );

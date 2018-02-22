@@ -25,6 +25,13 @@ char field[ FIELD_COL * FIELD_ROW + 1 ] =
 "     "
 "     ";
 
+enum IMAGE_IDX {
+	LAZER_RIGHT_IDX,
+	LAZER_TABLE_IDX,
+	TABLE_IDX,
+	MIRROR_IDX
+};
+
 Field::Field( GlobalDataPtr data ) :
 _data( data ) {
 	setFlag( 1 );
@@ -44,11 +51,11 @@ _data( data ) {
 	_button_image.png = png.png;
 
 	//フィールド
-	_table_handle = _image->getPng( BATTLE_IMAGE, 0 ).png;
+	_table_handle = _image->getPng( BATTLE_IMAGE, TABLE_IDX ).png;
 
 	//ミラー
 	for ( int i = 0; i < PLAYER_NUM; i++ ) {
-		_mirror_handle[ i ] = _image->getPng( BATTLE_IMAGE, 1 + i ).png;
+		_mirror_handle[ i ] = _image->getPng( BATTLE_IMAGE, MIRROR_IDX + i ).png;
 	}
 
 	//アイテム

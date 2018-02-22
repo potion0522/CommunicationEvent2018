@@ -15,11 +15,24 @@ PTR( Lazer );
 
 class Game : public Base {
 private:
-	enum CUTIN {
-		SET_PLAYER_CUTIN,
-		SET_MIRROR_CUTIN,
-		ATTACK_CUTIN,
-		CUTIN_MAX
+	enum CUTIN_PHASE {
+		CUTIN_SET_PLAYER,
+		CUTIN_SET_MIRROR,
+		CUTIN_ATTACK,
+		PHASE_CUTIN_MAX
+	};
+
+	enum CUTIN_PLAYER {
+		CUTIN_ENEMY_TURN,
+		CUTIN_YOUR_TURN,
+		PLAYER_CUTIN_MAX
+	};
+
+	enum ITEM_CUTIN {
+		CUTIN_LAZER_RESET,
+		CUTIN_DOUBLE_MIRROR,
+		CUTIN_REVERSE_MIRROR,
+		ITEM_CUTIN_MAX
 	};
 
 	enum CUTIN_BACK_COLOR {
@@ -83,8 +96,12 @@ private:
 	int _clicking;
 	BATTLE_PHASE _phase;
 	Field::Mirror _tmp_mirror;
-	std::array< int, CUTIN_MAX + PLAYER_NUM + ITEM_MAX > _cutin_png;
-	std::array< int, CUTIN_BACK_MAX > _background_cutin_png;
+
+	//‰æ‘œŠÖŒW
+	std::array< int, PHASE_CUTIN_MAX > _cutin_phase_handles;
+	std::array< int, PLAYER_CUTIN_MAX > _cutin_player_handles;
+	std::array< int, ITEM_CUTIN_MAX > _cutin_item_handles;
+	std::array< int, CUTIN_BACK_MAX > _background_cutin_handles;
 	ImageProperty _background_cutin_image;
 	ImageProperty _cutin_image;
 
