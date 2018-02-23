@@ -163,13 +163,13 @@ void Title::drawBackGround( ) const {
 }
 
 void Title::drawTitle( ) const {
-	_drawer->setFrontImage( _title_logo );
+	_drawer->setImage( _title_logo );
 }
 
 void Title::drawStartButton( ) const {
-	_drawer->setFrontImage( _startbutton.image );
+	_drawer->setImage( _startbutton.image );
 }
 
 void Title::drawSettingButton( ) const {
-	_drawer->setFrontImage( _settingbutton.image );
+	_drawer->setImage( _settingbutton.image );
 }

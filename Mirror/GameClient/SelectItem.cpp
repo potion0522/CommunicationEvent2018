@@ -17,8 +17,8 @@ const float START_SELECTED_X = MARGIN + SELECTED_PITCH - SELECTED_PITCH / 2.0f;
 const float START_SELECTED_Y = HEIGHT * 0.8f;
 
 const short int SAVE_BUTTON_IDX = 10;
-const float DECISIONBUTTON_X = WIDTH_F / 3.0f * 2.0f;
-const float DECISIONBUTTON_Y = HEIGHT_F / 5.0f;
+const float BUTTON_X = WIDTH_F / 3.0f * 2.0f;
+const float BUTTON_Y = HEIGHT_F / 5.0f;
 
 const short int RETURN_BUTTON_IDX = 8;
 const float RETURNBUTTON_X = WIDTH_F / 3.0f;
@@ -74,8 +74,8 @@ _data( data ) {
 		for ( int i = 0; i < BUTTON_TYPE_MAX; i++ ) {
 			_decisionbutton_handles[ i ] = image_ptr->getPng( BUTTON_IMAGE, BATTLE_BUTTON_IDX + i ).png;
 		}
-		_decisionbutton.image.cx = DECISIONBUTTON_X;
-		_decisionbutton.image.cy = DECISIONBUTTON_Y;
+		_decisionbutton.image.cx = BUTTON_X;
+		_decisionbutton.image.cy = BUTTON_Y;
 		_decisionbutton.image.png = image_ptr->getPng( BUTTON_IMAGE, BATTLE_BUTTON_IDX ).png;
 
 		_decisionbutton.collider.lx = ( float )_decisionbutton.image.cx - half_width;
@@ -165,13 +165,13 @@ void SelectItem::update( ) {
 		image.cx = _bar.cx;
 		image.cy = _bar.cy;
 		image.png = _bar.png;
-		_drawer->setExtendFrontImage( image, 0, _bar_height_half, _wait_time * _bar_rate, 1 );
+		_drawer->setExtendImage( image, 0, _bar_height_half, _wait_time * _bar_rate, 1 );
 
 		//ƒtƒŒ[ƒ€
 		image.cx = _bar_frame.cx;
 		image.cy = _bar_frame.cy;
 		image.png = _bar_frame.png;
-		_drawer->setFrontImage( image );
+		_drawer->setImage( image );
 
 		if ( _wait_time < ( FRAME * 2 ) ) {
 			_wait_time++;
@@ -515,7 +515,7 @@ void SelectItem::drawNotSelectItem( ) const {
 		image.cx = _items[ i ].image.cx;
 		image.cy = _items[ i ].image.cy;
 		image.png = _items[ i ].image.png;
-		_drawer->setFrontImage( image );
+		_drawer->setImage( image );
 	}
 }
 
@@ -534,7 +534,7 @@ void SelectItem::drawSelectedItemFrame( ) const {
 		image.cx = _select_boxes[ i ].lx + _item_image_halfsize;
 		image.cy = _select_boxes[ i ].ly + _item_image_halfsize;
 		image.png = _item_frame_handle;
-		_drawer->setFrontImage( image );
+		_drawer->setImage( image );
 	}
 }
 
@@ -549,7 +549,7 @@ void SelectItem::drawSelectedItem( ) const {
 		image.cy  = _selected[ i ].object.image.cy;
 		image.png = _selected[ i ].object.image.png;
 
-		_drawer->setFrontImage( image );
+		_drawer->setImage( image );
 	}
 }
 
@@ -574,15 +574,15 @@ void SelectItem::drawSelectingItem( ) const {
 	image.cx  = tmp.cx;
 	image.cy  = tmp.cy;
 	image.png = tmp.png;
-	_drawer->setFrontImage( image );
+	_drawer->setImage( image );
 }
 
 void SelectItem::drawDecisionButton( ) const {
-	_drawer->setFrontImage( _decisionbutton.image );
+	_drawer->setImage( _decisionbutton.image );
 }
 
 void SelectItem::drawReturnButton( ) const {
-	_drawer->setFrontImage( _returnbutton.image );
+	_drawer->setImage( _returnbutton.image );
 }
 
 std::string SelectItem::convItemString( ITEM item ) {

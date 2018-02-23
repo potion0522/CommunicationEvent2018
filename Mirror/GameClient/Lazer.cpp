@@ -250,7 +250,7 @@ void Lazer::drawLazerLine( ) const {
 	}
 
 	for ( int i = 0; i < size; i++ ) {
-		_drawer->setExtendFrontImage( _lazer[ i ], _lazer_size.width / 2, _lazer_size.height / 2, 1, LAZER_SPEED / _lazer_size.height );
+		_drawer->setExtendImage( _lazer[ i ], _lazer_size.width / 2, _lazer_size.height / 2, 1, LAZER_SPEED / _lazer_size.height );
 	}
 }
 
@@ -275,7 +275,7 @@ void Lazer::drawRefrecEffect( ) {
 		}
 		image.size = ( double )( ite->cnt * ( 1 / ( float )ANIMATION_TIME ) );
 
-		_drawer->setFrontImage( image );
+		_drawer->setImage( image );
 	}
 }
 
@@ -285,7 +285,7 @@ void Lazer::drawDeadEffect( ) {
 	image.cy = _dead_pnt.y;
 	image.png = _dead_effect_images[ _dead_pnt.cnt ];
 	image.size = 1.5;
-	_drawer->setFrontImage( image );
+	_drawer->setImage( image );
 
 	_dead_pnt.cnt = _wait / ( DEAD_EFFECT_MAX / 2 );
 }
