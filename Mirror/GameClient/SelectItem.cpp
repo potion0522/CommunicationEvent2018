@@ -72,7 +72,6 @@ _data( data ) {
 		float half_height = image_ptr->getPng( BUTTON_IMAGE, SAVE_BUTTON_IDX ).height * 0.5f;
 
 		for ( int i = 0; i < BUTTON_TYPE_MAX; i++ ) {
-<<<<<<< HEAD
 			_decisionbutton_handles[ i ] = image_ptr->getPng( BUTTON_IMAGE, BATTLE_BUTTON_IDX + i ).png;
 		}
 		_decisionbutton.image.cx = BUTTON_X;
@@ -83,18 +82,7 @@ _data( data ) {
 		_decisionbutton.collider.rx = ( float )_decisionbutton.image.cx + half_width;
 		_decisionbutton.collider.ly = ( float )_decisionbutton.image.cy - half_height;
 		_decisionbutton.collider.ry = ( float )_decisionbutton.image.cy + half_height;
-=======
-			_button_handles[ i ] = image_ptr->getPng( BUTTON_IMAGE, SAVE_BUTTON_IDX + i ).png;
-		}
-		_button.image.cx = BUTTON_X;
-		_button.image.cy = BUTTON_Y;
-		_button.image.png = image_ptr->getPng( BUTTON_IMAGE, SAVE_BUTTON_IDX ).png;
 
-		_button.collider.lx = ( float )_button.image.cx - half_width;
-		_button.collider.rx = ( float )_button.image.cx + half_width;
-		_button.collider.ly = ( float )_button.image.cy - half_height;
-		_button.collider.ry = ( float )_button.image.cy + half_height;
->>>>>>> cf88b82957de4817781e8f61607c84ca3e6e8c97
 	
 	//リターンボタン
 		for ( int i = 0; i < BUTTON_TYPE_MAX; i++ ) {
