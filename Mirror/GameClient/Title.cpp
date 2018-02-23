@@ -93,8 +93,6 @@ void Title::update( ) {
 	drawBackGround( );
 	drawTitle( );
 	drawButton( );
-
-	//_drawer->setFrontString( true, WIDTH / 2, HEIGHT / 2, RED, "Press \"Z\" Key" );
 }
 
 void Title::checkHitButton( ) {

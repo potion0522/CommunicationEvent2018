@@ -74,13 +74,14 @@ private:
 
 	//‰æ‘œŠÖŒW
 	int _back_handle;
+	int _item_frame_handle;
 	short int _item_image_hulfsize;
 	std::array< int, ITEM_MAX > _item_handles;
 	std::array< int, BUTTON_TYPE_MAX > _button_handles;
 	std::array< BoxObject, ITEM_MAX > _items;
 	std::array< SelectedItem, ITEM_POSSESSION_MAX > _selected;
 	BoxObject _button;
-	LightImageProperty _frame;
+	LightImageProperty _bar_frame;
 	LightImageProperty _bar;
 
 	GlobalDataPtr _data;
