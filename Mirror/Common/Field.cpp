@@ -26,6 +26,7 @@ char field[ FIELD_COL * FIELD_ROW + 1 ] =
 "     ";
 
 enum IMAGE_IDX {
+	BOARD_IDX,
 	LAZER_RIGHT_IDX,
 	LAZER_TABLE_IDX,
 	TABLE_IDX,
@@ -68,7 +69,7 @@ _data( data ) {
 
 	//ÉåÅ[ÉUÅ[
 	for ( int i = 0; i < LAZER_TYPE_MAX; i++ ) {
-		_lazer_handle[ i ] = _image->getPng( BATTLE_IMAGE, i ).png;
+		_lazer_handle[ i ] = _image->getPng( BATTLE_IMAGE, LAZER_RIGHT_IDX + i ).png;
 	}
 
 	//îwåi	

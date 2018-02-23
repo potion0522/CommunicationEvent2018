@@ -69,6 +69,7 @@ void Drawer::update( ) {
 void Drawer::drawImage( ) {
 	std::list< ExtendImageProperty >::iterator ite;
 	ite = _images.begin( );
+	SetDrawMode( DX_DRAWMODE_BILINEAR );
 	for ( ite; ite != _images.end( ); ite++ ) {
 		ImageProperty image = ite->base;
 		errno_t image_handle = image.png;
@@ -100,6 +101,7 @@ void Drawer::drawImage( ) {
 			SetDrawBlendMode( DX_BLENDMODE_NOBLEND, 0 );
 		}
 	}
+	SetDrawMode( DX_DRAWMODE_NEAREST );
 }
 
 void Drawer::drawFrontString( ) {
