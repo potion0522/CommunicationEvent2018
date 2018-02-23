@@ -40,10 +40,16 @@ private:
 	void drawSelectedItemFrame( ) const;
 	void drawSelectedItem( ) const;
 	void drawSelectingItem( ) const;
-	void drawButton( ) const;
+	void drawDecisionButton( ) const;
 	void drawReturnButton( ) const;
 
 private:
+	enum BUTTON {
+		NONE_BUTTON,
+		DECISION_BUTTON,
+		RETURN_BUTTON,
+		BUTTON_MAX,
+	};
 	struct BoxObject {
 		BoxCollider collider;
 		LightImageProperty image;
@@ -53,13 +59,11 @@ private:
 		short int type;
 		BoxObject object;
 	};
-	enum BUTTON_STATE {
-		NORMAL,
-		CLICKING
-	};
+	
+	//定数
+	static const int BUTTON_TYPE_MAX = 2;
 
 	//変数
-	static const int BUTTON_TYPE_MAX = 2;
 	short int _past_hit_item;
 	short int _hit_notselect_item;//選択可能アイテム
 	short int _hit_selected_item;//選択済みアイテム
@@ -69,7 +73,7 @@ private:
 	short int _bar_height_half;
 	bool _drag;
 	bool _drop;
-	bool _button_clicking;
+	bool _decisionbutton_clicking;
 	bool _returnbutton_clicking;
 	bool _input; //決定
 	std::array< BoxCollider, ITEM_POSSESSION_MAX > _select_boxes;
@@ -79,11 +83,11 @@ private:
 	short int _item_image_halfsize;
 	int _item_frame_handle;
 	std::array< int, ITEM_MAX > _item_handles;
-	std::array< int, BUTTON_TYPE_MAX > _button_handles;
+	std::array< int, BUTTON_TYPE_MAX > _decisionbutton_handles;
 	std::array< int, BUTTON_TYPE_MAX > _returnbutton_handles;
 	std::array< BoxObject, ITEM_MAX > _items;
 	std::array< SelectedItem, ITEM_POSSESSION_MAX > _selected;
-	BoxObject _button;
+	BoxObject _decisionbutton;
 	BoxObject _returnbutton;
 	LightImageProperty _frame;
 	LightImageProperty _bar_frame;
