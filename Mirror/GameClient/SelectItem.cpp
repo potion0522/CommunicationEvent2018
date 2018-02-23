@@ -430,11 +430,13 @@ int SelectItem::isHitButton( ) const {
 	double mouse_x = _data->getMouseX( );
 	double mouse_y = _data->getMouseY( );
 
+	//Œˆ’è
 	if ( _button.collider.lx <= mouse_x && mouse_x <= _button.collider.rx &&
 		 _button.collider.ly <= mouse_y && mouse_y <= _button.collider.ry ) {
 		return 1;
 	}
 
+	//ƒŠƒ^[ƒ“
 	if ( _returnbutton.collider.lx <= mouse_x && mouse_x <= _returnbutton.collider.rx &&
 		 _returnbutton.collider.ly <= mouse_y && mouse_y <= _returnbutton.collider.ry ) {
 		return 2;
@@ -528,8 +530,8 @@ void SelectItem::drawBackGround( ) const {
 void SelectItem::drawSelectedItemFrame( ) const {
 	for ( int i = 0; i < ITEM_POSSESSION_MAX; i++ ) {
 		LightImageProperty image = LightImageProperty( );
-		image.cx = _select_boxes[ i ].lx + _item_image_hulfsize;
-		image.cy = _select_boxes[ i ].ly + _item_image_hulfsize;
+		image.cx = _select_boxes[ i ].lx + _item_image_halfsize;
+		image.cy = _select_boxes[ i ].ly + _item_image_halfsize;
 		image.png = _item_frame_handle;
 		_drawer->setImage( image );
 	}
