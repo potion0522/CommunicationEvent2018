@@ -217,11 +217,11 @@ void Game::calcStringCutin( ) {
 }
 
 void Game::drawBackCutin( ) const {
-	_drawer->setImage( _background_cutin_image );
+	_drawer->setFrontImage( _background_cutin_image );
 }
 
 void Game::drawStringCutin( ) const {
-	_drawer->setImage( _cutin_image );
+	_drawer->setFrontImage( _cutin_image );
 }
 
 void Game::resetBackCutin( ) {

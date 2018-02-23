@@ -29,13 +29,17 @@ public:
 	void update( );
 
 public:
+	void setBackGroundImage( ImageProperty png );
+	void setBackGroundImage( LightImageProperty png );
 	void setBackImage( ImageProperty png );
 	void setBackImage( LightImageProperty png );
-	void setImage( ImageProperty png );
-	void setImage( LightImageProperty png );
+	void setFrontImage( ImageProperty png );
+	void setFrontImage( LightImageProperty png );
 	//ベースプロパティ, 画像の中心X, 画像の中心Y, 最終的な横幅の比率, 最終的な高さの比率
-	void setExtendImage( ImageProperty base, float image_cx, float image_cy, double extend_width, double extend_height );
-	void setExtendImage( LightImageProperty base, float image_cx, float image_cy, double extend_width, double extend_height );
+	void setExtendBackImage( ImageProperty base, float image_cx, float image_cy, double extend_width, double extend_height );
+	void setExtendBackImage( LightImageProperty base, float image_cx, float image_cy, double extend_width, double extend_height );
+	void setExtendFrontImage( ImageProperty base, float image_cx, float image_cy, double extend_width, double extend_height );
+	void setExtendFrontImage( LightImageProperty base, float image_cx, float image_cy, double extend_width, double extend_height );
 	//中央寄せにするかどうか, x座標, y座標, カラー, 文字列, フォントサイズ, アルファ値
 	void setFrontString( bool flag, double x, double y, COLOR col, std::string str, FONTSIZE_TYPE type = NORMAL, int brt = 255 );
 	void setBackString( bool flag, double x, double y, COLOR col, std::string str, FONTSIZE_TYPE type = NORMAL, int brt = 255 );
@@ -47,8 +51,9 @@ public:
 	int getStringH( FONTSIZE_TYPE type ) const;
 
 private:
+	void drawBackGroundImage( );
 	void drawBackImage( );
-	void drawImage( );
+	void drawFrontImage( );
 	void drawFrontString( );
 	void drawBackString( );
 	void drawLine( );
@@ -100,11 +105,12 @@ private:
 		COLOR col;
 	};
 	int _handle_font[ FONT_TYPE_MAX ];
-	ImageProperty _back_image;
+	ImageProperty _background_image;
 	std::array< int, FONT_TYPE_MAX > _size;
 	std::list< StringProperty > _front_strings;  //画像の上に表示
 	std::list< StringProperty > _back_strings;  //画像のしたに表示
-	std::list< ExtendImageProperty > _images;
+	std::list< ExtendImageProperty > _front_images;
+	std::list< ExtendImageProperty > _back_images;
 	std::list< LineProperty > _lines;
 	std::list< CircleProperty > _circles;
 	std::list< BoxProperty > _back_boxes;

@@ -55,50 +55,95 @@ void Drawer::initialize( ) {
 }
 
 void Drawer::update( ) {
+	drawBackGroundImage( );
 	drawBackImage( );
 	drawBackString( );
 	drawCircle( );
 	drawBackBox( );
 	drawLine( );
-	drawImage( );
+	drawFrontImage( );
 	drawFrontString( );
 	drawFrontBox( );
 	reset( );
 }
 
-void Drawer::drawImage( ) {
+void Drawer::drawBackImage( ) {
 	std::list< ExtendImageProperty >::iterator ite;
-	ite = _images.begin( );
-	for ( ite; ite != _images.end( ); ite++ ) {
-		ImageProperty image = ite->base;
-		errno_t image_handle = image.png;
-		if ( image.png < 1 ) {
+	ite = _back_images.begin( );
+	for ( ite; ite != _front_images.end( ); ite++ ) {
+		ImageProperty back_image = ite->base;
+		errno_t front_image_handle = back_image.png;
+		if ( back_image.png < 1 ) {
 			DebugPtr debug( new Debug( ) );
 			debug->error( "drawer->drawImage : ‰æ‘œƒnƒ“ƒhƒ‹‚ª‚ ‚è‚Ü‚¹‚ñ" );
 		}
-		assert( image_handle != -1 );
+		assert( front_image_handle != -1 );
 
 		bool brend = false;
-		if ( image.brt < 255 ) {
+		if ( back_image.brt < 255 ) {
 			brend = true;
 		}
 
 		if ( brend ) {
-			SetDrawBlendMode( DX_BLENDMODE_ALPHA, image.brt );
+			SetDrawBlendMode( DX_BLENDMODE_ALPHA, back_image.brt );
 		}
 
 		//‰æ‘œŠg‘å—¦(•‚¾‚¯A‚‚³‚¾‚¯)•Ï‚¦‚éê‡
 		if ( ite->extend ) {
 			//•ÏŒ`‚µ‚Ä•`‰æ
 			SetDrawMode( DX_DRAWMODE_BILINEAR );
-			DrawRotaGraph3F( ( float )image.cx, ( float )image.cy, ite->image_cx, ite->image_cy, ite->extend_width, ite->extend_height, image.angle, image.png, TRUE, FALSE );
+			DrawRotaGraph3F( ( float )back_image.cx, ( float )back_image.cy, ( float )ite->base.cx, ( float )ite->base.cy, ite->extend_width, ite->extend_height, back_image.angle, back_image.png, TRUE, FALSE );
 			SetDrawMode( DX_DRAWMODE_NEAREST );
 		} else {
 			//’Êí•`‰æ
 			if ( ite->base.size != 1 ) {
 				SetDrawMode( DX_DRAWMODE_BILINEAR );
 			}
-			DrawRotaGraphF( ( float )image.cx, ( float )image.cy, image.size, image.angle, image.png, TRUE );
+			DrawRotaGraphF( ( float )back_image.cx, ( float )back_image.cy, back_image.size, back_image.angle, back_image.png, TRUE );
+			if ( ite->base.size != 1 ) {
+				SetDrawMode( DX_DRAWMODE_NEAREST );
+			}
+		}
+
+		if ( brend ) {
+			SetDrawBlendMode( DX_BLENDMODE_NOBLEND, 0 );
+		}
+	}
+}
+
+void Drawer::drawFrontImage( ) {
+	std::list< ExtendImageProperty >::iterator ite;
+	ite = _front_images.begin( );
+	for ( ite; ite != _front_images.end( ); ite++ ) {
+		ImageProperty front_image = ite->base;
+		errno_t front_image_handle = front_image.png;
+		if ( front_image.png < 1 ) {
+			DebugPtr debug( new Debug( ) );
+			debug->error( "drawer->drawImage : ‰æ‘œƒnƒ“ƒhƒ‹‚ª‚ ‚è‚Ü‚¹‚ñ" );
+		}
+		assert( front_image_handle != -1 );
+
+		bool brend = false;
+		if ( front_image.brt < 255 ) {
+			brend = true;
+		}
+
+		if ( brend ) {
+			SetDrawBlendMode( DX_BLENDMODE_ALPHA, front_image.brt );
+		}
+
+		//‰æ‘œŠg‘å—¦(•‚¾‚¯A‚‚³‚¾‚¯)•Ï‚¦‚éê‡
+		if ( ite->extend ) {
+			//•ÏŒ`‚µ‚Ä•`‰æ
+			SetDrawMode( DX_DRAWMODE_BILINEAR );
+			DrawRotaGraph3F( ( float )front_image.cx, ( float )front_image.cy, ite->base.cx, ite->base.cy, ite->extend_width, ite->extend_height, front_image.angle, front_image.png, TRUE, FALSE );
+			SetDrawMode( DX_DRAWMODE_NEAREST );
+		} else {
+			//’Êí•`‰æ
+			if ( ite->base.size != 1 ) {
+				SetDrawMode( DX_DRAWMODE_BILINEAR );
+			}
+			DrawRotaGraphF( ( float )front_image.cx, ( float )front_image.cy, front_image.size, front_image.angle, front_image.png, TRUE );
 			if ( ite->base.size != 1 ) {
 				SetDrawMode( DX_DRAWMODE_NEAREST );
 			}
@@ -212,51 +257,66 @@ void Drawer::drawBackBox( ) {
 		DrawBoxAA( ite->lx, ite->ly, ite->rx, ite->ry, _color->getColor( ite->col ), FALSE );
 	}
 }
-void Drawer::drawBackImage( ) {
-	if ( _back_image.png < 0 ) {
+void Drawer::drawBackGroundImage( ) {
+	if ( _background_image.png < 0 ) {
 		return;
 	}
 
 	bool brend = false;
-	if ( _back_image.brt < 255 ) {
+	if ( _background_image.brt < 255 ) {
 		brend = true;
 	}
 
 	if ( brend ) {
-		SetDrawBlendMode( DX_BLENDMODE_ALPHA, _back_image.brt );
+		SetDrawBlendMode( DX_BLENDMODE_ALPHA, _background_image.brt );
 	}
 
-	DrawRotaGraphF( ( float )_back_image.cx, ( float )_back_image.cy, _back_image.size, _back_image.angle, _back_image.png, TRUE );
+	DrawRotaGraphF( ( float )_background_image.cx, ( float )_background_image.cy, _background_image.size, _background_image.angle, _background_image.png, TRUE );
 
 	if ( brend ) {
 		SetDrawBlendMode( DX_BLENDMODE_NOBLEND, 0 );
 	}
 }
 
-void Drawer::setBackImage( ImageProperty png ) {
-	_back_image = png;
+void Drawer::setBackGroundImage( ImageProperty png ) {
+	_background_image = png;
 }
 
-void Drawer::setBackImage( LightImageProperty png ) {
+void Drawer::setBackGroundImage( LightImageProperty png ) {
 	ImageProperty image = ImageProperty( );
 	image.cx = png.cx;
 	image.cy = png.cy;
 	image.png = png.png;
-	_back_image = image;
+	_background_image = image;
 }
 
-void Drawer::setImage( ImageProperty png ) {
+void Drawer::setFrontImage( ImageProperty png ) {
 	ExtendImageProperty image = ExtendImageProperty( );
 	image.base = png;
-	_images.push_back( image );
+	_front_images.push_back( image );
 }
 
-void Drawer::setImage( LightImageProperty png ) {
+void Drawer::setFrontImage( LightImageProperty png ) {
 	ExtendImageProperty image = ExtendImageProperty( );
 	image.base.cx = png.cx;
 	image.base.cy = png.cy;
 	image.base.png = png.png;
-	_images.push_back( image );
+	_front_images.push_back( image );
+}
+
+
+void Drawer::setBackImage( ImageProperty png ) {
+	ExtendImageProperty image = ExtendImageProperty( );
+	image.base = png;
+	_back_images.push_back( image );
+}
+
+void Drawer::setBackImage( LightImageProperty png ) {
+	ExtendImageProperty image = ExtendImageProperty( );
+	image.base.cx = png.cx;
+	image.base.cy = png.cy;
+	image.base.png = png.png;
+	_back_images.push_back( image );
 }
 
 void Drawer::setFrontString( bool flag, double x, double y, COLOR col, std::string str, Drawer::FONTSIZE_TYPE type, int brt ) {
@@ -305,7 +365,7 @@ void Drawer::setBackBox( double lx, double ly, double rx, double ry, COLOR col )
 	_back_boxes.push_back( box );
 }
 
-void Drawer::setExtendImage( ImageProperty base, float image_cx, float image_cy, double extend_width, double extend_height ) {
+void Drawer::setExtendFrontImage( ImageProperty base, float image_cx, float image_cy, double extend_width, double extend_height ) {
 	ExtendImageProperty image = ExtendImageProperty( );
 	image.extend = true;
 	image.base = base;
@@ -313,10 +373,10 @@ void Drawer::setExtendImage( ImageProperty base, float image_cx, float image_cy,
 	image.image_cy = image_cy;
 	image.extend_width = extend_width;
 	image.extend_height = extend_height;
-	_images.push_back( image );
+	_front_images.push_back( image );
 }
 
-void Drawer::setExtendImage( LightImageProperty base, float image_cx, float image_cy, double extend_width, double extend_height ) {
+void Drawer::setExtendFrontImage( LightImageProperty base, float image_cx, float image_cy, double extend_width, double extend_height ) {
 	ExtendImageProperty extend = ExtendImageProperty( );
 	ImageProperty image = ImageProperty( );
 	image.cx = base.cx;
@@ -329,7 +389,34 @@ void Drawer::setExtendImage( LightImageProperty base, float image_cx, float imag
 	extend.image_cy = image_cy;
 	extend.extend_width = extend_width;
 	extend.extend_height = extend_height;
-	_images.push_back( extend );
+	_front_images.push_back( extend );
+}
+
+void Drawer::setExtendBackImage( ImageProperty base, float image_cx, float image_cy, double extend_width, double extend_height ) {
+	ExtendImageProperty image = ExtendImageProperty( );
+	image.extend = true;
+	image.base = base;
+	image.image_cx = image_cx;
+	image.image_cy = image_cy;
+	image.extend_width = extend_width;
+	image.extend_height = extend_height;
+	_back_images.push_back( image );
+}
+
+void Drawer::setExtendBackImage( LightImageProperty base, float image_cx, float image_cy, double extend_width, double extend_height ) {
+	ExtendImageProperty extend = ExtendImageProperty( );
+	ImageProperty image = ImageProperty( );
+	image.cx = base.cx;
+	image.cy = base.cy;
+	image.png = base.png;
+
+	extend.extend = true;
+	extend.base = image;
+	extend.image_cx = image_cx;
+	extend.image_cy = image_cy;
+	extend.extend_width = extend_width;
+	extend.extend_height = extend_height;
+	_back_images.push_back( extend );
 }
 
 int Drawer::getStringW( FONTSIZE_TYPE type, std::string str ) const {
@@ -341,12 +428,16 @@ int Drawer::getStringH( FONTSIZE_TYPE type ) const {
 }
 
 void Drawer::reset( ) {
-	_back_image = ImageProperty( );
+	_background_image = ImageProperty( );
 
 	int size = 0;
-	size = ( int )_images.size( );
+	size = ( int )_front_images.size( );
 	if ( size > 0 ) {
-		std::list< ExtendImageProperty >( ).swap( _images );
+		std::list< ExtendImageProperty >( ).swap( _front_images );
+	}
+	size = ( int )_back_images.size( );
+	if ( size > 0 ) {
+		std::list< ExtendImageProperty >( ).swap( _back_images );
 	}
 	size = ( int )_front_strings.size( );
 	if ( size > 0 ) {

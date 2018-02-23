@@ -702,7 +702,7 @@ void Field::drawField( ) {
 			image.cx = START_POS_X + j * SQUARE_SIZE + SQUARE_SIZE * 0.5;
 			image.cy = START_POS_Y + i * SQUARE_SIZE + SQUARE_SIZE * 0.5;
 			image.png = _table_handle;
-			_drawer->setImage( image );
+			_drawer->setFrontImage( image );
 		}
 	}
 
@@ -713,7 +713,7 @@ void Field::drawArmament( ) const {
 	if ( _lazer_point_idx < 0 ) {
 		return;
 	}
-	_drawer->setImage( _lazer_image );
+	_drawer->setFrontImage( _lazer_image );
 }
 
 void Field::drawTmpMirror( ) const {
@@ -732,7 +732,7 @@ void Field::drawTmpMirror( ) const {
 
 	if ( !_tmp_mirror.flag ) {
 		if ( getFieldPosHitNum( ) != -1 ) {
-			_drawer->setImage( tmp_mirror );
+			_drawer->setFrontImage( tmp_mirror );
 		}
 		return; 
 	}
@@ -753,12 +753,12 @@ void Field::drawTmpMirror( ) const {
 			image.cy = START_POS_Y + i * SQUARE_SIZE + SQUARE_SIZE * 0.5;
 			image.angle = angle;
 			image.png = _mirror_handle[ _player_num ];
-			_drawer->setImage( image );
+			_drawer->setFrontImage( image );
 		}
 	}
 
 	if ( getFieldPosHitNum( ) != -1 ) {
-		_drawer->setImage( tmp_mirror );
+		_drawer->setFrontImage( tmp_mirror );
 	}
 }
 
@@ -775,7 +775,7 @@ void Field::drawDecisionButton( ) const {
 		image.brt = ( int )( sin( _data->getCount( ) * 0.05 ) * 75 + 180 );
 	}
 
-	_drawer->setImage( image );
+	_drawer->setFrontImage( image );
 }
 
 void Field::drawMirror( ) const {
@@ -795,7 +795,7 @@ void Field::drawMirror( ) const {
 		image.cy = START_POS_Y + mirror.y * SQUARE_SIZE + SQUARE_SIZE * 0.5;
 		image.angle = angle;
 		image.png = _mirror_handle[ mirror.player_num ];
-		_drawer->setImage( image );
+		_drawer->setFrontImage( image );
 	}
 }
 
@@ -820,7 +820,7 @@ void Field::drawPlayerPos( ) const {
 		
 		if ( _player_num == i / PLAYER_POSITION ) {
 			if ( getTmpPlayerPoint( ) == i ) {		
-				_drawer->setImage( image );
+				_drawer->setFrontImage( image );
 				continue;
 			}
 
@@ -862,12 +862,12 @@ void Field::drawPlayer( ) const {
 		image.png = png.png;
 		image.cx = x;
 		image.cy = y;
-		_drawer->setImage( image );
+		_drawer->setFrontImage( image );
 	}
 }
 
 void Field::drawInfo( ) const {
-	_drawer->setExtendImage( _board.image, ( float )_board.half_width, ( float )_board.half_height, 1.4, 2.2 );
+	_drawer->setExtendFrontImage( _board.image, ( float )_board.half_width, ( float )_board.half_height, 1.4, 2.2 );
 
 	int y = INFO_Y;
 	for ( int i = 0; i < INFO_TEXT_MAX; i++ ) {
@@ -877,7 +877,7 @@ void Field::drawInfo( ) const {
 }
 
 void Field::drawRound( ) const {
-	_drawer->setFrontString( false, 20, 20, RED, "ROUND : " + std::to_string( ( ( _turn - 1 ) / TURN_MAX ) + 1 ) + "  TURN : " + std::to_string( _turn ), Drawer::BIG );
+	_drawer->setFrontString( false, 100, 500, RED, "  TURN : " + std::to_string( _turn ), Drawer::BIG );
 }
 
 void Field::drawSettingPlayer( ) {
@@ -940,7 +940,7 @@ void Field::drawItem( ) const {
 			}
 		}
 
-		_drawer->setImage( image );
+		_drawer->setFrontImage( image );
 	}
 }
 
