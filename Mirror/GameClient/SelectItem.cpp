@@ -16,10 +16,13 @@ const float SELECTED_PITCH   = ( WIDTH_F - MARGIN * 2.0f ) / ITEM_POSSESSION_MAX
 const float START_SELECTED_X = MARGIN + SELECTED_PITCH - SELECTED_PITCH / 2.0f;
 const float START_SELECTED_Y = HEIGHT * 0.8f;
 
-const float BUTTON_X = WIDTH_F / 2.0f;
+const float BUTTON_X = WIDTH_F / 3.0f;
 const float BUTTON_Y = HEIGHT_F / 5.0f;
 
-const int TWO_MINUTE = 120;
+const float RETURNBUTTON_X = WIDTH_F / 3.0f * 2.0f;
+const float RETURNBUTTON_Y = HEIGHT_F / 5.0f;
+
+const int TWO_SECOND = 120;
 
 const int PROGRESS_BAR_X = WIDTH / 2;
 const int PROGRESS_BAR_Y = HEIGHT / 3 * 2;
@@ -47,6 +50,7 @@ _data( data ) {
 	std::array< BoxObject, ITEM_MAX >( ).swap( _items );
 	std::array< BoxCollider, ITEM_POSSESSION_MAX >( ).swap( _select_boxes );
 	_button = BoxObject( );
+	_returnbutton = BoxObject( );
 
 	ImagePtr image_ptr = _data->getImagePtr( );
 	{//背景(今はダミー)
@@ -59,10 +63,13 @@ _data( data ) {
 			_items[ i ].image.png = handle;
 			_item_handles[ i ] = handle;
 		}
-		_item_image_hulfsize = ( short int )( ( float )image_ptr->getPng( ITEM_IMAGE, 0 ).width * 0.5f );
+		_item_image_halfsize = ( short int )( ( float )image_ptr->getPng( ITEM_IMAGE, 0 ).width * 0.5f );
 	}
 
 	{//決定ボタン
+		float half_width  = image_ptr->getPng( BUTTON_IMAGE, BATTLE_BUTTON_IDX ).width * 0.5f;
+		float half_height = image_ptr->getPng( BUTTON_IMAGE, BATTLE_BUTTON_IDX ).height * 0.5f;
+
 		for ( int i = 0; i < BUTTON_TYPE_MAX; i++ ) {
 			_button_handles[ i ] = image_ptr->getPng( BUTTON_IMAGE, BATTLE_BUTTON_IDX + i ).png;
 		}
@@ -70,12 +77,23 @@ _data( data ) {
 		_button.image.cy = BUTTON_Y;
 		_button.image.png = image_ptr->getPng( BUTTON_IMAGE, BATTLE_BUTTON_IDX ).png;
 
-		float hulf_width  = image_ptr->getPng( BUTTON_IMAGE, BATTLE_BUTTON_IDX ).width * 0.5f;
-		float hulf_height = image_ptr->getPng( BUTTON_IMAGE, BATTLE_BUTTON_IDX ).height * 0.5f;
-		_button.collider.lx = ( float )_button.image.cx - hulf_width;
-		_button.collider.rx = ( float )_button.image.cx + hulf_width;
-		_button.collider.ly = ( float )_button.image.cy - hulf_height;
-		_button.collider.ry = ( float )_button.image.cy + hulf_height;
+		_button.collider.lx = ( float )_button.image.cx - half_width;
+		_button.collider.rx = ( float )_button.image.cx + half_width;
+		_button.collider.ly = ( float )_button.image.cy - half_height;
+		_button.collider.ry = ( float )_button.image.cy + half_height;
+	
+	//リターンボタン
+		for ( int i = 0; i < BUTTON_TYPE_MAX; i++ ) {
+			_returnbutton_handles[ i ] = image_ptr->getPng( BUTTON_IMAGE, BATTLE_BUTTON_IDX + i ).png;
+		}
+		_returnbutton.image.cx = RETURNBUTTON_X;
+		_returnbutton.image.cy = RETURNBUTTON_Y;
+		_returnbutton.image.png = image_ptr->getPng( BUTTON_IMAGE, BATTLE_BUTTON_IDX ).png;
+
+		_returnbutton.collider.lx = ( float )_returnbutton.image.cx - half_width;
+		_returnbutton.collider.rx = ( float )_returnbutton.image.cx + half_width;
+		_returnbutton.collider.ly = ( float )_returnbutton.image.cy - half_height;
+		_returnbutton.collider.ry = ( float )_returnbutton.image.cy + half_height;
 	}
 
 	{//プログレスバー
@@ -91,20 +109,20 @@ _data( data ) {
 		_bar.cx = PROGRESS_BAR_X - image_ptr->getPng( BAR_IMAGE, 0 ).width / 2;
 		_bar.cy = PROGRESS_BAR_Y;
 		_bar.png = image_ptr->getPng( BAR_IMAGE, 1 ).png;
-		_bar_width_hulf = image_ptr->getPng( BAR_IMAGE, 1 ).width / 2;
-		_bar_height_hulf = image_ptr->getPng( BAR_IMAGE, 1 ).height / 2;
+		_bar_width_half = image_ptr->getPng( BAR_IMAGE, 1 ).width / 2;
+		_bar_height_half = image_ptr->getPng( BAR_IMAGE, 1 ).height / 2;
 
 		int length = image_ptr->getPng( BAR_IMAGE, 0 ).width;
-		_bar_rate = length / TWO_MINUTE;
+		_bar_rate = length / TWO_SECOND;
 	}
 
 
 	//選択中アイテムの枠の当たり判定
 	for ( int i = 0; i < ITEM_POSSESSION_MAX; i++ ) {
-		_select_boxes[ i ].lx = START_SELECTED_X + SELECTED_PITCH * i - _item_image_hulfsize;
-		_select_boxes[ i ].rx = START_SELECTED_X + SELECTED_PITCH * i + _item_image_hulfsize;
-		_select_boxes[ i ].ly = START_SELECTED_Y - _item_image_hulfsize;
-		_select_boxes[ i ].ry = START_SELECTED_Y + _item_image_hulfsize;
+		_select_boxes[ i ].lx = START_SELECTED_X + SELECTED_PITCH * i - _item_image_halfsize;
+		_select_boxes[ i ].rx = START_SELECTED_X + SELECTED_PITCH * i + _item_image_halfsize;
+		_select_boxes[ i ].ly = START_SELECTED_Y - _item_image_halfsize;
+		_select_boxes[ i ].ry = START_SELECTED_Y + _item_image_halfsize;
 	}
 }
 
@@ -123,6 +141,7 @@ void SelectItem::initialize( ) {
 	_drag = false;
 	_drop = false;
 	_button_clicking = false;
+	_returnbutton_clicking = false;
 	_input = false;
 	std::array< SelectedItem, ITEM_POSSESSION_MAX >( ).swap( _selected );
 }
@@ -131,7 +150,6 @@ void SelectItem::update( ) {
 	KeyBoardPtr keyboard( new KeyBoard( ) );
 	if ( _data->getKeyState( keyboard->getKeyCode( KeyBoard::X_KEY ) ) == 1 ) {
 		_data->setScene( TITLE );
-		return;
 	}
 
 	//決定を押したら
@@ -145,7 +163,7 @@ void SelectItem::update( ) {
 		image.cx = _bar.cx;
 		image.cy = _bar.cy;
 		image.png = _bar.png;
-		_drawer->setExtendImage( image, 0, _bar_height_hulf, _wait_time * _bar_rate, 1 );
+		_drawer->setExtendImage( image, 0, _bar_height_half, _wait_time * _bar_rate, 1 );
 
 		//フレーム
 		image.cx = _frame.cx;
@@ -153,7 +171,7 @@ void SelectItem::update( ) {
 		image.png = _frame.png;
 		_drawer->setImage( image );
 
-		if ( _wait_time < TWO_MINUTE ) {
+		if ( _wait_time < TWO_SECOND ) {
 			_wait_time++;
 		} else {
 			_data->setScene( TITLE );
@@ -169,12 +187,15 @@ void SelectItem::update( ) {
 	checkHitSelectedItem( );
 
 	//決定ボタン
-	if ( _button_clicking && !isDrag( ) ) {
-		if ( isHitButton( ) ) {
+	if ( ( _button_clicking || _returnbutton_clicking ) && !isDrag( ) ) {
+		if ( isHitButton( ) == 1 ) {
 			inputCsv( );
 			return;
+		} else if ( isHitButton( ) == 2 ){
+			_data->setScene( TITLE );
 		} else {
 			_button_clicking = false;
+			_returnbutton_clicking = false;
 		}
 	}
 
@@ -197,6 +218,7 @@ void SelectItem::update( ) {
 	drawSelectedItemFrame( );
 	drawSelectedItem( );
 	drawButton( );
+	drawReturnButton( );
 	//ドラッグ中のアイテムは一番上に描画
 	drawSelectingItem( );
 
@@ -214,15 +236,18 @@ void SelectItem::calcItemPosition( ) {
 		_items[ i ].image.cy = START_NOTSELECT_Y;
 
 		//当たり判定
-		_items[ i ].collider.lx = ( float )_items[ i ].image.cx - _item_image_hulfsize;
-		_items[ i ].collider.ly = ( float )_items[ i ].image.cy - _item_image_hulfsize;
-		_items[ i ].collider.rx = ( float )_items[ i ].image.cx + _item_image_hulfsize;
-		_items[ i ].collider.ry = ( float )_items[ i ].image.cy + _item_image_hulfsize;
+		_items[ i ].collider.lx = ( float )_items[ i ].image.cx - _item_image_halfsize;
+		_items[ i ].collider.ly = ( float )_items[ i ].image.cy - _item_image_halfsize;
+		_items[ i ].collider.rx = ( float )_items[ i ].image.cx + _item_image_halfsize;
+		_items[ i ].collider.ry = ( float )_items[ i ].image.cy + _item_image_halfsize;
 	}
 }
 
 void SelectItem::checkHitNotSelectItem( ) {
 	if ( ( _hit_notselect_item != -1 || _hit_selected_item != -1 ) && isDrag( ) ) {
+		return;
+	}
+	if( _button_clicking || _returnbutton_clicking ){
 		return;
 	}
 
@@ -246,6 +271,10 @@ void SelectItem::checkHitNotSelectItem( ) {
 
 void SelectItem::checkHitSelectedItem( ) {
 	if ( ( _hit_selected_item != -1 || _hit_notselect_item != -1 ) && isDrag( ) ) {
+		return;
+	}
+
+	if( _button_clicking || _returnbutton_clicking ){
 		return;
 	}
 
@@ -324,8 +353,9 @@ void SelectItem::calcDragSelectedItemPos( ) {
 
 void SelectItem::calcButtonAction( ) {
 	_button.image.png = _button_handles[ NORMAL ];
+	_returnbutton.image.png = _returnbutton_handles[ NORMAL ];
 
-	if ( !isHitButton( ) ) {
+	if ( isHitButton( ) == 0 ) {
 		return;
 	}
 
@@ -337,8 +367,13 @@ void SelectItem::calcButtonAction( ) {
 		return;
 	}
 
-	_button.image.png = _button_handles[ CLICKING ];
-	_button_clicking = true;
+	if ( isHitButton( ) == 1 ) {
+		_button.image.png = _button_handles[ CLICKING ];
+		_button_clicking = true;
+	} else if ( isHitButton( ) == 2 ) {
+		_returnbutton.image.png = _returnbutton_handles[ CLICKING ];
+		_returnbutton_clicking = true;
+	}
 }
 
 void SelectItem::inputCsv( ) {
@@ -391,15 +426,21 @@ bool SelectItem::isDrag( ) const {
 	return false;
 }
 
-bool SelectItem::isHitButton( ) const {
+int SelectItem::isHitButton( ) const {
 	double mouse_x = _data->getMouseX( );
 	double mouse_y = _data->getMouseY( );
 
 	if ( _button.collider.lx <= mouse_x && mouse_x <= _button.collider.rx &&
 		 _button.collider.ly <= mouse_y && mouse_y <= _button.collider.ry ) {
-		return true;
+		return 1;
 	}
-	return false;
+
+	if ( _returnbutton.collider.lx <= mouse_x && mouse_x <= _returnbutton.collider.rx &&
+		 _returnbutton.collider.ly <= mouse_y && mouse_y <= _returnbutton.collider.ry ) {
+		return 2;
+	}
+
+	return 0;
 }
 
 void SelectItem::setSelectItem( ) {
@@ -412,10 +453,10 @@ void SelectItem::setSelectItem( ) {
 	double mouse_y = _data->getMouseY( );
 
 	BoxCollider box = BoxCollider( );
-	box.lx = ( float )mouse_x - _item_image_hulfsize;
-	box.ly = ( float )mouse_y - _item_image_hulfsize;
-	box.rx = ( float )mouse_x + _item_image_hulfsize;
-	box.ry = ( float )mouse_y + _item_image_hulfsize;
+	box.lx = ( float )mouse_x - _item_image_halfsize;
+	box.ly = ( float )mouse_y - _item_image_halfsize;
+	box.rx = ( float )mouse_x + _item_image_halfsize;
+	box.ry = ( float )mouse_y + _item_image_halfsize;
 
 	for ( int i = 0; i < ITEM_POSSESSION_MAX; i++ ) {
 		if ( ( _select_boxes[ i ].lx <= box.lx && box.lx <= _select_boxes[ i ].rx ||
@@ -437,8 +478,8 @@ void SelectItem::setSelectItem( ) {
 			*collider = _select_boxes[ i ];
 
 			LightImageProperty *image = &_selected[ i ].object.image;
-			image->cx = collider->lx + _item_image_hulfsize;
-			image->cy = collider->ly + _item_image_hulfsize;
+			image->cx = collider->lx + _item_image_halfsize;
+			image->cy = collider->ly + _item_image_halfsize;
 			image->png = _item_handles[ _selected[ i ].type ];
 
 			if ( _drop ) {
@@ -530,12 +571,11 @@ void SelectItem::drawSelectingItem( ) const {
 }
 
 void SelectItem::drawButton( ) const {
-	ImageProperty image = ImageProperty( );
-	image.cx = _button.image.cx;
-	image.cy = _button.image.cy;
-	image.png = _button.image.png;
+	_drawer->setImage( _button.image );
+}
 
-	_drawer->setImage( image );
+void SelectItem::drawReturnButton( ) const {
+	_drawer->setImage( _returnbutton.image );
 }
 
 std::string SelectItem::convItemString( ITEM item ) {

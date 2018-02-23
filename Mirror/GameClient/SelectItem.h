@@ -29,7 +29,7 @@ private:
 	void setSelectItem( );
 	void inputCsv( );
 	bool isDrag( ) const;
-	bool isHitButton( ) const;
+	int isHitButton( ) const;
 
 private:
 	std::string convItemString( ITEM item );
@@ -41,6 +41,7 @@ private:
 	void drawSelectedItem( ) const;
 	void drawSelectingItem( ) const;
 	void drawButton( ) const;
+	void drawReturnButton( ) const;
 
 private:
 	struct BoxObject {
@@ -64,22 +65,25 @@ private:
 	short int _hit_selected_item;//選択済みアイテム
 	short int _wait_time;
 	short int _bar_rate;
-	short int _bar_width_hulf;
-	short int _bar_height_hulf;
+	short int _bar_width_half;
+	short int _bar_height_half;
 	bool _drag;
 	bool _drop;
 	bool _button_clicking;
+	bool _returnbutton_clicking;
 	bool _input; //決定
 	std::array< BoxCollider, ITEM_POSSESSION_MAX > _select_boxes;
 
 	//画像関係
 	int _back_handle;
-	short int _item_image_hulfsize;
+	short int _item_image_halfsize;
 	std::array< int, ITEM_MAX > _item_handles;
 	std::array< int, BUTTON_TYPE_MAX > _button_handles;
+	std::array< int, BUTTON_TYPE_MAX > _returnbutton_handles;
 	std::array< BoxObject, ITEM_MAX > _items;
 	std::array< SelectedItem, ITEM_POSSESSION_MAX > _selected;
 	BoxObject _button;
+	BoxObject _returnbutton;
 	LightImageProperty _frame;
 	LightImageProperty _bar;
 
