@@ -77,6 +77,8 @@ private:
 	//‰æ‘œŠÖŒW
 	int _back_handle;
 	short int _item_image_halfsize;
+	int _item_frame_handle;
+	short int _item_image_hulfsize;
 	std::array< int, ITEM_MAX > _item_handles;
 	std::array< int, BUTTON_TYPE_MAX > _button_handles;
 	std::array< int, BUTTON_TYPE_MAX > _returnbutton_handles;
@@ -85,6 +87,7 @@ private:
 	BoxObject _button;
 	BoxObject _returnbutton;
 	LightImageProperty _frame;
+	LightImageProperty _bar_frame;
 	LightImageProperty _bar;
 
 	GlobalDataPtr _data;

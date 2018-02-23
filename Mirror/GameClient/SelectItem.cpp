@@ -65,6 +65,7 @@ _data( data ) {
 		}
 		_item_image_halfsize = ( short int )( ( float )image_ptr->getPng( ITEM_IMAGE, 0 ).width * 0.5f );
 	}
+	_item_frame_handle = image_ptr->getPng( ITEM_IMAGE, ITEM_MAX ).png;
 
 	{//決定ボタン
 		float half_width  = image_ptr->getPng( BUTTON_IMAGE, BATTLE_BUTTON_IDX ).width * 0.5f;
@@ -97,13 +98,13 @@ _data( data ) {
 	}
 
 	{//プログレスバー
-		_frame = LightImageProperty( );
+		_bar_frame = LightImageProperty( );
 		_bar = LightImageProperty( );
 
 		//フレーム
-		_frame.cx = PROGRESS_BAR_X;
-		_frame.cy = PROGRESS_BAR_Y;
-		_frame.png = image_ptr->getPng( BAR_IMAGE, 0 ).png;
+		_bar_frame.cx = PROGRESS_BAR_X;
+		_bar_frame.cy = PROGRESS_BAR_Y;
+		_bar_frame.png = image_ptr->getPng( BAR_IMAGE, 0 ).png;
 
 		//バー
 		_bar.cx = PROGRESS_BAR_X - image_ptr->getPng( BAR_IMAGE, 0 ).width / 2;
@@ -166,9 +167,9 @@ void SelectItem::update( ) {
 		_drawer->setExtendImage( image, 0, _bar_height_half, _wait_time * _bar_rate, 1 );
 
 		//フレーム
-		image.cx = _frame.cx;
-		image.cy = _frame.cy;
-		image.png = _frame.png;
+		image.cx = _bar_frame.cx;
+		image.cy = _bar_frame.cy;
+		image.png = _bar_frame.png;
 		_drawer->setImage( image );
 
 		if ( _wait_time < TWO_SECOND ) {
@@ -221,7 +222,6 @@ void SelectItem::update( ) {
 	drawReturnButton( );
 	//ドラッグ中のアイテムは一番上に描画
 	drawSelectingItem( );
-
 	//_drawer->setFrontBox( _button.collider.lx, _button.collider.ly, _button.collider.rx, _button.collider.ry, RED );
 	//_drawer->setFrontString( false, 20, HEIGHT - 20, RED, std::to_string( _past_hit_item ), Drawer::BIG );
 }
@@ -527,7 +527,11 @@ void SelectItem::drawBackGround( ) const {
 
 void SelectItem::drawSelectedItemFrame( ) const {
 	for ( int i = 0; i < ITEM_POSSESSION_MAX; i++ ) {
-		_drawer->setFrontBox( _select_boxes[ i ].lx, _select_boxes[ i ].ly, _select_boxes[ i ].rx, _select_boxes[ i ].ry, RED );
+		LightImageProperty image = LightImageProperty( );
+		image.cx = _select_boxes[ i ].lx + _item_image_hulfsize;
+		image.cy = _select_boxes[ i ].ly + _item_image_hulfsize;
+		image.png = _item_frame_handle;
+		_drawer->setImage( image );
 	}
 }
 
