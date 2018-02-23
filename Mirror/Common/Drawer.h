@@ -33,8 +33,9 @@ public:
 	void setBackImage( LightImageProperty png );
 	void setImage( ImageProperty png );
 	void setImage( LightImageProperty png );
-	//ベースプロパティ, 画像の中心X, 画像の中心Y, 最終的な横幅, 最終的な高さ
+	//ベースプロパティ, 画像の中心X, 画像の中心Y, 最終的な横幅の比率, 最終的な高さの比率
 	void setExtendImage( ImageProperty base, float image_cx, float image_cy, double extend_width, double extend_height );
+	void setExtendImage( LightImageProperty base, float image_cx, float image_cy, double extend_width, double extend_height );
 	//中央寄せにするかどうか, x座標, y座標, カラー, 文字列, フォントサイズ, アルファ値
 	void setFrontString( bool flag, double x, double y, COLOR col, std::string str, FONTSIZE_TYPE type = NORMAL, int brt = 255 );
 	void setBackString( bool flag, double x, double y, COLOR col, std::string str, FONTSIZE_TYPE type = NORMAL, int brt = 255 );

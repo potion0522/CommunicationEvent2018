@@ -69,7 +69,6 @@ void Drawer::update( ) {
 void Drawer::drawImage( ) {
 	std::list< ExtendImageProperty >::iterator ite;
 	ite = _images.begin( );
-	SetDrawMode( DX_DRAWMODE_BILINEAR );
 	for ( ite; ite != _images.end( ); ite++ ) {
 		ImageProperty image = ite->base;
 		errno_t image_handle = image.png;
@@ -91,17 +90,24 @@ void Drawer::drawImage( ) {
 		//‰æ‘œŠg‘å—¦(•‚¾‚¯A‚‚³‚¾‚¯)•Ï‚¦‚éê‡
 		if ( ite->extend ) {
 			//•ÏŒ`‚µ‚Ä•`‰æ
+			SetDrawMode( DX_DRAWMODE_BILINEAR );
 			DrawRotaGraph3F( ( float )image.cx, ( float )image.cy, ite->image_cx, ite->image_cy, ite->extend_width, ite->extend_height, image.angle, image.png, TRUE, FALSE );
+			SetDrawMode( DX_DRAWMODE_NEAREST );
 		} else {
 			//’Êí•`‰æ
+			if ( ite->base.size != 1 ) {
+				SetDrawMode( DX_DRAWMODE_BILINEAR );
+			}
 			DrawRotaGraphF( ( float )image.cx, ( float )image.cy, image.size, image.angle, image.png, TRUE );
+			if ( ite->base.size != 1 ) {
+				SetDrawMode( DX_DRAWMODE_NEAREST );
+			}
 		}
 
 		if ( brend ) {
 			SetDrawBlendMode( DX_BLENDMODE_NOBLEND, 0 );
 		}
 	}
-	SetDrawMode( DX_DRAWMODE_NEAREST );
 }
 
 void Drawer::drawFrontString( ) {
@@ -308,6 +314,22 @@ void Drawer::setExtendImage( ImageProperty base, float image_cx, float image_cy,
 	image.extend_width = extend_width;
 	image.extend_height = extend_height;
 	_images.push_back( image );
+}
+
+void Drawer::setExtendImage( LightImageProperty base, float image_cx, float image_cy, double extend_width, double extend_height ) {
+	ExtendImageProperty extend = ExtendImageProperty( );
+	ImageProperty image = ImageProperty( );
+	image.cx = base.cx;
+	image.cy = base.cy;
+	image.png = base.png;
+
+	extend.extend = true;
+	extend.base = image;
+	extend.image_cx = image_cx;
+	extend.image_cy = image_cy;
+	extend.extend_width = extend_width;
+	extend.extend_height = extend_height;
+	_images.push_back( extend );
 }
 
 int Drawer::getStringW( FONTSIZE_TYPE type, std::string str ) const {

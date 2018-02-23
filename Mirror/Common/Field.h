@@ -2,6 +2,7 @@
 #include "smart_ptr.h"
 #include "Base.h"
 #include "const.h"
+#include "Drawer.h"
 #include <math.h>
 #include <string>
 #include <array>
@@ -19,7 +20,7 @@ const int FIELD_ROW = 5;
 const int FIELD_COL = 5;
 const int START_POS_X = WIDTH / 3 * 2 - SQUARE_SIZE * FIELD_COL / 2;
 const int START_POS_Y = HEIGHT / 2 - SQUARE_SIZE * FIELD_ROW / 2;
-const int INFO_TEXT_MAX = 6;
+const int INFO_TEXT_MAX = 10;
 const int BATTLE_BUTTON_IMAGE_NUM = 4;
 
 class Field : public Base {
@@ -111,6 +112,7 @@ public:
 	struct Info {
 		std::string str;
 		COLOR col;
+		Drawer::FONTSIZE_TYPE size;
 	};
 
 	struct Item {
@@ -130,7 +132,7 @@ public:
 	void update( );
 
 public:
-	void setInfoText( std::string str, COLOR col = YELLOW );
+	void setInfoText( std::string str, COLOR col = YELLOW, Drawer::FONTSIZE_TYPE size = Drawer::NORMAL );
 	void updateLazerVector( Vector vec, double spd );
 	void hitPlayerPos( );
 	void hitFieldPos( );
@@ -193,6 +195,13 @@ private:
 	void drawBackGround( ) const;
 
 private:
+	struct BoxObject {
+		LightImageProperty image;
+		BoxCollider collider;
+		int half_width;
+		int half_height;
+	};
+
 	std::map< int, Mirror > _mirrors;
 	std::array< Info, INFO_TEXT_MAX > _info;
 	std::array< int, PLAYER_NUM > _player_pos_no;
@@ -229,6 +238,7 @@ private:
 	LightImageProperty _button_image;
 	LightImageProperty _background;
 	LightImageProperty _lazer_image;
+	BoxObject _board;
 
 	GlobalDataPtr _data;
 	DrawerPtr _drawer;

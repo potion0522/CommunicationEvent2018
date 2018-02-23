@@ -281,7 +281,7 @@ void Game::updatePlayerPhase( ) {
 		return;
 	}
 
-	_field->setInfoText( "あなたの配置をしてください" );
+	_field->setInfoText( "あなたの配置をしてください", YELLOW, Drawer::LITTLE_BIG );
 
 	bool select = false;
 	selectPlayerPos( &select );
@@ -290,7 +290,8 @@ void Game::updatePlayerPhase( ) {
 		return;
 	}
 
-	_field->setInfoText( "決定を押して確定してください", RED );
+	_field->setInfoText( "" );
+	_field->setInfoText( "決定を押して確定してください", RED, Drawer::LITTLE_BIG );
 	_field->activeButtonLighting( );
 	_field->changeClickButton( );
 	
@@ -341,7 +342,7 @@ void Game::inputTmpMirror( ) {
 	}
 
 	if ( _order != _player_num ) {
-		_field->setInfoText( "相手が配置しています", RED );
+		_field->setInfoText( "相手が配置しています", RED, Drawer::LITTLE_BIG );
 		return;
 	}
 
@@ -349,12 +350,24 @@ void Game::inputTmpMirror( ) {
 		return;
 	}
 
+	_field->setInfoText( "左クリックでマスを選択し、", YELLOW );
 	_field->setInfoText( "鏡を配置してください。" );
+	_field->setInfoText( "" );
 	_field->setInfoText( "もう一度左クリックで向きを変えられます" );
-	if ( !_double_mirror ) {
-		_field->setInfoText( "あなたのターンです", RED );
-	} else {
-		_field->setInfoText( "2枚目を配置してください", RED );
+	_field->setInfoText( "" );
+	_field->setInfoText( "あなたのターンです", RED, Drawer::LITTLE_BIG );
+	if ( _double_mirror ) {
+		_field->setInfoText( "2枚目を配置してください", WATER, Drawer::LITTLE_BIG );
+	}
+
+	//レーザーリセット選択時は無効
+	if ( _field->getSelectItem( ) == LAZER_RESET ) {
+		return;
+	}
+
+	//リバースミラー選択時は無効
+	if ( _field->getSelectItem( ) == REVERSE_MIRROR ) {
+		return;
 	}
 
 	//ヒットしているマスを探す
@@ -582,8 +595,21 @@ void Game::updateItemCalc( ) {
 	}
 
 	int idx = _field->getHitItemIdx( );
-
 	_field->changeClickButton( );
+
+	int item = _field->getSelectItem( );
+	//ボタン点滅
+	switch ( item ) {
+	case LAZER_RESET    : _field->activeButtonLighting( ); break;
+	case DOUBLE_MIRROR  : 
+		if ( _field->isSelectedMirror( ) ) {
+			_field->activeButtonLighting( );
+		}
+		break;
+
+	case REVERSE_MIRROR : _field->activeButtonLighting( ); break;
+	default: break;
+	}
 	
 	int clicking = _data->getClickingLeft( );
 	if ( clicking > 0 || ( clicking < 1 && _clicking < 1 ) ) {
@@ -604,7 +630,7 @@ void Game::updateItemCalc( ) {
 		return;
 	}
 
-	int item = _field->getSelectItem( );
+	item = _field->getSelectItem( );
 	if ( item < 0 ) {
 		return;
 	}

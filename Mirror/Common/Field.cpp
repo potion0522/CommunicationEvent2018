@@ -1,22 +1,24 @@
 #include "Field.h"
 #include "GlobalData.h"
-#include "Drawer.h"
 #include "const.h"
 #include "Image.h"
 #include "LoadCSV.h"
 #include <random>
 
-const int MOUSE_R = 5;
-const int MIRROR_R = 10;
-const int CIRCLE_SIZE = SQUARE_SIZE / 5 * 2;
-const int PLAYER_POS_X = START_POS_X - SQUARE_SIZE / 2;
-const int PLAYER_POS_Y = START_POS_Y - SQUARE_SIZE / 2;
-const int PLAYER_SIZE = CIRCLE_SIZE / 2;
-const int ITEM_POS_X = 125;
-const int ITEM_POS_Y = 600;
-const int BUTTON_X = WIDTH / 5;
-const int BUTTON_Y = HEIGHT / 5;
-const int MIRROR_IMAGE_IDX = 2;
+const short int MOUSE_R = 5;
+const short int MIRROR_R = 10;
+const short int CIRCLE_SIZE = SQUARE_SIZE / 5 * 2;
+const short int PLAYER_POS_X = START_POS_X - SQUARE_SIZE / 2;
+const short int PLAYER_POS_Y = START_POS_Y - SQUARE_SIZE / 2;
+const short int PLAYER_SIZE = CIRCLE_SIZE / 2;
+const short int ITEM_POS_X = 125;
+const short int ITEM_POS_Y = HEIGHT - SQUARE_SIZE / 3 * 2;
+const short int BUTTON_X = WIDTH / 5;
+const short int BUTTON_Y = START_POS_Y + 60;
+const short int MIRROR_IMAGE_IDX = 2;
+const short int BOARD_X = WIDTH / 5;
+const short int BOARD_Y = HEIGHT / 2 - 45;
+const short int INFO_Y = BUTTON_Y + SQUARE_SIZE;
 
 char field[ FIELD_COL * FIELD_ROW + 1 ] = 
 "     "
@@ -71,6 +73,20 @@ _data( data ) {
 	for ( int i = 0; i < LAZER_TYPE_MAX; i++ ) {
 		_lazer_handle[ i ] = _image->getPng( BATTLE_IMAGE, LAZER_RIGHT_IDX + i ).png;
 	}
+
+	//ボード(info)
+	_board = BoxObject( );
+	_board.image.cx = BOARD_X;
+	_board.image.cy = BOARD_Y;
+	_board.half_width = _image->getPng( BATTLE_IMAGE, BOARD_IDX ).width / 2;
+	_board.half_height = _image->getPng( BATTLE_IMAGE, BOARD_IDX ).height / 2;
+	_board.image.png = _image->getPng( BATTLE_IMAGE, BOARD_IDX ).png;
+
+	_board.collider.lx = ( float )( _board.image.cx - _board.half_width  );
+	_board.collider.ly = ( float )( _board.image.cy - _board.half_height );
+	_board.collider.rx = ( float )( _board.image.cx + _board.half_width  );
+	_board.collider.ry = ( float )( _board.image.cy + _board.half_height );
+
 
 	//背景	
 	_background = LightImageProperty( );
@@ -195,19 +211,24 @@ void Field::update( ) {
 		case LAZER_RESET:
 			setInfoText( "レーザーの位置を強制的に変更します", RED );
 			setInfoText( "ターン経過はなく", RED );
-			setInfoText( "このターンのやり直しができます", RED );
+			setInfoText( "" );
+			setInfoText( "このターンのやり直しができます", WATER );
 			break;
 
 		case DOUBLE_MIRROR:
 			setInfoText( "鏡を2枚配置できます", RED );
 			setInfoText( "最初に配置した鏡は", RED );
 			setInfoText( "相手にも見える状態になります", RED );
-			setInfoText( "鏡を1枚、配置した状態で決定をしてください", WATER );
+			setInfoText( "" );
+			setInfoText( "鏡を1枚", WATER );
+			setInfoText( "配置した状態で決定をしてください", WATER );
 			setInfoText( "先攻のプレイヤーのみ発動できます", WATER );
 			break;
 
 		case REVERSE_MIRROR:
-			setInfoText( "配置されている全ての鏡の向きを反転させます", RED );
+			setInfoText( "配置されている全ての鏡の向きを", RED );
+			setInfoText( "反転させます", RED );
+			setInfoText( "" );
 			setInfoText( "使用したターンは鏡が設置できません", WATER );
 			break;
 		}
@@ -217,8 +238,8 @@ void Field::update( ) {
 	drawField( );
 	drawPlayer( );
 	drawArmament( );
-	drawDecisionButton( );
 	drawInfo( );
+	drawDecisionButton( );
 	drawRound( );
 	drawItem( );
 	resetInfo( );
@@ -371,9 +392,10 @@ void Field::setPlayerNum( int num ) {
 	_button_image.png = _button_handle[ _player_num * PLAYER_NUM ];
 }
 
-void Field::setInfoText( std::string str, COLOR col ) {
+void Field::setInfoText( std::string str, COLOR col, Drawer::FONTSIZE_TYPE size ) {
 	_info[ _info_idx ].str = str;
 	_info[ _info_idx ].col = col;
+	_info[ _info_idx ].size = size;
 	_info_idx = ( _info_idx + 1 ) % INFO_TEXT_MAX;
 }
 
@@ -750,14 +772,13 @@ void Field::drawDecisionButton( ) const {
 	image.cy = _button_image.cy;
 	image.png = _button_image.png;
 	if ( _button_lighting ) {
-		//光るようにする
+		image.brt = ( int )( sin( _data->getCount( ) * 0.05 ) * 75 + 180 );
 	}
 
 	_drawer->setImage( image );
 }
 
 void Field::drawMirror( ) const {
-	
 	//鏡描画
 	for ( int i = 0; i < FIELD_ROW * FIELD_COL; i++ ) {
 		if ( _mirrors.find( i ) == _mirrors.end( ) ) {
@@ -846,17 +867,12 @@ void Field::drawPlayer( ) const {
 }
 
 void Field::drawInfo( ) const {
-	int lx = 50;
-	int ly = 300;
-	int rx = 500;
-	int ry = 500;
+	_drawer->setExtendImage( _board.image, ( float )_board.half_width, ( float )_board.half_height, 1.4, 2.2 );
 
-	_drawer->setFrontBox( lx, ly, rx, ry );
-
+	int y = INFO_Y;
 	for ( int i = 0; i < INFO_TEXT_MAX; i++ ) {
-		double x = lx + ( rx - lx ) / 2;
-		double y = ly + 20 + i * 30;
-		_drawer->setBackString( true, x, y, _info[ i ].col, _info[ i ].str );
+		_drawer->setFrontString( true, BOARD_X, y, _info[ i ].col, _info[ i ].str, _info[ i ].size );
+		y += _drawer->getStringH( _info[ i ].size ) + 3;
 	}
 }
 
