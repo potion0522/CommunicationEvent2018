@@ -16,13 +16,13 @@ const float SELECTED_PITCH   = ( WIDTH_F - MARGIN * 2.0f ) / ITEM_POSSESSION_MAX
 const float START_SELECTED_X = MARGIN + SELECTED_PITCH - SELECTED_PITCH / 2.0f;
 const float START_SELECTED_Y = HEIGHT * 0.8f;
 
-const float BUTTON_X = WIDTH_F / 3.0f;
+const short int SAVE_BUTTON_IDX = 10;
+const float BUTTON_X = WIDTH_F / 3.0f * 2.0f;
 const float BUTTON_Y = HEIGHT_F / 5.0f;
 
-const float RETURNBUTTON_X = WIDTH_F / 3.0f * 2.0f;
+const short int RETURN_BUTTON_IDX = 8;
+const float RETURNBUTTON_X = WIDTH_F / 3.0f;
 const float RETURNBUTTON_Y = HEIGHT_F / 5.0f;
-
-const int TWO_SECOND = 120;
 
 const int PROGRESS_BAR_X = WIDTH / 2;
 const int PROGRESS_BAR_Y = HEIGHT / 3 * 2;
@@ -53,7 +53,7 @@ _data( data ) {
 	_returnbutton = BoxObject( );
 
 	ImagePtr image_ptr = _data->getImagePtr( );
-	{//背景(今はダミー)
+	{//背景
 		_back_handle = image_ptr->getPng( BACKGROUND_IMAGE, BACKGROUND_WHITE ).png;
 	}
 
@@ -68,15 +68,15 @@ _data( data ) {
 	_item_frame_handle = image_ptr->getPng( ITEM_IMAGE, ITEM_MAX ).png;
 
 	{//決定ボタン
-		float half_width  = image_ptr->getPng( BUTTON_IMAGE, BATTLE_BUTTON_IDX ).width * 0.5f;
-		float half_height = image_ptr->getPng( BUTTON_IMAGE, BATTLE_BUTTON_IDX ).height * 0.5f;
+		float half_width  = image_ptr->getPng( BUTTON_IMAGE, SAVE_BUTTON_IDX ).width * 0.5f;
+		float half_height = image_ptr->getPng( BUTTON_IMAGE, SAVE_BUTTON_IDX ).height * 0.5f;
 
 		for ( int i = 0; i < BUTTON_TYPE_MAX; i++ ) {
-			_button_handles[ i ] = image_ptr->getPng( BUTTON_IMAGE, BATTLE_BUTTON_IDX + i ).png;
+			_button_handles[ i ] = image_ptr->getPng( BUTTON_IMAGE, SAVE_BUTTON_IDX + i ).png;
 		}
 		_button.image.cx = BUTTON_X;
 		_button.image.cy = BUTTON_Y;
-		_button.image.png = image_ptr->getPng( BUTTON_IMAGE, BATTLE_BUTTON_IDX ).png;
+		_button.image.png = image_ptr->getPng( BUTTON_IMAGE, SAVE_BUTTON_IDX ).png;
 
 		_button.collider.lx = ( float )_button.image.cx - half_width;
 		_button.collider.rx = ( float )_button.image.cx + half_width;
@@ -85,11 +85,11 @@ _data( data ) {
 	
 	//リターンボタン
 		for ( int i = 0; i < BUTTON_TYPE_MAX; i++ ) {
-			_returnbutton_handles[ i ] = image_ptr->getPng( BUTTON_IMAGE, BATTLE_BUTTON_IDX + i ).png;
+			_returnbutton_handles[ i ] = image_ptr->getPng( BUTTON_IMAGE, RETURN_BUTTON_IDX + i ).png;
 		}
 		_returnbutton.image.cx = RETURNBUTTON_X;
 		_returnbutton.image.cy = RETURNBUTTON_Y;
-		_returnbutton.image.png = image_ptr->getPng( BUTTON_IMAGE, BATTLE_BUTTON_IDX ).png;
+		_returnbutton.image.png = image_ptr->getPng( BUTTON_IMAGE, RETURN_BUTTON_IDX ).png;
 
 		_returnbutton.collider.lx = ( float )_returnbutton.image.cx - half_width;
 		_returnbutton.collider.rx = ( float )_returnbutton.image.cx + half_width;
@@ -114,7 +114,7 @@ _data( data ) {
 		_bar_height_half = image_ptr->getPng( BAR_IMAGE, 1 ).height / 2;
 
 		int length = image_ptr->getPng( BAR_IMAGE, 0 ).width;
-		_bar_rate = length / TWO_SECOND;
+		_bar_rate = length / ( FRAME * 2 );
 	}
 
 
@@ -172,7 +172,7 @@ void SelectItem::update( ) {
 		image.png = _bar_frame.png;
 		_drawer->setImage( image );
 
-		if ( _wait_time < TWO_SECOND ) {
+		if ( _wait_time < ( FRAME * 2 ) ) {
 			_wait_time++;
 		} else {
 			_data->setScene( TITLE );
