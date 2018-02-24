@@ -21,11 +21,10 @@ const short int BOARD_Y = HEIGHT / 2 - 45;
 const short int INFO_Y = BUTTON_Y + SQUARE_SIZE;
 
 char field[ FIELD_COL * FIELD_ROW + 1 ] = 
-"     "
-"     "
-"     "
-"     "
-"     ";
+"    "
+"    "
+"    "
+"    ";
 
 enum IMAGE_IDX {
 	BOARD_IDX,

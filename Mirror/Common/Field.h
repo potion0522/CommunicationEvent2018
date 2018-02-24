@@ -14,10 +14,10 @@ PTR( GlobalData );
 PTR( Drawer );
 PTR( Image );
 
-const int PLAYER_POSITION = 5;
+const int PLAYER_POSITION = 4;
 const int SQUARE_SIZE = 96;
-const int FIELD_ROW = 5;
-const int FIELD_COL = 5;
+const int FIELD_ROW = 4;
+const int FIELD_COL = 4;
 const int START_POS_X = WIDTH / 3 * 2 - SQUARE_SIZE * FIELD_COL / 2;
 const int START_POS_Y = HEIGHT / 2 - SQUARE_SIZE * FIELD_ROW / 2;
 const int INFO_TEXT_MAX = 10;
