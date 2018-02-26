@@ -13,6 +13,7 @@ PTR( Field );
 PTR( GlobalData );
 PTR( Drawer );
 PTR( Image );
+PTR( Debug );
 
 const int PLAYER_POSITION = 4;
 const int SQUARE_SIZE = 96;
@@ -57,36 +58,6 @@ public:
 
 			return normal;
 		}
-		/*
-		Vector getReflection( Vector vec ) {
-			// R = F - 2dot( F, N )N
-
-			//進行ベクトル
-			Vector F = { x, y };
-
-			//法線ベクトル
-			double length = sqrt( vec.x * vec.x + vec.y * vec.y );
-			Vector N = { vec.x / length, vec.y / length };
-
-			double dot = N.x * F.x + N.y * F.y;
-
-			Vector P = Vector( );
-			P.x = dot * N.x;
-			P.y = dot * N.y;
-
-			Vector ref = Vector( );
-			ref.x = F.x - P.x * 2;
-			ref.y = F.y - P.y * 2;
-
-			int tmp_a = ( int )( ref.x * 10 );
-			int tmp_b = ( int )( ref.y * 10 );
-
-			ref.x = tmp_a * 0.1;
-			ref.y = tmp_b * 0.1;
-
-			return ref;
-		};
-		*/
 	};
 
 	enum DIR {
@@ -101,7 +72,7 @@ public:
 		int player_num;
 		int x;
 		int y;
-		MIRROR_ANGLE angle;
+		MIRROR_ANGLE angle = ANGLE_NONE;
 	};
 
 	struct PlayerPos {
@@ -109,17 +80,19 @@ public:
 		float y;
 	};
 
-	struct Info {
-		std::string str;
-		COLOR col;
-		Drawer::FONTSIZE_TYPE size;
-	};
-
 	struct Item {
 		bool flag;
 		short int type;
 		float x;
 		float y;
+	};
+
+	enum COMMAND {
+		COMMAND_RIGHT,
+		COMMAND_LEFT,
+		COMMAND_DELETE,
+		COMMAND_TYPE_MAX,
+		COMMAND_NONE
 	};
 public:
 	Field( GlobalDataPtr data );
@@ -171,6 +144,8 @@ public:
 	int getLazerPointIdx( ) const;
 	int getSelectItem( ) const;
 	int getHitItemIdx( ) const;
+	COMMAND getMirrorCommand( ) const;
+	MIRROR_ANGLE getMirrorAngle( int idx ) const;
 	bool isSelectedPlayer( ) const;
 	bool isHitDecisionButton( ) const;
 	bool isSelectedMirror( ) const;
@@ -178,6 +153,7 @@ public:
 private:
 	void resetInfo( );
 	void setDirect( Vector vec );
+	void checkHitMirrorCommand( );
 
 private:
 	//Draw系
@@ -193,13 +169,21 @@ private:
 	void drawSettingPlayer( );
 	void drawItem( ) const;
 	void drawBackGround( ) const;
+	void drawMirrorCommand( ) const;
 
 private:
+
 	struct BoxObject {
 		LightImageProperty image;
 		BoxCollider collider;
 		int half_width;
 		int half_height;
+	};
+	
+	struct Info {
+		std::string str;
+		COLOR col;
+		Drawer::FONTSIZE_TYPE size;
 	};
 
 	std::map< int, Mirror > _mirrors;
@@ -228,6 +212,7 @@ private:
 	DIR _direct;
 	Mirror _tmp_mirror;
 	Vector _reflection_point;
+	COMMAND _command;//鏡の処理ボタン
 
 	//画像関連
 	int _table_handle;
@@ -235,6 +220,7 @@ private:
 	std::array< int, BATTLE_BUTTON_IMAGE_NUM > _button_handle;
 	std::array< int, ITEM_MAX > _item_handle;
 	std::array< int, LAZER_TYPE_MAX > _lazer_handle;
+	std::array< BoxObject, COMMAND_TYPE_MAX > _mirror_cmd;
 	LightImageProperty _button_image;
 	LightImageProperty _background;
 	LightImageProperty _lazer_image;
@@ -243,4 +229,5 @@ private:
 	GlobalDataPtr _data;
 	DrawerPtr _drawer;
 	ImagePtr _image;
+	DebugPtr _debug;
 };

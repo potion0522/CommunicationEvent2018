@@ -29,19 +29,19 @@ void Command::update( ) {
 		}
 	}
 
-	if ( _data->getKeyState( _keyboard->getKeyCode( KeyBoard::BACK_KEY ) ) == 1 ) {
+	if ( _data->getKeyState( _keyboard->getKeyCode( BACK_KEY ) ) == 1 ) {
 		int del = ( int )_command.length( );
 		if ( del > 0 ) {
 			_command.erase( --del );
 		}
 	}
 
-	if ( _data->getKeyState( _keyboard->getKeyCode( KeyBoard::ENTER_KEY ) ) == 1 ) {
+	if ( _data->getKeyState( _keyboard->getKeyCode( ENTER_KEY ) ) == 1 ) {
 		setWord( );
 		std::string( ).swap( _command );
 	}
 
-	if ( _data->getKeyState( _keyboard->getKeyCode( KeyBoard::ESC_KEY ) ) == 1 ) {
+	if ( _data->getKeyState( _keyboard->getKeyCode( ESC_KEY ) ) == 1 ) {
 		setFlag( 0 );
 		std::string( ).swap( _command );
 		clearWord( );

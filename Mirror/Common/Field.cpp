@@ -3,6 +3,7 @@
 #include "const.h"
 #include "Image.h"
 #include "LoadCSV.h"
+#include "Debug.h"
 #include <random>
 
 const short int MOUSE_R = 5;
@@ -20,12 +21,6 @@ const short int BOARD_X = WIDTH / 5;
 const short int BOARD_Y = HEIGHT / 2 - 45;
 const short int INFO_Y = BUTTON_Y + SQUARE_SIZE;
 
-char field[ FIELD_COL * FIELD_ROW + 1 ] = 
-"    "
-"    "
-"    "
-"    ";
-
 enum IMAGE_IDX {
 	BOARD_IDX,
 	LAZER_RIGHT_IDX,
@@ -39,6 +34,7 @@ _data( data ) {
 	setFlag( 1 );
 	_drawer = _data->getDrawerPtr( );
 	_image = _data->getImagePtr( );
+	_debug = _data->getDebugPtr( );
 	_cur_hand  = LoadCursor( NULL, IDC_HAND );
 	_table_handle = -1;
 	std::array< int, PLAYER_NUM >( ).swap( _mirror_handle );
@@ -86,12 +82,30 @@ _data( data ) {
 	_board.collider.rx = ( float )( _board.image.cx + _board.half_width  );
 	_board.collider.ry = ( float )( _board.image.cy + _board.half_height );
 
-
 	//背景	
 	_background = LightImageProperty( );
 	_background.cx = WIDTH / 2;
 	_background.cy = HEIGHT / 2;
 	_background.png = _image->getPng( BACKGROUND_IMAGE, BACKGROUND_NORMAL ).png;
+
+	//鏡の設置コマンド
+	std::array< BoxObject, COMMAND_TYPE_MAX >( ).swap( _mirror_cmd );
+	for ( int i = 0; i < COMMAND_TYPE_MAX; i++ ) {
+		//画像関連
+		LightImageProperty *image = &_mirror_cmd[ i ].image;
+		image->png = _image->getPng( COMMAND_IMAGE, i ).png;
+		image->cx = START_POS_X + i * SQUARE_SIZE + i * SQUARE_SIZE / 2;
+		image->cy = START_POS_Y + SQUARE_SIZE * FIELD_ROW + SQUARE_SIZE;
+		//当たり判定
+		_mirror_cmd[ i ].half_width = _image->getPng( COMMAND_IMAGE, i ).width / 2;
+		_mirror_cmd[ i ].half_height = _image->getPng( COMMAND_IMAGE, i ).height / 2;
+
+		BoxCollider *box = &_mirror_cmd[ i ].collider;
+		box->lx = ( float )image->cx - _mirror_cmd[ i ].half_width;
+		box->ly = ( float )image->cy - _mirror_cmd[ i ].half_height;
+		box->rx = ( float )image->cx + _mirror_cmd[ i ].half_width;
+		box->ry = ( float )image->cy + _mirror_cmd[ i ].half_height;
+	}
 }
 
 Field::~Field( ) {
@@ -122,6 +136,8 @@ void Field::initialize( ) {
 	std::map< int, Mirror >( ).swap( _mirrors );
 	std::array< Info, INFO_TEXT_MAX >( ).swap( _info );
 	std::array< Item, ITEM_POSSESSION_MAX >( ).swap( _item );
+	_command = COMMAND( );
+
 	_reflection_point = Vector( );
 	_phase = SET_PLAYER_PHASE;
 
@@ -201,6 +217,7 @@ void Field::nextTurn( ) {
 	_direct = DIR( );
 	_tmp_mirror = Mirror( );
 	_reflection_point = Vector( );
+	_command = COMMAND( );
 }
 
 void Field::update( ) {
@@ -233,6 +250,9 @@ void Field::update( ) {
 		}
 	}
 
+	//計算
+	checkHitMirrorCommand( );
+	//描画
 	drawBackGround( );
 	drawField( );
 	drawPlayer( );
@@ -241,8 +261,15 @@ void Field::update( ) {
 	drawDecisionButton( );
 	drawRound( );
 	drawItem( );
+	drawMirrorCommand( );
 	resetInfo( );
 	_button_lighting = false;
+
+	//デバッグ
+	if ( _debug->getFlag( ) ) {
+		_debug->addLog( "MirrorCmdIdx : " + std::to_string( ( int )_command ) );
+	}
+
 
 	if ( _phase == SET_PLAYER_PHASE ) {
 		drawPlayerPos( );
@@ -250,7 +277,7 @@ void Field::update( ) {
 	
 	if ( _phase == SET_MIRROR_PHASE ) {
 		if ( _order != ( unsigned char )-1 ) {
-			drawSettingPlayer( );
+			//drawSettingPlayer( );
 		}
 	}
 
@@ -258,7 +285,6 @@ void Field::update( ) {
 		return;
 	}
 
-	drawMirror( );
 	if ( !_mirror_selected ) {
 		drawTmpMirror( );
 	}
@@ -266,6 +292,7 @@ void Field::update( ) {
 	if ( _phase < ATTACK_PHASE ) {
 		return;
 	}
+	drawMirror( );
 }
 
 void Field::hitPlayerPos( ) {
@@ -361,6 +388,18 @@ int Field::getHitItemIdx( ) const {
 	}
 
 	return -1;
+}
+
+Field::COMMAND Field::getMirrorCommand( ) const {
+	return _command;
+}
+
+MIRROR_ANGLE Field::getMirrorAngle( int idx ) const {
+	MIRROR_ANGLE angle = ANGLE_NONE;
+	if ( _mirrors.find( idx ) != _mirrors.end( ) ) {
+		angle = _mirrors.find( idx )->second.angle;
+	}
+	return angle;
 }
 
 bool Field::isSelectedMirror( ) const {
@@ -503,6 +542,28 @@ void Field::setDirect( Vector vec ) {
 	}
 }
 
+void Field::checkHitMirrorCommand( ) {
+	int mouse_x = _data->getMouseX( );
+	int mouse_y = _data->getMouseY( );
+
+	short int hit = -1;
+	for ( int i = 0; i < COMMAND_TYPE_MAX; i++ ) {
+		if ( _mirror_cmd[ i ].collider.lx <= mouse_x && mouse_x <= _mirror_cmd[ i ].collider.rx &&
+			 _mirror_cmd[ i ].collider.ly <= mouse_y && mouse_y <= _mirror_cmd[ i ].collider.ry ) {
+			hit = i;
+			break;
+		}
+	}
+
+	if ( hit < 0 ) {
+		return;
+	}
+
+	if ( _data->getClickLeft( ) ) {
+		_command = ( COMMAND )hit;
+	}
+}
+
 void Field::setOrder( int order ) {
 	_order = order;
 }
@@ -553,8 +614,19 @@ void Field::setTmpMirrorPoint( int player_num, int x, int y, MIRROR_ANGLE angle 
 
 void Field::setMirrorPoint( int player_num, int x, int y, MIRROR_ANGLE angle ) {
 	int idx = x + y * FIELD_COL;
-	field[ x + y * FIELD_COL ] = ( angle == RIGHT ? 'R' : 'L' );
-	Mirror mirror = { true, player_num, x, y, angle };
+	if ( angle == ANGLE_NONE ) {
+		if ( _mirrors.find( idx ) != _mirrors.end( ) ) {
+			_mirrors.erase( idx );
+			return;
+		}
+	}
+
+	Mirror mirror = Mirror( );
+	mirror.flag = true;
+	mirror.player_num = player_num;
+	mirror.x = x;
+	mirror.y = y;
+	mirror.angle = angle;
 
 	std::map< int, Mirror >::iterator ite;
 	ite = _mirrors.begin( );
@@ -716,48 +788,52 @@ void Field::drawArmament( ) const {
 }
 
 void Field::drawTmpMirror( ) const {
-	ImageProperty tmp_mirror = ImageProperty( );
-	
 	if ( getFieldPosHitNum( ) != -1 ) {
 		SetCursor( _cur_hand );
 		int pos = getFieldPosHitNum( );
 		int x = pos % FIELD_COL;
 		int y = pos / FIELD_COL;
-		tmp_mirror.cx = START_POS_X + x * SQUARE_SIZE + SQUARE_SIZE * 0.5;
-		tmp_mirror.cy = START_POS_Y + y * SQUARE_SIZE + SQUARE_SIZE * 0.5;
-		tmp_mirror.brt = ( int )( ( sin( _data->getCount( ) * 0.06 ) + 1 ) * 40 + 100 );
-		tmp_mirror.png = _mirror_handle[ _player_num ];
-	}
-
-	if ( !_tmp_mirror.flag ) {
-		if ( getFieldPosHitNum( ) != -1 ) {
-			_drawer->setImage( tmp_mirror );
-		}
-		return; 
+		double cx = START_POS_X + x * SQUARE_SIZE + SQUARE_SIZE * 0.5;
+		double cy = START_POS_Y + y * SQUARE_SIZE + SQUARE_SIZE * 0.5;
+		_drawer->setFrontString( true, cx, cy, ( _player_num ? BLUE : RED ), "POS" );
+		//tmp_mirror.brt = ( int )( ( sin( _data->getCount( ) * 0.06 ) + 1 ) * 40 + 100 );
+		//tmp_mirror.png = _mirror_handle[ _player_num ];
 	}
 
 	ImageProperty image = ImageProperty( );
 	//鏡描画
-	for ( int i = 0; i < FIELD_ROW; i++ ) {
-		for ( int j = 0; j < FIELD_COL; j++ ) {
-			if ( _tmp_mirror.x != j || _tmp_mirror.y != i ) {
-				continue;
+	std::map< int, Mirror > tmp_mirrors = _mirrors;
+	if ( _tmp_mirror.flag ) {
+		int idx = _tmp_mirror.x + _tmp_mirror.y * FIELD_COL;
+		if ( _tmp_mirror.angle == ANGLE_NONE ) {
+			if ( tmp_mirrors.find( idx ) != tmp_mirrors.end( ) ) {
+				tmp_mirrors.erase( idx );
 			}
-			image = ImageProperty( );
-			float angle = 0;
-			if ( _tmp_mirror.angle != RIGHT ) {
-				angle = ( float )PI / 2;
-			}
-			image.cx = START_POS_X + j * SQUARE_SIZE + SQUARE_SIZE * 0.5;
-			image.cy = START_POS_Y + i * SQUARE_SIZE + SQUARE_SIZE * 0.5;
-			image.angle = angle;
-			image.png = _mirror_handle[ _player_num ];
-			_drawer->setImage( image );
+		} else {
+			tmp_mirrors[ idx ] = _tmp_mirror;
 		}
 	}
 
-	if ( getFieldPosHitNum( ) != -1 ) {
-		_drawer->setImage( tmp_mirror );
+	for ( int i = 0; i < FIELD_ROW * FIELD_COL; i++ ) {
+		if ( tmp_mirrors.find( i ) == tmp_mirrors.end( ) ) {
+			continue;
+		}
+		Mirror mirror = tmp_mirrors.find( i )->second;
+		ImageProperty image = ImageProperty( );
+
+		float angle = 0;
+		if ( mirror.angle == ANGLE_NONE ) {
+			continue;
+		}
+
+		if ( mirror.angle != RIGHT ) {
+			angle = ( float )PI / 2;
+		}
+		image.cx = START_POS_X + mirror.x * SQUARE_SIZE + SQUARE_SIZE * 0.5;
+		image.cy = START_POS_Y + mirror.y * SQUARE_SIZE + SQUARE_SIZE * 0.5;
+		image.angle = angle;
+		image.png = _mirror_handle[ mirror.player_num ];
+		_drawer->setImage( image );
 	}
 }
 
@@ -876,7 +952,7 @@ void Field::drawInfo( ) const {
 }
 
 void Field::drawRound( ) const {
-	_drawer->setFrontString( false, 20, 20, RED, "ROUND : " + std::to_string( ( ( _turn - 1 ) / TURN_MAX ) + 1 ) + "  TURN : " + std::to_string( _turn ), Drawer::BIG );
+	_drawer->setFrontString( false, 20, 20, RED, "レーザーの移動まであと : " + std::to_string( TURN_MAX - ( _turn - 1 ) % TURN_MAX ), Drawer::BIG );
 }
 
 void Field::drawSettingPlayer( ) {
@@ -945,4 +1021,10 @@ void Field::drawItem( ) const {
 
 void Field::drawBackGround( ) const {
 	_drawer->setBackImage( _background );
+}
+
+void Field::drawMirrorCommand( ) const {
+	for ( int i = 0; i < COMMAND_TYPE_MAX; i++ ) {
+		_drawer->setImage( _mirror_cmd[ i ].image );
+	}
 }

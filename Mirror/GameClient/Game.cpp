@@ -370,8 +370,10 @@ void Game::inputTmpMirror( ) {
 		return;
 	}
 
-	//ヒットしているマスを探す
+	//当たり判定を計算
 	_field->hitFieldPos( );
+
+	//ヒットしているマスを探す
 	int pos = _field->getFieldPosHitNum( );
 
 	if ( _field->isHitDecisionButton( ) ) {
@@ -392,12 +394,15 @@ void Game::inputTmpMirror( ) {
 		return;
 	}
 
+	//情報をつめていく
 	int x = pos % FIELD_COL;
 	int y = pos / FIELD_COL;
-	if ( _tmp_mirror.x == x && _tmp_mirror.y == y ) {
-		_tmp_mirror.angle = ( MIRROR_ANGLE )( ( int )( _tmp_mirror.angle + 1 ) % ( int )MIRROR_ANGLE_MAX );
-	} else {
-		_tmp_mirror.angle = RIGHT;
+	Field::COMMAND command = _field->getMirrorCommand( );
+	switch ( command ) {
+	case Field::COMMAND_RIGHT  : _tmp_mirror.angle = RIGHT     ; break;
+	case Field::COMMAND_LEFT   : _tmp_mirror.angle = LEFT      ; break;
+	case Field::COMMAND_DELETE : _tmp_mirror.angle = ANGLE_NONE; break;
+	case Field::COMMAND_NONE   : return;
 	}
 
 	_tmp_mirror.x = x;
@@ -428,7 +433,7 @@ void Game::updateMirrorPhase( ) {
 	}
 
 	_field->mirrorPosSelected( );
-	
+
 	_client->setCtsPlayerNum( );
 	_client->setCtsAngle( _tmp_mirror.angle );
 	_client->setCtsX( _tmp_mirror.x );
@@ -556,21 +561,10 @@ void Game::recvAttackPhase( ) {
 		mirror[ i ].angle = _client->getStcAngle( i );
 	}
 
-	bool del = false;
-	if ( mirror[ 0 ].flag && mirror[ 1 ].flag ) {
-		if ( mirror[ 0 ].x == mirror[ 1 ].x &&
-			 mirror[ 0 ].y == mirror[ 1 ].y &&
-			 mirror[ 0 ].angle == mirror[ 1 ].angle ) {
-			_field->deleteMirrorPoint( mirror[ 0 ].x + mirror[ 0 ].y * FIELD_COL );
-			del = true;
-		}
-	}
-
-	if ( !del ) {
-		for ( int i = 0; i < PLAYER_NUM; i++ ) {
-			if ( mirror[ i ].flag ) {
-				_field->setMirrorPoint( mirror[ i ].player_num, mirror[ i ].x, mirror[ i ].y, mirror[ i ].angle );
-			}
+	//鏡の配置
+	for ( int i = 0; i < PLAYER_NUM; i++ ) {
+		if ( mirror[ i ].flag ) {
+			_field->setMirrorPoint( mirror[ i ].player_num, mirror[ i ].x, mirror[ i ].y, mirror[ i ].angle );
 		}
 	}
 

@@ -135,6 +135,10 @@ int KeyBoard::getKeyCode( KEY key_code ) {
 		case ENTER_KEY       : code = KEY_INPUT_RETURN    ; break;
 		case BACK_KEY        : code = KEY_INPUT_BACK      ; break;
 		case ESC_KEY         : code = KEY_INPUT_ESCAPE    ; break;
+		case RIGHT_KEY       : code = KEY_INPUT_RIGHT     ; break;
+		case LEFT_KEY        : code = KEY_INPUT_LEFT      ; break;
+		case UP_KEY          : code = KEY_INPUT_UP	      ; break;
+		case DOWN_KEY        : code = KEY_INPUT_DOWN      ; break;
 	}
 	return code;
 }

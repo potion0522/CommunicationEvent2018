@@ -34,7 +34,7 @@ void ResultClient::update( ) {
 
 	_drawer->setFrontString( true, WIDTH / 2, HEIGHT / 5 * 3, YELLOW, "Press \"ENTER\" Key", Drawer::BIG );
 
-	if ( _data->getKeyState( _keyboard->getKeyCode( KeyBoard::ENTER_KEY ) ) == 1 ) {
+	if ( _data->getKeyState( _keyboard->getKeyCode( ENTER_KEY ) ) == 1 ) {
 		_data->setInitFlag( );
 	}
 }

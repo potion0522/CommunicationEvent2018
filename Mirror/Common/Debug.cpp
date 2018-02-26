@@ -100,7 +100,7 @@ void Debug::commandExecution( ) {
 	if ( _command->getWord( 0 ) == "SET" ) {
 		if ( _command->getWord( 1 ) == "SCENE" ) {
 			std::string str = _command->getWord( 2 );
-			SCENE scene = NONE;
+			SCENE scene = NONE_SCENE;
 			if ( str == "TITLE" ) {
 				scene = TITLE;
 			}
@@ -117,7 +117,7 @@ void Debug::commandExecution( ) {
 				scene = SELECT_ITEM;
 			}
 
-			if ( scene != NONE ) {
+			if ( scene != NONE_SCENE ) {
 				_data->setScene( scene );
 			}
 		}
@@ -163,7 +163,7 @@ void Debug::printScene( ) {
 	SCENE scene = _data->getScene( );
 
 	switch ( scene ) {
-	case NONE        : str = "NONE   "     ; break;
+	case NONE_SCENE  : str = "NONE   "     ; break;
 	case TITLE       : str = "TITLE  "     ; break;
 	case CONNECT     : str = "CONNECT"     ; break;
 	case BATTLE      : str = "BATTLE "     ; break;

@@ -150,7 +150,7 @@ void SelectItem::initialize( ) {
 
 void SelectItem::update( ) {
 	KeyBoardPtr keyboard( new KeyBoard( ) );
-	if ( _data->getKeyState( keyboard->getKeyCode( KeyBoard::X_KEY ) ) == 1 ) {
+	if ( _data->getKeyState( keyboard->getKeyCode( X_KEY ) ) == 1 ) {
 		_data->setScene( TITLE );
 	}
 

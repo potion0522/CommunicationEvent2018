@@ -10,7 +10,7 @@
 
 Direction::Direction( MACHINE_TYPE type, GlobalDataPtr data ) :
 _data( data ) {
-	_scene = NONE;
+	_scene = NONE_SCENE;
 	_debug = DebugPtr( new Debug( _data ) );
 	_data->setPtr( _debug );
 	add( ALL, _data->getDrawerPtr( ) );

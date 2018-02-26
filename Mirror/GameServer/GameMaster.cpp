@@ -205,27 +205,14 @@ void GameMaster::updateMirrorPhase( ) {
 
 	idx = getOrderIdx( 1 );
 
-	//æ‚èÁ‚µ‚©‚Ç‚¤‚©‚ğ”»’f
-	bool break_mirror = false;
-	if ( _client_data[ 0 ].flag && _client_data[ 1 ].flag ) {
-		if ( _client_data[ 0 ].x == _client_data[ 1 ].x &&
-			 _client_data[ 0 ].y == _client_data[ 1 ].y &&
-			 _client_data[ 0 ].angle == _client_data[ 1 ].angle ) {
-			break_mirror = true;
+	//‹¾‚Ì”z’u
+	for ( int i = 0; i < PLAYER_NUM; i++ ) {
+		Data data = _client_data[ idx ];
+		if ( data.flag ) {
+			_field->setMirrorPoint( idx, data.x, data.y, data.angle );
 		}
-	}
 
-	if ( break_mirror ) {
-		_field->deleteMirrorPoint( _client_data[ 0 ].x + _client_data[ 0 ].y * FIELD_COL );
-	} else {
-		for ( int i = 0; i < PLAYER_NUM; i++ ) {
-			Data data = _client_data[ idx ];
-			if ( data.flag ) {
-				_field->setMirrorPoint( idx, data.x, data.y, data.angle );
-			}
-
-			idx = ( idx + 1 ) % PLAYER_NUM;
-		}
+		idx = ( idx + 1 ) % PLAYER_NUM;
 	}
 
 	if ( _reverse_mirror ) {
