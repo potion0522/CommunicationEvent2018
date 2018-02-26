@@ -562,9 +562,20 @@ void Game::recvAttackPhase( ) {
 	}
 
 	//‹¾‚Ì”z’u
-	for ( int i = 0; i < PLAYER_NUM; i++ ) {
-		if ( mirror[ i ].flag ) {
-			_field->setMirrorPoint( mirror[ i ].player_num, mirror[ i ].x, mirror[ i ].y, mirror[ i ].angle );
+	bool del = false;
+	if ( mirror[ 0 ].x     == mirror[ 1 ].x     &&
+		 mirror[ 0 ].y     == mirror[ 1 ].y     &&
+		 mirror[ 0 ].angle == mirror[ 1 ].angle ) {
+		del = true;
+	}
+
+	if ( del ) {
+		_field->deleteMirrorPoint( mirror[ 0 ].x + mirror[ 0 ].y * FIELD_COL );
+	} else {
+		for ( int i = 0; i < PLAYER_NUM; i++ ) {
+			if ( mirror[ i ].flag ) {
+				_field->setMirrorPoint( mirror[ i ].player_num, mirror[ i ].x, mirror[ i ].y, mirror[ i ].angle );
+			}
 		}
 	}
 
