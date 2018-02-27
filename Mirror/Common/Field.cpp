@@ -14,12 +14,12 @@ const short int PLAYER_POS_Y = START_POS_Y - SQUARE_SIZE / 2;
 const short int PLAYER_SIZE = CIRCLE_SIZE / 2;
 const short int ITEM_POS_X = 125;
 const short int ITEM_POS_Y = HEIGHT - SQUARE_SIZE / 3 * 2;
-const short int BUTTON_X = WIDTH / 5;
-const short int BUTTON_Y = START_POS_Y + 60;
+const short int DECISION_BUTTON_X = WIDTH / 3 * 2;
+const short int DECISION_BUTTON_Y = START_POS_Y - ( short int )( SQUARE_SIZE * 1.8 );
 const short int MIRROR_IMAGE_IDX = 2;
 const short int BOARD_X = WIDTH / 5;
 const short int BOARD_Y = HEIGHT / 2 - 45;
-const short int INFO_Y = BUTTON_Y + SQUARE_SIZE;
+const short int INFO_Y = BOARD_Y - ( short int )( SQUARE_SIZE * 1.5 );
 
 enum IMAGE_IDX {
 	BOARD_IDX,
@@ -90,12 +90,16 @@ _data( data ) {
 
 	//鏡の設置コマンド
 	std::array< BoxObject, COMMAND_TYPE_MAX >( ).swap( _mirror_cmd );
+	const short int PITCH = ( SQUARE_SIZE * FIELD_ROW ) / ( short int )COMMAND_TYPE_MAX;
+	const short int MIRROR_COMMAND_X = START_POS_X + SQUARE_SIZE * FIELD_COL + SQUARE_SIZE;
+	const short int MIRROR_COMMAND_Y = START_POS_Y + _image->getPng( COMMAND_IMAGE, 0 ).height / 2;
+
 	for ( int i = 0; i < COMMAND_TYPE_MAX; i++ ) {
 		//画像関連
 		LightImageProperty *image = &_mirror_cmd[ i ].image;
 		image->png = _image->getPng( COMMAND_IMAGE, i ).png;
-		image->cx = START_POS_X + i * SQUARE_SIZE + i * SQUARE_SIZE / 2;
-		image->cy = START_POS_Y + SQUARE_SIZE * FIELD_ROW + SQUARE_SIZE;
+		image->cx = MIRROR_COMMAND_X;
+		image->cy = MIRROR_COMMAND_Y + PITCH * i;
 		//当たり判定
 		_mirror_cmd[ i ].half_width = _image->getPng( COMMAND_IMAGE, i ).width / 2;
 		_mirror_cmd[ i ].half_height = _image->getPng( COMMAND_IMAGE, i ).height / 2;
@@ -201,8 +205,8 @@ void Field::initialize( ) {
 	}
 
 	//ボタンポジション
-	_button_image.cx = BUTTON_X;
-	_button_image.cy = BUTTON_Y;
+	_button_image.cx = DECISION_BUTTON_X;
+	_button_image.cy = DECISION_BUTTON_Y;
 }
 
 void Field::nextTurn( ) {
@@ -251,7 +255,9 @@ void Field::update( ) {
 	}
 
 	//計算
-	checkHitMirrorCommand( );
+	if ( _phase == SET_MIRROR_PHASE ) {
+		checkHitMirrorCommand( );
+	}
 	//描画
 	drawBackGround( );
 	drawField( );
@@ -259,9 +265,7 @@ void Field::update( ) {
 	drawArmament( );
 	drawInfo( );
 	drawDecisionButton( );
-	drawRound( );
 	drawItem( );
-	drawMirrorCommand( );
 	resetInfo( );
 	_button_lighting = false;
 
@@ -274,18 +278,22 @@ void Field::update( ) {
 	if ( _phase == SET_PLAYER_PHASE ) {
 		drawPlayerPos( );
 	}
-	
-	if ( _phase == SET_MIRROR_PHASE ) {
-		if ( _order != ( unsigned char )-1 ) {
-			//drawSettingPlayer( );
-		}
-	}
 
 	if ( _phase < SET_MIRROR_PHASE ) {
 		return;
 	}
+	//レーザー移動までのターン数
+	drawRound( );
 
-	if ( !_mirror_selected ) {
+	//ミラー設置時のみ
+	if ( _phase == SET_MIRROR_PHASE ) {
+		if ( _order != ( unsigned char )-1 ) {
+			//drawSettingPlayer( );
+		}
+		drawMirrorCommand( );
+	}
+	//アタックフェイズ時は描画しない
+	if ( _phase != ATTACK_PHASE ) {
 		drawTmpMirror( );
 	}
 	
@@ -353,10 +361,10 @@ bool Field::isHitDecisionButton( ) const {
 	int mouse_y = _data->getMouseY( );
 
 	Png png = _image->getPng( BUTTON_IMAGE, BATTLE_BUTTON_IDX );
-	int lx = BUTTON_X - png.width / 2;
-	int rx = BUTTON_X + png.width / 2;
-	int ly = BUTTON_Y - png.height / 2;
-	int ry = BUTTON_Y + png.height / 2;
+	int lx = DECISION_BUTTON_X - png.width / 2;
+	int rx = DECISION_BUTTON_X + png.width / 2;
+	int ly = DECISION_BUTTON_Y - png.height / 2;
+	int ry = DECISION_BUTTON_Y + png.height / 2;
 
 	if ( lx < mouse_x && mouse_x < rx &&
 		 ly < mouse_y && mouse_y < ry ) {
@@ -773,7 +781,7 @@ void Field::drawField( ) {
 			image.cx = START_POS_X + j * SQUARE_SIZE + SQUARE_SIZE * 0.5;
 			image.cy = START_POS_Y + i * SQUARE_SIZE + SQUARE_SIZE * 0.5;
 			image.png = _table_handle;
-			_drawer->setImage( image );
+			_drawer->setFrontImage( image );
 		}
 	}
 
@@ -784,7 +792,7 @@ void Field::drawArmament( ) const {
 	if ( _lazer_point_idx < 0 ) {
 		return;
 	}
-	_drawer->setImage( _lazer_image );
+	_drawer->setFrontImage( _lazer_image );
 }
 
 void Field::drawTmpMirror( ) const {
@@ -833,7 +841,7 @@ void Field::drawTmpMirror( ) const {
 		image.cy = START_POS_Y + mirror.y * SQUARE_SIZE + SQUARE_SIZE * 0.5;
 		image.angle = angle;
 		image.png = _mirror_handle[ mirror.player_num ];
-		_drawer->setImage( image );
+		_drawer->setFrontImage( image );
 	}
 }
 
@@ -846,11 +854,12 @@ void Field::drawDecisionButton( ) const {
 	image.cx = _button_image.cx;
 	image.cy = _button_image.cy;
 	image.png = _button_image.png;
-	if ( _button_lighting ) {
-		image.brt = ( int )( sin( _data->getCount( ) * 0.05 ) * 75 + 180 );
+	if ( !_button_lighting ) {
+		image.brt = 150;
+		//image.brt = ( int )( sin( _data->getCount( ) * 0.05 ) * 75 + 180 );
 	}
 
-	_drawer->setImage( image );
+	_drawer->setFrontImage( image );
 }
 
 void Field::drawMirror( ) const {
@@ -870,7 +879,7 @@ void Field::drawMirror( ) const {
 		image.cy = START_POS_Y + mirror.y * SQUARE_SIZE + SQUARE_SIZE * 0.5;
 		image.angle = angle;
 		image.png = _mirror_handle[ mirror.player_num ];
-		_drawer->setImage( image );
+		_drawer->setFrontImage( image );
 	}
 }
 
@@ -895,7 +904,7 @@ void Field::drawPlayerPos( ) const {
 		
 		if ( _player_num == i / PLAYER_POSITION ) {
 			if ( getTmpPlayerPoint( ) == i ) {		
-				_drawer->setImage( image );
+				_drawer->setFrontImage( image );
 				continue;
 			}
 
@@ -937,12 +946,12 @@ void Field::drawPlayer( ) const {
 		image.png = png.png;
 		image.cx = x;
 		image.cy = y;
-		_drawer->setImage( image );
+		_drawer->setFrontImage( image );
 	}
 }
 
 void Field::drawInfo( ) const {
-	_drawer->setExtendImage( _board.image, ( float )_board.half_width, ( float )_board.half_height, 1.4, 2.2 );
+	_drawer->setBackExtendImage( _board.image, ( float )_board.half_width, ( float )_board.half_height, 1.4, 2.2 );
 
 	int y = INFO_Y;
 	for ( int i = 0; i < INFO_TEXT_MAX; i++ ) {
@@ -952,7 +961,12 @@ void Field::drawInfo( ) const {
 }
 
 void Field::drawRound( ) const {
-	_drawer->setFrontString( false, 20, 20, RED, "レーザーの移動まであと : " + std::to_string( TURN_MAX - ( _turn - 1 ) % TURN_MAX ), Drawer::BIG );
+	std::string str = "レーザーの移動まであと : ";
+	const short int LENGTH = _drawer->getStringW( Drawer::NORMAL, str ) / 2;
+	const short int POS_X = BOARD_X - LENGTH;
+	const short int POS_Y = BOARD_Y + SQUARE_SIZE * 2;
+	_drawer->setFrontString( false, POS_X, POS_Y, YELLOW, str );
+	_drawer->setFrontString( false, POS_X + LENGTH * 2, POS_Y, RED, std::to_string( TURN_MAX - ( _turn - 1 ) % TURN_MAX ), Drawer::BIG );
 }
 
 void Field::drawSettingPlayer( ) {
@@ -1015,16 +1029,16 @@ void Field::drawItem( ) const {
 			}
 		}
 
-		_drawer->setImage( image );
+		_drawer->setFrontImage( image );
 	}
 }
 
 void Field::drawBackGround( ) const {
-	_drawer->setBackImage( _background );
+	_drawer->setBackGroundImage( _background );
 }
 
 void Field::drawMirrorCommand( ) const {
 	for ( int i = 0; i < COMMAND_TYPE_MAX; i++ ) {
-		_drawer->setImage( _mirror_cmd[ i ].image );
+		_drawer->setFrontImage( _mirror_cmd[ i ].image );
 	}
 }

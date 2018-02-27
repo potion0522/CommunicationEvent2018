@@ -48,6 +48,7 @@ public:
 	void setPtr( ClientPtr ptr );
 	void setPtr( FieldPtr ptr );
 
+public:
 	ImagePtr getImagePtr( ) const;
 	DebugPtr getDebugPtr( ) const;
 	ServerPtr getServerPtr( ) const;

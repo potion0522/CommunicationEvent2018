@@ -159,17 +159,17 @@ bool Title::isDrag( ) const {
 }
 
 void Title::drawBackGround( ) const {
-	_drawer->setBackImage( _back );
+	_drawer->setBackGroundImage( _back );
 }
 
 void Title::drawTitle( ) const {
-	_drawer->setImage( _title_logo );
+	_drawer->setFrontImage( _title_logo );
 }
 
 void Title::drawStartButton( ) const {
-	_drawer->setImage( _startbutton.image );
+	_drawer->setFrontImage( _startbutton.image );
 }
 
 void Title::drawSettingButton( ) const {
-	_drawer->setImage( _settingbutton.image );
+	_drawer->setFrontImage( _settingbutton.image );
 }

@@ -165,13 +165,13 @@ void SelectItem::update( ) {
 		image.cx = _bar.cx;
 		image.cy = _bar.cy;
 		image.png = _bar.png;
-		_drawer->setExtendImage( image, 0, _bar_height_half, _wait_time * _bar_rate, 1 );
+		_drawer->setFrontExtendImage( image, 0, _bar_height_half, _wait_time * _bar_rate, 1 );
 
 		//ƒtƒŒ[ƒ€
 		image.cx = _bar_frame.cx;
 		image.cy = _bar_frame.cy;
 		image.png = _bar_frame.png;
-		_drawer->setImage( image );
+		_drawer->setFrontImage( image );
 
 		if ( _wait_time < ( FRAME * 2 ) ) {
 			_wait_time++;
@@ -515,7 +515,7 @@ void SelectItem::drawNotSelectItem( ) const {
 		image.cx = _items[ i ].image.cx;
 		image.cy = _items[ i ].image.cy;
 		image.png = _items[ i ].image.png;
-		_drawer->setImage( image );
+		_drawer->setFrontImage( image );
 	}
 }
 
@@ -525,7 +525,7 @@ void SelectItem::drawBackGround( ) const {
 	image.cy = HEIGHT / 2;
 	image.png = _back_handle;
 
-	_drawer->setBackImage( image );
+	_drawer->setBackGroundImage( image );
 }
 
 void SelectItem::drawSelectedItemFrame( ) const {
@@ -534,7 +534,7 @@ void SelectItem::drawSelectedItemFrame( ) const {
 		image.cx = _select_boxes[ i ].lx + _item_image_halfsize;
 		image.cy = _select_boxes[ i ].ly + _item_image_halfsize;
 		image.png = _item_frame_handle;
-		_drawer->setImage( image );
+		_drawer->setFrontImage( image );
 	}
 }
 
@@ -549,7 +549,7 @@ void SelectItem::drawSelectedItem( ) const {
 		image.cy  = _selected[ i ].object.image.cy;
 		image.png = _selected[ i ].object.image.png;
 
-		_drawer->setImage( image );
+		_drawer->setFrontImage( image );
 	}
 }
 
@@ -574,15 +574,15 @@ void SelectItem::drawSelectingItem( ) const {
 	image.cx  = tmp.cx;
 	image.cy  = tmp.cy;
 	image.png = tmp.png;
-	_drawer->setImage( image );
+	_drawer->setFrontImage( image );
 }
 
 void SelectItem::drawDecisionButton( ) const {
-	_drawer->setImage( _decisionbutton.image );
+	_drawer->setFrontImage( _decisionbutton.image );
 }
 
 void SelectItem::drawReturnButton( ) const {
-	_drawer->setImage( _returnbutton.image );
+	_drawer->setFrontImage( _returnbutton.image );
 }
 
 std::string SelectItem::convItemString( ITEM item ) {
