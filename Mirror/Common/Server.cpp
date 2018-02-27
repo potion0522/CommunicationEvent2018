@@ -150,7 +150,7 @@ void Server::createIP( std::string ipstr ) {
 	ip.d3 = ( unsigned char )ipint;
 
 	ipstr = ipstr.substr(  pos + 1, ipstr.length( ) - pos );
-	ipint = atoi( ipstr.substr( 0, pos ).c_str( ) );
+	ipint = atoi( ipstr.c_str( ) );
 	ip.d4 = ( unsigned char )ipint;
 	
 	FILE *fp;

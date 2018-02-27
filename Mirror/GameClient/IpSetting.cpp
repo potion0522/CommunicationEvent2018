@@ -144,6 +144,7 @@ void IpSetting::update( ) {
 		case SAVE_BUTTON: 
 			{
 				ServerPtr _server( new Server( ) );
+				_ip.push_back( '\0' );
 				_server->createIP( _ip );
 				_save = true;
 			}
