@@ -6,15 +6,24 @@
 #include "const.h"
 
 const float STARTBUTTON_X = WIDTH_F / 2.0f;
-const float STARTBUTTON_Y = HEIGHT_F / 2.0f;
+const float STARTBUTTON_Y = HEIGHT_F / 3.0f * 1.4f;
 
-const float SETTINGBUTTON_X = STARTBUTTON_X;
-const float SETTINGBUTTON_Y = HEIGHT_F / 4.0f * 3.0f;
+const float ITEM_SETBUTTON_X = STARTBUTTON_X;
+const float ITEM_SETBUTTON_Y = HEIGHT_F / 3.0f * 2.0f;
+const float IP_SETBUTTON_X = STARTBUTTON_X;
+const float IP_SETBUTTON_Y = HEIGHT_F / 3.0f * 2.6f;
 
 Title::Title( GlobalDataPtr data ) :
 _data( data ) {
 	setFlag( 1 );
 	_drawer = _data->getDrawerPtr( );
+
+	std::array< int, BUTTON_TYPE_MAX >( ).swap( _startbutton_handles );
+	std::array< int, BUTTON_TYPE_MAX >( ).swap( _item_setbutton_handles );
+	std::array< int, BUTTON_TYPE_MAX >( ).swap( _ip_setbutton_handles );
+	_startbutton    = BoxObject( );
+	_item_setbutton = BoxObject( );
+	_ip_setbutton   = BoxObject( );
 
 	ImagePtr image_ptr = _data->getImagePtr( );
 
@@ -48,19 +57,33 @@ _data( data ) {
 		_startbutton.collider.ly = ( float )_startbutton.image.cy - half_height;
 		_startbutton.collider.ry = ( float )_startbutton.image.cy + half_height;
 	
-	//settingボタン
+	//item_settingボタン
 		for ( int i = 0; i < BUTTON_TYPE_MAX; i++ ) {
-			_settingbutton_handles[ i ] = image_ptr->getPng( BUTTON_IMAGE, ITEM_SELECT_BUTTON_IDX + i ).png;
+			_item_setbutton_handles[ i ] = image_ptr->getPng( BUTTON_IMAGE, ITEM_SELECT_BUTTON_IDX + i ).png;
 		}
-		_settingbutton.image.cx = SETTINGBUTTON_X;
-		_settingbutton.image.cy = SETTINGBUTTON_Y;
-		_settingbutton.image.png = image_ptr->getPng( BUTTON_IMAGE, ITEM_SELECT_BUTTON_IDX ).png;
+		_item_setbutton.image.cx = ITEM_SETBUTTON_X;
+		_item_setbutton.image.cy = ITEM_SETBUTTON_Y;
+		_item_setbutton.image.png = image_ptr->getPng( BUTTON_IMAGE, ITEM_SELECT_BUTTON_IDX ).png;
 
-		_settingbutton.collider.lx = ( float )_settingbutton.image.cx - half_width;
-		_settingbutton.collider.rx = ( float )_settingbutton.image.cx + half_width;
-		_settingbutton.collider.ly = ( float )_settingbutton.image.cy - half_height;
-		_settingbutton.collider.ry = ( float )_settingbutton.image.cy + half_height;
+		_item_setbutton.collider.lx = ( float )_item_setbutton.image.cx - half_width;
+		_item_setbutton.collider.rx = ( float )_item_setbutton.image.cx + half_width;
+		_item_setbutton.collider.ly = ( float )_item_setbutton.image.cy - half_height;
+		_item_setbutton.collider.ry = ( float )_item_setbutton.image.cy + half_height;
+
+	//ip_settingボタン
+		for ( int i = 0; i < BUTTON_TYPE_MAX; i++ ) {
+			_ip_setbutton_handles[ i ] = image_ptr->getPng( BUTTON_IMAGE, IP_SETTING_BUTTON_IDX + i ).png;
+		}
+		_ip_setbutton.image.cx = IP_SETBUTTON_X;
+		_ip_setbutton.image.cy = IP_SETBUTTON_Y;
+		_ip_setbutton.image.png = image_ptr->getPng( BUTTON_IMAGE, IP_SETTING_BUTTON_IDX ).png;
+
+		_ip_setbutton.collider.lx = ( float )_ip_setbutton.image.cx - half_width;
+		_ip_setbutton.collider.rx = ( float )_ip_setbutton.image.cx + half_width;
+		_ip_setbutton.collider.ly = ( float )_ip_setbutton.image.cy - half_height;
+		_ip_setbutton.collider.ry = ( float )_ip_setbutton.image.cy + half_height;
 	}
+
 }
 
 Title::~Title( ) {
@@ -74,7 +97,8 @@ void Title::initialize( ) {
 	_hit_button_idx = -1;
 	_past_hit_button_idx = -1;
 	_startbutton_clicking = false;
-	_settingbutton_clicking = false;
+	_item_setbutton_clicking = false;
+	_ip_setbutton_clicking = false;
 }
 
 void Title::update( ) {
@@ -94,18 +118,28 @@ void Title::update( ) {
 	drawBackGround( );
 	drawTitle( );
 	drawStartButton( );
-	drawSettingButton( );
+	drawItemSettingButton( );
+	drawIpSettingButton( );
 }
 
 void Title::chengeNextScene( ) {
-	if ( ( _startbutton_clicking || _settingbutton_clicking ) && !isDrag( ) ) {
-		int hit = isHitButton( );
+	if ( ( _startbutton_clicking || _item_setbutton_clicking || _ip_setbutton_clicking ) && !isDrag( ) ) {
+		int hit = getHitButton( );
 		switch ( hit ) {
-		case START_BUTTON   : _data->setScene( CONNECT )     ; break;
-		case SETTING_BUTTON : _data->setScene( SELECT_ITEM ) ; break;
+		case START_BUTTON:
+			_data->setScene( CONNECT );
+			_data->getClientPtr( )->readIP( );
+			break;
+		case ITEM_SETTING_BUTTON:
+			_data->setScene( SELECT_ITEM );
+			break;
+		case IP_SETTING_BUTTON:
+			_data->setScene( IP_SETTING );
+			break;
 		default:
 			_startbutton_clicking = false;
-			_settingbutton_clicking = false;
+			_item_setbutton_clicking = false;
+			_ip_setbutton_clicking = false;
 			break;		
 		}
 	}
@@ -113,9 +147,10 @@ void Title::chengeNextScene( ) {
 
 void Title::calcButtonAction( ){
 	_startbutton.image.png = _startbutton_handles[ NORMAL ];
-	_settingbutton.image.png = _settingbutton_handles[ NORMAL ];
+	_item_setbutton.image.png = _item_setbutton_handles[ NORMAL ];
+	_ip_setbutton.image.png = _ip_setbutton_handles[ NORMAL ];
 
-	if ( isHitButton( ) == NONE_BUTTON ) {
+	if ( getHitButton( ) == NONE_BUTTON ) {
 		return;
 	}
 
@@ -123,29 +158,44 @@ void Title::calcButtonAction( ){
 		return;
 	}
 
-	if ( isHitButton( ) == START_BUTTON ) {
+	BUTTON hit = getHitButton( );
+	switch ( hit ) {
+	case START_BUTTON:
 		_startbutton.image.png = _startbutton_handles[ CLICKING ];
 		_startbutton_clicking = true;
-	} else if ( isHitButton( ) == SETTING_BUTTON ) {
-		_settingbutton.image.png = _settingbutton_handles[ CLICKING ];
-		_settingbutton_clicking = true;
+		break;
+
+	case ITEM_SETTING_BUTTON:
+		_item_setbutton.image.png = _item_setbutton_handles[ CLICKING ];
+		_item_setbutton_clicking = true;
+		break;
+
+	case IP_SETTING_BUTTON:
+		_ip_setbutton.image.png = _ip_setbutton_handles[ CLICKING ];
+		_ip_setbutton_clicking = true;
 	}
 }
 
-int Title::isHitButton( ) const {
+Title::BUTTON Title::getHitButton( ) const {
 	double mouse_x = _data->getMouseX( );
 	double mouse_y = _data->getMouseY( );
-	
+
 	//start button
 	if ( _startbutton.collider.lx <= mouse_x && mouse_x <= _startbutton.collider.rx &&
 		 _startbutton.collider.ly <= mouse_y && mouse_y <= _startbutton.collider.ry ) {
 		return START_BUTTON;
 	}
 
-	//setting button
-	if ( _settingbutton.collider.lx <= mouse_x && mouse_x <= _settingbutton.collider.rx &&
-		 _settingbutton.collider.ly <= mouse_y && mouse_y <= _settingbutton.collider.ry ) {
-		return SETTING_BUTTON;
+	//item setting button
+	if ( _item_setbutton.collider.lx <= mouse_x && mouse_x <= _item_setbutton.collider.rx &&
+		 _item_setbutton.collider.ly <= mouse_y && mouse_y <= _item_setbutton.collider.ry ) {
+		return ITEM_SETTING_BUTTON;
+	}
+
+	//ip setting buton
+	if ( _ip_setbutton.collider.lx <= mouse_x && mouse_x <= _ip_setbutton.collider.rx &&
+		 _ip_setbutton.collider.ly <= mouse_y && mouse_y <= _ip_setbutton.collider.ry ) {
+		return IP_SETTING_BUTTON;
 	}
 
 	return NONE_BUTTON;
@@ -170,6 +220,10 @@ void Title::drawStartButton( ) const {
 	_drawer->setFrontImage( _startbutton.image );
 }
 
-void Title::drawSettingButton( ) const {
-	_drawer->setFrontImage( _settingbutton.image );
+void Title::drawItemSettingButton( ) const {
+	_drawer->setFrontImage( _item_setbutton.image );
+}
+
+void Title::drawIpSettingButton( ) const {
+	_drawer->setFrontImage( _ip_setbutton.image );
 }

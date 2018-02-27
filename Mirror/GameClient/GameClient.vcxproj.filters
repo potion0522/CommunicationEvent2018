@@ -8,6 +8,7 @@
     <ClCompile Include="Lazer.cpp" />
     <ClCompile Include="Title.cpp" />
     <ClCompile Include="SelectItem.cpp" />
+    <ClCompile Include="IpSetting.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ResultClient.h" />
@@ -16,5 +17,6 @@
     <ClInclude Include="Lazer.h" />
     <ClInclude Include="Title.h" />
     <ClInclude Include="SelectItem.h" />
+    <ClInclude Include="IpSetting.h" />
   </ItemGroup>
 </Project>

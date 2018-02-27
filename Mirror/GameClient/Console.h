@@ -22,6 +22,9 @@ private:
 	void matching( );
 
 private:
+	bool _connecting;
+	bool _matching;
+
 	GlobalDataPtr _data;
 	ClientPtr _client;
 	DrawerPtr _drawer;

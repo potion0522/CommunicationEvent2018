@@ -16,13 +16,17 @@ const int KEY_MAX = 256;
 const int PLAYER_NUM = 2;
 const int TURN_MAX = 3;
 const int ITEM_POSSESSION_MAX = 3;
+const float FIELD_SIZE_RATE = 1.1f;
 
 const int TCP_PORT = 9850;
 const int UDP_PORT = 9900;
 
 const short int GAME_START_BUTTON_IDX = 0;
 const short int ITEM_SELECT_BUTTON_IDX = 2;
-const short int BATTLE_BUTTON_IDX = 4;
+const short int IP_SETTING_BUTTON_IDX = 4;
+const short int BATTLE_BUTTON_IDX = 6;
+const short int RETURN_BUTTON_IDX = 10;
+const short int SAVE_BUTTON_IDX = 12;
 
 struct SendMirrorData {
 	bool flag;
@@ -67,8 +71,9 @@ enum COLOR {
 enum SCENE {
 	ALL,
 	NONE_SCENE,
-	SELECT_ITEM,
 	TITLE,
+	SELECT_ITEM,
+	IP_SETTING,
 	CONNECT,
 	BATTLE,
 	RESULT,

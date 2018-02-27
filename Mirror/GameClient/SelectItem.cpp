@@ -16,11 +16,9 @@ const float SELECTED_PITCH   = ( WIDTH_F - MARGIN * 2.0f ) / ITEM_POSSESSION_MAX
 const float START_SELECTED_X = MARGIN + SELECTED_PITCH - SELECTED_PITCH / 2.0f;
 const float START_SELECTED_Y = HEIGHT * 0.8f;
 
-const short int SAVE_BUTTON_IDX = 10;
 const float BUTTON_X = WIDTH_F / 3.0f * 2.0f;
 const float BUTTON_Y = HEIGHT_F / 5.0f;
 
-const short int RETURN_BUTTON_IDX = 8;
 const float RETURNBUTTON_X = WIDTH_F / 3.0f;
 const float RETURNBUTTON_Y = HEIGHT_F / 5.0f;
 
@@ -49,12 +47,12 @@ _data( data ) {
 
 	std::array< BoxObject, ITEM_MAX >( ).swap( _items );
 	std::array< BoxCollider, ITEM_POSSESSION_MAX >( ).swap( _select_boxes );
-	_decisionbutton = BoxObject( );
+	_savebutton = BoxObject( );
 	_returnbutton = BoxObject( );
 
 	ImagePtr image_ptr = _data->getImagePtr( );
 	{//背景
-		_back_handle = image_ptr->getPng( BACKGROUND_IMAGE, BACKGROUND_WHITE ).png;
+		_background_handle = image_ptr->getPng( BACKGROUND_IMAGE, BACKGROUND_WHITE ).png;
 	}
 
 	{//アイテムの画像
@@ -72,16 +70,16 @@ _data( data ) {
 		float half_height = image_ptr->getPng( BUTTON_IMAGE, SAVE_BUTTON_IDX ).height * 0.5f;
 
 		for ( int i = 0; i < BUTTON_TYPE_MAX; i++ ) {
-			_decisionbutton_handles[ i ] = image_ptr->getPng( BUTTON_IMAGE, BATTLE_BUTTON_IDX + i ).png;
+			_savebutton_handles[ i ] = image_ptr->getPng( BUTTON_IMAGE, SAVE_BUTTON_IDX + i ).png;
 		}
-		_decisionbutton.image.cx = BUTTON_X;
-		_decisionbutton.image.cy = BUTTON_Y;
-		_decisionbutton.image.png = image_ptr->getPng( BUTTON_IMAGE, BATTLE_BUTTON_IDX ).png;
+		_savebutton.image.cx = BUTTON_X;
+		_savebutton.image.cy = BUTTON_Y;
+		_savebutton.image.png = image_ptr->getPng( BUTTON_IMAGE, SAVE_BUTTON_IDX ).png;
 
-		_decisionbutton.collider.lx = ( float )_decisionbutton.image.cx - half_width;
-		_decisionbutton.collider.rx = ( float )_decisionbutton.image.cx + half_width;
-		_decisionbutton.collider.ly = ( float )_decisionbutton.image.cy - half_height;
-		_decisionbutton.collider.ry = ( float )_decisionbutton.image.cy + half_height;
+		_savebutton.collider.lx = ( float )_savebutton.image.cx - half_width;
+		_savebutton.collider.rx = ( float )_savebutton.image.cx + half_width;
+		_savebutton.collider.ly = ( float )_savebutton.image.cy - half_height;
+		_savebutton.collider.ry = ( float )_savebutton.image.cy + half_height;
 
 	
 	//リターンボタン
@@ -142,7 +140,7 @@ void SelectItem::initialize( ) {
 	_wait_time = 0;
 	_drag = false;
 	_drop = false;
-	_decisionbutton_clicking = false;
+	_savebutton_clicking = false;
 	_returnbutton_clicking = false;
 	_input = false;
 	std::array< SelectedItem, ITEM_POSSESSION_MAX >( ).swap( _selected );
@@ -189,13 +187,17 @@ void SelectItem::update( ) {
 	checkHitSelectedItem( );
 
 	//決定ボタン
-	if ( ( _decisionbutton_clicking || _returnbutton_clicking ) && !isDrag( ) ) {
-		int hit = isHitButton( );
+	if ( ( _savebutton_clicking || _returnbutton_clicking ) && !isDrag( ) ) {
+		int hit = getHitButton( );
 		switch ( hit ) {
-		case DECISION_BUTTON   : inputCsv( )              ; break;
-		case RETURN_BUTTON     : _data->setScene( TITLE ) ; break;
+		case SAVE_BUTTON:
+			inputCsv( );
+			break;
+		case RETURN_BUTTON:
+			_data->setScene( TITLE );
+			break;
 		default:
-			_decisionbutton_clicking = false;
+			_savebutton_clicking = false;
 			_returnbutton_clicking = false;
 			break;		
 		}
@@ -219,7 +221,7 @@ void SelectItem::update( ) {
 	drawBackGround( );
 	drawSelectedItemFrame( );
 	drawSelectedItem( );
-	drawDecisionButton( );
+	drawSaveButton( );
 	drawReturnButton( );
 	//ドラッグ中のアイテムは一番上に描画
 	drawSelectingItem( );
@@ -248,7 +250,7 @@ void SelectItem::checkHitNotSelectItem( ) {
 	if ( ( _hit_notselect_item != -1 || _hit_selected_item != -1 ) && isDrag( ) ) {
 		return;
 	}
-	if( _decisionbutton_clicking || _returnbutton_clicking ){
+	if( _savebutton_clicking || _returnbutton_clicking ){
 		return;
 	}
 
@@ -275,7 +277,7 @@ void SelectItem::checkHitSelectedItem( ) {
 		return;
 	}
 
-	if( _decisionbutton_clicking || _returnbutton_clicking ){
+	if( _savebutton_clicking || _returnbutton_clicking ){
 		return;
 	}
 
@@ -353,10 +355,10 @@ void SelectItem::calcDragSelectedItemPos( ) {
 }
 
 void SelectItem::calcButtonAction( ) {
-	_decisionbutton.image.png = _decisionbutton_handles[ NORMAL ];
+	_savebutton.image.png = _savebutton_handles[ NORMAL ];
 	_returnbutton.image.png = _returnbutton_handles[ NORMAL ];
 
-	if ( isHitButton( ) == NONE_BUTTON ) {
+	if ( getHitButton( ) == NONE_BUTTON ) {
 		return;
 	}
 
@@ -368,10 +370,10 @@ void SelectItem::calcButtonAction( ) {
 		return;
 	}
 
-	if ( isHitButton( ) == DECISION_BUTTON ) {
-		_decisionbutton.image.png = _decisionbutton_handles[ CLICKING ];
-		_decisionbutton_clicking = true;
-	} else if ( isHitButton( ) == RETURN_BUTTON ) {
+	if ( getHitButton( ) == SAVE_BUTTON ) {
+		_savebutton.image.png = _savebutton_handles[ CLICKING ];
+		_savebutton_clicking = true;
+	} else if ( getHitButton( ) == RETURN_BUTTON ) {
 		_returnbutton.image.png = _returnbutton_handles[ CLICKING ];
 		_returnbutton_clicking = true;
 	}
@@ -394,7 +396,7 @@ void SelectItem::inputCsv( ) {
 
 	//なにも選択しなかったら
 	if ( empty ) {
-		_decisionbutton_clicking = false;
+		_savebutton_clicking = false;
 		_input = true;
 		return;
 	}
@@ -416,7 +418,7 @@ void SelectItem::inputCsv( ) {
 	}
 
 	fclose( fp );
-	_decisionbutton_clicking = false;
+	_savebutton_clicking = false;
 	_input = true;
 }
 
@@ -427,14 +429,14 @@ bool SelectItem::isDrag( ) const {
 	return false;
 }
 
-int SelectItem::isHitButton( ) const {
+int SelectItem::getHitButton( ) const {
 	double mouse_x = _data->getMouseX( );
 	double mouse_y = _data->getMouseY( );
 
 	//決定
-	if ( _decisionbutton.collider.lx <= mouse_x && mouse_x <= _decisionbutton.collider.rx &&
-		 _decisionbutton.collider.ly <= mouse_y && mouse_y <= _decisionbutton.collider.ry ) {
-		return DECISION_BUTTON;
+	if ( _savebutton.collider.lx <= mouse_x && mouse_x <= _savebutton.collider.rx &&
+		 _savebutton.collider.ly <= mouse_y && mouse_y <= _savebutton.collider.ry ) {
+		return SAVE_BUTTON;
 	}
 
 	//リターン
@@ -523,7 +525,7 @@ void SelectItem::drawBackGround( ) const {
 	ImageProperty image = ImageProperty( );
 	image.cx = WIDTH / 2;
 	image.cy = HEIGHT / 2;
-	image.png = _back_handle;
+	image.png = _background_handle;
 
 	_drawer->setBackGroundImage( image );
 }
@@ -577,8 +579,8 @@ void SelectItem::drawSelectingItem( ) const {
 	_drawer->setFrontImage( image );
 }
 
-void SelectItem::drawDecisionButton( ) const {
-	_drawer->setFrontImage( _decisionbutton.image );
+void SelectItem::drawSaveButton( ) const {
+	_drawer->setFrontImage( _savebutton.image );
 }
 
 void SelectItem::drawReturnButton( ) const {

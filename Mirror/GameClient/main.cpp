@@ -9,6 +9,7 @@
 #include "Game.h"
 #include "ResultClient.h"
 #include "SelectItem.h"
+#include "IpSetting.h"
 
 /**********************************************************
 *														  *
@@ -35,8 +36,9 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 		//ŒvŽZƒNƒ‰ƒX
 		ConsolePtr console( new Console( data ) );
-		SelectItemPtr slct_item( new SelectItem( data ) );
 		TitlePtr title( new Title( data ) );
+		SelectItemPtr slct_item( new SelectItem( data ) );
+		IpSettingPtr ip_setting( new IpSetting( data ) );
 		FieldPtr field( new Field( data ) );
 		data->setPtr( field );
 		GamePtr game( new Game( data ) );
@@ -44,8 +46,9 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 		ResultClientPtr result( new ResultClient( data, game ) );
 
 		direction->add( ALL, data );
-		direction->add( SELECT_ITEM, slct_item );
 		direction->add( TITLE, title );
+		direction->add( SELECT_ITEM, slct_item );
+		direction->add( IP_SETTING, ip_setting );
 		direction->add( CONNECT, console );
 		direction->add( BATTLE, field );
 		direction->add( BATTLE, game );

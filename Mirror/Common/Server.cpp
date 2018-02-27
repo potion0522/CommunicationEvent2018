@@ -132,6 +132,33 @@ void Server::createIP( ) {
 	fclose( fp );
 }
 
+void Server::createIP( std::string ipstr ) {
+	IPDATA ip;
+
+	short int pos = ( short int )ipstr.find_first_of( "." );
+	short int ipint = atoi( ipstr.substr( 0, pos ).c_str( ) );
+	ip.d1 = ( unsigned char )ipint;
+
+	ipstr = ipstr.substr(  pos + 1, ipstr.length( ) - pos );
+	pos = ( short int )ipstr.find_first_of( "." );
+	ipint = atoi( ipstr.substr( 0, pos ).c_str( ) );
+	ip.d2 = ( unsigned char )ipint;
+
+	ipstr = ipstr.substr(  pos + 1, ipstr.length( ) - pos );
+	pos = ( short int )ipstr.find_first_of( "." );
+	ipint = atoi( ipstr.substr( 0, pos ).c_str( ) );
+	ip.d3 = ( unsigned char )ipint;
+
+	ipstr = ipstr.substr(  pos + 1, ipstr.length( ) - pos );
+	ipint = atoi( ipstr.substr( 0, pos ).c_str( ) );
+	ip.d4 = ( unsigned char )ipint;
+	
+	FILE *fp;
+	fopen_s( &fp, "IP.ini", "wb" );
+	fwrite( &ip, sizeof( IPDATA ), 1, fp );
+	fclose( fp );
+}
+
 bool Server::isConnecting( int idx ) const {
 	return _handles[ idx ] != -1;
 }

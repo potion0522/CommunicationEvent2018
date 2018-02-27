@@ -250,7 +250,7 @@ void Lazer::drawLazerLine( ) const {
 	}
 
 	for ( int i = 0; i < size; i++ ) {
-		_drawer->setFrontExtendImage( _lazer[ i ], _lazer_size.width / 2, _lazer_size.height / 2, 1, LAZER_SPEED / _lazer_size.height );
+		_drawer->setFrontExtendImage( _lazer[ i ], _lazer_size.width / 2, _lazer_size.height / 2, FIELD_SIZE_RATE, ( LAZER_SPEED / _lazer_size.height ) );
 	}
 }
 

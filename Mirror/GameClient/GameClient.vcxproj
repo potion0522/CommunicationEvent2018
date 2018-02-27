@@ -153,6 +153,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Console.cpp" />
+    <ClCompile Include="IpSetting.cpp" />
     <ClCompile Include="Lazer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Game.cpp" />
@@ -167,6 +168,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Console.h" />
+    <ClInclude Include="IpSetting.h" />
     <ClInclude Include="Lazer.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="ResultClient.h" />

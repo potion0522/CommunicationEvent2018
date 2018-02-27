@@ -15,16 +15,17 @@ PTR( Drawer );
 PTR( Image );
 PTR( Debug );
 
-const int PLAYER_POSITION = 4;
-const int SQUARE_SIZE = 96;
-const int FIELD_ROW = 4;
-const int FIELD_COL = 4;
+const short int PLAYER_POSITION = 4;
+const short int SQUARE_SIZE = ( short int )( 96 * FIELD_SIZE_RATE );
+const short int FIELD_ROW = 4;
+const short int FIELD_COL = 4;
 const int START_POS_X = WIDTH / 3 * 2 - SQUARE_SIZE * FIELD_COL / 2;
 const int START_POS_Y = HEIGHT / 2 - SQUARE_SIZE * FIELD_ROW / 2 + SQUARE_SIZE;
 const int INFO_TEXT_MAX = 10;
 const int BATTLE_BUTTON_IMAGE_NUM = 4;
 
 class Field : public Base {
+#pragma pack( 1 )
 private:
 	static const short int LAZER_TYPE_MAX = 2;
 
@@ -94,6 +95,8 @@ public:
 		COMMAND_TYPE_MAX,
 		COMMAND_NONE
 	};
+#pragma pack( )
+
 public:
 	Field( GlobalDataPtr data );
 	virtual ~Field( );
@@ -172,12 +175,12 @@ private:
 	void drawMirrorCommand( ) const;
 
 private:
-
+#pragma pack( 1 )
 	struct BoxObject {
 		LightImageProperty image;
 		BoxCollider collider;
-		int half_width;
-		int half_height;
+		short int half_width;
+		short int half_height;
 	};
 	
 	struct Info {
@@ -225,6 +228,7 @@ private:
 	LightImageProperty _background;
 	LightImageProperty _lazer_image;
 	BoxObject _board;
+#pragma pack( )
 
 	GlobalDataPtr _data;
 	DrawerPtr _drawer;

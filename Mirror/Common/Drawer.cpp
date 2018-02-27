@@ -242,7 +242,7 @@ void Drawer::drawFrontBox( ) {
 	}
 
 	for( ite; ite != _front_boxes.end( ); ite++ ) {
-		DrawBoxAA( ite->lx, ite->ly, ite->rx, ite->ry, _color->getColor( ite->col ), FALSE );
+		DrawBoxAA( ite->lx, ite->ly, ite->rx, ite->ry, _color->getColor( ite->col ), ite->isFill );
 	}
 }
 
@@ -254,7 +254,7 @@ void Drawer::drawBackBox( ) {
 	}
 
 	for( ite; ite != _back_boxes.end( ); ite++ ) {
-		DrawBoxAA( ite->lx, ite->ly, ite->rx, ite->ry, _color->getColor( ite->col ), FALSE );
+		DrawBoxAA( ite->lx, ite->ly, ite->rx, ite->ry, _color->getColor( ite->col ), ite->isFill );
 	}
 }
 void Drawer::drawBackGroundImage( ) {
@@ -354,13 +354,13 @@ void Drawer::setCircle( double x, double y, double r, COLOR col, int brt, bool i
 	_circles.push_back( circle );
 }
 
-void Drawer::setFrontBox( double lx, double ly, double rx, double ry, COLOR col ){
-	BoxProperty box = { ( float )lx, ( float )ly, ( float )rx, ( float )ry, col };
+void Drawer::setFrontBox( double lx, double ly, double rx, double ry, COLOR col, bool isfill ) {
+	BoxProperty box = { ( float )lx, ( float )ly, ( float )rx, ( float )ry, col, isfill };
 	_front_boxes.push_back( box );
 }
 
-void Drawer::setBackBox( double lx, double ly, double rx, double ry, COLOR col ){
-	BoxProperty box = { ( float )lx, ( float )ly, ( float )rx, ( float )ry, col };
+void Drawer::setBackBox( double lx, double ly, double rx, double ry, COLOR col, bool isfill ) {
+	BoxProperty box = { ( float )lx, ( float )ly, ( float )rx, ( float )ry, col, isfill };
 	_back_boxes.push_back( box );
 }
 

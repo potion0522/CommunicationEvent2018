@@ -19,6 +19,7 @@ public:
 	void initialize( );
 
 public:
+	void readIP( );
 	bool isConnectingTcp( ) const;
 	bool isRecvingTcp( ) const;
 	bool isRecvingUdp( ) const;
@@ -60,7 +61,6 @@ public:
 	int getWinner( ) const;
 
 private:
-	void readIP( );
 	void connect( );
 	void recving( );
 	void recvTcp( );

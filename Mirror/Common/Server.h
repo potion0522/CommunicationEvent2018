@@ -27,6 +27,7 @@ public:
 	void disConnect( );
 
 public:
+	void createIP( std::string ipstr );
 	void setOrder( int order );
 	void setPlayerPos( int idx, int pos );
 	void setLazerPos( int pos );

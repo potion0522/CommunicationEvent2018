@@ -29,7 +29,7 @@ private:
 	void setSelectItem( );
 	void inputCsv( );
 	bool isDrag( ) const;
-	int isHitButton( ) const;
+	int getHitButton( ) const;
 
 private:
 	std::string convItemString( ITEM item );
@@ -40,13 +40,13 @@ private:
 	void drawSelectedItemFrame( ) const;
 	void drawSelectedItem( ) const;
 	void drawSelectingItem( ) const;
-	void drawDecisionButton( ) const;
+	void drawSaveButton( ) const;
 	void drawReturnButton( ) const;
 
 private:
 	enum BUTTON {
 		NONE_BUTTON,
-		DECISION_BUTTON,
+		SAVE_BUTTON,
 		RETURN_BUTTON,
 		BUTTON_MAX,
 	};
@@ -73,21 +73,21 @@ private:
 	short int _bar_height_half;
 	bool _drag;
 	bool _drop;
-	bool _decisionbutton_clicking;
+	bool _savebutton_clicking;
 	bool _returnbutton_clicking;
 	bool _input; //Œˆ’è
 	std::array< BoxCollider, ITEM_POSSESSION_MAX > _select_boxes;
 
 	//‰æ‘œŠÖŒW
-	int _back_handle;
+	int _background_handle;
 	short int _item_image_halfsize;
 	int _item_frame_handle;
 	std::array< int, ITEM_MAX > _item_handles;
-	std::array< int, BUTTON_TYPE_MAX > _decisionbutton_handles;
+	std::array< int, BUTTON_TYPE_MAX > _savebutton_handles;
 	std::array< int, BUTTON_TYPE_MAX > _returnbutton_handles;
 	std::array< BoxObject, ITEM_MAX > _items;
 	std::array< SelectedItem, ITEM_POSSESSION_MAX > _selected;
-	BoxObject _decisionbutton;
+	BoxObject _savebutton;
 	BoxObject _returnbutton;
 	LightImageProperty _frame;
 	LightImageProperty _bar_frame;

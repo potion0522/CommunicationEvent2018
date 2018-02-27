@@ -7,18 +7,18 @@
 #include <random>
 
 const short int MOUSE_R = 5;
-const short int MIRROR_R = 10;
+const short int MIRROR_R = 5;
 const short int CIRCLE_SIZE = SQUARE_SIZE / 5 * 2;
 const short int PLAYER_POS_X = START_POS_X - SQUARE_SIZE / 2;
 const short int PLAYER_POS_Y = START_POS_Y - SQUARE_SIZE / 2;
 const short int PLAYER_SIZE = CIRCLE_SIZE / 2;
-const short int ITEM_POS_X = 125;
-const short int ITEM_POS_Y = HEIGHT - SQUARE_SIZE / 3 * 2;
 const short int DECISION_BUTTON_X = WIDTH / 3 * 2;
-const short int DECISION_BUTTON_Y = START_POS_Y - ( short int )( SQUARE_SIZE * 1.8 );
+const short int DECISION_BUTTON_Y = START_POS_Y - ( short int )( SQUARE_SIZE * 1.5 );
 const short int MIRROR_IMAGE_IDX = 2;
 const short int BOARD_X = WIDTH / 5;
-const short int BOARD_Y = HEIGHT / 2 - 45;
+const short int BOARD_Y = HEIGHT / 2;
+const short int ITEM_POS_X = BOARD_X - ( short int )( SQUARE_SIZE * 1.5 );
+const short int ITEM_POS_Y = BOARD_Y + SQUARE_SIZE;
 const short int INFO_Y = BOARD_Y - ( short int )( SQUARE_SIZE * 1.5 );
 
 enum IMAGE_IDX {
@@ -46,7 +46,6 @@ _data( data ) {
 
 	Png png = Png( );
 	//ボタン
-
 	for ( int i = 0; i < BATTLE_BUTTON_IMAGE_NUM; i++ ) {
 		_button_handle[ i ] = _image->getPng( BUTTON_IMAGE, BATTLE_BUTTON_IDX + i ).png;
 	}
@@ -237,8 +236,7 @@ void Field::update( ) {
 
 		case DOUBLE_MIRROR:
 			setInfoText( "鏡を2枚配置できます", RED );
-			setInfoText( "最初に配置した鏡は", RED );
-			setInfoText( "相手にも見える状態になります", RED );
+			setInfoText( "1枚目の鏡は相手にも見えてしまいます", RED );
 			setInfoText( "" );
 			setInfoText( "鏡を1枚", WATER );
 			setInfoText( "配置した状態で決定をしてください", WATER );
@@ -265,7 +263,6 @@ void Field::update( ) {
 	drawArmament( );
 	drawInfo( );
 	drawDecisionButton( );
-	drawItem( );
 	resetInfo( );
 	_button_lighting = false;
 
@@ -283,6 +280,7 @@ void Field::update( ) {
 		return;
 	}
 	//レーザー移動までのターン数
+	drawItem( );
 	drawRound( );
 
 	//ミラー設置時のみ
@@ -473,7 +471,7 @@ void Field::updateLazerVector( Vector vec, double spd ) {
 	for ( ite; ite != _mirrors.end( ); ite++ ) {
 		double mirror_x = START_POS_X + ite->second.x * SQUARE_SIZE + SQUARE_SIZE * 0.5;
 		double mirror_y = START_POS_Y + ite->second.y * SQUARE_SIZE + SQUARE_SIZE * 0.5;
-		double lazer_r = 16;
+		double lazer_r = 8 * FIELD_SIZE_RATE;
 
 		Vector past = vec;
 		Vector normal = vec.normalize( );
@@ -781,7 +779,8 @@ void Field::drawField( ) {
 			image.cx = START_POS_X + j * SQUARE_SIZE + SQUARE_SIZE * 0.5;
 			image.cy = START_POS_Y + i * SQUARE_SIZE + SQUARE_SIZE * 0.5;
 			image.png = _table_handle;
-			_drawer->setFrontImage( image );
+			image.size = FIELD_SIZE_RATE;
+			_drawer->setBackImage( image );
 		}
 	}
 
@@ -792,7 +791,12 @@ void Field::drawArmament( ) const {
 	if ( _lazer_point_idx < 0 ) {
 		return;
 	}
-	_drawer->setFrontImage( _lazer_image );
+	ImageProperty image = ImageProperty( );
+	image.cx = _lazer_image.cx;
+	image.cy = _lazer_image.cy;
+	image.png = _lazer_image.png;
+	image.size = FIELD_SIZE_RATE;
+	_drawer->setFrontImage( image );
 }
 
 void Field::drawTmpMirror( ) const {
@@ -808,7 +812,6 @@ void Field::drawTmpMirror( ) const {
 		//tmp_mirror.png = _mirror_handle[ _player_num ];
 	}
 
-	ImageProperty image = ImageProperty( );
 	//鏡描画
 	std::map< int, Mirror > tmp_mirrors = _mirrors;
 	if ( _tmp_mirror.flag ) {
@@ -841,6 +844,7 @@ void Field::drawTmpMirror( ) const {
 		image.cy = START_POS_Y + mirror.y * SQUARE_SIZE + SQUARE_SIZE * 0.5;
 		image.angle = angle;
 		image.png = _mirror_handle[ mirror.player_num ];
+		image.size = FIELD_SIZE_RATE;
 		_drawer->setFrontImage( image );
 	}
 }
@@ -879,6 +883,7 @@ void Field::drawMirror( ) const {
 		image.cy = START_POS_Y + mirror.y * SQUARE_SIZE + SQUARE_SIZE * 0.5;
 		image.angle = angle;
 		image.png = _mirror_handle[ mirror.player_num ];
+		image.size = FIELD_SIZE_RATE;
 		_drawer->setFrontImage( image );
 	}
 }
@@ -946,12 +951,13 @@ void Field::drawPlayer( ) const {
 		image.png = png.png;
 		image.cx = x;
 		image.cy = y;
+		image.size = FIELD_SIZE_RATE;
 		_drawer->setFrontImage( image );
 	}
 }
 
 void Field::drawInfo( ) const {
-	_drawer->setBackExtendImage( _board.image, ( float )_board.half_width, ( float )_board.half_height, 1.4, 2.2 );
+	_drawer->setBackExtendImage( _board.image, ( float )_board.half_width, ( float )_board.half_height, 1.4, 2.5 );
 
 	int y = INFO_Y;
 	for ( int i = 0; i < INFO_TEXT_MAX; i++ ) {

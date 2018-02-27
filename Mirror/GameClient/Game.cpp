@@ -282,6 +282,18 @@ void Game::updatePlayerPhase( ) {
 	}
 
 	_field->setInfoText( "あなたの配置をしてください", YELLOW, Drawer::LITTLE_BIG );
+	_field->setInfoText( "" );
+	_field->setInfoText( "あなたのプレイヤーカラーは", YELLOW, Drawer::LITTLE_BIG );
+	_field->setInfoText( "", RED, Drawer::SUPER_BIG );
+	std::string your_color = "赤";
+	switch ( _player_num ) {
+	case 0: your_color = "赤"; break;
+	case 1: your_color = "青"; break;
+	}
+	_field->setInfoText( your_color, ( COLOR )( RED + _player_num ), Drawer::SUPER_BIG );
+	_field->setInfoText( "" );
+	_field->setInfoText( "です", YELLOW, Drawer::LITTLE_BIG );
+
 
 	bool select = false;
 	selectPlayerPos( &select );
@@ -291,18 +303,19 @@ void Game::updatePlayerPhase( ) {
 	}
 
 	_field->setInfoText( "" );
-	_field->setInfoText( "決定を押して確定してください", RED, Drawer::LITTLE_BIG );
+	_field->setInfoText( "決定を押して確定してください", WATER, Drawer::LITTLE_BIG );
 	_field->activeButtonLighting( );
 	_field->changeClickButton( );
 	
-	int clicking = _data->getClickingLeft( );
-	if ( clicking > 0 || ( clicking < 1 && _clicking < 1 ) ) {
-		_clicking = clicking;
+	if ( _data->getClickingLeft( ) ) {
+		_clicking = _data->getClickingLeft( );	
+		return;
+	} else if ( _clicking == 0 ) {
 		return;
 	}
+	_clicking = 0;
 
 	if ( !_field->isHitDecisionButton( ) ) {
-		_clicking = 0;
 		return;
 	}
 
@@ -350,12 +363,11 @@ void Game::inputTmpMirror( ) {
 		return;
 	}
 
-	_field->setInfoText( "左クリックでマスを選択し、", YELLOW );
 	_field->setInfoText( "鏡を配置してください。" );
-	_field->setInfoText( "" );
-	_field->setInfoText( "もう一度左クリックで向きを変えられます" );
-	_field->setInfoText( "" );
-	_field->setInfoText( "あなたのターンです", RED, Drawer::LITTLE_BIG );
+	_field->setInfoText( "", RED, Drawer::BIG );
+	_field->setInfoText( "相手の的", ( ( _player_num + 1 ) % PLAYER_NUM ) ? WATER : RED, Drawer::BIG );
+	_field->setInfoText( "", RED, Drawer::BIG );
+	_field->setInfoText( "にレーザーを当てましょう！" );
 	if ( _double_mirror ) {
 		_field->setInfoText( "2枚目を配置してください", WATER, Drawer::LITTLE_BIG );
 	}
@@ -388,9 +400,9 @@ void Game::inputTmpMirror( ) {
 		return;
 	}
 
+	_tmp_mirror = Field::Mirror( );
+	_field->resetTmpMirror( );
 	if ( pos < 0 ) {
-		_tmp_mirror = Field::Mirror( );
-		_field->resetTmpMirror( );
 		return;
 	}
 
@@ -421,9 +433,10 @@ void Game::updateMirrorPhase( ) {
 	_field->activeButtonLighting( );
 	_field->changeClickButton( );
 	
-	int clicking = _data->getClickingLeft( );
-	if ( clicking > 0 || ( clicking < 1 && _clicking < 1 ) ) {
-		_clicking = clicking;
+	if ( _data->getClickingLeft( ) ) {
+		_clicking = _data->getClickingLeft( );	
+		return;
+	} else if ( _clicking == 0 ) {
 		return;
 	}
 
@@ -446,7 +459,7 @@ void Game::updateMirrorPhase( ) {
 	if ( _field->getSelectItem( ) != -1 ) {
 		return;
 	}
-
+	_clicking = 0;
 	_client->sendTcp( );
 	_cutin = false;
 }
@@ -616,19 +629,19 @@ void Game::updateItemCalc( ) {
 	default: break;
 	}
 	
-	int clicking = _data->getClickingLeft( );
-	if ( clicking > 0 || ( clicking < 1 && _clicking < 1 ) ) {
-		_clicking = clicking;
+	if ( _data->getClickingLeft( ) ) {
+		_clicking = _data->getClickingLeft( );	
+		return;
+	} else if ( _clicking == 0 ) {
 		return;
 	}
+	_clicking = 0;
 
 	if ( _field->getFieldPosHitNum( ) != -1 ) {
-		_clicking = 0;
 		return;
 	}
 
 	if ( !_field->isHitDecisionButton( ) ) {
-		_clicking = 0;
 		if ( _field->getFieldPosHitNum( ) < 0 ) {
 			_field->selectItem( idx );
 		}

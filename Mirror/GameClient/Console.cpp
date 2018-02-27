@@ -21,6 +21,8 @@ std::string Console::getTag( ) {
 }
 
 void Console::initialize( ) {
+	_connecting = false;
+	_matching = false;
 }
 
 void Console::update( ) {
@@ -43,7 +45,7 @@ void Console::update( ) {
 }
 
 void Console::ready( ) {
-	if ( _data->getScene( ) != CONNECT ) {
+	if ( _connecting ) {
 		_data->setInitFlag( );
 		return;
 	}
@@ -60,6 +62,8 @@ void Console::matching( ) {
 		if ( _data->getScene( ) != CONNECT ) {
 			return;
 		}
+	} else if ( _matching ) {
+		_data->setInitFlag( );
 	}
 
 	if ( _data->getScene( ) != CONNECT ) {
@@ -68,11 +72,14 @@ void Console::matching( ) {
 		_client->initialize( );
 	}
 
+	_connecting = true;
+
 	std::string matching = "- Matching -";
 	_drawer->setFrontString( true, WIDTH / 2, HEIGHT / 2 - 60, YELLOW, matching, Drawer::BIG );
 
 	if ( _client->isRecvingTcp( ) ) {
 		if ( _client->isMatching( ) ) {
+			_matching = true;
 			_data->setScene( BATTLE );
 		}
 	}
