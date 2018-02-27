@@ -89,8 +89,8 @@ public:
 	};
 
 	enum COMMAND {
-		COMMAND_RIGHT,
 		COMMAND_LEFT,
+		COMMAND_RIGHT,
 		COMMAND_DELETE,
 		COMMAND_TYPE_MAX,
 		COMMAND_NONE
@@ -147,6 +147,7 @@ public:
 	int getLazerPointIdx( ) const;
 	int getSelectItem( ) const;
 	int getHitItemIdx( ) const;
+	int getHitMirrorCommandIdx( ) const;
 	COMMAND getMirrorCommand( ) const;
 	MIRROR_ANGLE getMirrorAngle( int idx ) const;
 	bool isSelectedPlayer( ) const;

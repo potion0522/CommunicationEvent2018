@@ -19,8 +19,10 @@ private:
 	int _soundflag;
 
 public:
+#pragma pack( 1 )
 	struct ImageProperty {
 		int flag;
+		bool bright_flag = false;
 		double cx;	//’†S
 		double cy;
 		double lx;	//¶ã
@@ -30,8 +32,9 @@ public:
 		double r;	//‚ ‚½‚è”»’è
 		double size = 1;//‰æ‘œŠg‘å—¦
 		double angle;
-		int knd;
-		int brt = 255;
+		short int knd;
+		short int brt[ 3 ] = { 255, 255, 255 };	//RGB‹P“x
+		short int alpha = 255; //“§–¾“x
 		int cnt;
 		int png = -1;
 	};
@@ -53,4 +56,5 @@ public:
 		int volume = -1;
 		int wav;
 	};
+#pragma pack( )
 };

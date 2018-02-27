@@ -71,42 +71,57 @@ void Drawer::drawFrontImage( ) {
 	std::list< ExtendImageProperty >::iterator ite;
 	ite = _front_images.begin( );
 	for ( ite; ite != _front_images.end( ); ite++ ) {
-		ImageProperty image = ite->base;
-		errno_t image_handle = image.png;
-		if ( image.png < 1 ) {
+		ImageProperty base = ite->base;
+		errno_t image_handle = base.png;
+		if ( base.png < 1 ) {
 			DebugPtr debug( new Debug( ) );
 			debug->error( "drawer->drawImage : ‰æ‘œƒnƒ“ƒhƒ‹‚ª‚ ‚è‚Ü‚¹‚ñ" );
 		}
 		assert( image_handle != -1 );
 
-		bool brend = false;
-		if ( image.brt < 255 ) {
-			brend = true;
+		bool alpha = false;
+		bool bright = false;
+		if ( base.alpha < 255 ) {
+			alpha = true;
+		}
+		if ( base.bright_flag ) {
+			bright = true;
 		}
 
-		if ( brend ) {
-			SetDrawBlendMode( DX_BLENDMODE_ALPHA, image.brt );
+		//“§–¾“x
+		if ( alpha ) {
+			SetDrawBlendMode( DX_BLENDMODE_ALPHA, base.alpha );
 		}
+		//‹P“x
+		if ( bright ) {
+			SetDrawBright( base.brt[ 0 ], base.brt[ 1 ], base.brt[ 2 ] );
+		}
+
 
 		//‰æ‘œŠg‘å—¦(•‚¾‚¯A‚‚³‚¾‚¯)•Ï‚¦‚éê‡
 		if ( ite->extend ) {
 			//•ÏŒ`‚µ‚Ä•`‰æ
 			SetDrawMode( DX_DRAWMODE_BILINEAR );
-			DrawRotaGraph3F( ( float )image.cx, ( float )image.cy, ite->image_cx, ite->image_cy, ite->extend_width, ite->extend_height, image.angle, image.png, TRUE, FALSE );
+			DrawRotaGraph3F( ( float )base.cx, ( float )base.cy, ite->image_cx, ite->image_cy, ite->extend_width, ite->extend_height, base.angle, base.png, TRUE, FALSE );
 			SetDrawMode( DX_DRAWMODE_NEAREST );
 		} else {
 			//’Êí•`‰æ
 			if ( ite->base.size != 1 ) {
 				SetDrawMode( DX_DRAWMODE_BILINEAR );
 			}
-			DrawRotaGraphF( ( float )image.cx, ( float )image.cy, image.size, image.angle, image.png, TRUE );
+			DrawRotaGraphF( ( float )base.cx, ( float )base.cy, base.size, base.angle, base.png, TRUE );
 			if ( ite->base.size != 1 ) {
 				SetDrawMode( DX_DRAWMODE_NEAREST );
 			}
 		}
 
-		if ( brend ) {
+		//“§–¾“x‚ðŒ³‚É–ß‚·
+		if ( alpha ) {
 			SetDrawBlendMode( DX_BLENDMODE_NOBLEND, 0 );
+		}
+		//‹P“x‚ðŒ³‚É–ß‚·
+		if ( bright ) {
+			SetDrawBright( 255, 255, 255 );
 		}
 	}
 }
@@ -115,42 +130,57 @@ void Drawer::drawBackImage( ) {
 	std::list< ExtendImageProperty >::iterator ite;
 	ite = _back_images.begin( );
 	for ( ite; ite != _back_images.end( ); ite++ ) {
-		ImageProperty image = ite->base;
-		errno_t image_handle = image.png;
-		if ( image.png < 1 ) {
+		ImageProperty base = ite->base;
+		errno_t image_handle = base.png;
+		if ( base.png < 1 ) {
 			DebugPtr debug( new Debug( ) );
 			debug->error( "drawer->drawImage : ‰æ‘œƒnƒ“ƒhƒ‹‚ª‚ ‚è‚Ü‚¹‚ñ" );
 		}
 		assert( image_handle != -1 );
 
-		bool brend = false;
-		if ( image.brt < 255 ) {
-			brend = true;
+		bool alpha = false;
+		bool bright = false;
+		if ( base.alpha < 255 ) {
+			alpha = true;
+		}
+		if ( base.bright_flag ) {
+			bright = true;
 		}
 
-		if ( brend ) {
-			SetDrawBlendMode( DX_BLENDMODE_ALPHA, image.brt );
+		//“§–¾“x
+		if ( alpha ) {
+			SetDrawBlendMode( DX_BLENDMODE_ALPHA, base.alpha );
 		}
+		//‹P“x
+		if ( bright ) {
+			SetDrawBright( base.brt[ 0 ], base.brt[ 1 ], base.brt[ 2 ] );
+		}
+
 
 		//‰æ‘œŠg‘å—¦(•‚¾‚¯A‚‚³‚¾‚¯)•Ï‚¦‚éê‡
 		if ( ite->extend ) {
 			//•ÏŒ`‚µ‚Ä•`‰æ
 			SetDrawMode( DX_DRAWMODE_BILINEAR );
-			DrawRotaGraph3F( ( float )image.cx, ( float )image.cy, ite->image_cx, ite->image_cy, ite->extend_width, ite->extend_height, image.angle, image.png, TRUE, FALSE );
+			DrawRotaGraph3F( ( float )base.cx, ( float )base.cy, ite->image_cx, ite->image_cy, ite->extend_width, ite->extend_height, base.angle, base.png, TRUE, FALSE );
 			SetDrawMode( DX_DRAWMODE_NEAREST );
 		} else {
 			//’Êí•`‰æ
 			if ( ite->base.size != 1 ) {
 				SetDrawMode( DX_DRAWMODE_BILINEAR );
 			}
-			DrawRotaGraphF( ( float )image.cx, ( float )image.cy, image.size, image.angle, image.png, TRUE );
+			DrawRotaGraphF( ( float )base.cx, ( float )base.cy, base.size, base.angle, base.png, TRUE );
 			if ( ite->base.size != 1 ) {
 				SetDrawMode( DX_DRAWMODE_NEAREST );
 			}
 		}
 
-		if ( brend ) {
+		//“§–¾“x‚ðŒ³‚É–ß‚·
+		if ( alpha ) {
 			SetDrawBlendMode( DX_BLENDMODE_NOBLEND, 0 );
+		}
+		//‹P“x‚ðŒ³‚É–ß‚·
+		if ( bright ) {
+			SetDrawBright( 255, 255, 255 );
 		}
 	}
 }
@@ -160,13 +190,13 @@ void Drawer::drawFrontString( ) {
 	ite = _front_strings.begin( );
 
 	for ( ite; ite != _front_strings.end( ); ite++ ) {
-		if ( ite->brt < 255 ) {
-			SetDrawBlendMode( DX_BLENDMODE_ALPHA, ite->brt );
+		if ( ite->alpha < 255 ) {
+			SetDrawBlendMode( DX_BLENDMODE_ALPHA, ite->alpha );
 		}
 
 		DrawFormatStringFToHandle( ite->x, ite->y, _color->getColor( ite->col ), ite->handle, "%s", ite->str.c_str( ) );
 
-		if ( ite->brt < 255 ) {
+		if ( ite->alpha < 255 ) {
 			SetDrawBlendMode( DX_BLENDMODE_NOBLEND, 0 );
 		}
 	}
@@ -177,13 +207,13 @@ void Drawer::drawBackString( ) {
 	ite = _back_strings.begin( );
 
 	for ( ite; ite != _back_strings.end( ); ite++ ) {
-		if ( ite->brt < 255 ) {
-			SetDrawBlendMode( DX_BLENDMODE_ALPHA, ite->brt );
+		if ( ite->alpha < 255 ) {
+			SetDrawBlendMode( DX_BLENDMODE_ALPHA, ite->alpha );
 		}
 
 		DrawFormatStringFToHandle( ite->x, ite->y, _color->getColor( ite->col ), ite->handle, "%s", ite->str.c_str( ) );
 
-		if ( ite->brt < 255 ) {
+		if ( ite->alpha < 255 ) {
 			SetDrawBlendMode( DX_BLENDMODE_NOBLEND, 0 );
 		}
 	}
@@ -198,13 +228,13 @@ void Drawer::drawLine( ) {
 
 	SetDrawMode( DX_DRAWMODE_BILINEAR );
 	for ( ite; ite != _lines.end( ); ite++ ) {
-		if ( ite->brt < 255 ) {
-			SetDrawBlendMode( DX_BLENDMODE_ALPHA, ite->brt );
+		if ( ite->alpha < 255 ) {
+			SetDrawBlendMode( DX_BLENDMODE_ALPHA, ite->alpha );
 		}
 
 		DrawLineAA( ite->sx, ite->sy, ite->ex, ite->ey, _color->getColor( ite->col ) );
 
-		if ( ite->brt < 255 ) {
+		if ( ite->alpha < 255 ) {
 			SetDrawBlendMode( DX_BLENDMODE_NOBLEND, 0 );
 		}
 	}
@@ -222,12 +252,12 @@ void Drawer::drawCircle( ) {
 	SetDrawMode(  DX_DRAWMODE_BILINEAR );
 	for( ite; ite != _circles.end( ); ite++ ) {
 
-		if ( ite->brt < 255 ) {
-			SetDrawBlendMode( DX_BLENDMODE_ALPHA, ite->brt );
+		if ( ite->alpha < 255 ) {
+			SetDrawBlendMode( DX_BLENDMODE_ALPHA, ite->alpha );
 		}
 		DrawCircleAA( ite->cx, ite->cy, ite->r, 32, _color->getColor( ite->col ), ite->isFill );
 
-		if ( ite->brt < 255 ) {
+		if ( ite->alpha < 255 ) {
 			SetDrawBlendMode( DX_BLENDMODE_NOBLEND, 0 );
 		}
 	}
@@ -263,12 +293,12 @@ void Drawer::drawBackGroundImage( ) {
 	}
 
 	bool brend = false;
-	if ( _back_image.brt < 255 ) {
+	if ( _back_image.alpha < 255 ) {
 		brend = true;
 	}
 
 	if ( brend ) {
-		SetDrawBlendMode( DX_BLENDMODE_ALPHA, _back_image.brt );
+		SetDrawBlendMode( DX_BLENDMODE_ALPHA, _back_image.alpha );
 	}
 
 	DrawRotaGraphF( ( float )_back_image.cx, ( float )_back_image.cy, _back_image.size, _back_image.angle, _back_image.png, TRUE );
@@ -318,7 +348,7 @@ void Drawer::setBackImage( LightImageProperty png ) {
 	_back_images.push_back( image );
 }
 
-void Drawer::setFrontString( bool flag, double x, double y, COLOR col, std::string str, Drawer::FONTSIZE_TYPE type, int brt ) {
+void Drawer::setFrontString( bool flag, double x, double y, COLOR col, std::string str, Drawer::FONTSIZE_TYPE type, int alpha ) {
 	//“n‚³‚ê‚½ x, y ‚ª•`‰æ‚·‚é‚Æ‚«‚É•¶Žš—ñ‚Ì’†‰›‚É‚È‚é‚æ‚¤‚É‚·‚é
 	if ( flag ) {
 		int len = ( int )str.length( );
@@ -327,11 +357,11 @@ void Drawer::setFrontString( bool flag, double x, double y, COLOR col, std::stri
 	}
 	double h = GetDrawFormatStringWidthToHandle( _handle_font[ type ], "‚ " );
 	y -= h / 2;
-	StringProperty tmp = { ( float )x, ( float )y, col, str, brt, _handle_font[ type ] };
+	StringProperty tmp = { ( float )x, ( float )y, col, str, alpha, _handle_font[ type ] };
 	_front_strings.push_back( tmp );
 }
 
-void Drawer::setBackString( bool flag, double x, double y, COLOR col, std::string str, Drawer::FONTSIZE_TYPE type, int brt ) {
+void Drawer::setBackString( bool flag, double x, double y, COLOR col, std::string str, Drawer::FONTSIZE_TYPE type, int alpha ) {
 	//“n‚³‚ê‚½ x, y ‚ª•`‰æ‚·‚é‚Æ‚«‚É•¶Žš—ñ‚Ì’†‰›‚É‚È‚é‚æ‚¤‚É‚·‚é
 	if ( flag ) {
 		int len = ( int )str.length( );
@@ -340,17 +370,17 @@ void Drawer::setBackString( bool flag, double x, double y, COLOR col, std::strin
 	}
 	double h = GetDrawFormatStringWidthToHandle( _handle_font[ type ], "‚ " );
 	y -= h / 2;
-	StringProperty tmp = { ( float )x, ( float )y, col, str, brt, _handle_font[ type ] };
+	StringProperty tmp = { ( float )x, ( float )y, col, str, alpha, _handle_font[ type ] };
 	_back_strings.push_back( tmp );
 }
 
-void Drawer::setLine( double sx, double sy, double ex, double ey, COLOR col, int brt ) {
-	LineProperty line = { ( float )sx, ( float )sy, ( float )ex, ( float )ey, col, brt };
+void Drawer::setLine( double sx, double sy, double ex, double ey, COLOR col, int alpha ) {
+	LineProperty line = { ( float )sx, ( float )sy, ( float )ex, ( float )ey, col, alpha };
 	_lines.push_back( line );
 }
 
-void Drawer::setCircle( double x, double y, double r, COLOR col, int brt, bool isfill ) {
-	CircleProperty circle = { ( float )x, ( float )y, ( float )r, col, brt, isfill };
+void Drawer::setCircle( double x, double y, double r, COLOR col, int alpha, bool isfill ) {
+	CircleProperty circle = { ( float )x, ( float )y, ( float )r, col, alpha, isfill };
 	_circles.push_back( circle );
 }
 

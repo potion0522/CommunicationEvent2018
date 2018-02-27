@@ -396,6 +396,10 @@ void Game::inputTmpMirror( ) {
 		return;
 	}
 
+	if ( _field->getMirrorCommand( ) == Field::COMMAND_NONE ) {
+		return;
+	}
+
 	if ( !_data->getClickLeft( ) ) {
 		return;
 	}
@@ -442,6 +446,10 @@ void Game::updateMirrorPhase( ) {
 
 	if ( !_field->isHitDecisionButton( ) ) {
 		_clicking = 0;
+		if ( _field->getHitItemIdx( ) != -1 ) {
+			_field->resetTmpMirror( );
+			_tmp_mirror = Field::Mirror( );
+		}
 		return;
 	}
 
@@ -618,15 +626,22 @@ void Game::updateItemCalc( ) {
 	int item = _field->getSelectItem( );
 	//ボタン点滅
 	switch ( item ) {
-	case LAZER_RESET    : _field->activeButtonLighting( ); break;
-	case DOUBLE_MIRROR  : 
+	case LAZER_RESET:
+		_field->activeButtonLighting( );
+		break;
+
+	case DOUBLE_MIRROR: 
 		if ( _field->isSelectedMirror( ) ) {
 			_field->activeButtonLighting( );
 		}
 		break;
 
-	case REVERSE_MIRROR : _field->activeButtonLighting( ); break;
-	default: break;
+	case REVERSE_MIRROR:
+		_field->activeButtonLighting( );
+		break;
+
+	default:
+		break;
 	}
 	
 	if ( _data->getClickingLeft( ) ) {
@@ -641,9 +656,15 @@ void Game::updateItemCalc( ) {
 		return;
 	}
 
+	//決定ボタンを押さないで
 	if ( !_field->isHitDecisionButton( ) ) {
-		if ( _field->getFieldPosHitNum( ) < 0 ) {
-			_field->selectItem( idx );
+		//ミラーコマンドを選択してなくて
+		if ( _field->getHitMirrorCommandIdx( ) < 0 ) {
+			//フィールドも選択していなければ
+			if ( _field->getFieldPosHitNum( ) < 0 ) {
+				//リセット
+				_field->selectItem( idx );
+			}
 		}
 		return;
 	}

@@ -41,10 +41,10 @@ public:
 	void setBackExtendImage( ImageProperty base, float image_cx, float image_cy, double extend_width, double extend_height );
 	void setBackExtendImage( LightImageProperty base, float image_cx, float image_cy, double extend_width, double extend_height );
 	//中央寄せにするかどうか, x座標, y座標, カラー, 文字列, フォントサイズ, アルファ値
-	void setFrontString( bool flag, double x, double y, COLOR col, std::string str, FONTSIZE_TYPE type = NORMAL, int brt = 255 );
-	void setBackString( bool flag, double x, double y, COLOR col, std::string str, FONTSIZE_TYPE type = NORMAL, int brt = 255 );
-	void setLine( double sx, double sy, double ex, double ey, COLOR col = WHITE, int brt = 255 );
-	void setCircle( double x, double y, double r, COLOR col = WHITE, int brt = 255, bool isfill = false );
+	void setFrontString( bool flag, double x, double y, COLOR col, std::string str, FONTSIZE_TYPE type = NORMAL, int alpha = 255 );
+	void setBackString( bool flag, double x, double y, COLOR col, std::string str, FONTSIZE_TYPE type = NORMAL, int alpha = 255 );
+	void setLine( double sx, double sy, double ex, double ey, COLOR col = WHITE, int alpha = 255 );
+	void setCircle( double x, double y, double r, COLOR col = WHITE, int alpha = 255, bool isfill = false );
 	void setFrontBox( double lx, double ly, double rx, double ry, COLOR col = WHITE, bool isfill = false );
 	void setBackBox( double lx, double ly, double rx, double ry, COLOR col = WHITE, bool isfill = false );
 	int getStringW( FONTSIZE_TYPE type, std::string str ) const;
@@ -78,7 +78,7 @@ private:
 		float y;
 		COLOR col;
 		std::string str;
-		int brt;
+		int alpha;
 		int handle;
 	};
 	struct LineProperty {
@@ -87,14 +87,14 @@ private:
 		float ex;//end
 		float ey;
 		COLOR col;
-		int brt;
+		int alpha;
 	};
 	struct CircleProperty {
 		float cx;//中心
 		float cy;
 		float r;//半径
 		COLOR col;
-		int brt;
+		int alpha;
 		bool isFill;
 	};
 	struct BoxProperty {

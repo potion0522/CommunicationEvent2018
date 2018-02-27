@@ -139,7 +139,7 @@ void Field::initialize( ) {
 	std::map< int, Mirror >( ).swap( _mirrors );
 	std::array< Info, INFO_TEXT_MAX >( ).swap( _info );
 	std::array< Item, ITEM_POSSESSION_MAX >( ).swap( _item );
-	_command = COMMAND( );
+	_command = COMMAND_NONE;
 
 	_reflection_point = Vector( );
 	_phase = SET_PLAYER_PHASE;
@@ -220,7 +220,7 @@ void Field::nextTurn( ) {
 	_direct = DIR( );
 	_tmp_mirror = Mirror( );
 	_reflection_point = Vector( );
-	_command = COMMAND( );
+	_command = COMMAND_NONE;
 }
 
 void Field::update( ) {
@@ -396,6 +396,22 @@ int Field::getHitItemIdx( ) const {
 	return -1;
 }
 
+int Field::getHitMirrorCommandIdx( ) const {
+	int mouse_x = _data->getMouseX( );
+	int mouse_y = _data->getMouseY( );
+
+	short int hit = -1;
+	for ( int i = 0; i < COMMAND_TYPE_MAX; i++ ) {
+		if ( _mirror_cmd[ i ].collider.lx <= mouse_x && mouse_x <= _mirror_cmd[ i ].collider.rx &&
+			 _mirror_cmd[ i ].collider.ly <= mouse_y && mouse_y <= _mirror_cmd[ i ].collider.ry ) {
+			hit = i;
+			break;
+		}
+	}
+
+	return hit;
+}
+
 Field::COMMAND Field::getMirrorCommand( ) const {
 	return _command;
 }
@@ -561,13 +577,15 @@ void Field::checkHitMirrorCommand( ) {
 		}
 	}
 
+	if ( !_data->getClickLeft( ) ) {
+		return;
+	}
+
 	if ( hit < 0 ) {
 		return;
 	}
 
-	if ( _data->getClickLeft( ) ) {
-		_command = ( COMMAND )hit;
-	}
+	_command = ( COMMAND )hit;
 }
 
 void Field::setOrder( int order ) {
@@ -780,6 +798,24 @@ void Field::drawField( ) {
 			image.cy = START_POS_Y + i * SQUARE_SIZE + SQUARE_SIZE * 0.5;
 			image.png = _table_handle;
 			image.size = FIELD_SIZE_RATE;
+			//ミラーを置こうとしているなら
+			if ( _phase == SET_MIRROR_PHASE && ( i * FIELD_COL + j ) == getFieldPosHitNum( ) ) {
+				image.bright_flag = true;
+				//プレイヤーカラー
+				switch ( _player_num ) {
+				case 0://赤
+					image.brt[ 0 ] = 255;
+					image.brt[ 1 ] = 150;
+					image.brt[ 2 ] = 150;
+					break;
+				case 1://青
+					image.brt[ 0 ] = 150;
+					image.brt[ 1 ] = 150;
+					image.brt[ 2 ] = 255;
+					break;
+				}
+				image.alpha = ( short int )( sin( 0.05 * _data->getCount( ) ) * 25 + 230 );
+			}
 			_drawer->setBackImage( image );
 		}
 	}
@@ -800,18 +836,6 @@ void Field::drawArmament( ) const {
 }
 
 void Field::drawTmpMirror( ) const {
-	if ( getFieldPosHitNum( ) != -1 ) {
-		SetCursor( _cur_hand );
-		int pos = getFieldPosHitNum( );
-		int x = pos % FIELD_COL;
-		int y = pos / FIELD_COL;
-		double cx = START_POS_X + x * SQUARE_SIZE + SQUARE_SIZE * 0.5;
-		double cy = START_POS_Y + y * SQUARE_SIZE + SQUARE_SIZE * 0.5;
-		_drawer->setFrontString( true, cx, cy, ( _player_num ? BLUE : RED ), "POS" );
-		//tmp_mirror.brt = ( int )( ( sin( _data->getCount( ) * 0.06 ) + 1 ) * 40 + 100 );
-		//tmp_mirror.png = _mirror_handle[ _player_num ];
-	}
-
 	//鏡描画
 	std::map< int, Mirror > tmp_mirrors = _mirrors;
 	if ( _tmp_mirror.flag ) {
@@ -859,8 +883,10 @@ void Field::drawDecisionButton( ) const {
 	image.cy = _button_image.cy;
 	image.png = _button_image.png;
 	if ( !_button_lighting ) {
-		image.brt = 150;
-		//image.brt = ( int )( sin( _data->getCount( ) * 0.05 ) * 75 + 180 );
+		image.bright_flag = true;
+		for ( int j = 0; j < 3; j++ ) {
+			image.brt[ j ] = 130;
+		}
 	}
 
 	_drawer->setFrontImage( image );
@@ -981,7 +1007,7 @@ void Field::drawSettingPlayer( ) {
 	int y_red = START_POS_Y + FIELD_ROW * SQUARE_SIZE + SQUARE_SIZE / 2;
 	int y_blue = y_red + 30;
 	int r = CIRCLE_SIZE / 3;
-	int brt = ( int )( ( sin( _data->getCount( ) * 0.06 ) + 1 ) * 64 + 50 );
+	int alpha = ( int )( ( sin( _data->getCount( ) * 0.06 ) + 1 ) * 64 + 50 );
 	std::string str = "  ---- 少女思考中";
 	std::string dot;
 	switch ( _data->getCount( ) / FRAME % 4 ) {
@@ -990,8 +1016,8 @@ void Field::drawSettingPlayer( ) {
 		case 2:		dot = "..";		break;
 		case 3:		dot = "...";	break;
 	}
-	_drawer->setCircle( x, y_red,  r, RED,  brt, true );
-	_drawer->setCircle( x, y_blue, r, BLUE, brt, true );
+	_drawer->setCircle( x, y_red,  r, RED,  alpha, true );
+	_drawer->setCircle( x, y_blue, r, BLUE, alpha, true );
 	if ( _order != _player_num ) {
 		if( _player_num == 0 ){
 			y = y_blue;
@@ -1024,14 +1050,14 @@ void Field::drawItem( ) const {
 		image.cy = _item[ i ].y;
 		image.flag = _item[ i ].flag;
 		image.png = _item_handle[ _item[ i ].type ];
-		image.brt = 100;
+		image.alpha = 100;
 
 		if ( _phase == SET_MIRROR_PHASE ) {
 			if ( i == _select_item ) {
-				image.brt = 255;
+				image.alpha = 255;
 			}
 			if ( i == getHitItemIdx( ) ) {
-				image.brt = 255;
+				image.alpha = 255;
 			}
 		}
 
@@ -1045,6 +1071,16 @@ void Field::drawBackGround( ) const {
 
 void Field::drawMirrorCommand( ) const {
 	for ( int i = 0; i < COMMAND_TYPE_MAX; i++ ) {
-		_drawer->setFrontImage( _mirror_cmd[ i ].image );
+		ImageProperty image = ImageProperty( );
+		image.cx = _mirror_cmd[ i ].image.cx;
+		image.cy = _mirror_cmd[ i ].image.cy;
+		image.png = _mirror_cmd[ i ].image.png;
+		image.bright_flag = true;
+		if ( i != getMirrorCommand( ) ) {
+			for ( int j = 0; j < 3; j++ ) {
+				image.brt[ j ] = 130;
+			}
+		}
+		_drawer->setFrontImage( image );
 	}
 }

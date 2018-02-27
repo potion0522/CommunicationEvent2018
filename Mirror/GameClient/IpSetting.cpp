@@ -106,6 +106,7 @@ void IpSetting::initialize( ) {
 	_savebutton_clicking = false;
 	_returnbutton_clicking = false;
 	_save = false;
+	_wait_time = 0;
 	_ip = "";
 }
 
