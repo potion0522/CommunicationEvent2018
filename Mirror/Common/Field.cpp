@@ -925,6 +925,9 @@ void Field::drawPlayerPos( ) const {
 	ImagePtr image_ptr = _data->getImagePtr( );
 	
 	for ( int i = 0; i < PLAYER_POSITION * 2; i++ ) {
+		if ( _player_num != i / PLAYER_POSITION ) {
+			continue;
+		}
 		ImageProperty image = ImageProperty( );
 		double x = _select_player_pos[ i ].x;
 		double y = _select_player_pos[ i ].y;

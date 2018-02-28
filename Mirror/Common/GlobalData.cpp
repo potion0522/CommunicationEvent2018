@@ -6,7 +6,8 @@
 #include "Server.h"
 #include "Client.h"
 #include "Drawer.h"
-#include <random>
+#include <ctime>
+#include <cstdlib>
 #include <limits.h>
 
 GlobalData::GlobalData( MACHINE_TYPE type ) :
@@ -97,8 +98,8 @@ int GlobalData::getClickingRight( ) const {
 }
 
 int GlobalData::getRandom( int min, int max ) const {
-	std::random_device rd;
-	int random = min + rd( ) % ( max - min + 1 );
+	std::srand( ( unsigned int )time( NULL ) );
+	int random = min + rand( ) % ( max - min + 1 );
 	return random;
 }
 
