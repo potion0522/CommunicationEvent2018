@@ -20,6 +20,7 @@ const short int BOARD_Y = HEIGHT / 2;
 const short int ITEM_POS_X = BOARD_X - ( short int )( SQUARE_SIZE * 1.5 );
 const short int ITEM_POS_Y = BOARD_Y + SQUARE_SIZE;
 const short int INFO_Y = BOARD_Y - ( short int )( SQUARE_SIZE * 1.5 );
+const short int DEATH_COUNT_MAX = 5 * 60 * FRAME;
 
 enum IMAGE_IDX {
 	BOARD_IDX,
@@ -134,6 +135,7 @@ void Field::initialize( ) {
 	_field_pos_hit_num = -1;
 	_lazer_point_idx = -1;
 	_select_item = -1;
+	_dead_count = DEATH_COUNT_MAX;
 	_direct = DIR( );
 	_tmp_mirror = Mirror( );
 	std::map< int, Mirror >( ).swap( _mirrors );
@@ -256,6 +258,7 @@ void Field::update( ) {
 	if ( _phase == SET_MIRROR_PHASE ) {
 		checkHitMirrorCommand( );
 	}
+	checkItemRecovery( );
 	//•`‰æ
 	drawBackGround( );
 	drawField( );
@@ -263,6 +266,7 @@ void Field::update( ) {
 	drawArmament( );
 	drawInfo( );
 	drawDecisionButton( );
+	drawDeathCount( );
 	resetInfo( );
 	_button_lighting = false;
 
@@ -410,6 +414,10 @@ int Field::getHitMirrorCommandIdx( ) const {
 	}
 
 	return hit;
+}
+
+int Field::getDeadCount( ) const{
+	return _dead_count;
 }
 
 Field::COMMAND Field::getMirrorCommand( ) const {
@@ -588,6 +596,17 @@ void Field::checkHitMirrorCommand( ) {
 	_command = ( COMMAND )hit;
 }
 
+void Field::checkItemRecovery( ) {
+	for ( int i = 0; i < ITEM_POSSESSION_MAX; i++ ) {
+		if ( _item[ i ].flag ) {
+			continue;
+		}
+		if ( _item[ i ].used_turn + ITEM_RECOVERY_TIME == _turn ) {
+			_item[ i ].flag = true;
+		}
+	}
+}
+
 void Field::setOrder( int order ) {
 	_order = order;
 }
@@ -694,6 +713,7 @@ void Field::useItem( ) {
 		return;
 	}
 	_item[ _select_item ].flag = false;
+	_item[ _select_item ].used_turn = _turn;
 	_select_item = -1;
 }
 
@@ -719,6 +739,14 @@ void Field::changeClickButton( ) {
 
 void Field::activeButtonLighting( ) {
 	_button_lighting = true;
+}
+
+
+void Field::deadCount( ) {
+	_dead_count--;
+	if( _dead_count < 0 ) {
+		_dead_count = 0;
+	}
 }
 
 Field::Vector Field::getLazerPoint( ) const {
@@ -1086,4 +1114,9 @@ void Field::drawMirrorCommand( ) const {
 		}
 		_drawer->setFrontImage( image );
 	}
+}
+
+void Field::drawDeathCount( ) const {
+	_drawer->setFrontString( false, WIDTH - 200,  50, RED, "Žc‚èŽžŠÔ", Drawer::BIG );
+	_drawer->setFrontString( false, WIDTH - 200,  20 + _drawer->getStringH( Drawer::SUPER_BIG ), RED, std::to_string( _dead_count / FRAME ), Drawer::SUPER_BIG );
 }

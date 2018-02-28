@@ -12,10 +12,11 @@ const float HEIGHT_F = ( float )HEIGHT;
 const int FRAME = 60;
 
 const double PI = 3.14;
-const int KEY_MAX = 256;
-const int PLAYER_NUM = 2;
-const int TURN_MAX = 3;
-const int ITEM_POSSESSION_MAX = 3;
+const short int KEY_MAX = 256;
+const short int PLAYER_NUM = 2;
+const short int TURN_MAX = 3;
+const short int ITEM_POSSESSION_MAX = 3;
+const short int ITEM_RECOVERY_TIME = 3;
 const float FIELD_SIZE_RATE = 1.1f;
 
 const int TCP_PORT = 9850;

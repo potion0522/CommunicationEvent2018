@@ -86,6 +86,7 @@ public:
 		short int type;
 		float x;
 		float y;
+		short int used_turn;
 	};
 
 	enum COMMAND {
@@ -131,6 +132,7 @@ public:
 	void reverseMirror( );
 	void changeClickButton( );
 	void activeButtonLighting( );
+	void deadCount( );
 
 public:
 	Vector getLazerPoint( ) const;
@@ -148,6 +150,7 @@ public:
 	int getSelectItem( ) const;
 	int getHitItemIdx( ) const;
 	int getHitMirrorCommandIdx( ) const;
+	int getDeadCount( ) const;
 	COMMAND getMirrorCommand( ) const;
 	MIRROR_ANGLE getMirrorAngle( int idx ) const;
 	bool isSelectedPlayer( ) const;
@@ -158,6 +161,7 @@ private:
 	void resetInfo( );
 	void setDirect( Vector vec );
 	void checkHitMirrorCommand( );
+	void checkItemRecovery( );
 
 private:
 	//Drawån
@@ -174,6 +178,7 @@ private:
 	void drawItem( ) const;
 	void drawBackGround( ) const;
 	void drawMirrorCommand( ) const;
+	void drawDeathCount( ) const;
 
 private:
 #pragma pack( 1 )
@@ -211,6 +216,7 @@ private:
 	short int _hit_mirror_num;
 	short int _lazer_point_idx;
 	short int _select_item;
+	short int _dead_count;
 	HCURSOR _cur_hand;
 	BATTLE_PHASE _phase;
 	DIR _direct;

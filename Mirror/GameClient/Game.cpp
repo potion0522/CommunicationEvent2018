@@ -358,6 +358,8 @@ void Game::inputTmpMirror( ) {
 		_field->setInfoText( "‘ŠŽè‚ª”z’u‚µ‚Ä‚¢‚Ü‚·", RED, Drawer::LITTLE_BIG );
 		return;
 	}
+	//ŽžŠÔ‚ðŒ¸‚ç‚·
+	_field->deadCount( );
 
 	if ( _field->isSelectedMirror( ) ) {
 		return;
@@ -503,7 +505,13 @@ void Game::updateAttackPhase( ) {
 	int dead = _field->getDeadPlayer( );
 	bool alive = true;
 	if ( dead == _player_num ) {
-		alive = !alive;
+		alive = false;
+	}
+	if( _field->getDeadCount( ) <= 0 ) {
+		alive = false;
+		if ( dead != _player_num && dead != -1 ) {
+			alive = true;
+		}
 	}
 
 	_client->setAlive( alive );
