@@ -5,7 +5,6 @@
 #include "Log.h"
 #include "Field.h"
 #include "Command.h"
-#include <random>
 #include <map>
 
 GameMaster::GameMaster( GlobalDataPtr data, ConnectorPtr connector, LogPtr log, CommandPtr command ) :
