@@ -670,7 +670,11 @@ void Game::updateItemCalc( ) {
 		if ( _field->getHitMirrorCommandIdx( ) < 0 ) {
 			//フィールドも選択していなければ
 			if ( _field->getFieldPosHitNum( ) < 0 ) {
-				//リセット
+				//キャンセルボタンであれば-1
+				if ( _field->isHitItemCancelButton( ) ) {
+					idx = -1;
+				}
+				//アイテム番号セット
 				_field->selectItem( idx );
 			}
 		}

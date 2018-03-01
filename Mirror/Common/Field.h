@@ -156,6 +156,7 @@ public:
 	bool isSelectedPlayer( ) const;
 	bool isHitDecisionButton( ) const;
 	bool isSelectedMirror( ) const;
+	bool isHitItemCancelButton( ) const;
 
 private:
 	void resetInfo( );
@@ -179,6 +180,7 @@ private:
 	void drawBackGround( ) const;
 	void drawMirrorCommand( ) const;
 	void drawDeathCount( ) const;
+	void drawItemCancelButton( ) const;
 
 private:
 #pragma pack( 1 )
@@ -226,6 +228,9 @@ private:
 
 	//‰æ‘œŠÖ˜A
 	int _table_handle;
+	int _time_string_handle;
+	int _timeboard_handle;
+	std::array< int, NUMBER_HANDLE_MAX > _number_handle;
 	std::array< int, PLAYER_NUM > _mirror_handle;
 	std::array< int, BATTLE_BUTTON_IMAGE_NUM > _button_handle;
 	std::array< int, ITEM_MAX > _item_handle;
@@ -235,6 +240,7 @@ private:
 	LightImageProperty _background;
 	LightImageProperty _lazer_image;
 	BoxObject _board;
+	BoxObject _item_cancel;
 #pragma pack( )
 
 	GlobalDataPtr _data;

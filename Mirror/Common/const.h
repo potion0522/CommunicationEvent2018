@@ -10,6 +10,7 @@ const float WIDTH_F = ( float )WIDTH;
 const float HEIGHT_F = ( float )HEIGHT;
 
 const int FRAME = 60;
+const int MINUTE = FRAME * 60;
 
 const double PI = 3.14;
 const short int KEY_MAX = 256;
@@ -17,6 +18,7 @@ const short int PLAYER_NUM = 2;
 const short int TURN_MAX = 3;
 const short int ITEM_POSSESSION_MAX = 3;
 const short int ITEM_RECOVERY_TIME = 3;
+const short int NUMBER_HANDLE_MAX = 20;
 const float FIELD_SIZE_RATE = 1.1f;
 
 const int TCP_PORT = 9850;
@@ -25,9 +27,10 @@ const int UDP_PORT = 9900;
 const short int GAME_START_BUTTON_IDX = 0;
 const short int ITEM_SELECT_BUTTON_IDX = 2;
 const short int IP_SETTING_BUTTON_IDX = 4;
-const short int BATTLE_BUTTON_IDX = 6;
-const short int RETURN_BUTTON_IDX = 10;
-const short int SAVE_BUTTON_IDX = 12;
+const short int ITEM_CANCEL_BUTTON_IDX = 6;
+const short int BATTLE_BUTTON_IDX = 7;
+const short int RETURN_BUTTON_IDX = 11;
+const short int SAVE_BUTTON_IDX = 13;
 
 struct SendMirrorData {
 	bool flag;
@@ -95,6 +98,8 @@ enum IMAGE {
 	BACKGROUND_IMAGE,
 	TITLE_IMAGE,
 	COMMAND_IMAGE,
+	TIME_IMAGE,
+	NUMBER_IMAGE,
 	IMAGE_DIR_MAX
 };
 

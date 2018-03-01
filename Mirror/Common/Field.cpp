@@ -18,9 +18,10 @@ const short int MIRROR_IMAGE_IDX = 2;
 const short int BOARD_X = WIDTH / 5;
 const short int BOARD_Y = HEIGHT / 2;
 const short int ITEM_POS_X = BOARD_X - ( short int )( SQUARE_SIZE * 1.5 );
-const short int ITEM_POS_Y = BOARD_Y + SQUARE_SIZE;
-const short int INFO_Y = BOARD_Y - ( short int )( SQUARE_SIZE * 1.5 );
-const short int DEATH_COUNT_MAX = 5 * 60 * FRAME;
+const short int ITEM_POS_Y = BOARD_Y;
+const short int INFO_Y = BOARD_Y - ( short int )( SQUARE_SIZE * 2.2 );
+const short int DEATH_COUNT_MAX = MINUTE * 2;
+const short int NONACTIVE_BRIGHT = 130;
 
 enum IMAGE_IDX {
 	BOARD_IDX,
@@ -37,19 +38,27 @@ _data( data ) {
 	_image = _data->getImagePtr( );
 	_debug = _data->getDebugPtr( );
 	_cur_hand  = LoadCursor( NULL, IDC_HAND );
+	std::array< Info, INFO_TEXT_MAX >( ).swap( _info );
+	std::array< Item, ITEM_POSSESSION_MAX >( ).swap( _item );
 	_table_handle = -1;
+	_time_string_handle = -1;
+	_timeboard_handle = -1;
+	std::array< int, NUMBER_HANDLE_MAX >( ).swap( _number_handle );
 	std::array< int, PLAYER_NUM >( ).swap( _mirror_handle );
 	std::array< int, BATTLE_BUTTON_IMAGE_NUM >( ).swap( _button_handle );
 	std::array< int, ITEM_MAX >( ).swap( _item_handle );
 	std::array< int, LAZER_TYPE_MAX >( ).swap( _lazer_handle );
 	_button_image = LightImageProperty( );
 	_lazer_image = LightImageProperty( );
+	_item_cancel = BoxObject( );
 
 	Png png = Png( );
 	//ボタン
 	for ( int i = 0; i < BATTLE_BUTTON_IMAGE_NUM; i++ ) {
 		_button_handle[ i ] = _image->getPng( BUTTON_IMAGE, BATTLE_BUTTON_IDX + i ).png;
 	}
+	_button_image.cx = DECISION_BUTTON_X;
+	_button_image.cy = DECISION_BUTTON_Y;
 
 	//フィールド
 	_table_handle = _image->getPng( BATTLE_IMAGE, TABLE_IDX ).png;
@@ -62,6 +71,10 @@ _data( data ) {
 	//アイテム
 	for ( int i = 0; i < ITEM_MAX; i++ ) {
 		_item_handle[ i ] = _image->getPng( ITEM_IMAGE, i ).png;
+	}
+	for ( int i = 0; i < ITEM_POSSESSION_MAX; i++ ) {
+		_item[ i ].x = ( float )( ITEM_POS_X + i * SQUARE_SIZE + SQUARE_SIZE * 0.5 );
+		_item[ i ].y = ( float )ITEM_POS_Y;
 	}
 
 	//レーザー
@@ -110,6 +123,32 @@ _data( data ) {
 		box->rx = ( float )image->cx + _mirror_cmd[ i ].half_width;
 		box->ry = ( float )image->cy + _mirror_cmd[ i ].half_height;
 	}
+
+	//アイテムキャンセルボタン
+	const short int ITEM_CANCEL_BUTTON_X = BOARD_X;
+	const short int ITEM_CANCEL_BUTTON_Y = ITEM_POS_Y + ( short int )( SQUARE_SIZE * 1.25 );
+	LightImageProperty *image = &_item_cancel.image;
+	image->cx  = ITEM_CANCEL_BUTTON_X;
+	image->cy  = ITEM_CANCEL_BUTTON_Y;
+	image->png = _image->getPng( BUTTON_IMAGE, ITEM_CANCEL_BUTTON_IDX ).png;
+
+	//当たり判定
+	_item_cancel.half_width = _image->getPng( BUTTON_IMAGE, ITEM_CANCEL_BUTTON_IDX ).width / 2;
+	_item_cancel.half_height = _image->getPng( BUTTON_IMAGE, ITEM_CANCEL_BUTTON_IDX ).height / 2;
+	BoxCollider *box = &_item_cancel.collider;
+	box->lx = ( float )image->cx - _item_cancel.half_width;
+	box->ly = ( float )image->cy - _item_cancel.half_height;
+	box->rx = ( float )image->cx + _item_cancel.half_width;
+	box->ry = ( float )image->cy + _item_cancel.half_height;
+
+	//時間表示背景
+	_timeboard_handle = _image->getPng( TIME_IMAGE, 0 ).png;
+	_time_string_handle = _image->getPng( TIME_IMAGE, 1 ).png;
+
+	//数字画像
+	for ( int i = 0; i < NUMBER_HANDLE_MAX; i++ ) {
+		_number_handle[ i ] = _image->getPng( NUMBER_IMAGE, i ).png;
+	}
 }
 
 Field::~Field( ) {
@@ -139,8 +178,6 @@ void Field::initialize( ) {
 	_direct = DIR( );
 	_tmp_mirror = Mirror( );
 	std::map< int, Mirror >( ).swap( _mirrors );
-	std::array< Info, INFO_TEXT_MAX >( ).swap( _info );
-	std::array< Item, ITEM_POSSESSION_MAX >( ).swap( _item );
 	_command = COMMAND_NONE;
 
 	_reflection_point = Vector( );
@@ -198,16 +235,6 @@ void Field::initialize( ) {
 		_player_pos_no[ i ] = -1;
 		_player_color[ i ] = ( COLOR )( i + ( int )RED );
 	}
-
-	//アイテムのポジション設定
-	for ( int i = 0; i < ITEM_POSSESSION_MAX; i++ ) {
-		_item[ i ].x = ( float )( ITEM_POS_X + i * SQUARE_SIZE + SQUARE_SIZE * 0.5 );
-		_item[ i ].y = ( float )ITEM_POS_Y;
-	}
-
-	//ボタンポジション
-	_button_image.cx = DECISION_BUTTON_X;
-	_button_image.cy = DECISION_BUTTON_Y;
 }
 
 void Field::nextTurn( ) {
@@ -230,6 +257,7 @@ void Field::update( ) {
 		resetInfo( );
 		switch ( ( ITEM )_item[ _select_item ].type ) {
 		case LAZER_RESET:
+			setInfoText( "" );
 			setInfoText( "レーザーの位置を強制的に変更します", RED );
 			setInfoText( "ターン経過はなく", RED );
 			setInfoText( "" );
@@ -237,15 +265,16 @@ void Field::update( ) {
 			break;
 
 		case DOUBLE_MIRROR:
-			setInfoText( "鏡を2枚配置できます", RED );
-			setInfoText( "1枚目の鏡は相手にも見えてしまいます", RED );
 			setInfoText( "" );
-			setInfoText( "鏡を1枚", WATER );
-			setInfoText( "配置した状態で決定をしてください", WATER );
+			setInfoText( "鏡を2枚配置できます", RED );
 			setInfoText( "先攻のプレイヤーのみ発動できます", WATER );
+			setInfoText( "" );
+			setInfoText( "鏡を1枚配置した状態で決定をしてください", RED );
+			setInfoText( "1枚目の鏡は相手にも見えてしまいます", RED );
 			break;
 
 		case REVERSE_MIRROR:
+			setInfoText( "" );
 			setInfoText( "配置されている全ての鏡の向きを", RED );
 			setInfoText( "反転させます", RED );
 			setInfoText( "" );
@@ -285,6 +314,7 @@ void Field::update( ) {
 	}
 	//レーザー移動までのターン数
 	drawItem( );
+	drawItemCancelButton( );
 	drawRound( );
 
 	//ミラー設置時のみ
@@ -435,6 +465,18 @@ MIRROR_ANGLE Field::getMirrorAngle( int idx ) const {
 bool Field::isSelectedMirror( ) const {
 	return _mirror_selected;
 }
+
+bool Field::isHitItemCancelButton( ) const {
+	int mouse_x = _data->getMouseX( );
+	int mouse_y = _data->getMouseY( );
+
+	if ( _item_cancel.collider.lx <= mouse_x && mouse_x <= _item_cancel.collider.rx && 
+		 _item_cancel.collider.ly <= mouse_y && mouse_y <= _item_cancel.collider.ry ) {
+		return true;
+	}
+	return false;
+}
+
 
 int Field::getDeadPlayer( ) const {
 	return _dead_flag;
@@ -1109,7 +1151,7 @@ void Field::drawMirrorCommand( ) const {
 		image.bright_flag = true;
 		if ( i != getMirrorCommand( ) ) {
 			for ( int j = 0; j < 3; j++ ) {
-				image.brt[ j ] = 130;
+				image.brt[ j ] = NONACTIVE_BRIGHT;
 			}
 		}
 		_drawer->setFrontImage( image );
@@ -1117,6 +1159,89 @@ void Field::drawMirrorCommand( ) const {
 }
 
 void Field::drawDeathCount( ) const {
-	_drawer->setFrontString( false, WIDTH - 200,  50, RED, "残り時間", Drawer::BIG );
-	_drawer->setFrontString( false, WIDTH - 200,  20 + _drawer->getStringH( Drawer::SUPER_BIG ), RED, std::to_string( _dead_count / FRAME ), Drawer::SUPER_BIG );
+	ImageProperty image = ImageProperty( );
+	const short int TIME_BOARD_X = WIDTH - 50;
+	const short int TIME_BOARD_Y = 100;
+	const short int TIME_STRING_X = WIDTH - 100;
+	const short int TIME_STRING_Y = 50;
+	const short int TIME_NUMBER_X = WIDTH - 130;
+	const short int TIME_NUMBER_Y = 120;
+
+	//カウント背景
+	image.cx = TIME_BOARD_X;
+	image.cy = TIME_BOARD_Y;
+	image.png = _timeboard_handle;
+	_drawer->setBackExtendImage( image, SQUARE_SIZE / 2, SQUARE_SIZE / 2, 3, 1.7 );
+
+	//残り時間(文字)
+	image = ImageProperty( );
+	image.cx = TIME_STRING_X;
+	image.cy = TIME_STRING_Y;
+	image.size = 0.35;
+	image.png = _time_string_handle;
+	_drawer->setFrontImage( image );
+
+
+	//残り時間(数字)
+	short int tmp = _dead_count / FRAME;
+	std::string index = std::to_string( tmp );
+
+	std::vector< int > number;
+	std::vector< int > frame;
+	short int length = ( short int )index.length( );
+
+	for ( int i = 0; i < length; i++ ) {
+		short int handle_idx = tmp % 10;
+		number.push_back( _number_handle[ handle_idx * 2 ] );
+		frame.push_back( _number_handle[ handle_idx * 2 + 1 ] );
+		tmp /= 10;
+	}
+
+	for ( int i = 0; i < length; i++ ) {
+		image = ImageProperty( );
+		//フレーム
+		image.cx = TIME_NUMBER_X + i * 50;
+		image.cy = TIME_NUMBER_Y;
+		image.png = frame[ length - i - 1 ];
+		_drawer->setFrontImage( image );
+
+		//中身
+		image.png = number[ length - i - 1 ];
+
+		//残り2桁
+		if ( length <= 2 ) {
+			image.bright_flag = true;
+			image.brt[ 0 ] = 255;
+			image.brt[ 1 ] = 155;
+			image.brt[ 2 ] = 0;
+
+			//残り1桁
+			if ( length <= 1 ) {
+				image.brt[ 0 ] = 255;
+				image.brt[ 1 ] = 0;
+				image.brt[ 2 ] = 0;
+			}
+		}
+
+		_drawer->setFrontImage( image );
+	}
+}
+
+void Field::drawItemCancelButton( ) const {
+	ImageProperty image = ImageProperty( );
+	image.cx  = _item_cancel.image.cx;
+	image.cy  = _item_cancel.image.cy;
+	image.png = _item_cancel.image.png;
+	image.bright_flag = true;
+
+	short int brt = NONACTIVE_BRIGHT;
+	if ( getSelectItem( ) != -1 || _tmp_mirror.flag ) {
+		brt = 255;
+	}
+
+	for ( int i = 0; i < 3; i++ ) {
+		image.brt[ i ] = brt;
+	}
+
+	_drawer->setFrontImage( image );
 }
