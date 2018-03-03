@@ -7,11 +7,9 @@
 #include <random>
 
 const short int MOUSE_R = 5;
-const short int MIRROR_R = 5;
 const short int CIRCLE_SIZE = SQUARE_SIZE / 5 * 2;
 const short int PLAYER_POS_X = START_POS_X - SQUARE_SIZE / 2;
 const short int PLAYER_POS_Y = START_POS_Y - SQUARE_SIZE / 2;
-const short int PLAYER_SIZE = CIRCLE_SIZE / 2;
 const short int DECISION_BUTTON_X = WIDTH / 3 * 2;
 const short int DECISION_BUTTON_Y = START_POS_Y - ( short int )( SQUARE_SIZE * 1.5 );
 const short int MIRROR_IMAGE_IDX = 2;
@@ -163,11 +161,10 @@ void Field::initialize( ) {
 	_player_selected = false;
 	_mirror_selected = false;
 	_button_lighting = false;
-	_reflection = false;
 	_order = ( unsigned char )-1;
 	_info_idx = 0;
 	_tmp_player_pos = -1;
-	_dead_flag = -1;
+	_dead_player = -1;
 	_hit_mirror_num = -1;
 	_player_num = -1;
 	_player_pos_hit_num = -1;
@@ -175,12 +172,10 @@ void Field::initialize( ) {
 	_lazer_point_idx = -1;
 	_select_item = -1;
 	_dead_count = DEATH_COUNT_MAX;
-	_direct = DIR( );
 	_tmp_mirror = Mirror( );
 	std::map< int, Mirror >( ).swap( _mirrors );
 	_command = COMMAND_NONE;
 
-	_reflection_point = Vector( );
 	_phase = SET_PLAYER_PHASE;
 
 	//CSVì«Ç›çûÇ›
@@ -232,7 +227,7 @@ void Field::initialize( ) {
 		}
 	}
 	for ( int i = 0; i < PLAYER_NUM; i++ ) {
-		_player_pos_no[ i ] = -1;
+		_player_pos_idx[ i ] = -1;
 		_player_color[ i ] = ( COLOR )( i + ( int )RED );
 	}
 }
@@ -240,15 +235,12 @@ void Field::initialize( ) {
 void Field::nextTurn( ) {
 	_phase = SET_MIRROR_PHASE;
 	_mirror_selected = false;
-	_reflection = false;
 	_order = ( unsigned char )-1;
-	_dead_flag = -1;
+	_dead_player = -1;
 	_hit_mirror_num = -1;
 	_field_pos_hit_num = -1;
 	_select_item = -1;
-	_direct = DIR( );
 	_tmp_mirror = Mirror( );
-	_reflection_point = Vector( );
 	_command = COMMAND_NONE;
 }
 
@@ -450,6 +442,10 @@ int Field::getDeadCount( ) const{
 	return _dead_count;
 }
 
+std::map< int, Field::Mirror > &Field::getAllMirror( ) {
+	return _mirrors;
+}
+
 Field::COMMAND Field::getMirrorCommand( ) const {
 	return _command;
 }
@@ -479,7 +475,7 @@ bool Field::isHitItemCancelButton( ) const {
 
 
 int Field::getDeadPlayer( ) const {
-	return _dead_flag;
+	return _dead_player;
 }
 
 int Field::getLazerPointIdx( ) const {
@@ -509,109 +505,9 @@ void Field::setInfoText( std::string str, COLOR col, Drawer::FONTSIZE_TYPE size 
 	_info_idx = ( _info_idx + 1 ) % INFO_TEXT_MAX;
 }
 
-void Field::updateLazerVector( Vector vec, double spd ) {
-	int x = ( int )( vec.x - START_POS_X );
-	int y = ( int )( vec.y - START_POS_Y );
-
-	if ( x < 0 || y < 0 || x > START_POS_X + SQUARE_SIZE * FIELD_COL || y > START_POS_Y + SQUARE_SIZE * FIELD_ROW ) {
-		//ÉvÉåÉCÉÑÅ[ÇÃìñÇΩÇËîªíË
-		for ( int i = 0; i < PLAYER_NUM; i++ ) {
-			int pos = getPlayerPoint( i );
-			int player_x = ( int )_select_player_pos[ pos ].x;
-			int player_y = ( int )_select_player_pos[ pos ].y;
-			int a = ( int )vec.x - player_x;
-			int b = ( int )vec.y - player_y;
-			if ( sqrt( a * a + b * b ) <= PLAYER_SIZE + 1 ) {
-				_dead_flag = i;
-				break;
-			}
-		}
-		return;
-	}
-
-	//ãæ
-	std::map< int, Mirror >::iterator ite;
-	ite = _mirrors.begin( );
-
-	bool already = false;
-	for ( ite; ite != _mirrors.end( ); ite++ ) {
-		double mirror_x = START_POS_X + ite->second.x * SQUARE_SIZE + SQUARE_SIZE * 0.5;
-		double mirror_y = START_POS_Y + ite->second.y * SQUARE_SIZE + SQUARE_SIZE * 0.5;
-		double lazer_r = 8 * FIELD_SIZE_RATE;
-
-		Vector past = vec;
-		Vector normal = vec.normalize( );
-		past.x -= normal.x * spd;
-		past.y -= normal.y * spd;
-
-		bool hit = false;
-		for ( past; ( past.x != vec.x || past.y != vec.y ); ) {
-			double a = mirror_x - past.x;
-			double b = mirror_y - past.y;
-			double c = sqrt( a * a + b * b );
-
-			if ( c <= ( lazer_r + MIRROR_R ) ) {
-				hit = true;
-				break;
-			}
-
-			past.x += normal.x;
-			past.y += normal.y;
-		}
-
-		if ( hit ) {
-			already = true;
-			Vector next_dir = Vector( );
-			switch ( _direct ) {
-			case DIR_UP :
-				ite->second.angle == RIGHT ? next_dir.x = 1 : next_dir.x = -1;
-				break;
-			case DIR_DOWN :
-				ite->second.angle == RIGHT ? next_dir.x = -1 : next_dir.x = 1;
-				break;
-			case DIR_RIGHT :
-				ite->second.angle == RIGHT ? next_dir.y = 1 : next_dir.y = -1;
-				break;
-			case DIR_LEFT :
-				ite->second.angle == RIGHT ? next_dir.y = -1 : next_dir.y = 1;
-				break;
-			}
-			if ( !_reflection ) {
-				setDirect( next_dir );
-				_reflection_point.x = mirror_x;
-				_reflection_point.y = mirror_y;
-				_reflection = true;
-				break;
-			}
-		}
-	}
-	if ( !already ) {
-		_reflection_point = Vector( );
-		_reflection = false;
-	}
-}
-
 void Field::resetInfo( ) {
 	std::array< Info, INFO_TEXT_MAX >( ).swap( _info );
 	_info_idx = 0;
-}
-
-void Field::setDirect( Vector vec ) {
-	if ( vec.x != 0 ) {
-		if ( vec.x < 0 ) {
-			_direct = DIR_LEFT;
-		} else {
-			_direct = DIR_RIGHT;
-		}
-	}
-
-	if ( vec.y != 0 ) {
-		if ( vec.y < 0 ) {
-			_direct = DIR_DOWN;
-		} else {
-			_direct = DIR_UP;
-		}	
-	}
 }
 
 void Field::checkHitMirrorCommand( ) {
@@ -658,7 +554,7 @@ void Field::setPhase( BATTLE_PHASE phase ) {
 }
 
 void Field::setPlayerPoint( int idx, int pos ) {
-	_player_pos_no[ idx ] = pos;
+	_player_pos_idx[ idx ] = pos;
 }
 
 void Field::setLazerPoint( int pos ) {
@@ -671,7 +567,6 @@ void Field::setLazerPoint( int pos ) {
 		dir.x = 0;
 		dir.y = -1;
 	}
-	setDirect( dir );
 
 	if ( _lazer_point_idx < 0 ) {
 		return;
@@ -702,8 +597,8 @@ void Field::setMirrorPoint( int player_num, int x, int y, MIRROR_ANGLE angle ) {
 	if ( angle == ANGLE_NONE ) {
 		if ( _mirrors.find( idx ) != _mirrors.end( ) ) {
 			_mirrors.erase( idx );
-			return;
 		}
+		return;
 	}
 
 	Mirror mirror = Mirror( );
@@ -791,7 +686,11 @@ void Field::deadCount( ) {
 	}
 }
 
-Field::Vector Field::getLazerPoint( ) const {
+void Field::setDeadPlayer( int player ) {
+	_dead_player = player;
+}
+
+Vector Field::getLazerPoint( ) const {
 	Vector vec = Vector( );
 	if ( _lazer_point_idx < PLAYER_POSITION ) {
 		vec.x = PLAYER_POS_X;
@@ -804,32 +703,11 @@ Field::Vector Field::getLazerPoint( ) const {
 	return vec;
 }
 
-Field::Vector Field::getNextDirect( ) const {
-	Vector vec = Vector( );
-	switch ( _direct ) {
-	case DIR_UP :
-		vec.x = 0;
-		vec.y = 1;
-		break;
-	case DIR_DOWN :
-		vec.x = 0;
-		vec.y = -1;
-		break;
-	case DIR_RIGHT :
-		vec.x = 1;
-		vec.y = 0;
-		break;
-	case DIR_LEFT :
-		vec.x = -1;
-		vec.y = 0;
-		break;
+Field::PlayerPos Field::getPlayerPos( int idx ) const {
+	if ( idx >= PLAYER_NUM ) {
+		return PlayerPos( );
 	}
-
-	return vec;
-}
-
-Field::Vector Field::getReflectionPoint( ) const {
-	return _reflection_point;
+	return _select_player_pos[ _player_pos_idx[ idx ] ];
 }
 
 BATTLE_PHASE Field::getPhase( ) const{
@@ -844,8 +722,8 @@ int Field::getTmpPlayerPoint( ) const {
 	return _tmp_player_pos;
 }
 
-int Field::getPlayerPoint( int idx ) const {
-	return _player_pos_no[ idx ];
+int Field::getPlayerPosIdx( int idx ) const {
+	return _player_pos_idx[ idx ];
 }
 int Field::getHitMirrorIdx( ) const {
 	return _hit_mirror_num;
@@ -1030,11 +908,11 @@ void Field::drawPlayer( ) const {
 
 	ImagePtr image_ptr = _data->getImagePtr( );
 	for ( int i = 0; i < PLAYER_NUM; i++ ) {
-		if ( _dead_flag == i ) {
+		if ( _dead_player == i ) {
 			continue;
 		}
 
-		int pos = getPlayerPoint( i );
+		int pos = getPlayerPosIdx( i );
 		if ( pos < 0 ) {
 			continue;
 		}

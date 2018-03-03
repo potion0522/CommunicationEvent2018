@@ -325,7 +325,7 @@ void Game::updatePlayerPhase( ) {
 
 	_field->playerPosSelected( );
 	_field->setPlayerPoint( _player_num, _field->getTmpPlayerPoint( ) );
-	_client->setPlayerPos( _field->getPlayerPoint( _player_num ) );
+	_client->setPlayerPos( _field->getPlayerPosIdx( _player_num ) );
 	_client->sendTcp( );
 
 	_player_selected = true;

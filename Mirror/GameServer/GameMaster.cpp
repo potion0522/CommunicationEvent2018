@@ -139,8 +139,8 @@ int GameMaster::getOrderIdx( int order ) const {
 }
 
 int GameMaster::calcLazerPoint( int exclusion ) {
-	int player_one = _field->getPlayerPoint( 0 );
-	int player_two = _field->getPlayerPoint( 1 );
+	int player_one = _field->getPlayerPosIdx( 0 );
+	int player_two = _field->getPlayerPosIdx( 1 );
 	std::map< int, int > point;
 	for ( int i = 0; i < PLAYER_POSITION * 2; i++ ) {
 		point[ i ] = i;
@@ -205,7 +205,6 @@ void GameMaster::updateMirrorPhase( ) {
 	idx = getOrderIdx( 1 );
 
 	//‹¾‚Ì”z’u
-
 	bool del = false;
 	if ( _client_data[ 0 ].flag && _client_data[ 0 ].flag ) {
 		//x y angle ‚·‚×‚Ä“¯‚¶‚Å‚ ‚ê‚Î

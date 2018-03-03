@@ -7,6 +7,7 @@
 #include <string>
 #include <array>
 #include <map>
+#include <cmath>
 #include <Windows.h>
 
 PTR( Field );
@@ -24,50 +25,31 @@ const int START_POS_Y = HEIGHT / 2 - SQUARE_SIZE * FIELD_ROW / 2 + SQUARE_SIZE;
 const int INFO_TEXT_MAX = 10;
 const int BATTLE_BUTTON_IMAGE_NUM = 4;
 
+struct Vector { 
+	double x;
+	double y;
+	Vector normalize( ) {
+		Vector vec = Vector( );
+		vec.x = x;
+		vec.y = y;
+
+		double length = std::sqrt( vec.x * vec.x + vec.y * vec.y );
+
+		Vector normal = Vector( );
+		normal.x /= length;
+		normal.y /= length;
+
+		return normal;
+	}
+};
+
+
 class Field : public Base {
 #pragma pack( 1 )
 private:
 	static const short int LAZER_TYPE_MAX = 2;
 
 public:
-	struct Vector { 
-		double x;
-		double y;
-		Vector normalize( ) {
-			Vector vec = Vector( );
-			vec.x = x;
-			vec.y = y;
-
-			double length = sqrt( vec.x * vec.x + vec.y * vec.y );
-
-			Vector normal = Vector( );
-			normal.x = vec.x / length;
-			normal.y = vec.y / length;
-
-			//四捨五入
-			int tmp = ( int )( normal.x * 10 ) % 10;
-			if ( tmp > 4 ) {
-				normal.x += 1;
-			}
-			normal.x = ( int )normal.x;
-
-			tmp = ( int )( normal.y * 10 ) % 10;
-			if ( tmp > 4 ) {
-				normal.y += 1;
-			}
-			normal.y = ( int )normal.y;
-
-			return normal;
-		}
-	};
-
-	enum DIR {
-		DIR_UP,
-		DIR_DOWN,
-		DIR_LEFT,
-		DIR_RIGHT
-	};
-
 	struct Mirror {
 		bool flag;
 		int player_num;
@@ -110,7 +92,6 @@ public:
 
 public:
 	void setInfoText( std::string str, COLOR col = YELLOW, Drawer::FONTSIZE_TYPE size = Drawer::NORMAL );
-	void updateLazerVector( Vector vec, double spd );
 	void hitPlayerPos( );
 	void hitFieldPos( );
 	void setTurn( int turn );
@@ -133,15 +114,16 @@ public:
 	void changeClickButton( );
 	void activeButtonLighting( );
 	void deadCount( );
+	void setDeadPlayer( int player );
 
 public:
+	std::map< int, Mirror > &getAllMirror( );
 	Vector getLazerPoint( ) const;
-	Vector getNextDirect( ) const;
-	Vector getReflectionPoint( ) const;
+	PlayerPos getPlayerPos( int idx ) const;
 	BATTLE_PHASE getPhase( ) const;
 	int getTurn( ) const;
 	int getTmpPlayerPoint( ) const;
-	int getPlayerPoint( int idx ) const;
+	int getPlayerPosIdx( int idx ) const;
 	int getHitMirrorIdx( ) const;
 	int getPlayerPosHitNum( ) const;
 	int getFieldPosHitNum( ) const;
@@ -160,7 +142,6 @@ public:
 
 private:
 	void resetInfo( );
-	void setDirect( Vector vec );
 	void checkHitMirrorCommand( );
 	void checkItemRecovery( );
 
@@ -199,19 +180,18 @@ private:
 
 	std::map< int, Mirror > _mirrors;
 	std::array< Info, INFO_TEXT_MAX > _info;
-	std::array< int, PLAYER_NUM > _player_pos_no;
+	std::array< int, PLAYER_NUM > _player_pos_idx;
 	std::array< PlayerPos, PLAYER_POSITION * 2 > _select_player_pos;
 	std::array< COLOR, PLAYER_NUM >_player_color;
 	std::array< Item, ITEM_POSSESSION_MAX > _item;
 	bool _player_selected;
 	bool _mirror_selected;
-	bool _reflection;
 	bool _button_lighting;
 	short int _turn;
 	short int _order;
 	short int _info_idx;
 	short int _tmp_player_pos;
-	short int _dead_flag;
+	short int _dead_player;
 	short int _player_num;
 	short int _player_pos_hit_num;
 	short int _field_pos_hit_num;
@@ -221,9 +201,7 @@ private:
 	short int _dead_count;
 	HCURSOR _cur_hand;
 	BATTLE_PHASE _phase;
-	DIR _direct;
 	Mirror _tmp_mirror;
-	Vector _reflection_point;
 	COMMAND _command;//鏡の処理ボタン
 
 	//画像関連

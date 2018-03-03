@@ -26,6 +26,13 @@ private:
 		float width;
 		float height;
 	};
+
+	enum DIRECT {
+		DIR_UP,
+		DIR_DOWN,
+		DIR_LEFT,
+		DIR_RIGHT
+	};
 public:
 	Lazer( GlobalDataPtr data );
 	virtual ~Lazer( );
@@ -34,16 +41,24 @@ public:
 	std::string getTag( );
 	void initialize( );
 	void update( );
+
 public:
 	bool isFinish( ) const;
 	void clearLazerImage( );
 
 private:
+	void updateLazerVector( );
 	void updateUnitVector( );
+	void checkPlayerHit( );
+	DIRECT convVectorToDir( Vector vec );
+
+private:
+	void setDirect( MIRROR_ANGLE angle );
+
+private:
 	double getLazerImageAngle( );
-	Field::DIR convVectorToDir( Field::Vector vec );
-	Field::Vector convNormalVector( Field::Vector vec );
-	double getReflectEffectAngle( Field::Vector old_vec, Field::Vector new_vec );
+	double getReflectEffectAngle( Vector old_vec, Vector new_vec );
+	Vector getDirectVector( ) const;
 
 private:
 	void drawLazerLine( ) const;
@@ -56,10 +71,12 @@ private:
 	bool _dead_flag;
 	double _distance;
 	short int _wait;
-	Field::Vector _start;
-	Field::Vector _dir_vec;
-	Field::Vector _unit;
-	std::list< Coordinate > _reflec_pnt;
+	DIRECT _direct;
+	Vector _start;     //始点
+	Vector _dir_vec;   //成分(左手座標系)
+	Vector _unit;      //左手座標系
+	Vector _hit_point; //当たり判定のあった鏡の場所
+	std::list< Coordinate > _reflec_point;
 	Coordinate _dead_pnt;
 
 	//画像
