@@ -2,7 +2,6 @@
 #include "Field.h"
 #include "GlobalData.h"
 #include "Client.h"
-#include "PhaseItem.h"
 #include "Cutin.h"
 
 PhaseSetMirror::PhaseSetMirror( GlobalDataPtr data, FieldPtr field, CutinPtr cutin, short int player_num ) :
