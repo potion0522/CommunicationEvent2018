@@ -14,7 +14,7 @@ PTR( Field );
 const int BOM_EFFECT_MAX = 8;
 const int DEAD_EFFECT_MAX = 8;
 
-class Lazer : public Base {
+class Lazer {
 private:
 	struct Coordinate {
 		short int cnt;
@@ -39,7 +39,6 @@ public:
 
 public:
 	std::string getTag( );
-	void initialize( );
 	void update( );
 
 public:
@@ -70,6 +69,7 @@ private:
 	bool _fin;
 	bool _dead_flag;
 	double _distance;
+	double _lazer_speed;
 	short int _wait;
 	DIRECT _direct;
 	Vector _start;     //Žn“_
@@ -83,7 +83,7 @@ private:
 	int _lazer_image;
 	int _lazer_reflect_image;
 	std::array< int, DEAD_EFFECT_MAX > _dead_effect_images;
-	std::vector< ImageProperty > _lazer;
+	std::vector< Base::ImageProperty > _lazer;
 	ImageSize _lazer_size;
 
 	GlobalDataPtr _data;

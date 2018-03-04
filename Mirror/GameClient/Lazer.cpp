@@ -3,6 +3,7 @@
 #include "Drawer.h"
 #include "Debug.h"
 #include "Image.h"
+#include "LoadCSV.h"
 #include <cmath>
 
 const double LAZER_SPEED = 30;
@@ -13,10 +14,10 @@ const short int PLAYER_R = SQUARE_SIZE / 5 * 2;
 
 Lazer::Lazer( GlobalDataPtr data ) :
 _data( data ) {
-	setFlag( 1 );
 	_drawer = _data->getDrawerPtr( );
 	_field = _data->getFieldPtr( );
 
+	//画像関連
 	ImagePtr image_ptr = _data->getImagePtr( );
 	_lazer_image = image_ptr->getPng( LAZER_IMAGE, 0 ).png;
 	_lazer_size.width = ( float )image_ptr->getPng( LAZER_IMAGE, 0 ).width;
@@ -27,21 +28,22 @@ _data( data ) {
 	for ( int i = 0; i < DEAD_EFFECT_MAX; i++ ) {
 		_dead_effect_images[ i ] = image_ptr->getPng( EFFECT_IMAGE, i ).png;
 	}
-}
 
-Lazer::~Lazer( ) {
-}
-
-std::string Lazer::getTag( ) {
-	return "LAZER";
-}
-
-void Lazer::initialize( ) {
+	//変数関連
 	_lazer_update = false;
 	_fin = false;
 	_dead_flag = false;
 	_distance = 1;
 	_wait = 0;
+	_lazer_speed = LAZER_SPEED;
+
+	//CSVからデータ読み込み
+	LoadCSVPtr csv( new LoadCSV( ) );
+	std::vector< CsvData > lazer_property;
+	csv->read( lazer_property, "lazer" );
+	if ( lazer_property.begin( )->tag == "LAZER_SPEED" ) {
+		_lazer_speed = atof( lazer_property.begin( )->values.begin( )->c_str( ) );
+	}
 
 	_start = Vector( );
 	_dir_vec = Vector( );
@@ -59,7 +61,7 @@ void Lazer::initialize( ) {
 
 	_unit = getDirectVector( );
 
-	std::vector< ImageProperty >( ).swap( _lazer );
+	std::vector< Base::ImageProperty >( ).swap( _lazer );
 	std::list< Coordinate >( ).swap( _reflec_point );
 	_dead_pnt = Coordinate( );
 
@@ -70,6 +72,13 @@ void Lazer::initialize( ) {
 	} else {
 		_start.x += ADJUSTMENT;
 	}
+}
+
+Lazer::~Lazer( ) {
+}
+
+std::string Lazer::getTag( ) {
+	return "LAZER";
 }
 
 void Lazer::update( ) {
@@ -111,15 +120,15 @@ void Lazer::update( ) {
 		updateUnitVector( );
 
 		if ( !_lazer_update ) {
-			double x = _unit.x * LAZER_SPEED;
-			double y = _unit.y * LAZER_SPEED;
+			double x = _unit.x * _lazer_speed;
+			double y = _unit.y * _lazer_speed;
 			_dir_vec.x += x;
 			_dir_vec.y -= y;
 		}
 
 		Vector tmp = { _start.x + _dir_vec.x, _start.y + _dir_vec.y };
 		//画像
-		ImageProperty lazer;
+		Base::ImageProperty lazer = Base::ImageProperty( );
 		lazer.cx = tmp.x;
 		lazer.cy = tmp.y;
 		lazer.lx = lazer.cx - _lazer_size.width / 2;
@@ -143,7 +152,7 @@ void Lazer::update( ) {
 		if ( _dead_pnt.cnt < DEAD_EFFECT_MAX - 1 ) {
 			drawDeadEffect( );
 		} else {
-			std::vector< ImageProperty >( ).swap( _lazer );
+			std::vector< Base::ImageProperty >( ).swap( _lazer );
 			std::list< Coordinate >( ).swap( _reflec_point );
 		}
 	}
@@ -154,7 +163,7 @@ bool Lazer::isFinish( ) const {
 }
 
 void Lazer::clearLazerImage( ) {
-	std::vector< ImageProperty >( ).swap( _lazer );
+	std::vector< Base::ImageProperty >( ).swap( _lazer );
 }
 
 void Lazer::updateUnitVector( ) {
@@ -197,8 +206,8 @@ void Lazer::checkPlayerHit( ) {
 	if ( vec.x < START_POS_X || vec.y < START_POS_Y ) {
 		for ( int i = 0; i < PLAYER_NUM; i++ ) {
 			Field::PlayerPos pos = _field->getPlayerPos( i );
-			if ( LAZER_SPEED > PLAYER_R + LAZER_R ) {
-				for ( int j = 0; j < LAZER_SPEED / ( PLAYER_R + LAZER_R ); j++ ) {
+			if ( _lazer_speed > PLAYER_R + LAZER_R ) {
+				for ( int j = 0; j < _lazer_speed / ( PLAYER_R + LAZER_R ); j++ ) {
 					double a = std::sqrt( std::pow( vec.x - pos.x, 2 ) );
 					double b = std::sqrt( std::pow( vec.y - pos.y, 2 ) );
 					if ( a + b <= PLAYER_R + LAZER_R ) {
@@ -300,7 +309,7 @@ void Lazer::drawLazerLine( ) const {
 	}
 
 	for ( int i = 0; i < size; i++ ) {
-		_drawer->setFrontExtendImage( _lazer[ i ], _lazer_size.width / 2, _lazer_size.height / 2, FIELD_SIZE_RATE, ( LAZER_SPEED / _lazer_size.height ) );
+		_drawer->setFrontExtendImage( _lazer[ i ], _lazer_size.width / 2, _lazer_size.height / 2, FIELD_SIZE_RATE, ( _lazer_speed / _lazer_size.height ) );
 	}
 }
 
@@ -315,7 +324,7 @@ void Lazer::drawRefrecEffect( ) {
 	std::list< Coordinate >::iterator ite;
 	ite = _reflec_point.begin( );
 	for ( ite; ite != _reflec_point.end( ); ite++ ) {
-		ImageProperty image = ImageProperty( );
+		Base::ImageProperty image = Base::ImageProperty( );
 		image.cx = ite->x;
 		image.cy = ite->y;
 		image.angle = ite->angle;
@@ -330,7 +339,7 @@ void Lazer::drawRefrecEffect( ) {
 }
 
 void Lazer::drawDeadEffect( ) {
-	ImageProperty image = ImageProperty( );
+	Base::ImageProperty image = Base::ImageProperty( );
 	image.cx = _dead_pnt.x;
 	image.cy = _dead_pnt.y;
 	image.png = _dead_effect_images[ _dead_pnt.cnt ];
@@ -354,7 +363,7 @@ void Lazer::updateLazerVector( ) {
 	bool hit = false;
 	for ( ite; ite != mirrors.end( ); ite++ ) {
 		Vector tmp = vec;
-		for ( int i = 0; i < LAZER_SPEED / R; i++ ) {
+		for ( int i = 0; i < _lazer_speed / R; i++ ) {
 			//三平方の定理
 			Vector mirror = Vector( );
 			mirror.x = ( START_POS_X + ite->second.x * SQUARE_SIZE + SQUARE_SIZE / 2 );
@@ -379,7 +388,7 @@ void Lazer::updateLazerVector( ) {
 		//当たった判定が出たら
 		if ( hit ) {
 			//反射するポイントまで画像を表示
-			//for ( int i = 0; i < ( LAZER_SPEED / _lazer_size.height ) - 1; i++ ) {
+			//for ( int i = 0; i < ( _lazer_speed / _lazer_size.height ) - 1; i++ ) {
 			//	ImageProperty lazer = ImageProperty( );
 			//	lazer.cx = tmp.x + _unit.x * i * _lazer_size.height;
 			//	lazer.cy = tmp.y + _unit.y * i * _lazer_size.height;

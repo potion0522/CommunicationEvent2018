@@ -254,6 +254,9 @@ void Server::setBattlePhase( BATTLE_PHASE phase ) {
 }
 
 int Server::getOrder( int idx ) const {
+	if ( _recv_data_tcp[ idx ].order == ( unsigned char )-1 ) {
+		return -1;
+	}
 	return ( int )_recv_data_tcp[ idx ].order;
 }
 

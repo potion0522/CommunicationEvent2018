@@ -115,6 +115,7 @@ public:
 	void activeButtonLighting( );
 	void deadCount( );
 	void setDeadPlayer( int player );
+	void setReverseFlag( );
 
 public:
 	std::map< int, Mirror > &getAllMirror( );
@@ -139,6 +140,7 @@ public:
 	bool isHitDecisionButton( ) const;
 	bool isSelectedMirror( ) const;
 	bool isHitItemCancelButton( ) const;
+	bool isReverseFlag( ) const;
 
 private:
 	void resetInfo( );
@@ -187,6 +189,7 @@ private:
 	bool _player_selected;
 	bool _mirror_selected;
 	bool _button_lighting;
+	bool _reverse_mirror;
 	short int _turn;
 	short int _order;
 	short int _info_idx;

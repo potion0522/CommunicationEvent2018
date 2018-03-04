@@ -9,6 +9,22 @@
     <ClCompile Include="Title.cpp" />
     <ClCompile Include="SelectItem.cpp" />
     <ClCompile Include="IpSetting.cpp" />
+    <ClCompile Include="Phase.cpp">
+      <Filter>Phase</Filter>
+    </ClCompile>
+    <ClCompile Include="PhaseSetPlayer.cpp">
+      <Filter>Phase</Filter>
+    </ClCompile>
+    <ClCompile Include="PhaseSetMirror.cpp">
+      <Filter>Phase</Filter>
+    </ClCompile>
+    <ClCompile Include="Cutin.cpp" />
+    <ClCompile Include="PhaseAttack.cpp">
+      <Filter>Phase</Filter>
+    </ClCompile>
+    <ClCompile Include="PhaseJudge.cpp">
+      <Filter>Phase</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ResultClient.h" />
@@ -18,5 +34,26 @@
     <ClInclude Include="Title.h" />
     <ClInclude Include="SelectItem.h" />
     <ClInclude Include="IpSetting.h" />
+    <ClInclude Include="Phase.h">
+      <Filter>Phase</Filter>
+    </ClInclude>
+    <ClInclude Include="PhaseSetPlayer.h">
+      <Filter>Phase</Filter>
+    </ClInclude>
+    <ClInclude Include="PhaseSetMirror.h">
+      <Filter>Phase</Filter>
+    </ClInclude>
+    <ClInclude Include="Cutin.h" />
+    <ClInclude Include="PhaseAttack.h">
+      <Filter>Phase</Filter>
+    </ClInclude>
+    <ClInclude Include="PhaseJudge.h">
+      <Filter>Phase</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Phase">
+      <UniqueIdentifier>{378daab7-a76d-4683-bbd6-5b5b2e9a96f0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>
