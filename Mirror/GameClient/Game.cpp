@@ -3,8 +3,10 @@
 #include "Client.h"
 #include "Debug.h"
 #include "Image.h"
+#include "Sound.h"
 #include "Cutin.h"
 #include "Field.h"
+#include "Soundplayer.h"
 #include "PhaseSetPlayer.h"
 #include "PhaseSetMirror.h"
 #include "PhaseAttack.h"
@@ -17,12 +19,22 @@ const int PHASE_CUTIN_IDX = 0;
 const int PLAYER_CUTIN_IDX = 3;
 const int ITEM_CUTIN_IDX = 5;
 
+const short int bgm_no = 0;
+
 Game::Game( GlobalDataPtr data ) :
 _data( data ) {
 	setFlag( 1 );
 	_field = _data->getFieldPtr( );
 	_client = _data->getClientPtr( );
 	_cutin = CutinPtr( new Cutin( _data ) );
+
+	{//bgm
+		SoundPtr sound_ptr = _data->getSoundPtr( );
+		_bgm = SoundProperty( );
+		_bgm.isLoop = true;
+		_bgm.top = true;
+		_bgm.wav = sound_ptr->getWav( GAME_BGM, bgm_no ).wav;
+	}
 }
 
 Game::~Game( ) {
@@ -57,6 +69,10 @@ void Game::update( ) {
 		debug->addLog( "Order Num  : " + std::to_string( _client->getOrder( ) ) );
 	}
 
+	if ( !_soundplayer->isPlaying( _bgm ) ) {
+		_soundplayer->play( _bgm );
+	}
+
 	//プレイヤーナンバー取得
 	_player_num = _client->getPlayerNum( );
 	if ( _player_num != -1 ) {
@@ -77,6 +93,7 @@ void Game::update( ) {
 
 	//終了判定がでたら
 	if ( _data->getScene( ) == RESULT ) {
+		_soundplayer->stop( _bgm );
 		PhaseJudgePtr judge = std::dynamic_pointer_cast< PhaseJudge >( _battle );
 		_win = judge->isWin( );
 	}

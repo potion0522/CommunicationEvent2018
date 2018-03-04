@@ -11,6 +11,7 @@ PTR( Client );
 PTR( Field );
 PTR( Phase );
 PTR( Cutin );
+PTR( Soundplayer );
 
 class Game : public Base {
 private:
@@ -35,6 +36,9 @@ private:
 	short int _order;
 	short int _player_num;
 	BATTLE_PHASE _phase;
+
+	SoundProperty _bgm;
+	SoundplayerPtr _soundplayer;
 
 	//‰æ‘œŠÖŒW
 	GlobalDataPtr _data;
