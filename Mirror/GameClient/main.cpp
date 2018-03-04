@@ -42,7 +42,6 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 		FieldPtr field( new Field( data ) );
 		data->setPtr( field );
 		GamePtr game( new Game( data ) );
-		LazerPtr lazer( new Lazer( data ) );
 		ResultClientPtr result( new ResultClient( data, game ) );
 
 		direction->add( ALL, data );

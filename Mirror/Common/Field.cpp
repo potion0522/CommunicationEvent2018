@@ -18,7 +18,7 @@ const short int BOARD_Y = HEIGHT / 2;
 const short int ITEM_POS_X = BOARD_X - ( short int )( SQUARE_SIZE * 1.5 );
 const short int ITEM_POS_Y = BOARD_Y;
 const short int INFO_Y = BOARD_Y - ( short int )( SQUARE_SIZE * 2.2 );
-const short int DEATH_COUNT_MAX = MINUTE * 0.1;
+const short int DEATH_COUNT_MAX = MINUTE * 5;
 const short int NONACTIVE_BRIGHT = 130;
 
 enum IMAGE_IDX {
@@ -179,13 +179,13 @@ void Field::initialize( ) {
 
 	_phase = SET_PLAYER_PHASE;
 
-	//CSVì«Ç›çûÇ›
-	std::vector< CsvData > item_data;
-	std::vector< CsvData >( ).swap( item_data );
-	LoadCSVPtr load( new LoadCSV( ) );
-	load->read( item_data, "item" );
+	//CSV
+	LoadCSVPtr csv( new LoadCSV( ) );
 
 	{//ÉAÉCÉeÉÄÇì«Ç›çûÇﬁ
+		std::vector< CsvData > item_data;
+		csv->read( item_data, "item" );
+
 		std::array< int, ITEM_MAX > values;
 		std::array< int, ITEM_MAX >( ).swap( values );
 
@@ -215,6 +215,13 @@ void Field::initialize( ) {
 			if ( value_idx >= ITEM_MAX ) {
 				break;
 			}
+		}
+	}
+	{//êßå¿éûä‘Çì«Ç›çûÇﬁ
+		std::vector< CsvData > limit;
+		csv->read( limit, "limit" );
+		if ( limit.begin( )->tag == "DEATH_COUNT" ) {
+			_dead_count = ( short int )( MINUTE * atof( limit.begin( )->values.begin( )->c_str( ) ) );
 		}
 	}
 

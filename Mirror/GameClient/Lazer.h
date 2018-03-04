@@ -69,6 +69,7 @@ private:
 	bool _fin;
 	bool _dead_flag;
 	double _distance;
+	double _lazer_speed;
 	short int _wait;
 	DIRECT _direct;
 	Vector _start;     //Žn“_
