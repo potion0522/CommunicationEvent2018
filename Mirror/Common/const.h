@@ -15,7 +15,7 @@ const int MINUTE = FRAME * 60;
 const double PI = 3.14;
 const short int KEY_MAX = 256;
 const short int PLAYER_NUM = 2;
-const short int TURN_MAX = 10;
+const short int TURN_MAX = 3;
 const short int ITEM_POSSESSION_MAX = 3;
 const short int ITEM_RECOVERY_TIME = 3;
 const short int NUMBER_HANDLE_MAX = 20;
@@ -126,7 +126,8 @@ enum ITEM {
 	LAZER_RESET,
 	DOUBLE_MIRROR,
 	REVERSE_MIRROR,
-	ITEM_MAX
+	ITEM_MAX,
+	ITEM_NONE
 };
 
 enum SOUND {

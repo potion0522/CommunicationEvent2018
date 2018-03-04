@@ -18,7 +18,7 @@ const short int BOARD_Y = HEIGHT / 2;
 const short int ITEM_POS_X = BOARD_X - ( short int )( SQUARE_SIZE * 1.5 );
 const short int ITEM_POS_Y = BOARD_Y;
 const short int INFO_Y = BOARD_Y - ( short int )( SQUARE_SIZE * 2.2 );
-const short int DEATH_COUNT_MAX = MINUTE * 2;
+const short int DEATH_COUNT_MAX = MINUTE * 0.1;
 const short int NONACTIVE_BRIGHT = 130;
 
 enum IMAGE_IDX {
@@ -161,7 +161,8 @@ void Field::initialize( ) {
 	_player_selected = false;
 	_mirror_selected = false;
 	_button_lighting = false;
-	_order = ( unsigned char )-1;
+	_reverse_mirror = false;
+	_order = -1;
 	_info_idx = 0;
 	_tmp_player_pos = -1;
 	_dead_player = -1;
@@ -235,7 +236,8 @@ void Field::initialize( ) {
 void Field::nextTurn( ) {
 	_phase = SET_MIRROR_PHASE;
 	_mirror_selected = false;
-	_order = ( unsigned char )-1;
+	_reverse_mirror = false;
+	_order = -1;
 	_dead_player = -1;
 	_hit_mirror_num = -1;
 	_field_pos_hit_num = -1;
@@ -311,7 +313,7 @@ void Field::update( ) {
 
 	//ƒ~ƒ‰[Ý’uŽž‚Ì‚Ý
 	if ( _phase == SET_MIRROR_PHASE ) {
-		if ( _order != ( unsigned char )-1 ) {
+		if ( _order != -1 ) {
 			//drawSettingPlayer( );
 		}
 		drawMirrorCommand( );
@@ -473,6 +475,9 @@ bool Field::isHitItemCancelButton( ) const {
 	return false;
 }
 
+bool Field::isReverseFlag( ) const {
+	return _reverse_mirror;
+}
 
 int Field::getDeadPlayer( ) const {
 	return _dead_player;
@@ -661,6 +666,8 @@ void Field::reverseMirror( ) {
 	for ( ite; ite != _mirrors.end( ); ite++ ) {
 		ite->second.angle = ( MIRROR_ANGLE )( ( ( int )ite->second.angle + 1 ) % ( int )MIRROR_ANGLE_MAX );
 	}
+
+	_reverse_mirror = false;
 }
 
 void Field::changeClickButton( ) {
@@ -688,6 +695,10 @@ void Field::deadCount( ) {
 
 void Field::setDeadPlayer( int player ) {
 	_dead_player = player;
+}
+
+void Field::setReverseFlag( ) {
+	_reverse_mirror = true;
 }
 
 Vector Field::getLazerPoint( ) const {

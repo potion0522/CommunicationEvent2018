@@ -244,10 +244,16 @@ std::string Client::getClientIpStr( ) {
 }
 
 int Client::getPlayerNum( ) const {
+	if ( _player_num == ( unsigned char )-1 ) {
+		return -1;
+	}
 	return _player_num;
 }
 
 int Client::getLazerPoint( ) const {
+	if ( _recv_data_udp.lazer_pos == ( unsigned char )-1 ) {
+		return -1;
+	}
 	return ( int )_recv_data_udp.lazer_pos;
 }
 
@@ -264,10 +270,16 @@ int Client::getItemUser( ) const {
 }
 
 int Client::getOrder( ) const {
+	if ( _recv_data_udp.order == ( unsigned char )-1 ) {
+		return -1;
+	}
 	return ( int )_recv_data_udp.order;
 }
 
 int Client::getPlayerPos( int idx ) const {
+	if ( _recv_data_udp.player_pos[ idx ] == ( unsigned char )-1 ) {
+		return -1;
+	}
 	return ( int )_recv_data_udp.player_pos[ idx ];
 }
 
@@ -296,5 +308,8 @@ BATTLE_PHASE Client::getBattlePhase( ) const {
 }
 
 int Client::getWinner( ) const {
+	if ( _recv_data_udp.winner == ( unsigned char )-1 ) {
+		return -1;
+	}
 	return ( int )_recv_data_udp.winner;
 }

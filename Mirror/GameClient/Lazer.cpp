@@ -13,10 +13,10 @@ const short int PLAYER_R = SQUARE_SIZE / 5 * 2;
 
 Lazer::Lazer( GlobalDataPtr data ) :
 _data( data ) {
-	setFlag( 1 );
 	_drawer = _data->getDrawerPtr( );
 	_field = _data->getFieldPtr( );
 
+	//âÊëúä÷òA
 	ImagePtr image_ptr = _data->getImagePtr( );
 	_lazer_image = image_ptr->getPng( LAZER_IMAGE, 0 ).png;
 	_lazer_size.width = ( float )image_ptr->getPng( LAZER_IMAGE, 0 ).width;
@@ -27,16 +27,8 @@ _data( data ) {
 	for ( int i = 0; i < DEAD_EFFECT_MAX; i++ ) {
 		_dead_effect_images[ i ] = image_ptr->getPng( EFFECT_IMAGE, i ).png;
 	}
-}
 
-Lazer::~Lazer( ) {
-}
-
-std::string Lazer::getTag( ) {
-	return "LAZER";
-}
-
-void Lazer::initialize( ) {
+	//ïœêîä÷òA
 	_lazer_update = false;
 	_fin = false;
 	_dead_flag = false;
@@ -59,7 +51,7 @@ void Lazer::initialize( ) {
 
 	_unit = getDirectVector( );
 
-	std::vector< ImageProperty >( ).swap( _lazer );
+	std::vector< Base::ImageProperty >( ).swap( _lazer );
 	std::list< Coordinate >( ).swap( _reflec_point );
 	_dead_pnt = Coordinate( );
 
@@ -70,6 +62,13 @@ void Lazer::initialize( ) {
 	} else {
 		_start.x += ADJUSTMENT;
 	}
+}
+
+Lazer::~Lazer( ) {
+}
+
+std::string Lazer::getTag( ) {
+	return "LAZER";
 }
 
 void Lazer::update( ) {
@@ -119,7 +118,7 @@ void Lazer::update( ) {
 
 		Vector tmp = { _start.x + _dir_vec.x, _start.y + _dir_vec.y };
 		//âÊëú
-		ImageProperty lazer;
+		Base::ImageProperty lazer = Base::ImageProperty( );
 		lazer.cx = tmp.x;
 		lazer.cy = tmp.y;
 		lazer.lx = lazer.cx - _lazer_size.width / 2;
@@ -143,7 +142,7 @@ void Lazer::update( ) {
 		if ( _dead_pnt.cnt < DEAD_EFFECT_MAX - 1 ) {
 			drawDeadEffect( );
 		} else {
-			std::vector< ImageProperty >( ).swap( _lazer );
+			std::vector< Base::ImageProperty >( ).swap( _lazer );
 			std::list< Coordinate >( ).swap( _reflec_point );
 		}
 	}
@@ -154,7 +153,7 @@ bool Lazer::isFinish( ) const {
 }
 
 void Lazer::clearLazerImage( ) {
-	std::vector< ImageProperty >( ).swap( _lazer );
+	std::vector< Base::ImageProperty >( ).swap( _lazer );
 }
 
 void Lazer::updateUnitVector( ) {
@@ -315,7 +314,7 @@ void Lazer::drawRefrecEffect( ) {
 	std::list< Coordinate >::iterator ite;
 	ite = _reflec_point.begin( );
 	for ( ite; ite != _reflec_point.end( ); ite++ ) {
-		ImageProperty image = ImageProperty( );
+		Base::ImageProperty image = Base::ImageProperty( );
 		image.cx = ite->x;
 		image.cy = ite->y;
 		image.angle = ite->angle;
@@ -330,7 +329,7 @@ void Lazer::drawRefrecEffect( ) {
 }
 
 void Lazer::drawDeadEffect( ) {
-	ImageProperty image = ImageProperty( );
+	Base::ImageProperty image = Base::ImageProperty( );
 	image.cx = _dead_pnt.x;
 	image.cy = _dead_pnt.y;
 	image.png = _dead_effect_images[ _dead_pnt.cnt ];
