@@ -7,6 +7,7 @@
 PTR( Title );
 PTR( GlobalData );
 PTR( Drawer );
+PTR( Soundplayer );
 
 class Title : public Base {
 private:
@@ -38,7 +39,7 @@ private:
 	void drawStartButton( ) const;
 	void drawItemSettingButton( ) const;
 	void drawIpSettingButton( ) const;
-
+	
 private:
 
 	struct BoxObject {
@@ -67,7 +68,12 @@ private:
 	BoxObject _item_setbutton;
 	BoxObject _ip_setbutton;
 
+	//ƒTƒEƒ“ƒhŠÖŒW
+	SoundProperty _bgm;
+
+
 	GlobalDataPtr _data;
 	DrawerPtr _drawer;
+	SoundplayerPtr _soundplayer;
 };
 

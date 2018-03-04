@@ -1,7 +1,9 @@
 #include "Title.h"
 #include "GlobalData.h"
 #include "Image.h"
+#include "Sound.h"
 #include "Drawer.h"
+#include "Soundplayer.h"
 #include "Client.h"
 #include "const.h"
 
@@ -13,10 +15,13 @@ const float ITEM_SETBUTTON_Y = HEIGHT_F / 3.0f * 2.0f;
 const float IP_SETBUTTON_X = STARTBUTTON_X;
 const float IP_SETBUTTON_Y = HEIGHT_F / 3.0f * 2.6f;
 
+const short int bgm_num = 0;
+
 Title::Title( GlobalDataPtr data ) :
 _data( data ) {
 	setFlag( 1 );
 	_drawer = _data->getDrawerPtr( );
+	_soundplayer = _data->getSoundplayerPtr( );
 
 	std::array< int, BUTTON_TYPE_MAX >( ).swap( _startbutton_handles );
 	std::array< int, BUTTON_TYPE_MAX >( ).swap( _item_setbutton_handles );
@@ -26,6 +31,7 @@ _data( data ) {
 	_ip_setbutton   = BoxObject( );
 
 	ImagePtr image_ptr = _data->getImagePtr( );
+	SoundPtr sound_ptr = _data->getSoundPtr( );
 
 	{//”wŒi
 		_back = LightImageProperty( );
@@ -39,6 +45,13 @@ _data( data ) {
 		_title_logo.cx = WIDTH_F * 0.5;
 		_title_logo.cy = image_ptr->getPng( TITLE_IMAGE, 0 ).height * 0.5;
 		_title_logo.png = image_ptr->getPng( TITLE_IMAGE, 0 ).png;
+	}
+
+	{//bgm
+		_bgm = SoundProperty( );
+		_bgm.isLoop = true;
+		_bgm.top = true;
+		_bgm.wav = sound_ptr->getWav( TITLE_BGM, bgm_num ).wav;
 	}
 
 	{//startƒ{ƒ^ƒ“
@@ -102,11 +115,18 @@ void Title::initialize( ) {
 }
 
 void Title::update( ) {
+	//bgm
+	if ( !_soundplayer->isPlaying( _bgm ) ) {
+		_soundplayer->play( _bgm );
+	}
+
 	if ( _data->getKeyState( KEY_INPUT_Z ) == 1 && !_data->getCommandFlag( ) ) {
+		_soundplayer->stop( _bgm );
 		_data->setScene( CONNECT );
 	}
 	ClientPtr client = _data->getClientPtr( );
 	if ( client->getPhase( ) == "CONNECTING" ) {
+		
 		client->disConnect( );
 		client->initialize( );
 	}
@@ -127,6 +147,7 @@ void Title::chengeNextScene( ) {
 		int hit = getHitButton( );
 		switch ( hit ) {
 		case START_BUTTON:
+			_soundplayer->stop( _bgm );
 			_data->setScene( CONNECT );
 			_data->getClientPtr( )->readIP( );
 			break;

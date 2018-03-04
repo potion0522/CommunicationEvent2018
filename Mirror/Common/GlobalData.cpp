@@ -2,10 +2,12 @@
 #include "UpdateKey.h"
 #include "MouseEvent.h"
 #include "Image.h"
+#include "Sound.h"
 #include "Debug.h"
 #include "Server.h"
 #include "Client.h"
 #include "Drawer.h"
+#include "Soundplayer.h"
 #include <ctime>
 #include <cstdlib>
 #include <limits.h>
@@ -16,7 +18,9 @@ _type( type ) {
 	_key =   UpdateKeyPtr( new UpdateKey( ) );
 	_mouse = MouseEventPtr( new MouseEvent( ) );
 	_image = ImagePtr( new Image( ) );
+	_sound = SoundPtr( new Sound( ) );
 	_drawer = DrawerPtr( new Drawer( ) );
+	_soundplayer = SoundplayerPtr( new Soundplayer( ) );
 	_debug = NULL;
 
 	switch ( _type ) {
@@ -155,6 +159,10 @@ ImagePtr GlobalData::getImagePtr( ) const {
 	return _image;
 }
 
+SoundPtr GlobalData::getSoundPtr( ) const {
+	return _sound;
+}
+
 DebugPtr GlobalData::getDebugPtr( ) const {
 	return _debug;
 }
@@ -169,6 +177,10 @@ ClientPtr GlobalData::getClientPtr( ) const {
 
 DrawerPtr GlobalData::getDrawerPtr( ) const {
 	return _drawer;
+}
+
+SoundplayerPtr GlobalData::getSoundplayerPtr( ) const {
+	return _soundplayer;
 }
 
 FieldPtr GlobalData::getFieldPtr( ) const {

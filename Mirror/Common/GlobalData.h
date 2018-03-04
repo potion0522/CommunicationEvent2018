@@ -7,10 +7,12 @@ PTR( GlobalData );
 PTR( UpdateKey );
 PTR( MouseEvent );
 PTR( Image );
+PTR( Sound );
 PTR( Debug );
 PTR( Server );
 PTR( Client );
 PTR( Drawer );
+PTR( Soundplayer );
 PTR( Field );
 
 class GlobalData : public Base {
@@ -50,10 +52,12 @@ public:
 
 public:
 	ImagePtr getImagePtr( ) const;
+	SoundPtr getSoundPtr( ) const;
 	DebugPtr getDebugPtr( ) const;
 	ServerPtr getServerPtr( ) const;
 	ClientPtr getClientPtr( ) const;
 	DrawerPtr getDrawerPtr( ) const;
+	SoundplayerPtr getSoundplayerPtr( ) const;
 	FieldPtr getFieldPtr( ) const;
 
 private:
@@ -66,10 +70,12 @@ private:
 	UpdateKeyPtr _key;
 	MouseEventPtr _mouse;
 	ImagePtr _image;
+	SoundPtr _sound;
 	DebugPtr _debug;
 	ServerPtr _server;
 	ClientPtr _client;
 	DrawerPtr _drawer;
+	SoundplayerPtr _soundplayer;
 	FieldPtr _field;
 };
 

@@ -25,7 +25,7 @@ private:
 private:
 	struct Directory {
 		std::string name;		//ディレクトリ名
-		std::vector< Wav > wav;	//読み込んだ画像
+		std::vector< Wav > wav;	//読み込んだサウンド
 	};
 
 	std::vector< Directory > _data;

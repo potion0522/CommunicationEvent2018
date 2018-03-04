@@ -130,7 +130,8 @@ enum ITEM {
 };
 
 enum SOUND {
-	BGM_SOUND,
+	TITLE_BGM,
+	GAME_BGM,
 	EFFECT_SOUND,
 	SOUND_MAX
 };

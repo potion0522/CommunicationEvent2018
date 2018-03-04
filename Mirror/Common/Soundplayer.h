@@ -15,12 +15,11 @@ public:
 public:
 	std::string getTag( );
 	void initialize( );
+	void update( );
 public:
 	bool isPlaying( SoundProperty wav ) const;
 	void play( SoundProperty wav );
 	void stop( SoundProperty wav );
-	void unLoad( SoundProperty wav );
-	void unLoadAll ( );
 
 private:
 	std::list<SoundProperty> _sounds;

@@ -3,6 +3,7 @@
 #include "Debug.h"
 #include "smart_ptr.h"
 #include <assert.h>
+#include <errno.h>
 
 const std::string PATH = "Resources/sound/";
 
@@ -23,13 +24,16 @@ void Sound::initialize( ) {
 		memset( &add, 0, sizeof( Directory ) );
 
 		//ディレクトリ名を入力
-		switch ( ( IMAGE )i ) {
-			case BGM_SOUND:    add.name = "BGM";      break;
-			case EFFECT_SOUND: add.name = "SoundEffect";   break;
+		switch ( ( SOUND )i ) {
+			case TITLE_BGM:     add.name = "TitleBGM";     break;
+			case GAME_BGM:      add.name = "GameBGM";      break;
+			case EFFECT_SOUND:  add.name = "SoundEffect";  break;
 			default:
 			{
+				errno_t directry_not_find = 0;
 				DebugPtr debug( new Debug( ) );
-				debug->error( "Sound->initialize : _dir_numの数値が大きすぎるか、ディレクトリ名の追加忘れです" );
+				debug->error( "Image->initialize : _dir_numの数値が大きすぎるか、ディレクトリ名の追加忘れです" );
+				assert( directry_not_find );
 			}
 		}
 		_data.push_back( add );

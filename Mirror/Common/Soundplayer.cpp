@@ -18,6 +18,9 @@ void Soundplayer::initialize( ) {
 
 }
 
+void Soundplayer::update( ) {
+
+}
 
 bool Soundplayer::isPlaying( SoundProperty wav ) const {
 	if ( CheckSoundMem( wav.wav ) == TRUE ) {
@@ -43,12 +46,4 @@ void Soundplayer::play( SoundProperty wav ) {
 
 void Soundplayer::stop( SoundProperty wav ) {
 	StopSoundMem( wav.wav );
-}
-
-void Soundplayer::unLoad( SoundProperty wav ) {
-
-}
-
-void Soundplayer::unLoadAll( ) {
-
 }

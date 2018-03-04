@@ -54,7 +54,7 @@ public:
 		bool isLoop;
 		bool top;
 		int volume = -1;
-		int wav;
+		int wav = -1;
 	};
 #pragma pack( )
 };
