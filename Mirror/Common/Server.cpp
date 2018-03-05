@@ -6,7 +6,6 @@ Server::Server( ) {
 }
 
 Server::~Server( ) {
-	disConnect( );
 }
 
 std::string Server::getTag( ) {
@@ -30,6 +29,10 @@ void Server::initialize( ) {
 
 	createIP( );
 	PreparationListenNetWork( TCP_PORT );
+}
+
+void Server::finalize( ) {
+	disConnect( );
 }
 
 void Server::update( ) {

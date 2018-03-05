@@ -16,8 +16,9 @@ public:
 
 public:
 	std::string getTag( );
-	void update( );
 	void initialize( );
+	void finalize( );
+	void update( );
 
 private:
 	bool _win;

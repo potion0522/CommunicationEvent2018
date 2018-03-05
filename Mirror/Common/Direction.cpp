@@ -22,6 +22,14 @@ _data( data ) {
 }
 
 Direction::~Direction( ) {
+	std::map< SCENE, std::vector< BasePtr > >::iterator ite;
+	ite = _exe.begin( );
+	for ( ite; ite != _exe.end( ); ite++ ) {
+		int size = ( int )ite->second.size( );
+		for ( int i = 0; i < size; i++ ) {
+			ite->second[ i ]->finalize( );
+		}
+	}
 }
 
 void Direction::initialize( ) {

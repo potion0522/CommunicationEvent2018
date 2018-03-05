@@ -11,7 +11,8 @@ public:
 	virtual void setSoundFlag( int flag );
 	virtual int getSoundFlag( ) const;
 	virtual void update( ) = 0;
-	virtual void initialize( );
+	virtual void initialize( ) = 0;
+	virtual void finalize( ) = 0;
 	virtual std::string getTag( ) = 0;
 
 private:

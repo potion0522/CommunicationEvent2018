@@ -39,12 +39,6 @@ Drawer::Drawer( ) {
 }
 
 Drawer::~Drawer( ) {
-	for ( int i = 0; i < FONT_TYPE_MAX; i++ ) {
-		if ( _handle_font[ i ] < 0 ) {
-			continue;
-		}
-		DeleteFontToHandle( _handle_font[ i ] );
-	}
 }
 
 std::string Drawer::getTag( ) {
@@ -53,6 +47,15 @@ std::string Drawer::getTag( ) {
 
 void Drawer::initialize( ) {
 	_all_bright = false;
+}
+
+void Drawer::finalize( ) {
+	for ( int i = 0; i < FONT_TYPE_MAX; i++ ) {
+		if ( _handle_font[ i ] < 0 ) {
+			continue;
+		}
+		DeleteFontToHandle( _handle_font[ i ] );
+	}
 }
 
 void Drawer::update( ) {

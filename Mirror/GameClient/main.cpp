@@ -61,7 +61,6 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 			if ( data->getInitFlag( ) ) {
 				direction->initialize( );
 				data->setScene( TITLE );
-				//data->setScene( SELECT_ITEM );
 			}
 			direction->run( );
 		}

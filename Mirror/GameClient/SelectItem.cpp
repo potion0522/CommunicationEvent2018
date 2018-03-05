@@ -177,6 +177,9 @@ void SelectItem::initialize( ) {
 	std::array< SelectedItem, ITEM_POSSESSION_MAX >( ).swap( _selected );
 }
 
+void SelectItem::finalize( ) {
+}
+
 void SelectItem::update( ) {
 	KeyBoardPtr keyboard( new KeyBoard( ) );
 	if ( _data->getKeyState( keyboard->getKeyCode( X_KEY ) ) == 1 ) {

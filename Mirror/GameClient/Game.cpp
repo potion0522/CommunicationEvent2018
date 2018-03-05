@@ -57,6 +57,9 @@ void Game::initialize( ) {
 	_field->setPlayerNum( _client->getPlayerNum( ) );
 }
 
+void Game::finalize( ) {
+}
+
 void Game::update( ) {
 	if ( _client->getPhase( ) != "CONNECTING" ) {
 		return;

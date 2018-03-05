@@ -43,7 +43,6 @@ struct Vector {
 	}
 };
 
-
 class Field : public Base {
 #pragma pack( 1 )
 private:
@@ -87,6 +86,7 @@ public:
 public:
 	std::string getTag( );
 	void initialize( );
+	void finalize( );
 	void nextTurn( );
 	void update( );
 

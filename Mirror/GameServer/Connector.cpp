@@ -13,9 +13,6 @@ _command( command ) {
 }
 
 Connector::~Connector( ) {
-	if ( _server->getFlag( ) ) {
-		_server->disConnect( );
-	}
 }
 
 std::string Connector::getTag( ) {
@@ -31,6 +28,12 @@ void Connector::initialize( ) {
 	_command_matching = false;
 	_server_scene = CONNECT;
 	_log->add( "Connection Waiting" );
+}
+
+void Connector::finalize( ) {
+	if ( _server->getFlag( ) ) {
+		_server->disConnect( );
+	}
 }
 
 void Connector::update( ) {

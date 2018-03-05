@@ -21,6 +21,7 @@ public:
 public:
 	void update( );
 	void initialize( );
+	void finalize( );
 
 public:
 	std::string getTag( );

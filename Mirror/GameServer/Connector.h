@@ -18,6 +18,7 @@ public:
 	std::string getTag( );
 	void update( );
 	void initialize( );
+	void finalize( );
 
 public:
 	bool isMatching( ) const;

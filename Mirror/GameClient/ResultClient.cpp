@@ -23,6 +23,9 @@ void ResultClient::initialize( ) {
 	_win = _game->isWin( );
 }
 
+void ResultClient::finalize( ) {
+}
+
 void ResultClient::update( ) {
 	if ( _win ) {
 		//Ÿ—˜

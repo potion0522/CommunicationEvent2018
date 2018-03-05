@@ -134,6 +134,9 @@ void IpSetting::initialize( ) {
 	_ip = "";
 }
 
+void IpSetting::finalize( ) {
+}
+
 void IpSetting::update( ) {
 	//Save‚ð‰Ÿ‚µ‚½‚ç
 	if ( _save ) {

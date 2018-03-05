@@ -64,6 +64,13 @@ void GlobalData::initialize( ) {
 	foldInitFlag( );
 }
 
+void GlobalData::finalize( ) {
+	_sound->~Sound( );
+	_key->~UpdateKey( );
+	_mouse->~MouseEvent( );
+	_image->~Image( );
+}
+
 void GlobalData::update( ) {
 	if ( _debug == NULL ) {
 		DebugPtr debug( new Debug( ) );

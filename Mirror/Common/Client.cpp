@@ -5,7 +5,6 @@ Client::Client( ) {
 }
 
 Client::~Client( ) {
-	disConnect( );
 }
 
 std::string Client::getTag( ) {
@@ -25,6 +24,10 @@ void Client::initialize( ) {
 	_send_data_tcp = NetWorkData( );
 
 	readIP( );
+}
+
+void Client::finalize( ) {
+	disConnect( );
 }
 
 void Client::update( ) {

@@ -93,7 +93,7 @@ void Cutin::calc( ) {
 }
 
 void Cutin::draw( ) const {
-	_drawer->setAllBright( 150, 150, 150 );
+	_drawer->setAllBright( 100, 100, 100 );
 
 	Base::ImageProperty image = Base::ImageProperty( );
 	image.cx = _cutin.cx;
@@ -108,7 +108,7 @@ void Cutin::drawString( ) const {
 	if ( !_player_turn ) {
 		return;
 	}
-	_drawer->setFrontString( true, WIDTH / 2, HEIGHT * 0.65, RED, "Click!", Drawer::SUPER_BIG );
+	_drawer->setFrontString( true, WIDTH / 2, HEIGHT * 0.725, WHITE, "ƒNƒŠƒbƒN‚µ‚Ä‚­‚¾‚³‚¢", Drawer::BIG );
 }
 
 void Cutin::reset( ) {

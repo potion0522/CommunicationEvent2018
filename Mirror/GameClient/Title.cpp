@@ -120,6 +120,9 @@ void Title::initialize( ) {
 	_ip_setbutton_clicking = false;
 }
 
+void Title::finalize( ) {
+}
+
 void Title::update( ) {
 	//bgm
 	if ( !_soundplayer->isPlaying( _bgm ) ) {

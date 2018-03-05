@@ -15,11 +15,12 @@ std::string Soundplayer::getTag( ) {
 }
 
 void Soundplayer::initialize( ) {
+}
 
+void Soundplayer::finalize( ) {
 }
 
 void Soundplayer::update( ) {
-
 }
 
 bool Soundplayer::isPlaying( SoundProperty wav ) const {

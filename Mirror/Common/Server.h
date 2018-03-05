@@ -16,6 +16,7 @@ public:
 	std::string getTag( );
 	void update( );
 	void initialize( );
+	void finalize( );
 
 public:
 	bool isConnecting( int idx ) const;

@@ -15,7 +15,9 @@ public:
 public:
 	std::string getTag( );
 	void initialize( );
+	void finalize( );
 	void update( );
+
 public:
 	bool isPlaying( SoundProperty wav ) const;
 	void play( SoundProperty wav );

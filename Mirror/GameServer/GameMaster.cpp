@@ -51,6 +51,9 @@ void GameMaster::initialize( ) {
 	_field->playerPosSelected( );
 }
 
+void GameMaster::finalize( ) {
+}
+
 void GameMaster::update( ) {
 	bool matching = _connector->isMatching( );
 	if ( _matching != matching ) {

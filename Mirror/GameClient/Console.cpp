@@ -11,9 +11,6 @@ _data( data ) {
 }
 
 Console::~Console( ) {
-	if ( _client->getFlag( ) ) {
-		_client->disConnect( );
-	}
 }
 
 std::string Console::getTag( ) {
@@ -23,6 +20,12 @@ std::string Console::getTag( ) {
 void Console::initialize( ) {
 	_connecting = false;
 	_matching = false;
+}
+
+void Console::finalize( ) {
+	if ( _client->getFlag( ) ) {
+		_client->disConnect( );
+	}
 }
 
 void Console::update( ) {

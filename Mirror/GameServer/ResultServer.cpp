@@ -24,6 +24,9 @@ void ResultServer::initialize( ) {
 	_cnt = 60 * 3;
 }
 
+void ResultServer::finalize( ) {
+}
+
 void ResultServer::update( ) {
 	_drawer->setFrontString( false, WIDTH / 2, HEIGHT / 2, RED, std::to_string( ( _cnt / 60 ) + 1 ), Drawer::SUPER_BIG );
 

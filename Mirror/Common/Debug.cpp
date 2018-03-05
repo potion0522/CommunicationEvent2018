@@ -38,6 +38,9 @@ void Debug::initialize( ) {
 	}
 }
 
+void Debug::finalize( ) {
+}
+
 std::string Debug::getTag( ) {
 	return "DEBUG";
 }

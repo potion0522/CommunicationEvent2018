@@ -240,6 +240,9 @@ void Field::initialize( ) {
 	}
 }
 
+void Field::finalize( ) {
+}
+
 void Field::nextTurn( ) {
 	_phase = SET_MIRROR_PHASE;
 	_mirror_selected = false;
