@@ -8,6 +8,7 @@
 PTR( SelectItem );
 PTR( GlobalData );
 PTR( Drawer );
+PTR( Soundplayer );
 
 class SelectItem : public Base {
 public:
@@ -92,8 +93,15 @@ private:
 	LightImageProperty _frame;
 	LightImageProperty _bar_frame;
 	LightImageProperty _bar;
+	
+	//ƒTƒEƒ“ƒhŠÖŒW
+	SoundProperty _button_se;
+	SoundProperty _save_se;
+	SoundProperty _back_se;
+	SoundProperty _select_se;
 
 	GlobalDataPtr _data;
 	DrawerPtr _drawer;
+	SoundplayerPtr _soundplayer;
 };
 

@@ -1,7 +1,9 @@
 #include "SelectItem.h"
 #include "GlobalData.h"
 #include "Drawer.h"
+#include "Soundplayer.h"
 #include "Image.h"
+#include "Sound.h"
 #include "KeyBoard.h"
 #include <errno.h>
 #include <assert.h>
@@ -31,6 +33,7 @@ SelectItem::SelectItem( GlobalDataPtr data ) :
 _data( data ) {
 	setFlag( 1 );
 	_drawer = _data->getDrawerPtr( );
+	_soundplayer = _data->getSoundplayerPtr( );
 
 	{//CSVの初期化
 		FILE *fp;
@@ -124,6 +127,34 @@ _data( data ) {
 		_select_boxes[ i ].ly = START_SELECTED_Y - _item_image_halfsize;
 		_select_boxes[ i ].ry = START_SELECTED_Y + _item_image_halfsize;
 	}
+
+	SoundPtr sound_ptr = _data->getSoundPtr( );
+	{//saveボタンSE
+		_button_se = SoundProperty( );
+		_button_se.isLoop = false;
+		_button_se.top = true;
+		_button_se.wav = sound_ptr->getWav( EFFECT_SOUND, BUTTON_SE ).wav;
+	}
+
+	{//backボタンSE
+		_back_se = SoundProperty( );
+		_back_se.isLoop = false;
+		_back_se.top = true;
+		_back_se.wav = sound_ptr->getWav( EFFECT_SOUND, BACK_SE ).wav;
+	}
+
+	{//save完了SE
+		_save_se = SoundProperty( );
+		_save_se.isLoop = false;
+		_save_se.wav = sound_ptr->getWav( EFFECT_SOUND, SAVE_SE ).wav;
+	}
+
+	{//save完了SE
+		_select_se = SoundProperty( );
+		_select_se.isLoop = false;
+		_select_se.top = true;
+		_select_se.wav = sound_ptr->getWav( EFFECT_SOUND, SELECT_SE ).wav;
+	}
 }
 
 SelectItem::~SelectItem( ) {
@@ -174,6 +205,7 @@ void SelectItem::update( ) {
 		if ( _wait_time < ( FRAME * 2 ) ) {
 			_wait_time++;
 		} else {
+			_soundplayer->play( _save_se );
 			_data->setScene( TITLE );
 		}
 		return;
@@ -191,9 +223,11 @@ void SelectItem::update( ) {
 		int hit = getHitButton( );
 		switch ( hit ) {
 		case SAVE_BUTTON:
+			_soundplayer->play( _button_se );
 			inputCsv( );
 			break;
 		case RETURN_BUTTON:
+			_soundplayer->play( _back_se );
 			_data->setScene( TITLE );
 			break;
 		default:
@@ -295,6 +329,7 @@ void SelectItem::checkHitSelectedItem( ) {
 		box.ry = _select_boxes[ i ].ry;
 		if ( box.lx <= mouse_x && mouse_x <= box.rx &&
 			 box.ly <= mouse_y && mouse_y <= box.ry ) {
+			_soundplayer->play( _select_se );
 			_hit_selected_item = i;
 			return;
 		}

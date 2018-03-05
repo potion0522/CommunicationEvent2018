@@ -8,6 +8,7 @@
 PTR( IpSetting );
 PTR( GlobalData );
 PTR( Drawer );
+PTR( Soundplayer );
 PTR( KeyBoard );
 
 class IpSetting : public Base {
@@ -67,9 +68,15 @@ private:
 	std::array< int, BUTTON_TYPE_MAX > _returnbutton_handles;
 	LightImageProperty _bar_frame;
 	LightImageProperty _bar;
+	
+	//ƒTƒEƒ“ƒh
+	SoundProperty _button_se;
+	SoundProperty _save_se;
+	SoundProperty _back_se;
 
 	GlobalDataPtr _data;
 	DrawerPtr _drawer;
+	SoundplayerPtr _soundplayer;
 	KeyBoardPtr _keyboard;
 };
 

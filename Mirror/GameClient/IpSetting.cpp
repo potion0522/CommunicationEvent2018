@@ -1,7 +1,9 @@
 #include "IpSetting.h"
 #include "GlobalData.h"
 #include "Drawer.h"
+#include "Soundplayer.h"
 #include "Image.h"
+#include "Sound.h"
 #include "KeyBoard.h"
 #include "Server.h"
 
@@ -23,6 +25,7 @@ IpSetting::IpSetting( GlobalDataPtr data ) :
 _data( data ) {
 	setFlag( 1 );
 	_drawer = _data->getDrawerPtr( );
+	_soundplayer = _data->getSoundplayerPtr( );
 	_keyboard = KeyBoardPtr( new KeyBoard( ) );
 
 	//キーコード入力
@@ -92,6 +95,27 @@ _data( data ) {
 		int length = image_ptr->getPng( BAR_IMAGE, 0 ).width;
 		_bar_rate = length / ( FRAME * 2 );
 	}
+
+	SoundPtr sound_ptr = _data->getSoundPtr( );
+	{//saveボタンSE
+		_button_se = SoundProperty( );
+		_button_se.isLoop = false;
+		_button_se.top = true;
+		_button_se.wav = sound_ptr->getWav( EFFECT_SOUND, BUTTON_SE ).wav;
+	}
+
+	{//backボタンSE
+		_back_se = SoundProperty( );
+		_back_se.isLoop = false;
+		_back_se.top = true;
+		_back_se.wav = sound_ptr->getWav( EFFECT_SOUND, BACK_SE ).wav;
+	}
+
+	{//save完了SE
+		_save_se = SoundProperty( );
+		_save_se.isLoop = false;
+		_save_se.wav = sound_ptr->getWav( EFFECT_SOUND, SAVE_SE ).wav;
+	}
 }
 
 IpSetting::~IpSetting( ) {
@@ -133,6 +157,7 @@ void IpSetting::update( ) {
 		if ( _wait_time < ( FRAME * 2 ) ) {
 			_wait_time++;
 		} else {
+			_soundplayer->play( _save_se );
 			_data->setScene( TITLE );
 		}
 		return;
@@ -144,6 +169,7 @@ void IpSetting::update( ) {
 		switch ( hit ) {
 		case SAVE_BUTTON: 
 			{
+			    _soundplayer->play( _button_se );
 				ServerPtr _server( new Server( ) );
 				_ip.push_back( '\0' );
 				_server->createIP( _ip );
@@ -151,6 +177,7 @@ void IpSetting::update( ) {
 			}
 			break;
 		case RETURN_BUTTON:
+			_soundplayer->play( _back_se );
 			_data->setScene( TITLE );
 			break;
 		default:

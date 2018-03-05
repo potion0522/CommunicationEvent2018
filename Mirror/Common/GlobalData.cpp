@@ -32,6 +32,7 @@ _type( type ) {
 	initialize( );
 
 	_init = true;
+
 }
 
 GlobalData::~GlobalData( ) {

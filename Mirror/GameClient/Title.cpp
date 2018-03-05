@@ -97,6 +97,12 @@ _data( data ) {
 		_ip_setbutton.collider.ry = ( float )_ip_setbutton.image.cy + half_height;
 	}
 
+	{//ƒ{ƒ^ƒ“SE
+		_button_se = SoundProperty( );
+		_button_se.isLoop = false;
+		_button_se.top = true;
+		_button_se.wav = sound_ptr->getWav( EFFECT_SOUND, BUTTON_SE ).wav;
+	}
 }
 
 Title::~Title( ) {
@@ -145,16 +151,20 @@ void Title::update( ) {
 void Title::chengeNextScene( ) {
 	if ( ( _startbutton_clicking || _item_setbutton_clicking || _ip_setbutton_clicking ) && !isDrag( ) ) {
 		int hit = getHitButton( );
+				
 		switch ( hit ) {
 		case START_BUTTON:
 			_soundplayer->stop( _bgm );
+			_soundplayer->play( _button_se );
 			_data->setScene( CONNECT );
 			_data->getClientPtr( )->readIP( );
 			break;
 		case ITEM_SETTING_BUTTON:
+			_soundplayer->play( _button_se );
 			_data->setScene( SELECT_ITEM );
 			break;
 		case IP_SETTING_BUTTON:
+			_soundplayer->play( _button_se );
 			_data->setScene( IP_SETTING );
 			break;
 		default:

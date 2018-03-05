@@ -70,6 +70,7 @@ private:
 
 	//ƒTƒEƒ“ƒhŠÖŒW
 	SoundProperty _bgm;
+	SoundProperty _button_se;
 
 
 	GlobalDataPtr _data;
