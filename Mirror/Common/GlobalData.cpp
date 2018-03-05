@@ -19,6 +19,7 @@ _type( type ) {
 	_mouse = MouseEventPtr( new MouseEvent( ) );
 	_image = ImagePtr( new Image( ) );
 	_drawer = DrawerPtr( new Drawer( ) );
+	_soundplayer = SoundplayerPtr( new Soundplayer( ) );
 	_debug = NULL;
 
 	switch ( _type ) {
@@ -29,7 +30,6 @@ _type( type ) {
 	case CLIENT	: 
 		_client = ClientPtr( new Client( ) );
 		_sound = SoundPtr( new Sound( ) );
-		_soundplayer = SoundplayerPtr( new Soundplayer( ) );
 		break;
 
 	case TEST	: 
@@ -90,6 +90,7 @@ void GlobalData::update( ) {
 
 	_key->update( );
 	_mouse->update( );
+	_soundplayer->update( );
 	_count++;
 	if ( _count >= INT_MAX ) {
 		_count = 0;

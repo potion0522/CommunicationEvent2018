@@ -4,7 +4,7 @@
 
 Soundplayer::Soundplayer( ) {
 	setSoundFlag( 1 );
-	_past = SoundProperty( );
+	std::map< int, int >( ).swap( _sounds );
 }
 
 Soundplayer::~Soundplayer( ) {
@@ -15,15 +15,39 @@ std::string Soundplayer::getTag( ) {
 }
 
 void Soundplayer::initialize( ) {
-	if ( CheckSoundMem( _past.wav ) == 1 ) {
-		StopSoundMem( _past.wav );
+	if ( _sounds.size( ) < 1 ) {
+		return;
 	}
+
+	std::map< int, int >::iterator ite;
+	ite = _sounds.begin( );
+	for ( ite; ite != _sounds.end( ); ite++ ) {
+		if ( CheckSoundMem( ite->second ) == 1 ) {
+			StopSoundMem( ite->second );
+		}
+	}
+
+	std::map< int, int >( ).swap( _sounds );
 }
 
 void Soundplayer::finalize( ) {
 }
 
 void Soundplayer::update( ) {
+	if ( _sounds.size( ) < 1 ) {
+		return;
+	}
+
+	std::map< int, int >::iterator ite;
+	ite = _sounds.begin( );
+	for ( ite; ite != _sounds.end( ); ite++ ) {
+		if ( CheckSoundMem( ite->second ) == 0 ) {
+			ite = _sounds.erase( ite );
+		}
+		if ( ite == _sounds.end( ) ) {
+			return;
+		}
+	}
 }
 
 bool Soundplayer::isPlaying( SoundProperty wav ) const {
@@ -46,7 +70,10 @@ void Soundplayer::play( SoundProperty wav ) {
 	} else {
 		PlaySoundMem( wav.wav, DX_PLAYTYPE_LOOP, top_flag );
 	}
-	_past.wav = wav.wav;
+
+	if ( _sounds.find( wav.wav ) == _sounds.end( ) ) {
+		_sounds[ wav.wav ] = wav.wav;
+	}
 }
 
 void Soundplayer::stop( SoundProperty wav ) {

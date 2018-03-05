@@ -43,7 +43,6 @@ _data( data ) {
 	//アイテムカットイン
 	for ( int i = 0; i < CUTIN_ITEM_MAX; i++ ) {
 		_cutin_handles[ CUTIN_TYPE_ITEM ].push_back( image->getPng( CUTIN_STRING_IMAGE, ITEM_CUTIN_IDX + i ).png );
-
 	}
 
 	//バックイメージ
@@ -62,26 +61,29 @@ void Cutin::update( ) {
 
 	calc( );
 	draw( );
-	drawString( );
 }
 
 void Cutin::calc( ) {
 	if ( _cutin.cx < WIDTH / 2 ) {
 		_cutin.cx += CUTIN_SPEED * _speed;
 	} else {
+		//プレイヤーカットインだったら
+		if ( _player_turn ) {
+			drawString( );
+			//クリックするまで消えない
+			if ( _data->getClickLeft( ) ) {
+				_player_turn = false;
+				_cutin.cnt = WAIT_TIME;
+			}
+			return;
+		}
+
 		if ( _cutin.cnt < WAIT_TIME ) {
 			_cutin.cx = WIDTH / 2;
 			_cutin.cnt++;
 			return;
 		}
-		//プレイヤーカットインであれば
-		if ( _player_turn ) {
-			//クリックするまで消えない
-			if ( _data->getClickLeft( ) ) {
-				_player_turn = false;
-			}
-			return;
-		}
+
 
 		_cutin.cx += CUTIN_SPEED * _speed;
 
@@ -105,9 +107,6 @@ void Cutin::draw( ) const {
 }
 
 void Cutin::drawString( ) const {
-	if ( !_player_turn ) {
-		return;
-	}
 	_drawer->setFrontString( true, WIDTH / 2, HEIGHT * 0.725, WHITE, "クリックしてください", Drawer::BIG );
 }
 

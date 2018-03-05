@@ -102,6 +102,10 @@ void Game::update( ) {
 		_win = judge->isWin( );
 	}
 
+	if ( _cutin->isCutin( ) ) {
+		return;
+	}
+
 	//フェイズを取得
 	BATTLE_PHASE phase = _client->getBattlePhase( );
 	if ( _phase != phase ) {
