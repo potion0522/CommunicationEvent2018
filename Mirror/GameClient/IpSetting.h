@@ -4,6 +4,7 @@
 #include <string>
 #include <array>
 #include <vector>
+#include <Windows.h>
 
 PTR( IpSetting );
 PTR( GlobalData );
@@ -59,6 +60,7 @@ private:
 	short int _bar_height_half;
 	std::vector< int > _keycode;
 	std::string _ip;
+	HCURSOR _cur_hand;
 
 	BoxObject _savebutton;
 	BoxObject _returnbutton;

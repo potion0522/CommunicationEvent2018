@@ -4,6 +4,7 @@
 #include "const.h"
 #include <string>
 #include <array>
+#include <Windows.h>
 
 PTR( SelectItem );
 PTR( GlobalData );
@@ -78,6 +79,7 @@ private:
 	bool _savebutton_clicking;
 	bool _returnbutton_clicking;
 	bool _input; //Œˆ’è
+	HCURSOR _cur_hand;
 	std::array< BoxCollider, ITEM_POSSESSION_MAX > _select_boxes;
 
 	//‰æ‘œŠÖŒW

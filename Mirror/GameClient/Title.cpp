@@ -23,6 +23,8 @@ _data( data ) {
 	_drawer = _data->getDrawerPtr( );
 	_soundplayer = _data->getSoundplayerPtr( );
 
+	_cur_hand = LoadCursor( NULL, IDC_HAND );
+
 	std::array< int, BUTTON_TYPE_MAX >( ).swap( _startbutton_handles );
 	std::array< int, BUTTON_TYPE_MAX >( ).swap( _item_setbutton_handles );
 	std::array< int, BUTTON_TYPE_MAX >( ).swap( _ip_setbutton_handles );
@@ -217,18 +219,21 @@ Title::BUTTON Title::getHitButton( ) const {
 	//start button
 	if ( _startbutton.collider.lx <= mouse_x && mouse_x <= _startbutton.collider.rx &&
 		 _startbutton.collider.ly <= mouse_y && mouse_y <= _startbutton.collider.ry ) {
+		SetCursor( _cur_hand );
 		return START_BUTTON;
 	}
 
 	//item setting button
 	if ( _item_setbutton.collider.lx <= mouse_x && mouse_x <= _item_setbutton.collider.rx &&
 		 _item_setbutton.collider.ly <= mouse_y && mouse_y <= _item_setbutton.collider.ry ) {
+		SetCursor( _cur_hand );
 		return ITEM_SETTING_BUTTON;
 	}
 
 	//ip setting buton
 	if ( _ip_setbutton.collider.lx <= mouse_x && mouse_x <= _ip_setbutton.collider.rx &&
 		 _ip_setbutton.collider.ly <= mouse_y && mouse_y <= _ip_setbutton.collider.ry ) {
+		SetCursor( _cur_hand );
 		return IP_SETTING_BUTTON;
 	}
 

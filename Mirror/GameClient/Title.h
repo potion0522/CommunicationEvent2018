@@ -3,6 +3,7 @@
 #include "smart_ptr.h"
 #include "const.h"
 #include <array>
+#include <Windows.h>
 
 PTR( Title );
 PTR( GlobalData );
@@ -58,6 +59,7 @@ private:
 	bool _startbutton_clicking;
 	bool _item_setbutton_clicking;
 	bool _ip_setbutton_clicking;
+	HCURSOR _cur_hand;
 
 	//‰æ‘œŠÖŒW
 	LightImageProperty _back;

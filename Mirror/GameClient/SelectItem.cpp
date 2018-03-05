@@ -35,6 +35,8 @@ _data( data ) {
 	_drawer = _data->getDrawerPtr( );
 	_soundplayer = _data->getSoundplayerPtr( );
 
+	_cur_hand = LoadCursor( NULL, IDC_HAND );
+
 	{//CSV‚Ì‰Šú‰»
 		FILE *fp;
 		errno_t csv_open = fopen_s( &fp, path.c_str( ), "rb" );
@@ -474,12 +476,14 @@ int SelectItem::getHitButton( ) const {
 	//Œˆ’è
 	if ( _savebutton.collider.lx <= mouse_x && mouse_x <= _savebutton.collider.rx &&
 		 _savebutton.collider.ly <= mouse_y && mouse_y <= _savebutton.collider.ry ) {
+		SetCursor( _cur_hand );
 		return SAVE_BUTTON;
 	}
 
 	//ƒŠƒ^[ƒ“
 	if ( _returnbutton.collider.lx <= mouse_x && mouse_x <= _returnbutton.collider.rx &&
 		 _returnbutton.collider.ly <= mouse_y && mouse_y <= _returnbutton.collider.ry ) {
+		SetCursor( _cur_hand );
 		return RETURN_BUTTON;
 	}
 

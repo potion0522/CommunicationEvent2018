@@ -141,6 +141,8 @@ public:
 	bool isSelectedMirror( ) const;
 	bool isHitItemCancelButton( ) const;
 	bool isReverseFlag( ) const;
+	bool isHitField( ) const;
+	bool isHitMirrorCommand( ) const;
 
 private:
 	void resetInfo( );

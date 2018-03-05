@@ -203,6 +203,9 @@ void PhaseSetMirror::setTmpMirror( ) {
 
 	//決定を押したら
 	if ( _field->isHitDecisionButton( ) ) {
+		if ( _data->getClickLeft( ) ) {
+			_soundplayer->play( _button_se );
+		}
 		return;
 	}
 
@@ -219,6 +222,12 @@ void PhaseSetMirror::setTmpMirror( ) {
 	//クリック判定
 	if ( !_data->getClickLeft( ) ) {
 		return;
+	} 
+	if ( _field->isHitMirrorCommand( ) ) {
+		_soundplayer->play( _mirrorselect_se );
+	}
+	if ( _field->isHitField( ) ) {
+		_soundplayer->play( _hitfield_se );
 	}
 
 	//キャンセルボタンで

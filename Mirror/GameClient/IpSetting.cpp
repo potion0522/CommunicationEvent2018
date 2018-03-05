@@ -28,6 +28,8 @@ _data( data ) {
 	_soundplayer = _data->getSoundplayerPtr( );
 	_keyboard = KeyBoardPtr( new KeyBoard( ) );
 
+	_cur_hand = LoadCursor( NULL, IDC_HAND );
+
 	//キーコード入力
 	std::vector< int >( ).swap( _keycode );
 	for ( int i = 0; i < 10; i++ ) {
@@ -257,12 +259,14 @@ int IpSetting::getHitButton( ) const {
 	//決定
 	if ( _savebutton.collider.lx <= mouse_x && mouse_x <= _savebutton.collider.rx &&
 		 _savebutton.collider.ly <= mouse_y && mouse_y <= _savebutton.collider.ry ) {
+		SetCursor( _cur_hand );
 		return SAVE_BUTTON;
 	}
 
 	//リターン
 	if ( _returnbutton.collider.lx <= mouse_x && mouse_x <= _returnbutton.collider.rx &&
 		 _returnbutton.collider.ly <= mouse_y && mouse_y <= _returnbutton.collider.ry ) {
+		SetCursor( _cur_hand );
 		return RETURN_BUTTON;
 	}
 
