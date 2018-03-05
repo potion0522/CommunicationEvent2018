@@ -14,6 +14,7 @@ Cutin::Cutin( GlobalDataPtr data ) :
 _data( data ) {
 	_speed = 1.0f;
 	_flag = false;
+	_player_turn = false;
 	_drawer = _data->getDrawerPtr( );
 
 	_cutin = Base::ImageProperty( );
@@ -61,6 +62,7 @@ void Cutin::update( ) {
 
 	calc( );
 	draw( );
+	drawString( );
 }
 
 void Cutin::calc( ) {
@@ -72,6 +74,15 @@ void Cutin::calc( ) {
 			_cutin.cnt++;
 			return;
 		}
+		//プレイヤーカットインであれば
+		if ( _player_turn ) {
+			//クリックするまで消えない
+			if ( _data->getClickLeft( ) ) {
+				_player_turn = false;
+			}
+			return;
+		}
+
 		_cutin.cx += CUTIN_SPEED * _speed;
 
 		if ( _cutin.cx > WIDTH + _cutin.lx ) {
@@ -82,12 +93,22 @@ void Cutin::calc( ) {
 }
 
 void Cutin::draw( ) const {
-	Base::LightImageProperty image = Base::LightImageProperty( );
+	_drawer->setAllBright( 150, 150, 150 );
+
+	Base::ImageProperty image = Base::ImageProperty( );
 	image.cx = _cutin.cx;
 	image.cy = _cutin.cy;
 	image.png = _back_cutin;
-	_drawer->setFrontImage( image );
-	_drawer->setFrontImage( _cutin );
+	image.bright_flag = true;
+	_drawer->setBackImage( image );
+	_drawer->setBackImage( _cutin );
+}
+
+void Cutin::drawString( ) const {
+	if ( !_player_turn ) {
+		return;
+	}
+	_drawer->setFrontString( true, WIDTH / 2, HEIGHT * 0.65, RED, "Click!", Drawer::SUPER_BIG );
 }
 
 void Cutin::reset( ) {
@@ -101,7 +122,7 @@ void Cutin::reset( ) {
 	_cutin.cnt = 0;
 }
 
-void Cutin::setImage( CUTIN_TYPE type, int idx ) {
+void Cutin::setImage( CUTIN_TYPE type, int idx, bool player_turn ) {
 	if ( _flag ) {
 		return;
 	}
@@ -116,6 +137,7 @@ void Cutin::setImage( CUTIN_TYPE type, int idx ) {
 	_cutin.png = _cutin_handles[ type ][ idx ];
 	_type = type;
 	_flag = true;
+	_player_turn = player_turn;
 }
 
 void Cutin::setSpeed( float speed ) {

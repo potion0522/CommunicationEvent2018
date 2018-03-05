@@ -798,7 +798,7 @@ void Field::drawArmament( ) const {
 	image.cy = _lazer_image.cy;
 	image.png = _lazer_image.png;
 	image.size = FIELD_SIZE_RATE;
-	_drawer->setFrontImage( image );
+	_drawer->setBackImage( image );
 }
 
 void Field::drawTmpMirror( ) const {
@@ -835,7 +835,7 @@ void Field::drawTmpMirror( ) const {
 		image.angle = angle;
 		image.png = _mirror_handle[ mirror.player_num ];
 		image.size = FIELD_SIZE_RATE;
-		_drawer->setFrontImage( image );
+		_drawer->setBackImage( image );
 	}
 }
 
@@ -855,7 +855,7 @@ void Field::drawDecisionButton( ) const {
 		}
 	}
 
-	_drawer->setFrontImage( image );
+	_drawer->setBackImage( image );
 }
 
 void Field::drawMirror( ) const {
@@ -876,7 +876,7 @@ void Field::drawMirror( ) const {
 		image.angle = angle;
 		image.png = _mirror_handle[ mirror.player_num ];
 		image.size = FIELD_SIZE_RATE;
-		_drawer->setFrontImage( image );
+		_drawer->setBackImage( image );
 	}
 }
 
@@ -904,7 +904,7 @@ void Field::drawPlayerPos( ) const {
 		
 		if ( _player_num == i / PLAYER_POSITION ) {
 			if ( getTmpPlayerPoint( ) == i ) {		
-				_drawer->setFrontImage( image );
+				_drawer->setBackImage( image );
 				continue;
 			}
 
@@ -947,7 +947,7 @@ void Field::drawPlayer( ) const {
 		image.cx = x;
 		image.cy = y;
 		image.size = FIELD_SIZE_RATE;
-		_drawer->setFrontImage( image );
+		_drawer->setBackImage( image );
 	}
 }
 
@@ -1030,7 +1030,7 @@ void Field::drawItem( ) const {
 			}
 		}
 
-		_drawer->setFrontImage( image );
+		_drawer->setBackImage( image );
 	}
 }
 
@@ -1050,7 +1050,7 @@ void Field::drawMirrorCommand( ) const {
 				image.brt[ j ] = NONACTIVE_BRIGHT;
 			}
 		}
-		_drawer->setFrontImage( image );
+		_drawer->setBackImage( image );
 	}
 }
 
@@ -1075,7 +1075,7 @@ void Field::drawDeathCount( ) const {
 	image.cy = TIME_STRING_Y;
 	image.size = 0.35;
 	image.png = _time_string_handle;
-	_drawer->setFrontImage( image );
+	_drawer->setBackImage( image );
 
 
 	//Žc‚èŽžŠÔ(”Žš)
@@ -1099,7 +1099,7 @@ void Field::drawDeathCount( ) const {
 		image.cx = TIME_NUMBER_X + i * 50;
 		image.cy = TIME_NUMBER_Y;
 		image.png = frame[ length - i - 1 ];
-		_drawer->setFrontImage( image );
+		_drawer->setBackImage( image );
 
 		//’†g
 		image.png = number[ length - i - 1 ];
@@ -1119,7 +1119,7 @@ void Field::drawDeathCount( ) const {
 			}
 		}
 
-		_drawer->setFrontImage( image );
+		_drawer->setBackImage( image );
 	}
 }
 
@@ -1139,5 +1139,5 @@ void Field::drawItemCancelButton( ) const {
 		image.brt[ i ] = brt;
 	}
 
-	_drawer->setFrontImage( image );
+	_drawer->setBackImage( image );
 }
