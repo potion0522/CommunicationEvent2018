@@ -47,7 +47,7 @@ std::string Game::getTag( ) {
 void Game::initialize( ) {
 	_turn = 1;
 	_win = false;
-	_player_num = 0;
+	_player_num = _client->getPlayerNum( );
 	_phase = SET_PLAYER_PHASE;
  	_field->setPhase( _phase );
 	_order = -1;

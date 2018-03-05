@@ -52,6 +52,7 @@ std::string Drawer::getTag( ) {
 }
 
 void Drawer::initialize( ) {
+	_all_bright = false;
 }
 
 void Drawer::update( ) {
@@ -394,6 +395,11 @@ void Drawer::setBackBox( double lx, double ly, double rx, double ry, COLOR col, 
 	_back_boxes.push_back( box );
 }
 
+void Drawer::setAllBright( int r, int g, int b ) {
+	SetDrawBright( r, g, b );
+	_all_bright = true;
+}
+
 void Drawer::setFrontExtendImage( ImageProperty base, float image_cx, float image_cy, double extend_width, double extend_height ) {
 	ExtendImageProperty image = ExtendImageProperty( );
 	image.extend = true;
@@ -491,5 +497,10 @@ void Drawer::reset( ) {
 	size = ( int )_back_boxes.size( );
 	if ( size > 0 ) {
 		std::list< BoxProperty >( ).swap( _back_boxes );
+	}
+
+	if ( _all_bright ) {
+		SetDrawBright( 255, 255, 255 );
+		_all_bright = false;
 	}
 }

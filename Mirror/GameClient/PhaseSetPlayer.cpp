@@ -32,8 +32,8 @@ void PhaseSetPlayer::update( ) {
 	_field->setInfoText( "", RED, Drawer::SUPER_BIG );
 	std::string your_color = "Ô";
 	switch ( _player_num ) {
-	case 0: your_color = "Ô"; break;
-	case 1: your_color = "Â"; break;
+		case 0: your_color = "Ô"; break;
+		case 1: your_color = "Â"; break;
 	}
 	_field->setInfoText( your_color, ( COLOR )( RED + _player_num ), Drawer::SUPER_BIG );
 	_field->setInfoText( "" );

@@ -44,7 +44,7 @@ public:
 
 public:
 	void update( );
-	void setImage( CUTIN_TYPE type, int idx );
+	void setImage( CUTIN_TYPE type, int idx, bool player_turn = false );
 	void setSpeed( float speed );
 
 public:
@@ -54,10 +54,12 @@ public:
 private:
 	void calc( );
 	void draw( ) const;
+	void drawString( ) const;
 	void reset( );
 
 private:
 	bool _flag;
+	bool _player_turn;
 	CUTIN_TYPE _type;
 	float _speed;
 

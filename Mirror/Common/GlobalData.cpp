@@ -18,15 +18,23 @@ _type( type ) {
 	_key =   UpdateKeyPtr( new UpdateKey( ) );
 	_mouse = MouseEventPtr( new MouseEvent( ) );
 	_image = ImagePtr( new Image( ) );
-	_sound = SoundPtr( new Sound( ) );
 	_drawer = DrawerPtr( new Drawer( ) );
-	_soundplayer = SoundplayerPtr( new Soundplayer( ) );
 	_debug = NULL;
 
 	switch ( _type ) {
-	case SERVER	: _server = ServerPtr( new Server( ) )		; break;
-	case CLIENT	: _client = ClientPtr( new Client( ) )		; break;
-	case TEST	: _debug  = DebugPtr ( new Debug( NULL ) )	; break;
+	case SERVER	: 
+		_server = ServerPtr( new Server( ) );
+		break;
+
+	case CLIENT	: 
+		_client = ClientPtr( new Client( ) );
+		_sound = SoundPtr( new Sound( ) );
+		_soundplayer = SoundplayerPtr( new Soundplayer( ) );
+		break;
+
+	case TEST	: 
+		_debug  = DebugPtr ( new Debug( NULL ) );
+		break;
 	}
 
 	initialize( );

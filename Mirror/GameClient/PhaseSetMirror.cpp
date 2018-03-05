@@ -102,11 +102,13 @@ void PhaseSetMirror::setTmpMirror( ) {
 		return;
 	}
 
+	//プレイヤーカットイン
 	if ( _order != _order_past ) {
 		_cutin->setImage( Cutin::CUTIN_TYPE_PLAYER,
 			              _player_num == _order ? 
 			              Cutin::CUTIN_PLAYER_YOUR_TURN : 
-			              Cutin::CUTIN_PLAYER_ENEMY_TURN
+			              Cutin::CUTIN_PLAYER_ENEMY_TURN,
+						  true
 		                );
 		_cutin->setSpeed( 1.5f );
 	}

@@ -47,6 +47,7 @@ public:
 	void setCircle( double x, double y, double r, COLOR col = WHITE, int alpha = 255, bool isfill = false );
 	void setFrontBox( double lx, double ly, double rx, double ry, COLOR col = WHITE, bool isfill = false );
 	void setBackBox( double lx, double ly, double rx, double ry, COLOR col = WHITE, bool isfill = false );
+	void setAllBright( int r, int g, int b );
 	int getStringW( FONTSIZE_TYPE type, std::string str ) const;
 	int getStringH( FONTSIZE_TYPE type ) const;
 
@@ -105,6 +106,7 @@ private:
 		COLOR col;
 		bool isFill;
 	};
+	bool _all_bright;
 	int _handle_font[ FONT_TYPE_MAX ];
 	ImageProperty _back_image;
 	std::array< int, FONT_TYPE_MAX > _size;
