@@ -201,24 +201,38 @@ void PhaseSetMirror::setTmpMirror( ) {
 	//ヒットしているマスを探す
 	int pos = _field->getFieldPosHitNum( );
 
+	//決定を押したら
 	if ( _field->isHitDecisionButton( ) ) {
 		return;
 	}
 
+	//アイテム選択だったら
 	if ( _field->getHitItemIdx( ) != -1 ) {
 		return;
 	}
 
+	//コマンドが選択されていなければ
 	if ( _field->getMirrorCommand( ) == Field::COMMAND_NONE ) {
 		return;
 	}
 
+	//クリック判定
 	if ( !_data->getClickLeft( ) ) {
 		return;
 	}
 
+	//キャンセルボタンで
+	if ( _field->isHitItemCancelButton( ) ) {
+		//鏡が選択されていたら
+		if ( _tmp_mirror.flag ) {
+			//SEを鳴らす
+			_soundplayer->play( _cancel_se );
+		}
+	}
+
 	_tmp_mirror = Field::Mirror( );
 	_field->resetTmpMirror( );
+
 	if ( pos < 0 ) {
 		return;
 	}
@@ -308,6 +322,7 @@ void PhaseSetMirror::updateItem( ) {
 		return;
 	}
 
+
 	//決定ボタンを押さないで
 	if ( !_field->isHitDecisionButton( ) ) {
 		//ミラーコマンドを選択してなくて
@@ -316,7 +331,10 @@ void PhaseSetMirror::updateItem( ) {
 			if ( _field->getFieldPosHitNum( ) < 0 ) {
 				//キャンセルボタンであれば-1
 				if ( _field->isHitItemCancelButton( ) ) {
-					_soundplayer->play( _cancel_se );
+					//アイテムが選択されていたらSEを鳴らす
+					if (  _field->getSelectItem( ) != -1 ) {
+						_soundplayer->play( _cancel_se );
+					}
 					idx = -1;
 				}
 				//アイテム番号セット
