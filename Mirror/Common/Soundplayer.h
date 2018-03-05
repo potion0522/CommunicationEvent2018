@@ -2,7 +2,7 @@
 #include "smart_ptr.h"
 #include "Base.h"
 #include "const.h"
-#include <list>
+#include <map>
 #include <array>
 
 PTR( Soundplayer );
@@ -24,7 +24,6 @@ public:
 	void stop( SoundProperty wav );
 
 private:
-	std::list< SoundProperty > _sounds;
-	SoundProperty _past;
+	std::map< int, int > _sounds;
 };
 
