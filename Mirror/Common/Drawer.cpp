@@ -1,7 +1,6 @@
 #include "Drawer.h"
 #include "DxLib.h"
 #include "Color.h"
-#include "Debug.h"
 #include <math.h>
 #include <assert.h>
 #include <errno.h>
@@ -77,10 +76,6 @@ void Drawer::drawFrontImage( ) {
 	for ( ite; ite != _front_images.end( ); ite++ ) {
 		ImageProperty base = ite->base;
 		errno_t image_handle = base.png;
-		if ( base.png < 1 ) {
-			DebugPtr debug( new Debug( ) );
-			debug->error( "drawer->drawImage : 画像ハンドルがありません" );
-		}
 		assert( image_handle != -1 );
 
 		bool alpha = false;
@@ -136,10 +131,6 @@ void Drawer::drawBackImage( ) {
 	for ( ite; ite != _back_images.end( ); ite++ ) {
 		ImageProperty base = ite->base;
 		errno_t image_handle = base.png;
-		if ( base.png < 1 ) {
-			DebugPtr debug( new Debug( ) );
-			debug->error( "drawer->drawImage : 画像ハンドルがありません" );
-		}
 		assert( image_handle != -1 );
 
 		bool alpha = false;

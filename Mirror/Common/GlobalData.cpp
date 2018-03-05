@@ -56,16 +56,27 @@ void GlobalData::initialize( ) {
 	_count = 0;
 
 	switch ( _type ) {
-	case SERVER	: _server->disConnect( ); break;
-	case CLIENT	: _client->disConnect( ); break;
-	case TEST	: _debug 	; break;
+	case SERVER:
+		_server->disConnect( );
+		break;
+
+	case CLIENT:
+		_client->disConnect( );
+		_soundplayer->initialize( );
+		break;
+
+	case TEST:
+		_debug->initialize( );
+		break;
 	}
 
 	foldInitFlag( );
 }
 
 void GlobalData::finalize( ) {
-	_sound->~Sound( );
+	if ( _type == CLIENT ) {
+		_sound->~Sound( );
+	}
 	_key->~UpdateKey( );
 	_mouse->~MouseEvent( );
 	_image->~Image( );

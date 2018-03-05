@@ -37,15 +37,13 @@ private:
 	short int _order;
 	short int _player_num;
 	BATTLE_PHASE _phase;
-
 	SoundProperty _bgm;
-	SoundplayerPtr _soundplayer;
 
-	//‰æ‘œŠÖŒW
 	GlobalDataPtr _data;
 	ClientPtr _client;
 	FieldPtr _field;
 	PhasePtr _battle;
 	CutinPtr _cutin;
+	SoundplayerPtr _soundplayer;
 };
 

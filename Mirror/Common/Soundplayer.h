@@ -24,6 +24,7 @@ public:
 	void stop( SoundProperty wav );
 
 private:
-	std::list<SoundProperty> _sounds;
+	std::list< SoundProperty > _sounds;
+	SoundProperty _past;
 };
 

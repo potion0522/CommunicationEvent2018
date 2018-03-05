@@ -1,7 +1,6 @@
 #include "Sound.h"
 #include "DxLib.h"
 #include "Debug.h"
-#include "smart_ptr.h"
 #include <assert.h>
 #include <errno.h>
 

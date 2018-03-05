@@ -4,8 +4,8 @@
 
 Soundplayer::Soundplayer( ) {
 	setSoundFlag( 1 );
+	_past = SoundProperty( );
 }
-
 
 Soundplayer::~Soundplayer( ) {
 }
@@ -15,6 +15,9 @@ std::string Soundplayer::getTag( ) {
 }
 
 void Soundplayer::initialize( ) {
+	if ( CheckSoundMem( _past.wav ) == 1 ) {
+		StopSoundMem( _past.wav );
+	}
 }
 
 void Soundplayer::finalize( ) {
@@ -43,6 +46,7 @@ void Soundplayer::play( SoundProperty wav ) {
 	} else {
 		PlaySoundMem( wav.wav, DX_PLAYTYPE_LOOP, top_flag );
 	}
+	_past.wav = wav.wav;
 }
 
 void Soundplayer::stop( SoundProperty wav ) {

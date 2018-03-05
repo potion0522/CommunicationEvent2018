@@ -52,6 +52,9 @@
     <ClCompile Include="Soundplayer.cpp">
       <Filter>Sound</Filter>
     </ClCompile>
+    <ClCompile Include="Loading.cpp">
+      <Filter>Load</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Base.h">
@@ -108,6 +111,9 @@
     <ClInclude Include="Soundplayer.h">
       <Filter>Sound</Filter>
     </ClInclude>
+    <ClInclude Include="Loading.h">
+      <Filter>Load</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="BaseClass">
@@ -130,6 +136,9 @@
     </Filter>
     <Filter Include="Sound">
       <UniqueIdentifier>{b8435ac3-6ef8-473e-a5e9-556b7d4ebd76}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Load">
+      <UniqueIdentifier>{a5071c56-9695-4e2f-ae97-e3200082de0c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

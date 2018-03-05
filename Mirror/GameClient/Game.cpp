@@ -26,6 +26,7 @@ _data( data ) {
 	setFlag( 1 );
 	_field = _data->getFieldPtr( );
 	_client = _data->getClientPtr( );
+	_soundplayer = _data->getSoundplayerPtr( );
 	_cutin = CutinPtr( new Cutin( _data ) );
 
 	{//bgm
