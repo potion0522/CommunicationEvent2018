@@ -3,14 +3,33 @@
 #include "GlobalData.h"
 #include "Client.h"
 #include "Cutin.h"
+#include "Sound.h"
+#include "Soundplayer.h"
 
 PhaseSetPlayer::PhaseSetPlayer( GlobalDataPtr data, FieldPtr field, CutinPtr cutin, short int player_num ) :
 Phase( player_num ),
 _data( data ),
 _field( field ),
 _cutin( cutin ) {
+	_soundplayer = _data->getSoundplayerPtr( );
+
 	_selected = false;
 	_clicking = 0;
+
+	SoundPtr sound_ptr = _data->getSoundPtr( );
+	{//setplayer SE
+		_setplayer_se = Base::SoundProperty( );
+		_setplayer_se.isLoop = false;
+		_setplayer_se.top = true;
+		_setplayer_se.wav = sound_ptr->getWav( EFFECT_SOUND, SELECT_SE ).wav;
+	}
+
+	{//button SE
+		_button_se = Base::SoundProperty( );
+		_button_se.isLoop = false;
+		_button_se.top = true;
+		_button_se.wav = sound_ptr->getWav( EFFECT_SOUND, BUTTON_SE ).wav;
+	}
 }
 
 PhaseSetPlayer::~PhaseSetPlayer( ) {
@@ -61,13 +80,14 @@ void PhaseSetPlayer::update( ) {
 	_clicking = 0;
 
 	if ( !_field->isHitDecisionButton( ) ) {
+		_soundplayer->play( _setplayer_se );
 		return;
 	}
 
 	if ( _field->isSelectedPlayer( ) ) {
 		return;
 	}
-
+	_soundplayer->play( _button_se );
 	_field->playerPosSelected( );
 	_field->setPlayerPoint( _player_num, _field->getTmpPlayerPoint( ) );
 

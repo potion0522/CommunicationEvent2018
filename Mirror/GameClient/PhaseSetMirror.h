@@ -2,12 +2,14 @@
 #include "Phase.h"
 #include "smart_ptr.h"
 #include "Field.h"
+#include "Base.h"
 
 PTR( PhaseSetMirror );
 PTR( GlobalData );
 PTR( Field );
 PTR( Client );
 PTR( Cutin );
+PTR( Soundplayer );
 
 class PhaseSetMirror : public Phase {
 public:
@@ -37,8 +39,15 @@ private:
 	short int _order_past;
 	Field::Mirror _tmp_mirror;
 
+	Base::SoundProperty _hitfield_se;
+	Base::SoundProperty _button_se;
+	Base::SoundProperty _mirrorselect_se;
+	Base::SoundProperty _itemselect_se;
+	Base::SoundProperty _cancel_se;
+
 	GlobalDataPtr _data;
 	FieldPtr _field;
 	ClientPtr _client;
 	CutinPtr _cutin;
+	SoundplayerPtr _soundplayer;
 };

@@ -2,15 +2,33 @@
 #include "GlobalData.h"
 #include "Client.h"
 #include "Field.h"
+#include "Sound.h"
+#include "Soundplayer.h"
 
 PhaseJudge::PhaseJudge( GlobalDataPtr data, FieldPtr field, int player_num ) :
 Phase( player_num ),
 _data( data ),
 _field( field ) {
 	_client = _data->getClientPtr( );
+	_soundplayer = _data->getSoundplayerPtr( );
 
 	_recv = false;
 	_turn_fin = false;
+
+	SoundPtr sound_ptr = _data->getSoundPtr( );
+	{//Winner SE
+		_win_se = Base::SoundProperty( );
+		_win_se.isLoop = false;
+		_win_se.top = true;
+		_win_se.wav = sound_ptr->getWav( EFFECT_SOUND, WIN_SE ).wav;
+	}
+
+	{//Loser SE
+		_lose_se = Base::SoundProperty( );
+		_lose_se.isLoop = false;
+		_lose_se.top = true;
+		_lose_se.wav = sound_ptr->getWav( EFFECT_SOUND, LOSE_SE ).wav;
+	}
 }
 
 PhaseJudge::~PhaseJudge( ) {
@@ -31,6 +49,7 @@ void PhaseJudge::update( ) {
 	if ( winner == _player_num ) {
 		//Ÿ—˜
 		_data->setScene( RESULT );
+		_soundplayer->play( _win_se );
 		_win = true;
 	} else if ( winner == -1 ) {
 		//Ÿ”s‚È‚µ
@@ -42,6 +61,7 @@ void PhaseJudge::update( ) {
 	} else {
 		//•‰‚¯
 		_data->setScene( RESULT );
+		_soundplayer->play( _lose_se );
 		_win = false;
 	}
 

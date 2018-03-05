@@ -3,6 +3,8 @@
 #include "GlobalData.h"
 #include "Client.h"
 #include "Cutin.h"
+#include "Sound.h"
+#include "Soundplayer.h"
 
 PhaseSetMirror::PhaseSetMirror( GlobalDataPtr data, FieldPtr field, CutinPtr cutin, short int player_num ) :
 Phase( player_num ),
@@ -10,11 +12,49 @@ _data( data ),
 _field( field ),
 _cutin( cutin ) {
 	_client = _data->getClientPtr( );
+	_soundplayer = _data->getSoundplayerPtr( );
 
 	_recv = false;
 	_double_mirror = false;
 	_order_past = -1;
 	_clicking = 0;
+	
+	//SE
+	SoundPtr sound_ptr = _data->getSoundPtr( );
+	{
+		_hitfield_se = Base::SoundProperty( );
+		_hitfield_se.isLoop = false;
+		_hitfield_se.top = true;
+		_hitfield_se.wav = sound_ptr->getWav( EFFECT_SOUND, SELECT_SE ).wav;
+	}
+
+	{
+		_button_se = Base::SoundProperty( );
+		_button_se.isLoop = false;
+		_button_se.top = true;
+		_button_se.wav = sound_ptr->getWav( EFFECT_SOUND, BUTTON_SE ).wav;
+	}
+
+	{
+		_mirrorselect_se = Base::SoundProperty( );
+		_mirrorselect_se.isLoop = false;
+		_mirrorselect_se.top = true;
+		_mirrorselect_se.wav = sound_ptr->getWav( EFFECT_SOUND, SELECT_SE ).wav;
+	}
+
+	{
+		_itemselect_se = Base::SoundProperty( );
+		_itemselect_se.isLoop = false;
+		_itemselect_se.top = true;
+		_itemselect_se.wav = sound_ptr->getWav( EFFECT_SOUND, SELECT_SE ).wav;
+	}
+
+	{
+		_cancel_se = Base::SoundProperty( );
+		_cancel_se.isLoop = false;
+		_cancel_se.top = true;
+		_cancel_se.wav = sound_ptr->getWav( EFFECT_SOUND, BACK_SE ).wav;
+	}
 }
 
 PhaseSetMirror::~PhaseSetMirror( ) {
@@ -276,9 +316,13 @@ void PhaseSetMirror::updateItem( ) {
 			if ( _field->getFieldPosHitNum( ) < 0 ) {
 				//キャンセルボタンであれば-1
 				if ( _field->isHitItemCancelButton( ) ) {
+					_soundplayer->play( _cancel_se );
 					idx = -1;
 				}
 				//アイテム番号セット
+				if ( idx != -1 ) {
+					_soundplayer->play( _itemselect_se );
+				}
 				_field->selectItem( idx );
 			}
 		}

@@ -1,11 +1,13 @@
 #pragma once
 #include "Phase.h"
 #include "smart_ptr.h"
+#include "Base.h"
 
 PTR( PhaseJudge );
 PTR( GlobalData );
 PTR( Client );
 PTR( Field );
+PTR( Soundplayer );
 
 class PhaseJudge : public Phase {
 public:
@@ -24,8 +26,13 @@ private:
 	bool _turn_fin;
 	bool _win;
 
+	
+	Base::SoundProperty _win_se;
+	Base::SoundProperty _lose_se;
+
 	GlobalDataPtr _data;
 	ClientPtr _client;
 	FieldPtr _field;
+	SoundplayerPtr _soundplayer;
 };
 
