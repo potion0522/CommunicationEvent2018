@@ -165,6 +165,7 @@
     <ClCompile Include="KeyBoard.cpp" />
     <ClCompile Include="LoadCSV.cpp" />
     <ClCompile Include="Loading.cpp" />
+    <ClCompile Include="Loading2.cpp" />
     <ClCompile Include="MouseEvent.cpp" />
     <ClCompile Include="Server.cpp" />
     <ClCompile Include="Sound.cpp" />
@@ -186,6 +187,7 @@
     <ClInclude Include="KeyBoard.h" />
     <ClInclude Include="LoadCSV.h" />
     <ClInclude Include="Loading.h" />
+    <ClInclude Include="Loading2.h" />
     <ClInclude Include="MouseEvent.h" />
     <ClInclude Include="Server.h" />
     <ClInclude Include="Sound.h" />

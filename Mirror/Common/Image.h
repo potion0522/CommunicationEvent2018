@@ -1,8 +1,12 @@
 #pragma once
+#include "smart_ptr.h"
+#include "const.h"
 #include <Windows.h>
 #include <string>
 #include <vector>
-#include "const.h"
+
+PTR( Image );
+PTR( Loading );
 
 struct Png {
 	int width;
@@ -33,4 +37,6 @@ private:
 	std::vector< Directory > _data;
 	std::vector< WIN32_FIND_DATA > _file;
 	int _dir_num;
+
+	LoadingPtr _load;
 };

@@ -1,8 +1,11 @@
 #pragma once
 #include "smart_ptr.h"
 #include <string>
+#include <array>
 
 PTR( Loading );
+
+const short int LOADING_EFFECT_MAX = 8;
 
 class Loading {
 public:
@@ -11,11 +14,11 @@ public:
 
 public:
 	void update( );
-	void finish( );
+	void add( float add );
+	void setMaxLength( float max );
+	bool isFinish( ) const;
 
 private:
-	
-	static const short int EFFECT_MAX = 8;
 
 	enum RESOURCE {
 		BACKGROUND,
@@ -25,10 +28,13 @@ private:
 		RESOURCE_MAX
 	};
 
-	int _arg;
 	bool _fin;
+	float _length;
+	float _max;
+	int _cnt;
+	int _font_handle;
 	std::string _message;
-	//std::array< int, RESOURCE_MAX > _handles;
-	//std::array< int, EFFECT_MAX > _effect;
+	std::array< int, RESOURCE_MAX > _handles;
+	std::array< int, LOADING_EFFECT_MAX > _effect;
 };
 
