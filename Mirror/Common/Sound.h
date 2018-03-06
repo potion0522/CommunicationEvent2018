@@ -1,8 +1,12 @@
 #pragma once
+#include "const.h"
+#include "smart_ptr.h"
 #include <Windows.h>
 #include <string>
 #include <vector>
-#include "const.h"
+
+PTR( Sound );
+PTR( Loading );
 
 struct Wav {
 	int wav;
@@ -31,4 +35,6 @@ private:
 	std::vector< Directory > _data;
 	std::vector< WIN32_FIND_DATA > _file;
 	int _dir_num;
+
+	LoadingPtr _load;
 };

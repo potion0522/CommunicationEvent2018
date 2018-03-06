@@ -3,49 +3,92 @@
 #include "DxLib.h"
 #include "const.h"
 
-Loading::Loading( std::string message ) {
-	_message = message;
-	_arg = 0;
+const short int STRING_SIZE = 50;
+const short int CHANGE_EFFECT_COUNT = 3;
+const short int WAIT = 60 + CHANGE_EFFECT_COUNT * LOADING_EFFECT_MAX - 1;
+const short int EFFECT_COUNT_MAX =CHANGE_EFFECT_COUNT * LOADING_EFFECT_MAX - 1;
+const float MAX_LENGTH = WIDTH * 0.35f;
+
+Loading::Loading( std::string message ) :
+_message( message ) {
 	_fin = false;
-	//_drawer = Drawer( );
-	//std::array< int, RESOURCE_MAX >( ).swap( _handles );
-	//std::array< int, EFFECT_MAX >( ).swap( _effect );
+	_length = 0;
+	_max = 0;
+	_cnt = 0;
 
-	////エフェクト
-	//for ( int i = 0; i < EFFECT_MAX; i++ ) {
-	//	_effect[ i ] = LoadGraph( ( "Resources/loading/effect" + std::to_string( i ) + ".png" ).c_str( ) );
-	//}
+	_font_handle = CreateFontToHandle( "メイリオ", STRING_SIZE, -1, DX_FONTTYPE_NORMAL );
 
-	////その他
-	//for ( int i = 0; i < RESOURCE_MAX; i++ ) {
-	//	_handles[ i ] = LoadGraph( ( "Resources/loading/image" + std::to_string( i ) + ".png" ).c_str( ) );
-	//}
+	std::array< int, RESOURCE_MAX >( ).swap( _handles );
+	std::array< int, LOADING_EFFECT_MAX >( ).swap( _effect );
+
+	//エフェクト
+	for ( int i = 0; i < LOADING_EFFECT_MAX; i++ ) {
+		_effect[ i ] = LoadGraph( ( "Resources/loading/effect" + std::to_string( i ) + ".png" ).c_str( ) );
+	}
+
+	//その他
+	for ( int i = 0; i < RESOURCE_MAX; i++ ) {
+		_handles[ i ] = LoadGraph( ( "Resources/loading/image" + std::to_string( i ) + ".png" ).c_str( ) );
+	}
 }
 
 Loading::~Loading( ) {
 }
 
 void Loading::update( ) {
-	while ( _arg < 1000 ) {
+	WaitVSync( 60 );
+	while ( !_fin ) {
 		ProcessMessage( );
 		ClearDrawScreen( );
 
-		//Base::LightImageProperty image = Base::LightImageProperty( );
-		//image.cx = WIDTH / 2;
-		//image.cy = HEIGHT / 2;
-		//image.png = _handles[ Loading::BACKGROUND ];
+		//背景
+		//DrawGraph( 0, 0, _handles[ Loading::BACKGROUND ], TRUE );
 
-		//_drawer.setBackGroundImage( image );
-		//_drawer.setFrontString( true, WIDTH / 2, HEIGHT / 2, RED, _message );
-		//_drawer.update( );
+		//メッセージ
+		DrawFormatStringToHandle( WIDTH / 2 - STRING_SIZE * ( ( int )_message.length( ) / 4 ), ( int )( HEIGHT * 0.3 ), 0xffffff, _font_handle, _message.c_str( ) );
+		DrawFormatStringToHandle( WIDTH / 2 - STRING_SIZE * ( ( int )_message.length( ) / 4 ), ( int )( HEIGHT * 0.4 ), 0xff0000, _font_handle, "%.1f%%", _length * 100 );
 
-		DrawString( 0, 0, "aaaaaaa", 0xffffff );
+		const float POS_X = WIDTH * 0.4f;
+		const float POS_Y = HEIGHT * 0.65f;
+		if ( _length < 1 ) {
+			//的
+			DrawRotaGraphF( POS_X - 50 + MAX_LENGTH, POS_Y, 1, 0, _handles[ Loading::PLAYER ], TRUE );
+		}
+		//発射台
+		DrawRotaGraphF( POS_X - 96, POS_Y, 1, 0, _handles[ Loading::LAZER ], TRUE );
+		//レーザー
+		DrawRotaGraph3F( POS_X - 50, POS_Y, 8, 0, 1, _length * ( MAX_LENGTH / 16 ), -PI / 2, _handles[ Loading::LAZER_LINE ], FALSE, FALSE );
 
+
+		//ロードし終わったら
+		if ( _length == 1 ) {
+			//エフェクト
+			if ( _cnt < EFFECT_COUNT_MAX ) {
+				//エフェクトを切り替える
+				DrawRotaGraphF( POS_X - 50 + MAX_LENGTH, POS_Y, 1, 0, _effect[ _cnt / CHANGE_EFFECT_COUNT ], TRUE );
+			} else {
+				DrawRotaGraphF( POS_X - 50 + MAX_LENGTH, POS_Y, 1 + _cnt * 0.0025, 0, _effect[ LOADING_EFFECT_MAX - 1 ], TRUE );
+				//猶予を持たせる
+				if ( _cnt > WAIT ) {
+					_fin = true;
+					return;
+				}
+			}
+			//カウントを増やす
+			_cnt++;
+		}
 		ScreenFlip( );
-		_arg++;
 	}
 }
 
-void Loading::finish( ) {
-	_fin = true;
+bool Loading::isFinish( ) const {
+	return _fin;
+}
+
+void Loading::add( float add ) {
+	_length = add;
+}
+
+void Loading::setMaxLength( float max ) {
+	_max = max;
 }

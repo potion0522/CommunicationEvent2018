@@ -1,13 +1,29 @@
 #include "Image.h"
 #include "DxLib.h"
 #include "Debug.h"
+#include "Loading.h"
 #include <assert.h>
 #include <errno.h>
+#include <thread>
 
 const std::string PATH = "Resources/image/";
 
 Image::Image( ) {
-	initialize( );
+	_load = LoadingPtr( new Loading( "‰æ‘œƒf[ƒ^“Ç‚Ýž‚Ý’†" ) );
+	std::thread th1( &Loading::update, _load );
+	std::thread th2( &Image::initialize, this );
+
+	th1.detach( );
+	th2.join( );
+
+	while ( true ) {
+		ProcessMessage( );
+		if ( _load->isFinish( ) ) {
+			break;
+		}
+	}
+
+	//initialize( );
 }
 
 Image::~Image( ) {
@@ -94,6 +110,8 @@ void Image::check( int png ) const {
 
 void Image::inputImage( ) {
 	int size = ( int )_file.size( );
+	_load->setMaxLength( ( float )size );
+
 	int dir = 0;
 	std::string path = PATH;
 	std::string input = "\0";
@@ -126,6 +144,8 @@ void Image::inputImage( ) {
 				_data[ dir ].png.push_back( add );
 			}
 		}
+
+		_load->add( ( float )( i + 1 ) / ( float )size );
 	}
 }
 

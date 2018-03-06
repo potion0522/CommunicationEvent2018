@@ -1,13 +1,27 @@
 #include "Sound.h"
 #include "DxLib.h"
 #include "Debug.h"
+#include "Loading.h"
 #include <assert.h>
 #include <errno.h>
+#include <thread>
 
 const std::string PATH = "Resources/sound/";
 
 Sound::Sound( ) {
-	initialize( );
+	_load = LoadingPtr( new Loading( "音楽データ読み込み中" ) );
+	std::thread th1( &Loading::update, _load );
+	std::thread th2( &Sound::initialize, this );
+
+	th1.detach( );
+	th2.join( );
+
+	while ( true ) {
+		ProcessMessage( );
+		if ( _load->isFinish( ) ) {
+			break;
+		}
+	}
 }
 
 Sound::~Sound( ) {
@@ -82,6 +96,8 @@ void Sound::check( int wav ) const {
 
 void Sound::inputSound( ) {
 	int size = ( int )_file.size( );
+	_load->setMaxLength( ( float )size );
+
 	int dir = 0;
 	std::string path = PATH;
 	std::string input = "\0";
@@ -110,7 +126,10 @@ void Sound::inputSound( ) {
 				check( add.wav );
 				_data[ dir ].wav.push_back( add );
 			}
+
 		}
+
+		_load->add( ( float )( i + 1 ) / ( float )size );
 	}
 }
 
