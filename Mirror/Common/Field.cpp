@@ -489,30 +489,6 @@ bool Field::isReverseFlag( ) const {
 	return _reverse_mirror;
 }
 
-bool Field::isHitField( ) const {
-	int mouse_x = _data->getMouseX( );
-	int mouse_y = _data->getMouseY( );
-
-	if ( START_POS_X <= mouse_x && mouse_x <= START_POS_X + FIELD_COL * SQUARE_SIZE &&
-		 START_POS_Y <= mouse_y && mouse_y <= START_POS_Y + FIELD_ROW * SQUARE_SIZE ) {
-		return true;
-	}
-	return false;
-}
-
-bool Field::isHitMirrorCommand( ) const {
-	int mouse_x = _data->getMouseX( );
-	int mouse_y = _data->getMouseY( );
-
-	for ( int i = 0; i < COMMAND_TYPE_MAX; i++ ) {
-		if ( _mirror_cmd[ i ].collider.lx <= mouse_x && mouse_x <= _mirror_cmd[ i ].collider.rx &&
-			_mirror_cmd[ i ].collider.ly <= mouse_y && mouse_y <= _mirror_cmd[ i ].collider.ry ) {
-			return true;
-		}
-	}
-	return false;
-}
-
 int Field::getDeadPlayer( ) const {
 	return _dead_player;
 }
@@ -783,7 +759,7 @@ int Field::getFieldPosHitNum( ) const {
 }
 
 void Field::drawField( ) {
-	if ( isHitField( ) ) {
+	if ( getFieldPosHitNum( ) != -1 ) {
 		SetCursor( _cur_hand );
 	}
 	//フィールド描画
@@ -1069,7 +1045,7 @@ void Field::drawBackGround( ) const {
 }
 
 void Field::drawMirrorCommand( ) const {
-	if ( isHitMirrorCommand( ) ) {
+	if ( getHitMirrorCommandIdx( ) != -1 ) {
 		SetCursor( _cur_hand );
 	}
 

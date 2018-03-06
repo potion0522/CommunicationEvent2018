@@ -223,10 +223,10 @@ void PhaseSetMirror::setTmpMirror( ) {
 	if ( !_data->getClickLeft( ) ) {
 		return;
 	} 
-	if ( _field->isHitMirrorCommand( ) ) {
+	if ( _field->getHitMirrorCommandIdx( ) != -1 ) {
 		_soundplayer->play( _mirrorselect_se );
 	}
-	if ( _field->isHitField( ) ) {
+	if ( _field->getFieldPosHitNum( ) != -1 ) {
 		_soundplayer->play( _hitfield_se );
 	}
 
