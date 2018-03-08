@@ -2,14 +2,12 @@
 #include "GlobalData.h"
 #include "Game.h"
 #include "Drawer.h"
-#include "KeyBoard.h"
 
 ResultClient::ResultClient( GlobalDataPtr data, GamePtr game ) :
 _data( data ),
 _game( game ) {
-	_drawer = _data->getDrawerPtr( );
-	_keyboard = KeyBoardPtr( new KeyBoard( ) );
 	setFlag( 1 );
+	_drawer = _data->getDrawerPtr( );
 }
 
 ResultClient::~ResultClient( ) {
@@ -21,6 +19,7 @@ std::string ResultClient::getTag( ) {
 
 void ResultClient::initialize( ) {
 	_win = _game->isWin( );
+	_cnt = FRAME * 5;
 }
 
 void ResultClient::finalize( ) {
@@ -35,9 +34,12 @@ void ResultClient::update( ) {
 		_drawer->setFrontString( true, WIDTH / 2, HEIGHT / 3, RED, "‚ ‚È‚½‚Ì•‰‚¯", Drawer::SUPER_BIG );
 	}
 
-	_drawer->setFrontString( true, WIDTH / 2, HEIGHT / 5 * 3, YELLOW, "Press \"ENTER\" Key", Drawer::BIG );
+	_drawer->setFrontString( true, WIDTH / 2, HEIGHT / 5 * 3, YELLOW, "Return Title ....", Drawer::BIG );
+	_drawer->setFrontString( true, WIDTH / 2, HEIGHT / 5 * 3, RED,    "                  " + std::to_string( _cnt / FRAME ), Drawer::BIG );
 
-	if ( _data->getKeyState( _keyboard->getKeyCode( ENTER_KEY ) ) == 1 ) {
+	_cnt--;
+
+	if ( _cnt <= 0 ) {
 		_data->setInitFlag( );
 	}
 }

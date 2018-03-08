@@ -7,7 +7,6 @@ PTR( ResultClient );
 PTR( GlobalData );
 PTR( Game );
 PTR( Drawer );
-PTR( KeyBoard );
 
 class ResultClient : public Base {
 public:
@@ -22,10 +21,10 @@ public:
 
 private:
 	bool _win;
+	short int _cnt;
 
 	GlobalDataPtr _data;
 	GamePtr _game;
 	DrawerPtr _drawer;
-	KeyBoardPtr _keyboard;
 };
 
