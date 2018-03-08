@@ -69,7 +69,7 @@ void Debug::update( ) {
 	drawMousePoint( );
 	//DrawCircle( WIDTH / 2, HEIGHT /2, 5, _color->getColor( RED ), TRUE );
 
-	if ( _data->getKeyState( KEY_INPUT_RETURN ) == 1 && !_data->getCommandFlag( ) ) {
+	if ( _data->getKeyState( KEY_INPUT_RETURN ) == 1 && !_data->isCommandFlag( ) ) {
 		_command->setFlag( 1 );
 	}
 

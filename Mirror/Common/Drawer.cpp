@@ -12,6 +12,7 @@ const int SIZE_BIG          = 35;
 const int SIZE_SUPER_BIG    = 100;
 
 Drawer::Drawer( ) {
+	//SetDrawMode( DX_DRAWMODE_BILINEAR );
 	setFlag( 1 );
 	_color = ColorPtr( new Color( ) );
 	int idx = 0;

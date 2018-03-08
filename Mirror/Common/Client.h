@@ -76,13 +76,14 @@ private:
 	};
 	PHASE _phase;
 
+	short int _interval;
 	int _handle_tcp;
 	int _handle_udp;
 	bool _connecting_tcp;
 	bool _recving_tcp;
 	bool _recving_udp;
 	bool _matching;
-	int _player_num;
+	short int _player_num;
 	NetWorkData _recv_data_udp;
 	NetWorkData _send_data_tcp;
 	IPDATA _ip;

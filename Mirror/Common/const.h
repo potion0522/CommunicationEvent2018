@@ -11,6 +11,8 @@ const float HEIGHT_F = ( float )HEIGHT;
 
 const int FRAME = 60;
 const int MINUTE = FRAME * 60;
+const int TIME_OUT = FRAME * 5;
+const int CONNECT_INTERVAL = FRAME * 3;
 
 const double PI = 3.14;
 const short int KEY_MAX = 256;

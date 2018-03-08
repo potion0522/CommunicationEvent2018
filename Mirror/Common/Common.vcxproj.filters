@@ -58,6 +58,9 @@
     <ClCompile Include="Loading2.cpp">
       <Filter>Load</Filter>
     </ClCompile>
+    <ClCompile Include="Message.cpp">
+      <Filter>Global</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Base.h">
@@ -119,6 +122,9 @@
     </ClInclude>
     <ClInclude Include="Loading2.h">
       <Filter>Load</Filter>
+    </ClInclude>
+    <ClInclude Include="Message.h">
+      <Filter>Global</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

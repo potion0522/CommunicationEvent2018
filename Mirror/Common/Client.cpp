@@ -17,9 +17,10 @@ void Client::initialize( ) {
 	_recving_tcp = false;
 	_recving_udp = false;
 	_matching = false;
-	_player_num = 0;
+	_interval = 0;
 	_handle_tcp = -1;
 	_handle_udp = -1;
+	_player_num = 0;
 	_recv_data_udp = NetWorkData( );
 	_send_data_tcp = NetWorkData( );
 
@@ -50,6 +51,12 @@ void Client::readIP( ) {
 }
 
 void Client::connect( ) {
+	_interval = ( _interval + 1 ) % CONNECT_INTERVAL;
+
+	if ( _interval != 1 ) {
+		return;
+	}
+
 	if ( _handle_tcp < 0 ) {
 		int handle = ConnectNetWork( _ip, TCP_PORT );
 		if ( handle < 0 ) {
@@ -59,6 +66,7 @@ void Client::connect( ) {
 		_connecting_tcp = true;
 		_phase = CONNECTING;
 	}
+
 }
 
 void Client::recving( ) {

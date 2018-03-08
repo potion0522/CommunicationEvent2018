@@ -31,7 +31,7 @@ public:
 		double rx;	//‰E‰º
 		double ry;
 		double r;	//‚ ‚½‚è”»’è
-		double size = 1;//‰æ‘œŠg‘å—¦
+		double size = 1.0;//‰æ‘œŠg‘å—¦
 		double angle;
 		short int knd;
 		short int brt[ 3 ] = { 255, 255, 255 };	//RGB‹P“x

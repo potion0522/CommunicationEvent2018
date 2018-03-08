@@ -54,6 +54,12 @@ _data( data ) {
 Cutin::~Cutin( ) {
 }
 
+void Cutin::initialize( ) { 
+	_speed = 1.0f;
+	_flag = false;
+	_player_turn = false;
+}
+
 void Cutin::update( ) {
 	if ( !_flag ) {
 		return;

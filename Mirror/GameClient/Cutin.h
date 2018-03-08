@@ -43,6 +43,7 @@ public:
 	virtual ~Cutin( );
 
 public:
+	void initialize( );
 	void update( );
 	void setImage( CUTIN_TYPE type, int idx, bool player_turn = false );
 	void setSpeed( float speed );

@@ -24,7 +24,7 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	SetGraphMode( WIDTH, HEIGHT, 32 );
 	SetDoubleStartValidFlag( TRUE );
 	SetAlwaysRunFlag( TRUE );
-	SetConnectTimeOutWait( 60 );
+	SetConnectTimeOutWait( TIME_OUT );
 	if ( DxLib_Init( ) != 0 ) {
 		return -1;
 	}
@@ -58,7 +58,7 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 			if ( ScreenFlip( ) != 0 || ProcessMessage( ) != 0 || ClearDrawScreen( ) != 0 ) {
 				break;
 			}
-			if ( data->getInitFlag( ) ) {
+			if ( data->isInitFlag( ) ) {
 				direction->initialize( );
 				data->setScene( TITLE );
 			}

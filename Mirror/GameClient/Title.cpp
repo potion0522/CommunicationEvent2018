@@ -131,7 +131,7 @@ void Title::update( ) {
 		_soundplayer->play( _bgm );
 	}
 
-	if ( _data->getKeyState( KEY_INPUT_Z ) == 1 && !_data->getCommandFlag( ) ) {
+	if ( _data->getKeyState( KEY_INPUT_Z ) == 1 && !_data->isCommandFlag( ) ) {
 		_soundplayer->stop( _bgm );
 		_data->setScene( CONNECT );
 	}

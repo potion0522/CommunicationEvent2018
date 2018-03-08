@@ -53,14 +53,14 @@ void Direction::update( ) {
 
 	//デバッグON
 	if ( _data->getKeyState( KEY_INPUT_SPACE ) == 1 && _data->getMachineType( ) == CLIENT ) {
-		if ( !_data->getCommandFlag( ) ) {
+		if ( !_data->isCommandFlag( ) ) {
 			_debug->setFlag( ( _debug->getFlag( ) + 1 ) % 2 );
 		}
 	}
 
 	//終了
 	if ( _data->getKeyState( KEY_INPUT_ESCAPE ) == 1 ) {
-		if ( !_data->getCommandFlag( ) ) {
+		if ( !_data->isCommandFlag( ) ) {
 			_data->setFlag( 0 );
 		}
 	}
@@ -83,33 +83,59 @@ void Direction::add( SCENE scene, BasePtr ptr ) {
 void Direction::run( ) {
 	update( );
 
+	//エラーメッセージがあるかどうか
+	bool error = _data->isMessageFlag( );
+
 	std::map< SCENE, std::vector< BasePtr > >::iterator ite;
 	ite = _exe.begin( );
 	for ( ite; ite != _exe.end( ); ite++ ) {
 		SCENE ite_scene = ite->first;
+
+		//現在見ているシーンがオールとコネクト以外であったらコンティニュー
 		if ( ite_scene != _scene && ite_scene != ALL ) {
 			if ( ite_scene != CONNECT ) {
 				continue;
 			}
 		}
-		if ( ite_scene == CONNECT && ( _scene > BATTLE || _scene < CONNECT ) ) {
+
+		//今見ているのがコネクトで現在進行中のシーンが
+		//バトルより大きい(リザルト)かコネクトより小さい(タイトル)であったらコンティニュー
+		if ( ite_scene == CONNECT && ( BATTLE < _scene || _scene < CONNECT ) ) {
 			continue;
 		}
 
-		////デバッグ用
-		//if ( ite_scene == CONNECT ) {
-		//	continue;
-		//}
-
-		int size = ( int )ite->second.size( );
-		for ( int i = 0; i < size; i++ ) {
-			if ( !ite->second[ i ]->getFlag( ) ) {
+		//エラーメッセージがあれば
+		if ( error ) {
+			if ( ite_scene != ALL ) {
 				continue;
 			}
-			if ( _debug->getFlag( ) ) {
-				_debug->setActiveClass( ite->second[ i ]->getTag( ) );
+		}
+
+		int size = ( int )ite->second.size( );
+
+		if ( size < 1 ) {
+			continue;
+		}
+
+		std::vector< BasePtr > exe;
+		exe = ite->second;
+
+		for ( int i = 0; i < size; i++ ) {
+			if ( !exe[ i ]->getFlag( ) ) {
+				continue;
 			}
-			ite->second[ i ]->update( );
+			//エラーメッセージがあったら
+			if ( error ) {
+				std::string tag = exe[ i ]->getTag( );
+				if ( tag != "GLOBALDATA" && tag != "DRAWER" ) {
+					continue;
+				}
+			}
+
+			if ( _debug->getFlag( ) ) {
+				_debug->setActiveClass( exe[ i ]->getTag( ) );
+			}
+			exe[ i ]->update( );
 		}
 	}
 }

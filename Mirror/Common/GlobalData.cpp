@@ -8,6 +8,7 @@
 #include "Client.h"
 #include "Drawer.h"
 #include "Soundplayer.h"
+#include "Message.h"
 #include <ctime>
 #include <cstdlib>
 #include <limits.h>
@@ -20,6 +21,7 @@ _type( type ) {
 	_image = ImagePtr( new Image( ) );
 	_drawer = DrawerPtr( new Drawer( ) );
 	_soundplayer = SoundplayerPtr( new Soundplayer( ) );
+	_message = MessagePtr( new Message( _drawer ) );
 	_debug = NULL;
 
 	switch ( _type ) {
@@ -53,6 +55,7 @@ std::string GlobalData::getTag( ) {
 void GlobalData::initialize( ) {
 	_scene = TITLE;
 	_command_flag = false;
+	_clicking = false;
 	_count = 0;
 
 	switch ( _type ) {
@@ -80,17 +83,28 @@ void GlobalData::finalize( ) {
 	_key->~UpdateKey( );
 	_mouse->~MouseEvent( );
 	_image->~Image( );
+	_message->~Message( );
 }
 
 void GlobalData::update( ) {
-	if ( _debug == NULL ) {
-		DebugPtr debug( new Debug( ) );
-		debug->error( "GlobalData.cpp->update : クラスポインタがNULLのものがあります。" );
-	}
-
 	_key->update( );
 	_mouse->update( );
 	_soundplayer->update( );
+
+	if ( _message_flag ) {
+		_message->update( );
+
+		if ( getClickingLeft( ) ) {
+			_clicking = true;
+		}
+		if ( !getClickingLeft( ) && _clicking ) {
+			_message_flag = false;
+			_clicking = false;
+			_message->initialize( );
+		}
+		return;
+	}
+
 	_count++;
 	if ( _count >= INT_MAX ) {
 		_count = 0;
@@ -147,12 +161,16 @@ MACHINE_TYPE GlobalData::getMachineType( ) const {
 	return _type;
 }
 
-bool GlobalData::getCommandFlag( ) const {
+bool GlobalData::isCommandFlag( ) const {
 	return _command_flag;
 }
 
-bool GlobalData::getInitFlag( ) const {
+bool GlobalData::isInitFlag( ) const {
 	return _init;
+}
+
+bool GlobalData::isMessageFlag( ) const {
+	return _message_flag;
 }
 
 void GlobalData::setCommandFlag( bool flag ) {
@@ -165,6 +183,11 @@ void GlobalData::setInitFlag( ) {
 
 void GlobalData::foldInitFlag( ) {
 	_init = false;
+}
+
+void GlobalData::setMessage( std::string str ) {
+	_message->add( str );
+	_message_flag = true;
 }
 
 void GlobalData::setPtr( DebugPtr ptr ) {

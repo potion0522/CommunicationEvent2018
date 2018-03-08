@@ -41,6 +41,7 @@ _data( data ) {
 	_keycode.push_back( _keyboard->getKeyCode( DECIMAL_KEY ) );
 
 
+	// ‰æ‘œŠÖŒW ///////////////////////////////////////////////
 	ImagePtr image_ptr = _data->getImagePtr( );
 	{//”wŒi
 		_background_handle = image_ptr->getPng( BACKGROUND_IMAGE, BACKGROUND_WHITE ).png;
@@ -98,6 +99,7 @@ _data( data ) {
 		_bar_rate = length / ( FRAME * 2 );
 	}
 
+	// ‰¹ŠÖŒW ///////////////////////////////////////////////
 	SoundPtr sound_ptr = _data->getSoundPtr( );
 	{//saveƒ{ƒ^ƒ“SE
 		_button_se = SoundProperty( );
@@ -159,7 +161,7 @@ void IpSetting::update( ) {
 		image.png = _bar_frame.png;
 		_drawer->setFrontImage( image );
 
-		if ( _wait_time < ( FRAME * 2 ) ) {
+		if ( _wait_time < ( FRAME ) ) {
 			_wait_time++;
 		} else {
 			_soundplayer->play( _save_se );

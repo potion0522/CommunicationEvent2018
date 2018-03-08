@@ -2,6 +2,7 @@
 #include "Base.h"
 #include "smart_ptr.h"
 #include "const.h"
+#include <string>
 
 PTR( GlobalData );
 PTR( UpdateKey );
@@ -14,6 +15,7 @@ PTR( Client );
 PTR( Drawer );
 PTR( Soundplayer );
 PTR( Field );
+PTR( Message );
 
 class GlobalData : public Base {
 public:
@@ -39,13 +41,15 @@ public:
 	int getCount( ) const;
 	SCENE getScene( ) const;
 	MACHINE_TYPE getMachineType( ) const;
-	bool getCommandFlag( ) const;
-	bool getInitFlag( ) const;
+	bool isCommandFlag( ) const;
+	bool isInitFlag( ) const;
+	bool isMessageFlag( ) const;
 
 public:
 	void setCommandFlag( bool flag );
 	void setInitFlag( );
 	void foldInitFlag( );
+	void setMessage( std::string str );
 	void setPtr( DebugPtr ptr );
 	void setPtr( ServerPtr ptr );
 	void setPtr( ClientPtr ptr );
@@ -66,6 +70,8 @@ private:
 	MACHINE_TYPE _type;
 	bool _command_flag;
 	bool _init;
+	bool _message_flag;
+	bool _clicking;
 	int _count;
 
 	UpdateKeyPtr _key;
@@ -78,5 +84,6 @@ private:
 	DrawerPtr _drawer;
 	SoundplayerPtr _soundplayer;
 	FieldPtr _field;
+	MessagePtr _message;
 };
 
