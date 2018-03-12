@@ -915,13 +915,13 @@ void Field::drawPlayerPos( ) const {
 			}
 
 			if ( getPlayerPosHitNum( ) == i ) {
-				_drawer->setCircle( x, y, CIRCLE_SIZE, WHITE, 255, true );
+				_drawer->setFrontCircle( x, y, CIRCLE_SIZE, WHITE, 255, true );
 				SetCursor( _cur_hand );
 			} else {
-				_drawer->setCircle( x, y, CIRCLE_SIZE, WHITE, ( int )( ( sin( _data->getCount( ) * 0.06 ) + 1 ) * 64 + 50 ), true );
+				_drawer->setFrontCircle( x, y, CIRCLE_SIZE, WHITE, ( int )( ( sin( _data->getCount( ) * 0.06 ) + 1 ) * 64 + 50 ), true );
 			}
 		}
-		_drawer->setCircle( x, y, CIRCLE_SIZE, ( COLOR )( RED + i / PLAYER_POSITION ) );
+		_drawer->setFrontCircle( x, y, CIRCLE_SIZE, ( COLOR )( RED + i / PLAYER_POSITION ) );
 	}
 }
 
@@ -991,23 +991,23 @@ void Field::drawSettingPlayer( ) {
 		case 2:		dot = "..";		break;
 		case 3:		dot = "...";	break;
 	}
-	_drawer->setCircle( x, y_red,  r, RED,  alpha, true );
-	_drawer->setCircle( x, y_blue, r, BLUE, alpha, true );
+	_drawer->setFrontCircle( x, y_red,  r, RED,  alpha, true );
+	_drawer->setFrontCircle( x, y_blue, r, BLUE, alpha, true );
 	if ( _order != _player_num ) {
 		if( _player_num == 0 ){
 			y = y_blue;
-			_drawer->setCircle( x, y_red, r, RED, 255, true );
+			_drawer->setFrontCircle( x, y_red, r, RED, 255, true );
 		} else {
 			y = y_red;
-			_drawer->setCircle( x, y_blue, r, BLUE, 255, true );
+			_drawer->setFrontCircle( x, y_blue, r, BLUE, 255, true );
 		}
 	} else {
 		if ( _player_num == 0 ) {
 			y = y_red;
-			_drawer->setCircle( x, y_blue, r, BLUE, 255, true );
+			_drawer->setFrontCircle( x, y_blue, r, BLUE, 255, true );
 		} else {
 			y = y_blue;
-			_drawer->setCircle( x, y_red, r, RED, 255, true );
+			_drawer->setFrontCircle( x, y_red, r, RED, 255, true );
 		}
 	}
 	_drawer->setFrontString( false, x, y + 3, WHITE, str + dot, Drawer::LITTLE_BIG );

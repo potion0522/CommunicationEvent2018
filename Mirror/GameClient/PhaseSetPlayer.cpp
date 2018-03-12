@@ -41,6 +41,9 @@ void PhaseSetPlayer::update( ) {
 	}
 
 	if ( _selected ) {
+		_field->setInfoText( "" );
+		_field->setInfoText( "‘ŠŽè‚ð‘Ò‚Á‚Ä‚¢‚Ü‚·", YELLOW, Drawer::LITTLE_BIG );
+		_field->setInfoText( "" );
 		return;
 	}
 

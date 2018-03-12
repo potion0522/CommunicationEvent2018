@@ -45,7 +45,8 @@ public:
 	void setFrontString( bool flag, double x, double y, COLOR col, std::string str, FONTSIZE_TYPE type = NORMAL, int alpha = 255 );
 	void setBackString( bool flag, double x, double y, COLOR col, std::string str, FONTSIZE_TYPE type = NORMAL, int alpha = 255 );
 	void setLine( double sx, double sy, double ex, double ey, COLOR col = WHITE, int alpha = 255 );
-	void setCircle( double x, double y, double r, COLOR col = WHITE, int alpha = 255, bool isfill = false );
+	void setFrontCircle( double x, double y, double r, COLOR col = WHITE, int alpha = 255, bool isfill = false );
+	void setBackCircle( double x, double y, double r, COLOR col = WHITE, int alpha = 255, bool isfill = false );
 	void setFrontBox( double lx, double ly, double rx, double ry, COLOR col = WHITE, bool isfill = false );
 	void setBackBox( double lx, double ly, double rx, double ry, COLOR col = WHITE, bool isfill = false );
 	void setAllBright( int r, int g, int b );
@@ -59,7 +60,8 @@ private:
 	void drawFrontString( );
 	void drawBackString( );
 	void drawLine( );
-	void drawCircle( );
+	void drawFrontCircle( );
+	void drawBackCircle( );
 	void drawFrontBox( );
 	void drawBackBox( );
 	void reset( );
@@ -116,9 +118,10 @@ private:
 	std::list< ExtendImageProperty > _front_images;
 	std::list< ExtendImageProperty > _back_images;
 	std::list< LineProperty > _lines;
-	std::list< CircleProperty > _circles;
-	std::list< BoxProperty > _back_boxes;
+	std::list< CircleProperty > _front_circles;
+	std::list< CircleProperty > _back_circles;
 	std::list< BoxProperty > _front_boxes;
+	std::list< BoxProperty > _back_boxes;
 
 	ColorPtr _color;
 };

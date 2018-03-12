@@ -108,8 +108,8 @@ void Cutin::draw( ) const {
 	image.cy = _cutin.cy;
 	image.png = _back_cutin;
 	image.bright_flag = true;
-	_drawer->setBackImage( image );
-	_drawer->setBackImage( _cutin );
+	_drawer->setFrontImage( image );
+	_drawer->setFrontImage( _cutin );
 }
 
 void Cutin::drawString( ) const {

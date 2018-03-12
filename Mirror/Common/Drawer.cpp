@@ -62,11 +62,12 @@ void Drawer::update( ) {
 	drawBackGroundImage( );
 	drawBackString( );
 	drawBackBox( );
-	drawCircle( );
+	drawBackCircle( );
 	drawLine( );
 	drawBackImage( );
 	drawFrontString( );
 	drawFrontBox( );
+	drawFrontCircle( );
 	drawFrontImage( );
 	reset( );
 }
@@ -238,15 +239,37 @@ void Drawer::drawLine( ) {
 
 }
 
-void Drawer::drawCircle( ) {
+void Drawer::drawFrontCircle( ) {
 	std::list< CircleProperty >::iterator ite;
-	ite = _circles.begin( );
-	if( _circles.size( ) < 1 ) {
+	ite = _front_circles.begin( );
+	if( _front_circles.size( ) < 1 ) {
 		return;
 	}
 
 	SetDrawMode(  DX_DRAWMODE_BILINEAR );
-	for( ite; ite != _circles.end( ); ite++ ) {
+	for( ite; ite != _front_circles.end( ); ite++ ) {
+
+		if ( ite->alpha < 255 ) {
+			SetDrawBlendMode( DX_BLENDMODE_ALPHA, ite->alpha );
+		}
+		DrawCircleAA( ite->cx, ite->cy, ite->r, 32, _color->getColor( ite->col ), ite->isFill );
+
+		if ( ite->alpha < 255 ) {
+			SetDrawBlendMode( DX_BLENDMODE_NOBLEND, 0 );
+		}
+	}
+	SetDrawMode( DX_DRAWMODE_NEAREST );
+}
+
+void Drawer::drawBackCircle( ) {
+	std::list< CircleProperty >::iterator ite;
+	ite = _back_circles.begin( );
+	if( _back_circles.size( ) < 1 ) {
+		return;
+	}
+
+	SetDrawMode(  DX_DRAWMODE_BILINEAR );
+	for( ite; ite != _back_circles.end( ); ite++ ) {
 
 		if ( ite->alpha < 255 ) {
 			SetDrawBlendMode( DX_BLENDMODE_ALPHA, ite->alpha );
@@ -375,9 +398,14 @@ void Drawer::setLine( double sx, double sy, double ex, double ey, COLOR col, int
 	_lines.push_back( line );
 }
 
-void Drawer::setCircle( double x, double y, double r, COLOR col, int alpha, bool isfill ) {
+void Drawer::setFrontCircle( double x, double y, double r, COLOR col, int alpha, bool isfill ) {
 	CircleProperty circle = { ( float )x, ( float )y, ( float )r, col, alpha, isfill };
-	_circles.push_back( circle );
+	_front_circles.push_back( circle );
+}
+
+void Drawer::setBackCircle( double x, double y, double r, COLOR col, int alpha, bool isfill ) {
+	CircleProperty circle = { ( float )x, ( float )y, ( float )r, col, alpha, isfill };
+	_back_circles.push_back( circle );
 }
 
 void Drawer::setFrontBox( double lx, double ly, double rx, double ry, COLOR col, bool isfill ) {
@@ -481,9 +509,13 @@ void Drawer::reset( ) {
 	if ( size > 0 ) {
 		std::list< LineProperty >( ).swap( _lines );
 	}
-	size = ( int )_circles.size( );
+	size = ( int )_front_circles.size( );
 	if ( size > 0 ) {
-		std::list< CircleProperty >( ).swap( _circles );
+		std::list< CircleProperty >( ).swap( _front_circles );
+	}
+	size = ( int )_back_circles.size( );
+	if ( size > 0 ) {
+		std::list< CircleProperty >( ).swap( _back_circles );
 	}
 	size = ( int )_front_boxes.size( );
 	if ( size > 0 ) {
