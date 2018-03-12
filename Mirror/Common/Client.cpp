@@ -198,6 +198,10 @@ void Client::setPlayerPos( int pos ) {
 	_send_data_tcp.player_pos[ _player_num ] = ( unsigned char )pos;
 }
 
+void Client::setCauseOfDeath( CAUSE_OF_DEATH cause ) {
+	_send_data_tcp.cause_of_death = ( unsigned char )cause;
+}
+
 void Client::setItemFlag( bool flag ) {
 	_send_data_tcp.item_flag = flag;
 }
@@ -268,18 +272,6 @@ int Client::getLazerPoint( ) const {
 	return ( int )_recv_data_udp.lazer_pos;
 }
 
-bool Client::isItemFlag( ) const {
-	return _recv_data_udp.item_flag;
-}
-
-int Client::getItem( ) const {
-	return ( int )_recv_data_udp.item;
-}
-
-int Client::getItemUser( ) const {
-	return ( int )_recv_data_udp.item_user;
-}
-
 int Client::getOrder( ) const {
 	if ( _recv_data_udp.order == ( unsigned char )-1 ) {
 		return -1;
@@ -292,6 +284,22 @@ int Client::getPlayerPos( int idx ) const {
 		return -1;
 	}
 	return ( int )_recv_data_udp.player_pos[ idx ];
+}
+
+CAUSE_OF_DEATH Client::getEnemyCauseOfDeath( ) const {
+	return ( CAUSE_OF_DEATH )_recv_data_udp.cause_of_death;
+}
+
+bool Client::isItemFlag( ) const {
+	return _recv_data_udp.item_flag;
+}
+
+int Client::getItem( ) const {
+	return ( int )_recv_data_udp.item;
+}
+
+int Client::getItemUser( ) const {
+	return ( int )_recv_data_udp.item_user;
 }
 
 bool Client::getStcFlag( int idx ) const {

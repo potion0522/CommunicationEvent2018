@@ -207,9 +207,12 @@ void Server::setOrder( int order ) {
 	_send_data_udp.order = ( unsigned char )order;
 }
 
-
 void Server::setPlayerPos( int idx, int pos ) {
 	_send_data_udp.player_pos[ idx ] = ( unsigned char )pos;
+}
+
+void Server::setCauseOfDeath( CAUSE_OF_DEATH cause ) {
+	_send_data_udp.cause_of_death = cause;
 }
 
 void Server::setLazerPos( int pos ) {
@@ -265,6 +268,10 @@ int Server::getOrder( int idx ) const {
 
 int Server::getPlayerPos( int idx ) const {
 	return ( int )_recv_data_tcp[ idx ].player_pos[ idx ];
+}
+
+CAUSE_OF_DEATH Server::getCauseOfDeath( int idx ) const {
+	return ( CAUSE_OF_DEATH )_recv_data_tcp[ idx ].cause_of_death;
 }
 
 bool Server::isItemFlag( int idx ) const {

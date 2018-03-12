@@ -33,6 +33,7 @@ public:
 public:
 	void setOrder( int order );
 	void setPlayerPos( int pos );
+	void setCauseOfDeath( CAUSE_OF_DEATH cause );
 	void setItemFlag( bool flag );
 	void setItem( int item );
 	void setItemUser( );
@@ -48,11 +49,12 @@ public:
 	std::string getClientIpStr( );
 	int getPlayerNum( ) const;
 	int getLazerPoint( ) const;
+	int getOrder( ) const;
+	int getPlayerPos( int idx ) const;
+	CAUSE_OF_DEATH getEnemyCauseOfDeath( ) const;
 	bool isItemFlag( ) const;
 	int getItem( ) const;
 	int getItemUser( ) const;
-	int getOrder( ) const;
-	int getPlayerPos( int idx ) const;
 	bool getStcFlag( int idx ) const;
 	int getStcPlayerNum( int idx ) const;
 	int getStcX( int idx ) const;

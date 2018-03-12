@@ -31,6 +31,7 @@ public:
 	void createIP( std::string ipstr );
 	void setOrder( int order );
 	void setPlayerPos( int idx, int pos );
+	void setCauseOfDeath( CAUSE_OF_DEATH cause );
 	void setLazerPos( int pos );
 	void setItemFlag( bool flag );
 	void setItem( int item );
@@ -46,6 +47,7 @@ public:
 public:
 	int getOrder( int idx ) const;
 	int getPlayerPos( int idx ) const;
+	CAUSE_OF_DEATH getCauseOfDeath( int idx ) const;
 	bool isItemFlag( int idx ) const;
 	int getItem( int idx ) const;
 	int getItemUser( int idx ) const;

@@ -44,6 +44,7 @@ struct SendMirrorData {
 
 struct NetWorkData {
 	bool alive;	//©•ª‚Ì¶€
+	unsigned char cause_of_death;//•‰‚¯‚½——R
 	unsigned char winner;
 	unsigned char player_pos[ PLAYER_NUM ];
 	unsigned char lazer_pos;
@@ -152,4 +153,10 @@ enum SOUND_EFFECT {
 	WIN_SE,
 	LOSE_SE,
 	SE_MAX
+};
+
+enum CAUSE_OF_DEATH {
+	CAUSE_HIT,
+	CAUSE_TIME,
+	CAUSE_MAX,
 };
