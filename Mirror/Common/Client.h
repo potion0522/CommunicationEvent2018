@@ -51,7 +51,7 @@ public:
 	int getLazerPoint( ) const;
 	int getOrder( ) const;
 	int getPlayerPos( int idx ) const;
-	CAUSE_OF_DEATH getEnemyCauseOfDeath( ) const;
+	CAUSE_OF_DEATH getCauseOfDeath( ) const;
 	bool isItemFlag( ) const;
 	int getItem( ) const;
 	int getItemUser( ) const;

@@ -4,56 +4,89 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ResultClient.cpp" />
     <ClCompile Include="Console.cpp" />
-    <ClCompile Include="Game.cpp" />
-    <ClCompile Include="Lazer.cpp" />
-    <ClCompile Include="Title.cpp" />
-    <ClCompile Include="SelectItem.cpp" />
-    <ClCompile Include="IpSetting.cpp" />
     <ClCompile Include="Phase.cpp">
-      <Filter>Phase</Filter>
+      <Filter>Game\Phase</Filter>
     </ClCompile>
     <ClCompile Include="PhaseSetPlayer.cpp">
-      <Filter>Phase</Filter>
+      <Filter>Game\Phase</Filter>
     </ClCompile>
     <ClCompile Include="PhaseSetMirror.cpp">
-      <Filter>Phase</Filter>
+      <Filter>Game\Phase</Filter>
     </ClCompile>
-    <ClCompile Include="Cutin.cpp" />
     <ClCompile Include="PhaseAttack.cpp">
-      <Filter>Phase</Filter>
+      <Filter>Game\Phase</Filter>
     </ClCompile>
     <ClCompile Include="PhaseJudge.cpp">
-      <Filter>Phase</Filter>
+      <Filter>Game\Phase</Filter>
+    </ClCompile>
+    <ClCompile Include="Game.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Cutin.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Lazer.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Title.cpp">
+      <Filter>Title</Filter>
+    </ClCompile>
+    <ClCompile Include="IpSetting.cpp">
+      <Filter>Title\Setting</Filter>
+    </ClCompile>
+    <ClCompile Include="SelectItem.cpp">
+      <Filter>Title\Setting</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ResultClient.h" />
     <ClInclude Include="Console.h" />
-    <ClInclude Include="Game.h" />
-    <ClInclude Include="Lazer.h" />
-    <ClInclude Include="Title.h" />
-    <ClInclude Include="SelectItem.h" />
-    <ClInclude Include="IpSetting.h" />
     <ClInclude Include="Phase.h">
-      <Filter>Phase</Filter>
+      <Filter>Game\Phase</Filter>
     </ClInclude>
     <ClInclude Include="PhaseSetPlayer.h">
-      <Filter>Phase</Filter>
+      <Filter>Game\Phase</Filter>
     </ClInclude>
     <ClInclude Include="PhaseSetMirror.h">
-      <Filter>Phase</Filter>
+      <Filter>Game\Phase</Filter>
     </ClInclude>
-    <ClInclude Include="Cutin.h" />
     <ClInclude Include="PhaseAttack.h">
-      <Filter>Phase</Filter>
+      <Filter>Game\Phase</Filter>
     </ClInclude>
     <ClInclude Include="PhaseJudge.h">
-      <Filter>Phase</Filter>
+      <Filter>Game\Phase</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Cutin.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Lazer.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Title.h">
+      <Filter>Title</Filter>
+    </ClInclude>
+    <ClInclude Include="IpSetting.h">
+      <Filter>Title\Setting</Filter>
+    </ClInclude>
+    <ClInclude Include="SelectItem.h">
+      <Filter>Title\Setting</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="Phase">
+    <Filter Include="Game">
+      <UniqueIdentifier>{824f5a76-4a52-4a88-b73f-6826696dce9c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Phase">
       <UniqueIdentifier>{378daab7-a76d-4683-bbd6-5b5b2e9a96f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Title">
+      <UniqueIdentifier>{23649102-b293-4729-8dcd-0d8fe8007374}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Title\Setting">
+      <UniqueIdentifier>{d40d1ccc-ea6b-4033-abe9-0e464819db3b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

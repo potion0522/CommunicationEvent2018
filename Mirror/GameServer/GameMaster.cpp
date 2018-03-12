@@ -261,14 +261,17 @@ void GameMaster::updateAttackPhase( ) {
 		return;
 	}
 
+	CAUSE_OF_DEATH cause = CAUSE_OF_DEATH( );
 	for ( int i = 0; i < PLAYER_NUM; i++ ) {
 		if ( !_client_data[ i ].alive ) {
 			_winner = ( i + 1 ) % PLAYER_NUM;
+			cause = _server->getCauseOfDeath( _client_data[ i ].player_num );
 			break;
 		}
 	}
 	
 	_phase = JUDGE_PHASE;
+	_server->setCauseOfDeath( cause );
 	_server->setBattlePhase( _phase );
 	_server->setStcWinner( _winner );
 	_field->setPhase( _phase );

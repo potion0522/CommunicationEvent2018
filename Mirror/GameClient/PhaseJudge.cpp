@@ -14,6 +14,7 @@ _field( field ) {
 
 	_recv = false;
 	_turn_fin = false;
+	_cause = CAUSE_OF_DEATH( );
 
 	SoundPtr sound_ptr = _data->getSoundPtr( );
 	{//Winner SE
@@ -51,6 +52,7 @@ void PhaseJudge::update( ) {
 		_data->setScene( RESULT );
 		_soundplayer->play( _win_se );
 		_win = true;
+		_cause = _client->getCauseOfDeath( );
 	} else if ( winner == -1 ) {
 		//Ÿ”s‚È‚µ
 		_field->mirrorPosNotSelected( );
@@ -63,6 +65,7 @@ void PhaseJudge::update( ) {
 		_data->setScene( RESULT );
 		_soundplayer->play( _lose_se );
 		_win = false;
+		_cause = _client->getCauseOfDeath( );
 	}
 
 	_turn_fin = true;
@@ -78,4 +81,8 @@ void PhaseJudge::recv( ) {
 
 bool PhaseJudge::isWin( ) const {
 	return _win;
+}
+
+CAUSE_OF_DEATH PhaseJudge::getCauseOfDeath( ) const {
+	return _cause;
 }

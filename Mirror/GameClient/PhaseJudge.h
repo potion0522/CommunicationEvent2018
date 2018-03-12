@@ -2,6 +2,7 @@
 #include "Phase.h"
 #include "smart_ptr.h"
 #include "Base.h"
+#include "const.h"
 
 PTR( PhaseJudge );
 PTR( GlobalData );
@@ -20,12 +21,13 @@ public:
 
 public:
 	bool isWin( ) const;
+	CAUSE_OF_DEATH getCauseOfDeath( ) const;
 
 private:
 	bool _recv;
 	bool _turn_fin;
 	bool _win;
-
+	CAUSE_OF_DEATH _cause;
 	
 	Base::SoundProperty _win_se;
 	Base::SoundProperty _lose_se;

@@ -286,7 +286,7 @@ int Client::getPlayerPos( int idx ) const {
 	return ( int )_recv_data_udp.player_pos[ idx ];
 }
 
-CAUSE_OF_DEATH Client::getEnemyCauseOfDeath( ) const {
+CAUSE_OF_DEATH Client::getCauseOfDeath( ) const {
 	return ( CAUSE_OF_DEATH )_recv_data_udp.cause_of_death;
 }
 

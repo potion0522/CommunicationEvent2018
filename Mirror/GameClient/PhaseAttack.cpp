@@ -51,19 +51,24 @@ void PhaseAttack::calc( ) {
 	}
 
 	//ここにプレイヤーの生死判定
+	CAUSE_OF_DEATH cause = CAUSE_OF_DEATH( );
 	int dead = _field->getDeadPlayer( );
 	bool alive = true;
+
+	//倒されたプレイヤーが自分ならば
 	if ( dead == _player_num ) {
 		alive = false;
 	}
 	if( _field->getDeadCount( ) <= 0 ) {
 		alive = false;
+		cause = CAUSE_TIME;
 		if ( dead != _player_num && dead != -1 ) {
 			alive = true;
 		}
 	}
 
 	_client->setAlive( alive );
+	_client->setCauseOfDeath( cause );
 	_client->sendTcp( );
 	_send_live = true;
 }

@@ -27,12 +27,14 @@ public:
 
 public:
 	bool isWin( ) const;
+	CAUSE_OF_DEATH getCauseOfDeath( ) const;
 
 private:
 	void changePhase( );
 
 private:
 	bool _win;
+	CAUSE_OF_DEATH _cause;
 	short int _turn;
 	short int _order;
 	short int _player_num;
