@@ -6,7 +6,7 @@
 #include <vector>
 
 PTR( Image );
-PTR( Loading );
+PTR( MultiThreadLoad );
 
 struct Png {
 	int width;
@@ -38,5 +38,5 @@ private:
 	std::vector< WIN32_FIND_DATA > _file;
 	int _dir_num;
 
-	LoadingPtr _load;
+	MultiThreadLoadPtr _load;
 };

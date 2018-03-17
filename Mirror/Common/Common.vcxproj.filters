@@ -58,6 +58,7 @@
     <ClCompile Include="Message.cpp">
       <Filter>Global</Filter>
     </ClCompile>
+    <ClCompile Include="MultiThreadLoad.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Base.h">
@@ -120,6 +121,7 @@
     <ClInclude Include="Message.h">
       <Filter>Global</Filter>
     </ClInclude>
+    <ClInclude Include="MultiThreadLoad.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="BaseClass">

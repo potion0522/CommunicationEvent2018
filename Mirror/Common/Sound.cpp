@@ -1,7 +1,7 @@
 #include "Sound.h"
 #include "DxLib.h"
 #include "Debug.h"
-#include "Loading.h"
+#include "MultiThreadLoad.h"
 #include "LoadCSV.h"
 #include <assert.h>
 #include <errno.h>
@@ -34,23 +34,18 @@ Sound::Sound( ) {
 		}
 	}
 
-	//ロードシーン
+	//マルチスレッド
 	if ( load_scene && _sound_load ) {
-		_load = LoadingPtr( new Loading( "音楽データ読み込み中" ) );
+		_load = MultiThreadLoadPtr( new MultiThreadLoad( "音楽データを読み込み中" ) );
 	} else {
-		_load = LoadingPtr( new Loading( ) );
-		load_scene = false;
+		_load = MultiThreadLoadPtr( new MultiThreadLoad( ) );
 	}
 
-	//ハンドル取得
+	//ハンドル読み込み
 	initialize( );
 
-	while ( load_scene ) {
-		_load->update( );
-		if ( _load->isFin( ) ) {
-			break;
-		}
-	}
+	//読み込みが終わるまでロード画面を描画
+	_load->update( );
 }
 
 Sound::~Sound( ) {
@@ -133,6 +128,7 @@ void Sound::check( int wav ) const {
 
 void Sound::inputSound( ) {
 	int size = ( int )_file.size( );
+	//マルチスレッドに最大数をセット
 	_load->setMaxLength( ( float )size );
 
 	int dir = 0;
@@ -163,11 +159,7 @@ void Sound::inputSound( ) {
 				check( add.wav );
 				_data[ dir ].wav.push_back( add );
 			}
-
 		}
-
-		_load->add( ( float )( i + 1 ) / ( float )size );
-		_load->update( );
 	}
 }
 

@@ -5,8 +5,8 @@
 
 const short int STRING_SIZE = 50;
 const short int CHANGE_EFFECT_COUNT = 2;
-const short int WAIT = CHANGE_EFFECT_COUNT * LOADING_EFFECT_MAX - 1;
-const short int EFFECT_COUNT_MAX =CHANGE_EFFECT_COUNT * LOADING_EFFECT_MAX - 1;
+const short int WAIT = CHANGE_EFFECT_COUNT * Loading::LOADING_EFFECT_MAX - 1;
+const short int EFFECT_COUNT_MAX =CHANGE_EFFECT_COUNT * Loading::LOADING_EFFECT_MAX - 1;
 const float MAX_LENGTH = WIDTH * 0.35f;
 
 Loading::Loading( std::string message ) :

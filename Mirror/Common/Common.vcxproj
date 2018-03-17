@@ -167,6 +167,7 @@
     <ClCompile Include="Loading.cpp" />
     <ClCompile Include="Message.cpp" />
     <ClCompile Include="MouseEvent.cpp" />
+    <ClCompile Include="MultiThreadLoad.cpp" />
     <ClCompile Include="Server.cpp" />
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="Soundplayer.cpp" />
@@ -189,6 +190,7 @@
     <ClInclude Include="Loading.h" />
     <ClInclude Include="Message.h" />
     <ClInclude Include="MouseEvent.h" />
+    <ClInclude Include="MultiThreadLoad.h" />
     <ClInclude Include="Server.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="Soundplayer.h" />

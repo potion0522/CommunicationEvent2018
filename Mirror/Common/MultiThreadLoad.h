@@ -3,22 +3,21 @@
 #include <string>
 #include <array>
 
-PTR( Loading );
+PTR( MultiThreadLoad );
 
-class Loading {
+
+class MultiThreadLoad {
 public:
 	static const short int LOADING_EFFECT_MAX = 8;
 
 public:
-	Loading( std::string message );
-	Loading( );
-	virtual ~Loading( );
+	MultiThreadLoad( std::string message );
+	MultiThreadLoad( );
+	virtual ~MultiThreadLoad( );
 
 public:
 	void update( );
-	void add( float add );
 	void setMaxLength( float max );
-	bool isFin( ) const;
 
 private:
 
@@ -31,8 +30,6 @@ private:
 	};
 
 	bool _flag;
-	bool _fin;
-	float _length;
 	float _max;
 	int _cnt;
 	int _font_handle;

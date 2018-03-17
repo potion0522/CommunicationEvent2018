@@ -2,6 +2,7 @@
 #include "DxLib.h"
 #include "Debug.h"
 #include "Loading.h"
+#include "MultiThreadLoad.h"
 #include "LoadCSV.h"
 #include <assert.h>
 #include <errno.h>
@@ -23,21 +24,25 @@ Image::Image( ) {
 			break;
 		}
 	}
-
-	//ロードシーン
+	
+	//マルチスレッド
 	if ( load_scene ) {
-		_load = LoadingPtr( new Loading( "画像データ読み込み中" ) );
+		_load = MultiThreadLoadPtr( new MultiThreadLoad( "画像データを読み込み中" ) );
 	} else {
-		_load = LoadingPtr( new Loading( ) );
+		_load = MultiThreadLoadPtr( new MultiThreadLoad( ) );
 	}
 
-	//ハンドルを取得
+	//ハンドル読み込み
 	initialize( );
 
-	while ( load_scene ) {
-		_load->update( );
-		if ( _load->isFin( ) ) {
-			break;
+	//読み込みが終わるまでロード画面を描画
+	_load->update( );
+
+	//画像の Width, Height を取得
+	for ( int i = 0; i < ( int )_data.size( ); i++ ) {
+		for ( int j = 0; j < ( int )_data[ i ].png.size( ); j++ ) {
+			Png *png = &_data[ i ].png[ j ];
+			GetGraphSize( png->png, &png->width, &png->height );
 		}
 	}
 }
@@ -126,6 +131,7 @@ void Image::check( int png ) const {
 
 void Image::inputImage( ) {
 	int size = ( int )_file.size( );
+	//マルチスレッドに最大数をセット
 	_load->setMaxLength( ( float )size );
 
 	int dir = 0;
@@ -153,16 +159,10 @@ void Image::inputImage( ) {
 				//画像をインプット
 				add.png = LoadGraph( ( path + _file[ i ].cFileName ).c_str( ) );
 
-				//画像サイズをインプット
-				GetGraphSize( add.png, &add.width, &add.height );
-
 				check( add.png );
 				_data[ dir ].png.push_back( add );
 			}
 		}
-
-		_load->add( ( float )( i + 1 ) / ( float )size );
-		_load->update( );
 	}
 }
 
