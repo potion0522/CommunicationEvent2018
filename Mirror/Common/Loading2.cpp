@@ -18,7 +18,7 @@ Loading2::~Loading2( ) {
 }
 
 void Loading2::update( ) {
-	WaitVSync( 30 );
+	//WaitVSync( 60 );
 	while ( !_fin ) {
 		ClearDrawScreen( );
 

@@ -10,13 +10,14 @@ const short int LOADING_EFFECT_MAX = 8;
 class Loading {
 public:
 	Loading( std::string message );
+	Loading( );
 	virtual ~Loading( );
 
 public:
 	void update( );
 	void add( float add );
 	void setMaxLength( float max );
-	bool isFinish( ) const;
+	bool isFin( ) const;
 
 private:
 
@@ -28,6 +29,7 @@ private:
 		RESOURCE_MAX
 	};
 
+	bool _flag;
 	bool _fin;
 	float _length;
 	float _max;

@@ -2,28 +2,44 @@
 #include "DxLib.h"
 #include "Debug.h"
 #include "Loading.h"
+#include "LoadCSV.h"
 #include <assert.h>
 #include <errno.h>
-#include <thread>
 
-const std::string PATH = "Resources/image/";
+const std::string IMAGE_PATH = "Resources/image/";
 
 Image::Image( ) {
-	_load = LoadingPtr( new Loading( "画像データ読み込み中" ) );
-	std::thread th1( &Loading::update, _load );
-	std::thread th2( &Image::initialize, this );
-
-	th1.detach( );
-	th2.join( );
-
-	while ( true ) {
-		ProcessMessage( );
-		if ( _load->isFinish( ) ) {
+	LoadCSVPtr csv = LoadCSVPtr( new LoadCSV( ) );
+	std::vector< CsvData > data;
+	csv->read( data, "flag" );
+	int size = ( int )data.size( );
+	bool load_scene = false;
+	for ( int i = 0; i < size; i++ ) {
+		//ロードシーン描画を行うか判定
+		if ( "LOAD_SCENE" == data[ i ].tag ) {
+			if ( atoi( data[ i ].values.begin( )->c_str( ) ) ) {
+				load_scene = true;
+			}
 			break;
 		}
 	}
 
-	//initialize( );
+	//ロードシーン
+	if ( load_scene ) {
+		_load = LoadingPtr( new Loading( "画像データ読み込み中" ) );
+	} else {
+		_load = LoadingPtr( new Loading( ) );
+	}
+
+	//ハンドルを取得
+	initialize( );
+
+	while ( load_scene ) {
+		_load->update( );
+		if ( _load->isFin( ) ) {
+			break;
+		}
+	}
 }
 
 Image::~Image( ) {
@@ -32,7 +48,7 @@ Image::~Image( ) {
 
 void Image::initialize( ) {
 	_dir_num = 0;
-	inputFileName( PATH );
+	inputFileName( IMAGE_PATH );
 
 	for ( int i = 0; i < _dir_num; i++ ) {
 		Directory add;
@@ -113,14 +129,14 @@ void Image::inputImage( ) {
 	_load->setMaxLength( ( float )size );
 
 	int dir = 0;
-	std::string path = PATH;
+	std::string path = IMAGE_PATH;
 	std::string input = "\0";
 
 	for ( int i = 0; i < size; i++ ) {
 		if ( _file[ i ].dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY ) {
 			for ( int j = 0; j < _dir_num; j++ ) {
 				if ( strcmp( _file[ i ].cFileName, _data[ j ].name.c_str( ) ) == 0 ) {
-					path = PATH + _file[ i ].cFileName + "/";
+					path = IMAGE_PATH + _file[ i ].cFileName + "/";
 					input = _file[ i ].cFileName;
 					dir = j;
 					break;
@@ -146,6 +162,7 @@ void Image::inputImage( ) {
 		}
 
 		_load->add( ( float )( i + 1 ) / ( float )size );
+		_load->update( );
 	}
 }
 

@@ -2,23 +2,41 @@
 #include "DxLib.h"
 #include "Debug.h"
 #include "Loading.h"
+#include "LoadCSV.h"
 #include <assert.h>
 #include <errno.h>
-#include <thread>
 
 const std::string PATH = "Resources/sound/";
 
 Sound::Sound( ) {
-	_load = LoadingPtr( new Loading( "音楽データ読み込み中" ) );
-	std::thread th1( &Loading::update, _load );
-	std::thread th2( &Sound::initialize, this );
+	LoadCSVPtr csv = LoadCSVPtr( new LoadCSV( ) );
+	std::vector< CsvData > data;
+	csv->read( data, "flag" );
+	int size = ( int )data.size( );
+	bool load_scene = false;
+	for ( int i = 0; i < size; i++ ) {
+		//ロードシーン描画を行うか判定
+		if ( "LOAD_SCENE" == data[ i ].tag ) {
+			if ( atoi( data[ i ].values.begin( )->c_str( ) ) ) {
+				load_scene = true;
+			}
+			break;
+		}
+	}
 
-	th1.detach( );
-	th2.join( );
+	//ロードシーン
+	if ( load_scene ) {
+		_load = LoadingPtr( new Loading( "音楽データ読み込み中" ) );
+	} else {
+		_load = LoadingPtr( new Loading( ) );
+	}
 
-	while ( true ) {
-		ProcessMessage( );
-		if ( _load->isFinish( ) ) {
+	//ハンドル取得
+	initialize( );
+
+	while ( load_scene ) {
+		_load->update( );
+		if ( _load->isFin( ) ) {
 			break;
 		}
 	}
@@ -130,6 +148,7 @@ void Sound::inputSound( ) {
 		}
 
 		_load->add( ( float )( i + 1 ) / ( float )size );
+		_load->update( );
 	}
 }
 
