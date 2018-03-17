@@ -9,6 +9,8 @@
 const std::string PATH = "Resources/sound/";
 
 Sound::Sound( ) {
+	_sound_load = false;
+
 	LoadCSVPtr csv = LoadCSVPtr( new LoadCSV( ) );
 	std::vector< CsvData > data;
 	csv->read( data, "flag" );
@@ -20,15 +22,24 @@ Sound::Sound( ) {
 			if ( atoi( data[ i ].values.begin( )->c_str( ) ) ) {
 				load_scene = true;
 			}
+			continue;
+		}
+
+		//音楽読み込みをするかどうか
+		if ( "SOUND_LOAD" == data[ i ].tag ) {
+			if ( atoi( data[ i ].values.begin( )->c_str( ) ) ) {
+				_sound_load = true;
+			}
 			break;
 		}
 	}
 
 	//ロードシーン
-	if ( load_scene ) {
+	if ( load_scene && _sound_load ) {
 		_load = LoadingPtr( new Loading( "音楽データ読み込み中" ) );
 	} else {
 		_load = LoadingPtr( new Loading( ) );
+		load_scene = false;
 	}
 
 	//ハンドル取得
@@ -48,6 +59,10 @@ Sound::~Sound( ) {
 
 void Sound::initialize( ) {
 	_dir_num = 0;
+	if ( !_sound_load ) {
+		return;
+	}
+
 	inputFileName( PATH );
 
 	for ( int i = 0; i < _dir_num; i++ ) {
@@ -87,6 +102,10 @@ void Sound::initialize( ) {
 }
 
 Wav Sound::getWav( SOUND item, int num ) const {
+	if ( !_sound_load ) {
+		return Wav( );
+	}
+
 	int dir = item;
 	Wav tmp;
 	memset( &tmp, 0, sizeof( Wav ) );

@@ -55,9 +55,6 @@
     <ClCompile Include="Loading.cpp">
       <Filter>Load</Filter>
     </ClCompile>
-    <ClCompile Include="Loading2.cpp">
-      <Filter>Load</Filter>
-    </ClCompile>
     <ClCompile Include="Message.cpp">
       <Filter>Global</Filter>
     </ClCompile>
@@ -118,9 +115,6 @@
       <Filter>Sound</Filter>
     </ClInclude>
     <ClInclude Include="Loading.h">
-      <Filter>Load</Filter>
-    </ClInclude>
-    <ClInclude Include="Loading2.h">
       <Filter>Load</Filter>
     </ClInclude>
     <ClInclude Include="Message.h">

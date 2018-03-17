@@ -20,7 +20,7 @@ std::string ResultClient::getTag( ) {
 void ResultClient::initialize( ) {
 	_win = _game->isWin( );
 	_cause = _game->getCauseOfDeath( );
-	_cnt = FRAME * 15;
+	_cnt = FRAME * 10;
 }
 
 void ResultClient::finalize( ) {

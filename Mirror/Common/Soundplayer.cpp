@@ -58,6 +58,10 @@ bool Soundplayer::isPlaying( SoundProperty wav ) const {
 }
 
 void Soundplayer::play( SoundProperty wav ) {
+	if ( wav.wav < 1 ) {
+		return;
+	}
+
 	if ( wav.volume > 0 ) {
 		ChangeVolumeSoundMem( wav.volume, wav.wav );
 	}

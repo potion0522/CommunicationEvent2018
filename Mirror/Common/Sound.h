@@ -32,6 +32,8 @@ private:
 		std::vector< Wav > wav;	//読み込んだサウンド
 	};
 
+	bool _sound_load; //音楽読み込みをするかどうか
+
 	std::vector< Directory > _data;
 	std::vector< WIN32_FIND_DATA > _file;
 	int _dir_num;
