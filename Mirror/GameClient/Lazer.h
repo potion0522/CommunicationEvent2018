@@ -65,6 +65,7 @@ private:
 	void drawDeadEffect( );
 
 private:
+	bool _play_lazer_se;
 	bool _lazer_update;
 	bool _fin;
 	bool _dead_flag;

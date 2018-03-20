@@ -69,7 +69,7 @@ void Soundplayer::play( SoundProperty wav ) {
 	if ( wav.top ) {
 		top_flag = TRUE;
 	}
-	if ( !wav.isLoop ) {
+	if ( !wav.loop ) {
 		PlaySoundMem( wav.wav, DX_PLAYTYPE_BACK, top_flag );
 	} else {
 		PlaySoundMem( wav.wav, DX_PLAYTYPE_LOOP, top_flag );

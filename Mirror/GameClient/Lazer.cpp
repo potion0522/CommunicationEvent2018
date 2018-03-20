@@ -4,6 +4,8 @@
 #include "Debug.h"
 #include "Image.h"
 #include "LoadCSV.h"
+#include "Soundplayer.h"
+#include "Sound.h"
 #include <cmath>
 
 const double LAZER_SPEED = 30;
@@ -30,6 +32,7 @@ _data( data ) {
 	}
 
 	//•Ï”ŠÖ˜A
+	_play_lazer_se = false;
 	_lazer_update = false;
 	_fin = false;
 	_dead_flag = false;
@@ -82,6 +85,16 @@ std::string Lazer::getTag( ) {
 }
 
 void Lazer::update( ) {
+	if ( !_play_lazer_se ) {
+		SoundplayerPtr player = _data->getSoundplayerPtr( );
+		Base::SoundProperty sound = Base::SoundProperty( );
+		sound.loop = false;
+		sound.top = true;
+		sound.wav = _data->getSoundPtr( )->getWav( EFFECT_SOUND, LAZER_SE ).wav;
+		player->play( sound );
+		_play_lazer_se = true;
+	}
+
 	if ( _field->getPhase( ) < ATTACK_PHASE ) {
 		return;
 	}

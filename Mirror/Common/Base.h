@@ -52,7 +52,7 @@ public:
 	};
 	struct SoundProperty {
 		int soundflag;
-		bool isLoop;
+		bool loop;
 		bool top;
 		int volume = -1;
 		int wav = -1;

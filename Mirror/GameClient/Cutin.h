@@ -8,7 +8,7 @@
 PTR( Cutin );
 PTR( GlobalData );
 PTR( Drawer );
-
+PTR( Soundplayer );
 
 class Cutin {
 public:
@@ -54,6 +54,7 @@ public:
 
 private:
 	void calc( );
+	void playSound( );
 	void draw( ) const;
 	void drawString( ) const;
 	void reset( );
@@ -61,16 +62,20 @@ private:
 private:
 	bool _flag;
 	bool _player_turn;
+	bool _play_se;
 	CUTIN_TYPE _type;
 	float _speed;
 
 	//‰æ‘œŠÖŒW
 	std::map< CUTIN_TYPE, std::vector< int > > _cutin_handles;
 	std::array< int, CUTIN_TYPE_MAX > _back_handles;
+	std::array< Base::SoundProperty, CUTIN_TYPE_MAX > _se;
+
 	int _back_cutin;
 	Base::ImageProperty _cutin;
 
 	GlobalDataPtr _data;
 	DrawerPtr _drawer;
+	SoundplayerPtr _soundplayer;
 };
 

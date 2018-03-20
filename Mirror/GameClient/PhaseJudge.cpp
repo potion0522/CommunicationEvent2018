@@ -19,14 +19,14 @@ _field( field ) {
 	SoundPtr sound_ptr = _data->getSoundPtr( );
 	{//Winner SE
 		_win_se = Base::SoundProperty( );
-		_win_se.isLoop = false;
+		_win_se.loop = false;
 		_win_se.top = true;
 		_win_se.wav = sound_ptr->getWav( EFFECT_SOUND, WIN_SE ).wav;
 	}
 
 	{//Loser SE
 		_lose_se = Base::SoundProperty( );
-		_lose_se.isLoop = false;
+		_lose_se.loop = false;
 		_lose_se.top = true;
 		_lose_se.wav = sound_ptr->getWav( EFFECT_SOUND, LOSE_SE ).wav;
 	}

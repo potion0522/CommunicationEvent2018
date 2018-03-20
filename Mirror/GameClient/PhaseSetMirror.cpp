@@ -23,35 +23,35 @@ _cutin( cutin ) {
 	SoundPtr sound_ptr = _data->getSoundPtr( );
 	{
 		_hitfield_se = Base::SoundProperty( );
-		_hitfield_se.isLoop = false;
+		_hitfield_se.loop = false;
 		_hitfield_se.top = true;
 		_hitfield_se.wav = sound_ptr->getWav( EFFECT_SOUND, SELECT_SE ).wav;
 	}
 
 	{
 		_button_se = Base::SoundProperty( );
-		_button_se.isLoop = false;
+		_button_se.loop = false;
 		_button_se.top = true;
 		_button_se.wav = sound_ptr->getWav( EFFECT_SOUND, BUTTON_SE ).wav;
 	}
 
 	{
 		_mirrorselect_se = Base::SoundProperty( );
-		_mirrorselect_se.isLoop = false;
+		_mirrorselect_se.loop = false;
 		_mirrorselect_se.top = true;
 		_mirrorselect_se.wav = sound_ptr->getWav( EFFECT_SOUND, SELECT_SE ).wav;
 	}
 
 	{
 		_itemselect_se = Base::SoundProperty( );
-		_itemselect_se.isLoop = false;
+		_itemselect_se.loop = false;
 		_itemselect_se.top = true;
 		_itemselect_se.wav = sound_ptr->getWav( EFFECT_SOUND, SELECT_SE ).wav;
 	}
 
 	{
 		_cancel_se = Base::SoundProperty( );
-		_cancel_se.isLoop = false;
+		_cancel_se.loop = false;
 		_cancel_se.top = true;
 		_cancel_se.wav = sound_ptr->getWav( EFFECT_SOUND, BACK_SE ).wav;
 	}

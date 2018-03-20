@@ -51,7 +51,7 @@ _data( data ) {
 
 	{//bgm
 		_bgm = SoundProperty( );
-		_bgm.isLoop = true;
+		_bgm.loop = true;
 		_bgm.top = true;
 		_bgm.wav = sound_ptr->getWav( TITLE_BGM, bgm_no ).wav;
 	}
@@ -101,7 +101,7 @@ _data( data ) {
 
 	{//ƒ{ƒ^ƒ“SE
 		_button_se = SoundProperty( );
-		_button_se.isLoop = false;
+		_button_se.loop = false;
 		_button_se.top = true;
 		_button_se.wav = sound_ptr->getWav( EFFECT_SOUND, BUTTON_SE ).wav;
 	}

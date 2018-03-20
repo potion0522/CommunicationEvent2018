@@ -32,7 +32,7 @@ _data( data ) {
 	{//bgm
 		SoundPtr sound_ptr = _data->getSoundPtr( );
 		_bgm = SoundProperty( );
-		_bgm.isLoop = true;
+		_bgm.loop = true;
 		_bgm.top = true;
 		_bgm.wav = sound_ptr->getWav( GAME_BGM, bgm_no ).wav;
 	}

@@ -3,6 +3,8 @@
 #include "GlobalData.h"
 #include "Image.h"
 #include "Drawer.h"
+#include "Soundplayer.h"
+#include "Sound.h"
 
 const int CUTIN_SPEED = 20;
 const int WAIT_TIME = 90;
@@ -15,7 +17,9 @@ _data( data ) {
 	_speed = 1.0f;
 	_flag = false;
 	_player_turn = false;
+	_play_se = false;
 	_drawer = _data->getDrawerPtr( );
+	_soundplayer = _data->getSoundplayerPtr( );
 
 	_cutin = Base::ImageProperty( );
 	ImagePtr image = _data->getImagePtr( );
@@ -25,7 +29,6 @@ _data( data ) {
 	_cutin.lx = png.width / 2;
 	_cutin.ly = png.height / 2;
 	_cutin.cnt = 0;
-
 
 	std::map< CUTIN_TYPE, std::vector< int > >( ).swap( _cutin_handles );
 	std::array< int, CUTIN_TYPE_MAX >( ).swap( _back_handles );
@@ -49,6 +52,16 @@ _data( data ) {
 	for ( int i = 0; i < CUTIN_TYPE_MAX; i++ ) {
 		_back_handles[ i ] = image->getPng( CUTIN_BACK_IMAGE, i ).png;
 	}
+
+	//ƒTƒEƒ“ƒh
+	SoundPtr sound = _data->getSoundPtr( );
+	std::array< Base::SoundProperty, CUTIN_TYPE_MAX >( ).swap( _se );
+
+	for ( int i = CUTIN_TYPE_PLAYER; i < CUTIN_TYPE_MAX; i++ ) {
+		_se[ i ].loop = false;
+		_se[ i ].top = true;
+		_se[ i ].wav = sound->getWav( EFFECT_SOUND, YOUR_TURN_CUTIN_SE + ( i - CUTIN_TYPE_PLAYER ) ).wav;
+	}
 }
 
 Cutin::~Cutin( ) {
@@ -65,6 +78,7 @@ void Cutin::update( ) {
 		return;
 	}
 
+	playSound( );
 	calc( );
 	draw( );
 }
@@ -98,6 +112,29 @@ void Cutin::calc( ) {
 			reset( );
 		}
 	}
+}
+
+void Cutin::playSound( ) {
+	if ( _play_se ) {
+		return;
+	}
+
+	switch ( _type ) {
+	case CUTIN_TYPE_PHASE:
+		break;
+
+	case CUTIN_TYPE_PLAYER:
+		if ( _cutin_handles[ CUTIN_TYPE_PLAYER ][ CUTIN_PLAYER_YOUR_TURN ] == _cutin.png ) {
+			_soundplayer->play( _se[ _type ] );
+		}
+		break;
+
+	case CUTIN_TYPE_ITEM:
+		_soundplayer->play( _se[ _type ] );
+		break;
+	}
+
+	_play_se = true;
 }
 
 void Cutin::draw( ) const {
@@ -143,6 +180,7 @@ void Cutin::setImage( CUTIN_TYPE type, int idx, bool player_turn ) {
 	_type = type;
 	_flag = true;
 	_player_turn = player_turn;
+	_play_se = false;
 }
 
 void Cutin::setSpeed( float speed ) {

@@ -19,14 +19,14 @@ _cutin( cutin ) {
 	SoundPtr sound_ptr = _data->getSoundPtr( );
 	{//setplayer SE
 		_setplayer_se = Base::SoundProperty( );
-		_setplayer_se.isLoop = false;
+		_setplayer_se.loop = false;
 		_setplayer_se.top = true;
 		_setplayer_se.wav = sound_ptr->getWav( EFFECT_SOUND, SELECT_SE ).wav;
 	}
 
 	{//button SE
 		_button_se = Base::SoundProperty( );
-		_button_se.isLoop = false;
+		_button_se.loop = false;
 		_button_se.top = true;
 		_button_se.wav = sound_ptr->getWav( EFFECT_SOUND, BUTTON_SE ).wav;
 	}

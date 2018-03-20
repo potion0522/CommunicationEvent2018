@@ -133,27 +133,27 @@ _data( data ) {
 	SoundPtr sound_ptr = _data->getSoundPtr( );
 	{//saveボタンSE
 		_button_se = SoundProperty( );
-		_button_se.isLoop = false;
+		_button_se.loop = false;
 		_button_se.top = true;
 		_button_se.wav = sound_ptr->getWav( EFFECT_SOUND, BUTTON_SE ).wav;
 	}
 
 	{//backボタンSE
 		_back_se = SoundProperty( );
-		_back_se.isLoop = false;
+		_back_se.loop = false;
 		_back_se.top = true;
 		_back_se.wav = sound_ptr->getWav( EFFECT_SOUND, BACK_SE ).wav;
 	}
 
 	{//save完了SE
 		_save_se = SoundProperty( );
-		_save_se.isLoop = false;
+		_save_se.loop = false;
 		_save_se.wav = sound_ptr->getWav( EFFECT_SOUND, SAVE_SE ).wav;
 	}
 
 	{//save完了SE
 		_select_se = SoundProperty( );
-		_select_se.isLoop = false;
+		_select_se.loop = false;
 		_select_se.top = true;
 		_select_se.wav = sound_ptr->getWav( EFFECT_SOUND, SELECT_SE ).wav;
 	}
