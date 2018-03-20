@@ -47,8 +47,8 @@ public:
 	void setLine( double sx, double sy, double ex, double ey, COLOR col = WHITE, int alpha = 255 );
 	void setFrontCircle( double x, double y, double r, COLOR col = WHITE, int alpha = 255, bool isfill = false );
 	void setBackCircle( double x, double y, double r, COLOR col = WHITE, int alpha = 255, bool isfill = false );
-	void setFrontBox( double lx, double ly, double rx, double ry, COLOR col = WHITE, bool isfill = false );
-	void setBackBox( double lx, double ly, double rx, double ry, COLOR col = WHITE, bool isfill = false );
+	void setFrontBox( double lx, double ly, double rx, double ry, COLOR col = WHITE, bool isfill = false, int alpha = 255 );
+	void setBackBox( double lx, double ly, double rx, double ry, COLOR col = WHITE, bool isfill = false, int alpha = 255 );
 	void setAllBright( int r, int g, int b );
 	int getStringW( FONTSIZE_TYPE type, std::string str ) const;
 	int getStringH( FONTSIZE_TYPE type ) const;
@@ -108,6 +108,7 @@ private:
 		float ry;
 		COLOR col;
 		bool isFill;
+		int alpha;
 	};
 	bool _all_bright;
 	int _handle_font[ FONT_TYPE_MAX ];

@@ -50,7 +50,6 @@ private:
 	};
 
 	//’è”
-	static const short int BUTTON_TYPE_MAX = 2;//‰Ÿ‚³‚ê‚Ä‚¢‚éE‰Ÿ‚³‚ê‚Ä‚¢‚È‚¢
 	static const short int TITLE_BUTTON_MAX = 3;
 
 	//•Ï”
@@ -64,9 +63,9 @@ private:
 	//‰æ‘œŠÖŒW
 	LightImageProperty _back;
 	LightImageProperty _title_logo;
-	std::array< int, BUTTON_TYPE_MAX > _startbutton_handles;
-	std::array< int, BUTTON_TYPE_MAX > _item_setbutton_handles;
-	std::array< int, BUTTON_TYPE_MAX > _ip_setbutton_handles;
+	std::array< int, BUTTON_STATE_MAX > _startbutton_handles;
+	std::array< int, BUTTON_STATE_MAX > _item_setbutton_handles;
+	std::array< int, BUTTON_STATE_MAX > _ip_setbutton_handles;
 	BoxObject _startbutton;
 	BoxObject _item_setbutton;
 	BoxObject _ip_setbutton;

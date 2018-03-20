@@ -7,13 +7,14 @@
 #include "Client.h"
 #include "const.h"
 
-const float STARTBUTTON_X = WIDTH_F / 2.0f;
-const float STARTBUTTON_Y = HEIGHT_F / 3.0f * 1.4f;
-
-const float ITEM_SETBUTTON_X = STARTBUTTON_X;
-const float ITEM_SETBUTTON_Y = HEIGHT_F / 3.0f * 2.0f;
-const float IP_SETBUTTON_X = STARTBUTTON_X;
-const float IP_SETBUTTON_Y = HEIGHT_F / 3.0f * 2.6f;
+const float TITLE_LOGO_X = WIDTH / 2;
+const float TITLE_LOGO_Y = 150;
+const float START_BUTTON_X = WIDTH_F / 2.0f;
+const float START_BUTTON_Y = HEIGHT / 5 * 2.5;
+const float ITEM_SET_BUTTON_X = START_BUTTON_X;
+const float ITEM_SET_BUTTON_Y = HEIGHT / 5 * 3.5;
+const float IP_SET_BUTTON_X = WIDTH - 100;
+const float IP_SET_BUTTON_Y = HEIGHT - 100;
 
 const short int bgm_no = 0;
 
@@ -25,9 +26,9 @@ _data( data ) {
 
 	_cur_hand = LoadCursor( NULL, IDC_HAND );
 
-	std::array< int, BUTTON_TYPE_MAX >( ).swap( _startbutton_handles );
-	std::array< int, BUTTON_TYPE_MAX >( ).swap( _item_setbutton_handles );
-	std::array< int, BUTTON_TYPE_MAX >( ).swap( _ip_setbutton_handles );
+	std::array< int, BUTTON_STATE_MAX >( ).swap( _startbutton_handles );
+	std::array< int, BUTTON_STATE_MAX >( ).swap( _item_setbutton_handles );
+	std::array< int, BUTTON_STATE_MAX >( ).swap( _ip_setbutton_handles );
 	_startbutton    = BoxObject( );
 	_item_setbutton = BoxObject( );
 	_ip_setbutton   = BoxObject( );
@@ -44,8 +45,8 @@ _data( data ) {
 
 	{//タイトルロゴ
 		_title_logo = LightImageProperty( );
-		_title_logo.cx = WIDTH_F * 0.5;
-		_title_logo.cy = image_ptr->getPng( TITLE_IMAGE, 0 ).height * 0.5;
+		_title_logo.cx = TITLE_LOGO_X;
+		_title_logo.cy = TITLE_LOGO_Y;
 		_title_logo.png = image_ptr->getPng( TITLE_IMAGE, 0 ).png;
 	}
 
@@ -60,11 +61,11 @@ _data( data ) {
 		float half_width  = image_ptr->getPng( BUTTON_IMAGE, GAME_START_BUTTON_IDX ).width * 0.5f;
 		float half_height = image_ptr->getPng( BUTTON_IMAGE, GAME_START_BUTTON_IDX ).height * 0.5f;
 
-		for ( int i = 0; i < BUTTON_TYPE_MAX; i++ ) {
+		for ( int i = 0; i < BUTTON_STATE_MAX; i++ ) {
 			_startbutton_handles[ i ] = image_ptr->getPng( BUTTON_IMAGE, GAME_START_BUTTON_IDX + i ).png;
 		}
-		_startbutton.image.cx = STARTBUTTON_X;
-		_startbutton.image.cy = STARTBUTTON_Y;
+		_startbutton.image.cx = START_BUTTON_X;
+		_startbutton.image.cy = START_BUTTON_Y;
 		_startbutton.image.png = image_ptr->getPng( BUTTON_IMAGE, GAME_START_BUTTON_IDX ).png;
 
 		_startbutton.collider.lx = ( float )_startbutton.image.cx - half_width;
@@ -73,11 +74,11 @@ _data( data ) {
 		_startbutton.collider.ry = ( float )_startbutton.image.cy + half_height;
 	
 	//item_settingボタン
-		for ( int i = 0; i < BUTTON_TYPE_MAX; i++ ) {
+		for ( int i = 0; i < BUTTON_STATE_MAX; i++ ) {
 			_item_setbutton_handles[ i ] = image_ptr->getPng( BUTTON_IMAGE, ITEM_SELECT_BUTTON_IDX + i ).png;
 		}
-		_item_setbutton.image.cx = ITEM_SETBUTTON_X;
-		_item_setbutton.image.cy = ITEM_SETBUTTON_Y;
+		_item_setbutton.image.cx = ITEM_SET_BUTTON_X;
+		_item_setbutton.image.cy = ITEM_SET_BUTTON_Y;
 		_item_setbutton.image.png = image_ptr->getPng( BUTTON_IMAGE, ITEM_SELECT_BUTTON_IDX ).png;
 
 		_item_setbutton.collider.lx = ( float )_item_setbutton.image.cx - half_width;
@@ -86,11 +87,11 @@ _data( data ) {
 		_item_setbutton.collider.ry = ( float )_item_setbutton.image.cy + half_height;
 
 	//ip_settingボタン
-		for ( int i = 0; i < BUTTON_TYPE_MAX; i++ ) {
+		for ( int i = 0; i < BUTTON_STATE_MAX; i++ ) {
 			_ip_setbutton_handles[ i ] = image_ptr->getPng( BUTTON_IMAGE, IP_SETTING_BUTTON_IDX + i ).png;
 		}
-		_ip_setbutton.image.cx = IP_SETBUTTON_X;
-		_ip_setbutton.image.cy = IP_SETBUTTON_Y;
+		_ip_setbutton.image.cx = IP_SET_BUTTON_X;
+		_ip_setbutton.image.cy = IP_SET_BUTTON_Y;
 		_ip_setbutton.image.png = image_ptr->getPng( BUTTON_IMAGE, IP_SETTING_BUTTON_IDX ).png;
 
 		_ip_setbutton.collider.lx = ( float )_ip_setbutton.image.cx - half_width;

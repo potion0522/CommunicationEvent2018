@@ -9,14 +9,13 @@
 
 const float MARGIN  = WIDTH_F / 5.0f;
 
-const float SAVE_BUTTON_X = WIDTH_F / 3.0f * 2.0f;
-const float SAVE_BUTTON_Y = HEIGHT_F / 5.0f;
+const float RETURNBUTTON_X = WIDTH / 3;
+const float RETURNBUTTON_Y = HEIGHT / 5 * 1.25;
+const float SAVE_BUTTON_X = WIDTH / 3 * 2;
+const float SAVE_BUTTON_Y = HEIGHT / 5 * 1.25;
 
-const float RETURNBUTTON_X = WIDTH_F / 3.0f;
-const float RETURNBUTTON_Y = HEIGHT_F / 5.0f;
-
-const float WRITTING_BOX_X = WIDTH_F / 2.0f;
-const float WRITTING_BOX_Y = HEIGHT_F / 2.0f;
+const float WRITTING_BOX_X = WIDTH / 2;
+const float WRITTING_BOX_Y = HEIGHT / 2;
 
 const int PROGRESS_BAR_X = WIDTH / 2;
 const int PROGRESS_BAR_Y = HEIGHT / 3 * 2;
@@ -203,6 +202,7 @@ void IpSetting::update( ) {
 	drawReturnButton( );
 	drawWritingBox( );
 	drawIpString( );
+	drawInfo( );
 }
 
 void IpSetting::writeIp( ) {
@@ -291,7 +291,7 @@ void IpSetting::drawIpString( ) const {
 void IpSetting::drawWritingBox( ) const {
 	const short int LENGTH = _drawer->getStringW( Drawer::BIG, "123.456.789.123" );
 	_drawer->setBackBox( WRITTING_BOX_X - LENGTH, WRITTING_BOX_Y - _drawer->getStringH( Drawer::BIG ),
-						  WRITTING_BOX_X + LENGTH, WRITTING_BOX_Y + _drawer->getStringH( Drawer::BIG ), BLACK, true );
+						 WRITTING_BOX_X + LENGTH, WRITTING_BOX_Y + _drawer->getStringH( Drawer::BIG ), BLACK, true );
 
 	_drawer->setBackBox( WRITTING_BOX_X - LENGTH * 0.95, WRITTING_BOX_Y - _drawer->getStringH( Drawer::BIG ) * 0.95,
 		                 WRITTING_BOX_X + LENGTH * 0.95, WRITTING_BOX_Y + _drawer->getStringH( Drawer::BIG ) * 0.95, WHITE, true );
@@ -303,4 +303,10 @@ void IpSetting::drawSaveButton( ) const {
 
 void IpSetting::drawReturnButton( ) const {
 	_drawer->setFrontImage( _returnbutton.image );
+}
+
+void IpSetting::drawInfo( ) const {
+	_drawer->setBackBox( WIDTH / 5, WRITTING_BOX_Y + 100, WIDTH / 5 * 4, HEIGHT - 50, BLACK, true, 200 );
+
+	_drawer->setFrontString( true, WIDTH / 2, WRITTING_BOX_Y + 200, WHITE, "IP‚ğ‘Å‚¿‚ñ‚ÅSave‚ğ‰Ÿ‚µ‚Ä‚­‚¾‚³‚¢", Drawer::BIG );
 }

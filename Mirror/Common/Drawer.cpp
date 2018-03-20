@@ -291,7 +291,21 @@ void Drawer::drawFrontBox( ) {
 	}
 
 	for( ite; ite != _front_boxes.end( ); ite++ ) {
+		bool alpha = false;
+		if ( ite->alpha < 255 ) {
+			alpha = true;
+		}
+
+		//“§–¾“x
+		if ( alpha ) {
+			SetDrawBlendMode( DX_BLENDMODE_ALPHA, ite->alpha );
+		}
+
 		DrawBoxAA( ite->lx, ite->ly, ite->rx, ite->ry, _color->getColor( ite->col ), ite->isFill );
+
+		if ( alpha ) {
+			SetDrawBlendMode( DX_BLENDMODE_NOBLEND, 0 );
+		}
 	}
 }
 
@@ -303,9 +317,24 @@ void Drawer::drawBackBox( ) {
 	}
 
 	for( ite; ite != _back_boxes.end( ); ite++ ) {
+		bool alpha = false;
+		if ( ite->alpha < 255 ) {
+			alpha = true;
+		}
+
+		//“§–¾“x
+		if ( alpha ) {
+			SetDrawBlendMode( DX_BLENDMODE_ALPHA, ite->alpha );
+		}
+
 		DrawBoxAA( ite->lx, ite->ly, ite->rx, ite->ry, _color->getColor( ite->col ), ite->isFill );
+
+		if ( alpha ) {
+			SetDrawBlendMode( DX_BLENDMODE_NOBLEND, 0 );
+		}
 	}
 }
+
 void Drawer::drawBackGroundImage( ) {
 	if ( _back_image.png < 0 ) {
 		return;
@@ -408,13 +437,13 @@ void Drawer::setBackCircle( double x, double y, double r, COLOR col, int alpha, 
 	_back_circles.push_back( circle );
 }
 
-void Drawer::setFrontBox( double lx, double ly, double rx, double ry, COLOR col, bool isfill ) {
-	BoxProperty box = { ( float )lx, ( float )ly, ( float )rx, ( float )ry, col, isfill };
+void Drawer::setFrontBox( double lx, double ly, double rx, double ry, COLOR col, bool isfill, int alpha ) {
+	BoxProperty box = { ( float )lx, ( float )ly, ( float )rx, ( float )ry, col, isfill, alpha };
 	_front_boxes.push_back( box );
 }
 
-void Drawer::setBackBox( double lx, double ly, double rx, double ry, COLOR col, bool isfill ) {
-	BoxProperty box = { ( float )lx, ( float )ly, ( float )rx, ( float )ry, col, isfill };
+void Drawer::setBackBox( double lx, double ly, double rx, double ry, COLOR col, bool isfill, int alpha ) {
+	BoxProperty box = { ( float )lx, ( float )ly, ( float )rx, ( float )ry, col, isfill, alpha };
 	_back_boxes.push_back( box );
 }
 

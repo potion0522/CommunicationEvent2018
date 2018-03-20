@@ -18,11 +18,10 @@ const float SELECTED_PITCH   = ( WIDTH_F - MARGIN * 2.0f ) / ITEM_POSSESSION_MAX
 const float START_SELECTED_X = MARGIN + SELECTED_PITCH - SELECTED_PITCH / 2.0f;
 const float START_SELECTED_Y = HEIGHT * 0.8f;
 
-const float BUTTON_X = WIDTH_F / 3.0f * 2.0f;
-const float BUTTON_Y = HEIGHT_F / 5.0f;
-
-const float RETURNBUTTON_X = WIDTH_F / 3.0f;
-const float RETURNBUTTON_Y = HEIGHT_F / 5.0f;
+const float RETURNBUTTON_X = WIDTH / 3;
+const float RETURNBUTTON_Y = HEIGHT / 5 * 1.25;
+const float SAVE_BUTTON_X = WIDTH / 3 * 2;
+const float SAVE_BUTTON_Y = HEIGHT / 5 * 1.25;
 
 const int PROGRESS_BAR_X = WIDTH / 2;
 const int PROGRESS_BAR_Y = HEIGHT / 3 * 2;
@@ -77,8 +76,8 @@ _data( data ) {
 		for ( int i = 0; i < BUTTON_TYPE_MAX; i++ ) {
 			_savebutton_handles[ i ] = image_ptr->getPng( BUTTON_IMAGE, SAVE_BUTTON_IDX + i ).png;
 		}
-		_savebutton.image.cx = BUTTON_X;
-		_savebutton.image.cy = BUTTON_Y;
+		_savebutton.image.cx = SAVE_BUTTON_X;
+		_savebutton.image.cy = SAVE_BUTTON_Y;
 		_savebutton.image.png = image_ptr->getPng( BUTTON_IMAGE, SAVE_BUTTON_IDX ).png;
 
 		_savebutton.collider.lx = ( float )_savebutton.image.cx - half_width;
@@ -334,7 +333,6 @@ void SelectItem::checkHitSelectedItem( ) {
 		box.ry = _select_boxes[ i ].ry;
 		if ( box.lx <= mouse_x && mouse_x <= box.rx &&
 			 box.ly <= mouse_y && mouse_y <= box.ry ) {
-			_soundplayer->play( _select_se );
 			_hit_selected_item = i;
 			return;
 		}
@@ -537,6 +535,7 @@ void SelectItem::setSelectItem( ) {
 				}
 			}
 			_drop = false;
+			_soundplayer->play( _select_se );
 			return;
 		}
 	}

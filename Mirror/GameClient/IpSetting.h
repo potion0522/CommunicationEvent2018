@@ -35,6 +35,7 @@ private:
 	void drawBackGround( ) const;
 	void drawSaveButton( ) const;
 	void drawReturnButton( ) const;
+	void drawInfo( ) const;
 
 private:
 	enum BUTTON {

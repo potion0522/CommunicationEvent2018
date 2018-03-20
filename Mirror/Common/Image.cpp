@@ -76,7 +76,7 @@ void Image::initialize( ) {
 		case COMMAND_IMAGE       : add.name = "command"      ; break;
 		case TIME_IMAGE          : add.name = "time"         ; break;
 		case NUMBER_IMAGE        : add.name = "number"       ; break;
-		case OTHER_IMAGE        : add.name = "other"        ; break;
+		case OTHER_IMAGE         : add.name = "other"        ; break;
 		default	:
 			{
 				errno_t directry_not_find = 0;
