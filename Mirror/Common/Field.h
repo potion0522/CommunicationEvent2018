@@ -116,6 +116,7 @@ public:
 	void deadCount( );
 	void setDeadPlayer( int player );
 	void setReverseFlag( );
+	void setFirstOrSecond( bool first );
 
 public:
 	std::map< int, Mirror > &getAllMirror( );
@@ -147,8 +148,8 @@ private:
 	void checkHitMirrorCommand( );
 	void checkItemRecovery( );
 
+//Drawån
 private:
-	//Drawån
 	void drawField( );
 	void drawArmament( ) const;
 	void drawTmpMirror( ) const;
@@ -164,6 +165,7 @@ private:
 	void drawMirrorCommand( ) const;
 	void drawDeathCount( ) const;
 	void drawItemCancelButton( ) const;
+	void drawFirstOrSecond( ) const;
 
 private:
 #pragma pack( 1 )
@@ -190,6 +192,7 @@ private:
 	bool _mirror_selected;
 	bool _button_lighting;
 	bool _reverse_mirror;
+	bool _first;//êÊçUÇ©Ç«Ç§Ç©
 	short int _turn;
 	short int _order;
 	short int _info_idx;

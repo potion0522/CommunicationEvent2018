@@ -94,6 +94,7 @@ void Game::update( ) {
 	//アップデート
 	_cutin->update( );
 	_battle->setOrder( _order );
+	_field->setOrder( _order );
 	_battle->setTurn( _turn );
 	_battle->update( );
 

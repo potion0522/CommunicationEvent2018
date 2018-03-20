@@ -61,6 +61,16 @@ PhaseSetMirror::~PhaseSetMirror( ) {
 }
 
 void PhaseSetMirror::update( ) {
+	//先攻か後攻かを判断
+	if ( _order != _player_num && !_double_mirror ) {
+		if ( _field->isSelectedMirror( ) ) {
+			//相手のターンにすでにこちらが鏡を配置していれば
+			_field->setFirstOrSecond( true );
+		} else {
+			_field->setFirstOrSecond( false );
+		}
+	}
+
 	if ( _cutin->isCutin( ) ) {
 		return;
 	}
@@ -154,16 +164,17 @@ void PhaseSetMirror::setTmpMirror( ) {
 	}
 	_order_past = _order;
 
-	if ( _cutin->isCutin( ) ) {
-		return;
-	}
-
 	if ( _order != _player_num ) {
 		_field->setInfoText( "", YELLOW, Drawer::BIG );
 		_field->setInfoText( "相手", ( ( _player_num + 1 ) % PLAYER_NUM ? WATER : RED ), Drawer::SUPER_BIG );
 		_field->setInfoText( "が配置しています", YELLOW, Drawer::LITTLE_BIG );
 		return;
 	}
+
+	if ( _cutin->isCutin( ) ) {
+		return;
+	}
+
 	//時間を減らす
 	_field->deadCount( );
 
@@ -171,16 +182,17 @@ void PhaseSetMirror::setTmpMirror( ) {
 		return;
 	}
 
-	_field->setInfoText( "鏡を配置してください。" );
-	if ( _double_mirror ) {
-		_field->setInfoText( "", RED, Drawer::LITTLE_BIG );
+	if ( !_double_mirror ) {
+		_field->setInfoText( "鏡を配置してください。" );
+		_field->setInfoText( "", WHITE, Drawer::LITTLE_BIG );
+		_field->setInfoText( "相手の的", ( ( _player_num + 1 ) % PLAYER_NUM ) ? WATER : RED, Drawer::BIG );
+		_field->setInfoText( "", WHITE, Drawer::LITTLE_BIG );
+		_field->setInfoText( "にレーザーを当てましょう！" );
 	} else {
-		_field->setInfoText( "", RED, Drawer::BIG );
-	}
-	_field->setInfoText( "相手の的", ( ( _player_num + 1 ) % PLAYER_NUM ) ? WATER : RED, Drawer::BIG );
-	_field->setInfoText( "" );
-	_field->setInfoText( "にレーザーを当てましょう！" );
-	if ( _double_mirror ) {
+		_field->setInfoText( "鏡を配置してください。" );
+		_field->setInfoText( "" );
+		_field->setInfoText( "相手の的", ( ( _player_num + 1 ) % PLAYER_NUM ) ? WATER : RED, Drawer::BIG );
+		_field->setInfoText( "にレーザーを当てましょう！" );
 		_field->setInfoText( "" );
 		_field->setInfoText( "2枚目を配置してください", RED, Drawer::LITTLE_BIG );
 	}

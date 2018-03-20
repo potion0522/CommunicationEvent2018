@@ -162,6 +162,7 @@ void Field::initialize( ) {
 	_mirror_selected = false;
 	_button_lighting = false;
 	_reverse_mirror = false;
+	_first = true;
 	_order = -1;
 	_info_idx = 0;
 	_tmp_player_pos = -1;
@@ -300,6 +301,7 @@ void Field::update( ) {
 	drawInfo( );
 	drawDecisionButton( );
 	drawDeathCount( );
+	drawFirstOrSecond( );
 	resetInfo( );
 	_button_lighting = false;
 
@@ -711,6 +713,11 @@ void Field::setReverseFlag( ) {
 	_reverse_mirror = true;
 }
 
+void Field::setFirstOrSecond( bool first ) {
+	_first = first;
+}
+
+
 Vector Field::getLazerPoint( ) const {
 	Vector vec = Vector( );
 	if ( _lazer_point_idx < PLAYER_POSITION ) {
@@ -756,6 +763,18 @@ int Field::getPlayerPosHitNum( ) const {
 
 int Field::getFieldPosHitNum( ) const {
 	return _field_pos_hit_num;
+}
+
+void Field::drawFirstOrSecond( ) const {
+	if ( _order < 0 ) {
+		return;
+	}
+
+	if ( _first ) {
+		_drawer->setFrontString( true, DECISION_BUTTON_X - 250, DECISION_BUTTON_Y, WATER, "êÊçU", Drawer::SUPER_BIG );
+	} else {
+		_drawer->setFrontString( true, DECISION_BUTTON_X - 250, DECISION_BUTTON_Y, WATER, "å„çU", Drawer::SUPER_BIG );
+	}
 }
 
 void Field::drawField( ) {
