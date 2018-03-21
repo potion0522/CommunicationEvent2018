@@ -301,10 +301,9 @@ void Field::update( ) {
 	drawInfo( );
 	drawDecisionButton( );
 	drawDeathCount( );
-	//drawFirstOrSecond( );
+	drawFirstOrSecond( );
 	resetInfo( );
 	_button_lighting = false;
-	_first = true;
 
 	//デバッグ
 	if ( _debug->getFlag( ) ) {

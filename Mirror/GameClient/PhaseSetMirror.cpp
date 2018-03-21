@@ -62,13 +62,17 @@ PhaseSetMirror::~PhaseSetMirror( ) {
 
 void PhaseSetMirror::update( ) {
 	//æU‚©ŒãU‚©‚ğ”»’f
-	if ( _order != _player_num && !_double_mirror ) {
-		if ( _field->isSelectedMirror( ) ) {
-			//‘Šè‚Ìƒ^[ƒ“‚É‚·‚Å‚É‚±‚¿‚ç‚ª‹¾‚ğ”z’u‚µ‚Ä‚¢‚ê‚Î
-			_field->setFirstOrSecond( true );
-		} else {
-			_field->setFirstOrSecond( false );
-		}
+	int order = 0;
+	if ( !_player_num ) {
+		order = ( _turn + 1 ) % 2 + 1;
+	} else {
+		order = _turn % 2 + 1;
+	}
+
+	if ( order == 1 ) {
+		_field->setFirstOrSecond( true );
+	} else {
+		_field->setFirstOrSecond( false );
 	}
 
 	if ( _cutin->isCutin( ) ) {
@@ -164,14 +168,14 @@ void PhaseSetMirror::setTmpMirror( ) {
 	}
 	_order_past = _order;
 
+	if ( _cutin->isCutin( ) ) {
+		return;
+	}
+
 	if ( _order != _player_num ) {
 		_field->setInfoText( "", YELLOW, Drawer::BIG );
 		_field->setInfoText( "‘Šè", ( ( _player_num + 1 ) % PLAYER_NUM ? WATER : RED ), Drawer::SUPER_BIG );
 		_field->setInfoText( "‚ª”z’u‚µ‚Ä‚¢‚Ü‚·", YELLOW, Drawer::LITTLE_BIG );
-		return;
-	}
-
-	if ( _cutin->isCutin( ) ) {
 		return;
 	}
 
