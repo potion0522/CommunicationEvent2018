@@ -770,10 +770,14 @@ void Field::drawFirstOrSecond( ) const {
 		return;
 	}
 
+	if ( _order != _player_num ) {
+		return;
+	}
+
 	if ( _first ) {
-		_drawer->setFrontString( true, DECISION_BUTTON_X - 250, DECISION_BUTTON_Y, WATER, "êÊçU", Drawer::SUPER_BIG );
+		_drawer->setFrontString( true, DECISION_BUTTON_X - 250, DECISION_BUTTON_Y, PURPLE, "êÊçU", Drawer::SUPER_BIG );
 	} else {
-		_drawer->setFrontString( true, DECISION_BUTTON_X - 250, DECISION_BUTTON_Y, WATER, "å„çU", Drawer::SUPER_BIG );
+		_drawer->setFrontString( true, DECISION_BUTTON_X - 250, DECISION_BUTTON_Y, PURPLE, "å„çU", Drawer::SUPER_BIG );
 	}
 }
 
