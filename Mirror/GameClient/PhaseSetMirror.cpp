@@ -91,7 +91,6 @@ void PhaseSetMirror::update( ) {
 				_cutin->setImage( Cutin::CUTIN_TYPE_ITEM, Cutin::CUTIN_ITEM_DOUBLE_MIRROR );
 				break;
 			}
-			_cutin->setSpeed( 1.8f );
 		}
 
 		invocationItem( );
@@ -162,9 +161,9 @@ void PhaseSetMirror::setTmpMirror( ) {
 			              _player_num == _order ? 
 			              Cutin::CUTIN_PLAYER_YOUR_TURN : 
 			              Cutin::CUTIN_PLAYER_ENEMY_TURN,
-						  true
+						  true,
+						  ( _order == _player_num ? true : false )
 		                );
-		_cutin->setSpeed( 1.5f );
 	}
 	_order_past = _order;
 

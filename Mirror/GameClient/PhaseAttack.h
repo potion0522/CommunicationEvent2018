@@ -25,6 +25,7 @@ private:
 	bool _recv;
 	bool _reverse_mirror;
 	bool _send_live;
+	short int _wait_time;
 
 	GlobalDataPtr _data;
 	ClientPtr _client;

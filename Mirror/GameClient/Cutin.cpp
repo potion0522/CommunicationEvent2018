@@ -6,29 +6,44 @@
 #include "Soundplayer.h"
 #include "Sound.h"
 
-const int CUTIN_SPEED = 20;
+const float CUTIN_SPEED = 20 * 1.8f;
 const int WAIT_TIME = 90;
 const int PHASE_CUTIN_IDX = 0;
 const int PLAYER_CUTIN_IDX = 3;
 const int ITEM_CUTIN_IDX = 5;
+const int CUTIN_BACKIMAGE_SIZEMAX_CNT = 15;
+const int FINISH_TIME = WAIT_TIME + CUTIN_BACKIMAGE_SIZEMAX_CNT / 2;
 
 Cutin::Cutin( GlobalDataPtr data ) :
 _data( data ) {
-	_speed = 1.0f;
 	_flag = false;
 	_player_turn = false;
+	_your_turn = false;
 	_play_se = false;
+	_click = true;
 	_drawer = _data->getDrawerPtr( );
 	_soundplayer = _data->getSoundplayerPtr( );
 
-	_cutin = Base::ImageProperty( );
+	_cutin_back = Base::ImageProperty( );
+	_cutin_string = Base::ImageProperty( );
+
 	ImagePtr image = _data->getImagePtr( );
 	Png png = image->getPng( CUTIN_BACK_IMAGE, 0 );
-	_cutin.cx = png.width / 2 * -1;
-	_cutin.cy = HEIGHT / 2;
-	_cutin.lx = png.width / 2;
-	_cutin.ly = png.height / 2;
-	_cutin.cnt = 0;
+
+	_cutin_half_width = png.width / 2;
+	_cutin_half_height = png.height / 2;
+
+	{//カットイン背景
+		_cutin_back.cx = WIDTH / 2;
+		_cutin_back.cy = HEIGHT / 2;
+	}
+
+	{//カットイン文字
+		_cutin_string.cx = png.width / 2 * -1;
+		_cutin_string.cy = HEIGHT / 2;
+		_cutin_string.lx = png.width / 2;
+		_cutin_string.ly = png.height / 2;
+	}
 
 	std::map< CUTIN_TYPE, std::vector< int > >( ).swap( _cutin_handles );
 	std::array< int, CUTIN_TYPE_MAX >( ).swap( _back_handles );
@@ -68,9 +83,10 @@ Cutin::~Cutin( ) {
 }
 
 void Cutin::initialize( ) { 
-	_speed = 1.0f;
 	_flag = false;
 	_player_turn = false;
+	_your_turn = false;
+	_click = false;
 }
 
 void Cutin::update( ) {
@@ -84,30 +100,73 @@ void Cutin::update( ) {
 }
 
 void Cutin::calc( ) {
-	if ( _cutin.cx < WIDTH / 2 ) {
-		_cutin.cx += CUTIN_SPEED * _speed;
+	calcBack( );
+	calcString( );
+}
+
+void Cutin::draw( ) {
+	drawBack( );
+	drawString( );
+}
+
+void Cutin::calcBack( ) {
+	if ( _cutin_string.cnt < WAIT_TIME ) {
+		if ( _cutin_back.cnt < CUTIN_BACKIMAGE_SIZEMAX_CNT ) {
+			_cutin_back.cnt++;
+		}
+		return;
+
+	} else {
+
+		//プレイヤーターンで
+		if ( _player_turn ) {
+			//クリックされていれば
+			if ( _click ) {
+				_click = false;
+				_player_turn = false;
+			} else {
+				return;
+			}
+		}
+
+		//この関数を呼ぶのが先なので１フレームずらす
+		if ( _cutin_string.cnt > WAIT_TIME - 1 ) {
+			if ( _cutin_back.cnt > 0 ) {
+				_cutin_back.cnt--;
+			}
+		}
+	}
+}
+
+void Cutin::calcString( ) {
+	if ( _cutin_string.cx < WIDTH / 2 ) {
+		_cutin_string.cx += CUTIN_SPEED;
+
+		//超過したら戻す
+		if ( _cutin_string.cx > WIDTH / 2 ) {
+			_cutin_string.cx = WIDTH / 2;
+		}
 	} else {
 		//プレイヤーカットインだったら
-		if ( _player_turn ) {
-			drawString( );
+		if ( _player_turn && _your_turn ) {
+			drawMessage( );
 			//クリックするまで消えない
 			if ( _data->getClickLeft( ) ) {
-				_player_turn = false;
-				_cutin.cnt = WAIT_TIME;
+				_cutin_string.cnt = WAIT_TIME;
+				_click = true;
 			}
 			return;
 		}
 
-		if ( _cutin.cnt < WAIT_TIME ) {
-			_cutin.cx = WIDTH / 2;
-			_cutin.cnt++;
+		_cutin_string.cnt++;
+		if ( _cutin_string.cnt < WAIT_TIME ) {
+			_cutin_string.cx++; 
 			return;
 		}
 
+		_cutin_string.cx += CUTIN_SPEED;
 
-		_cutin.cx += CUTIN_SPEED * _speed;
-
-		if ( _cutin.cx > WIDTH + _cutin.lx ) {
+		if ( _cutin_string.cnt > FINISH_TIME ) {
 			_flag = false;
 			reset( );
 		}
@@ -124,7 +183,7 @@ void Cutin::playSound( ) {
 		break;
 
 	case CUTIN_TYPE_PLAYER:
-		if ( _cutin_handles[ CUTIN_TYPE_PLAYER ][ CUTIN_PLAYER_YOUR_TURN ] == _cutin.png ) {
+		if ( _your_turn ) {
 			_soundplayer->play( _se[ _type ] );
 		}
 		break;
@@ -137,34 +196,39 @@ void Cutin::playSound( ) {
 	_play_se = true;
 }
 
-void Cutin::draw( ) const {
+void Cutin::drawBack( ) {
 	_drawer->setAllBright( 100, 100, 100 );
-
-	Base::ImageProperty image = Base::ImageProperty( );
-	image.cx = _cutin.cx;
-	image.cy = _cutin.cy;
-	image.png = _back_cutin;
-	image.bright_flag = true;
-	_drawer->setFrontImage( image );
-	_drawer->setFrontImage( _cutin );
+	_drawer->setFrontExtendImage( _cutin_back, ( float )_cutin_half_width, ( float )_cutin_half_height, 1, ( float )_cutin_back.cnt / ( float )CUTIN_BACKIMAGE_SIZEMAX_CNT );
 }
 
 void Cutin::drawString( ) const {
+	_drawer->setFrontImage( _cutin_string );
+}
+
+void Cutin::drawMessage( ) const {
 	_drawer->setFrontString( true, WIDTH / 2, HEIGHT * 0.725, WHITE, "クリックしてください", Drawer::BIG );
 }
 
 void Cutin::reset( ) {
-	_speed = 1.0f;
 	ImagePtr image = _data->getImagePtr( );
 	Png png = image->getPng( CUTIN_BACK_IMAGE, 0 );
-	_cutin.cx = png.width / 2 * -1;
-	_cutin.cy = HEIGHT / 2;
-	_cutin.lx = png.width / 2;
-	_cutin.ly = png.height / 2;
-	_cutin.cnt = 0;
+
+	{//カットイン背景
+		_cutin_back.cx = WIDTH / 2;
+		_cutin_back.cy = HEIGHT / 2;
+		_cutin_back.cnt = 0;
+	}
+
+	{//カットイン文字
+		_cutin_string.cx = png.width / 2 * -1;
+		_cutin_string.cy = HEIGHT / 2;
+		_cutin_string.lx = png.width / 2;
+		_cutin_string.ly = png.height / 2;
+		_cutin_string.cnt = 0;
+	}
 }
 
-void Cutin::setImage( CUTIN_TYPE type, int idx, bool player_turn ) {
+void Cutin::setImage( CUTIN_TYPE type, int idx, bool player_turn, bool your_turn ) {
 	if ( _flag ) {
 		return;
 	}
@@ -175,16 +239,13 @@ void Cutin::setImage( CUTIN_TYPE type, int idx, bool player_turn ) {
 		return;
 	}
 	reset( );
-	_back_cutin = _back_handles[ ( int )type ];
-	_cutin.png = _cutin_handles[ type ][ idx ];
+	_cutin_back.png = _back_handles[ ( int )type ];
+	_cutin_string.png = _cutin_handles[ type ][ idx ];
 	_type = type;
 	_flag = true;
 	_player_turn = player_turn;
 	_play_se = false;
-}
-
-void Cutin::setSpeed( float speed ) {
-	_speed = speed;
+	_your_turn = your_turn;
 }
 
 Cutin::CUTIN_TYPE Cutin::getCutinType( ) const {

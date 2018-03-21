@@ -6,6 +6,8 @@
 #include "Cutin.h"
 #include "Lazer.h"
 
+const int WAIT_TIME = 30;
+
 PhaseAttack::PhaseAttack( GlobalDataPtr data, FieldPtr field, CutinPtr cutin, short int player_num, bool reverse_flag ) :
 Phase( player_num ),
 _data( data ),
@@ -15,6 +17,7 @@ _cutin( cutin ) {
 	_lazer = LazerPtr( new Lazer( _data ) );
 	_recv = false;
 	_send_live = false;
+	_wait_time = 0;
 	_reverse_mirror = reverse_flag;
 }
 
@@ -35,10 +38,14 @@ void PhaseAttack::calc( ) {
 		_field->reverseMirror( );
 		_reverse_mirror = false;
 		_cutin->setImage( Cutin::CUTIN_TYPE_ITEM, Cutin::CUTIN_ITEM_REVERSE_MIRROR );
-		_cutin->setSpeed( 1.8f );
 	}
 
 	if ( _cutin->isCutin( ) ) {
+		return;
+	}
+
+	if ( _wait_time < WAIT_TIME ) {
+		_wait_time++;
 		return;
 	}
 
