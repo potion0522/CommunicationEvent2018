@@ -16,7 +16,7 @@ const float ITEM_SET_BUTTON_Y = HEIGHT / 5 * 3.5;
 const float IP_SET_BUTTON_X = WIDTH - 100;
 const float IP_SET_BUTTON_Y = HEIGHT - 100;
 
-const short int bgm_no = 0;
+const short int BGM_NO = 2;
 
 Title::Title( GlobalDataPtr data ) :
 _data( data ) {
@@ -54,7 +54,7 @@ _data( data ) {
 		_bgm = SoundProperty( );
 		_bgm.loop = true;
 		_bgm.top = true;
-		_bgm.wav = sound_ptr->getWav( TITLE_BGM, bgm_no ).wav;
+		_bgm.wav = sound_ptr->getWav( TITLE_BGM, BGM_NO ).wav;
 	}
 
 	{//startƒ{ƒ^ƒ“
