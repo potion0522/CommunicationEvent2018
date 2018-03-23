@@ -34,6 +34,7 @@ private:
 	bool _item_callback;
 	bool _double_mirror;
 	bool _recv;
+	bool _first;
 	int _clicking;
 	short int _item;
 	short int _order_past;

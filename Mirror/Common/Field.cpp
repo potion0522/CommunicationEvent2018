@@ -26,7 +26,8 @@ enum IMAGE_IDX {
 	LAZER_RIGHT_IDX,
 	LAZER_TABLE_IDX,
 	TABLE_IDX,
-	MIRROR_IDX
+	MIRROR_IDX,
+	FIRST_TURN = 7
 };
 
 Field::Field( GlobalDataPtr data ) :
@@ -41,11 +42,13 @@ _data( data ) {
 	_table_handle = -1;
 	_time_string_handle = -1;
 	_timeboard_handle = -1;
+	_item_not_handle = -1;
 	std::array< int, NUMBER_HANDLE_MAX >( ).swap( _number_handle );
 	std::array< int, PLAYER_NUM >( ).swap( _mirror_handle );
 	std::array< int, BATTLE_BUTTON_IMAGE_NUM >( ).swap( _button_handle );
 	std::array< int, ITEM_MAX >( ).swap( _item_handle );
 	std::array< int, LAZER_TYPE_MAX >( ).swap( _lazer_handle );
+	std::array< int, PLAYER_NUM >( ).swap( _first_or_second_handle );
 	_button_image = LightImageProperty( );
 	_lazer_image = LightImageProperty( );
 	_item_cancel = BoxObject( );
@@ -147,6 +150,14 @@ _data( data ) {
 	for ( int i = 0; i < NUMBER_HANDLE_MAX; i++ ) {
 		_number_handle[ i ] = _image->getPng( NUMBER_IMAGE, i ).png;
 	}
+
+	//先攻後攻
+	for ( int i = 0; i < PLAYER_NUM; i++ ) {
+		_first_or_second_handle[ i ] = _image->getPng( BATTLE_IMAGE, FIRST_TURN + i ).png;
+	}
+
+	//アイテム使用不可
+	_item_not_handle = _image->getPng( ITEM_IMAGE, ITEM_NOT ).png;
 }
 
 Field::~Field( ) {
@@ -300,7 +311,6 @@ void Field::update( ) {
 	drawArmament( );
 	drawInfo( );
 	drawDecisionButton( );
-	drawDeathCount( );
 	drawFirstOrSecond( );
 	resetInfo( );
 	_button_lighting = false;
@@ -321,6 +331,7 @@ void Field::update( ) {
 	//レーザー移動までのターン数
 	drawItem( );
 	drawItemCancelButton( );
+	drawDeathCount( );
 	drawRound( );
 
 	//ミラー設置時のみ
@@ -419,6 +430,10 @@ int Field::getHitItemIdx( ) const {
 	for ( int i = 0; i < ( int )ITEM_MAX; i++ ) {
 		if ( !_item[ i ].flag ) {
 			continue;
+		}
+		//後攻でダブルミラーなら
+		if ( !_first && _item[ i ].type == DOUBLE_MIRROR ) {
+			return -1;
 		}
 
 		float lx = ( float )( _item[ i ].x - SQUARE_SIZE * 0.5 );
@@ -774,11 +789,19 @@ void Field::drawFirstOrSecond( ) const {
 		return;
 	}
 
+	const short int X = WIDTH / 2;
+	const short int Y = 25;
+	ImageProperty image = ImageProperty( );
+	image.cx = X;
+	image.cy = Y;
+	image.alpha = 150 + ( int )( sin( 0.03 * _data->getCount( ) ) * 70 );
 	if ( _first ) {
-		_drawer->setFrontString( true, DECISION_BUTTON_X - 250, DECISION_BUTTON_Y, PURPLE, "先攻", Drawer::SUPER_BIG );
+		image.png = _first_or_second_handle[ 0 ];
 	} else {
-		_drawer->setFrontString( true, DECISION_BUTTON_X - 250, DECISION_BUTTON_Y, PURPLE, "後攻", Drawer::SUPER_BIG );
+		image.png = _first_or_second_handle[ 1 ];
 	}
+
+	_drawer->setFrontImage( image );
 }
 
 void Field::drawField( ) {
@@ -1060,6 +1083,12 @@ void Field::drawItem( ) const {
 		}
 
 		_drawer->setBackImage( image );
+
+		if ( !_first && _item[ i ].type == DOUBLE_MIRROR ) {
+			image.png = _item_not_handle;
+			image.alpha = 255;
+			_drawer->setBackImage( image );
+		}
 	}
 }
 
@@ -1090,11 +1119,11 @@ void Field::drawMirrorCommand( ) const {
 void Field::drawDeathCount( ) const {
 	ImageProperty image = ImageProperty( );
 	const short int TIME_BOARD_X = WIDTH - 50;
-	const short int TIME_BOARD_Y = 100;
+	const short int TIME_BOARD_Y = 150;
 	const short int TIME_STRING_X = WIDTH - 100;
-	const short int TIME_STRING_Y = 50;
+	const short int TIME_STRING_Y = 100;
 	const short int TIME_NUMBER_X = WIDTH - 130;
-	const short int TIME_NUMBER_Y = 120;
+	const short int TIME_NUMBER_Y = 170;
 
 	//カウント背景
 	image.cx = TIME_BOARD_X;

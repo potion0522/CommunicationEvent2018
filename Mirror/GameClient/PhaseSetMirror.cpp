@@ -16,6 +16,7 @@ _cutin( cutin ) {
 
 	_recv = false;
 	_double_mirror = false;
+	_first = false;
 	_order_past = -1;
 	_clicking = 0;
 	
@@ -70,10 +71,11 @@ void PhaseSetMirror::update( ) {
 	}
 
 	if ( order == 1 ) {
-		_field->setFirstOrSecond( true );
+		_first = true;
 	} else {
-		_field->setFirstOrSecond( false );
+		_first = false;
 	}
+	_field->setFirstOrSecond( _first );
 
 	if ( _cutin->isCutin( ) ) {
 		return;
@@ -322,7 +324,9 @@ void PhaseSetMirror::updateItem( ) {
 
 	case DOUBLE_MIRROR: 
 		if ( _field->isSelectedMirror( ) ) {
-			_field->activeButtonLighting( );
+			if ( _first ) {
+				_field->activeButtonLighting( );
+			}
 		}
 		break;
 
@@ -334,6 +338,7 @@ void PhaseSetMirror::updateItem( ) {
 		break;
 	}
 	
+	//クリック
 	if ( _data->getClickingLeft( ) ) {
 		_clicking = _data->getClickingLeft( );	
 		return;
@@ -349,10 +354,13 @@ void PhaseSetMirror::updateItem( ) {
 
 	//決定ボタンを押さないで
 	if ( !_field->isHitDecisionButton( ) ) {
+
 		//ミラーコマンドを選択してなくて
 		if ( _field->getHitMirrorCommandIdx( ) < 0 ) {
+
 			//フィールドも選択していなければ
 			if ( _field->getFieldPosHitNum( ) < 0 ) {
+
 				//キャンセルボタンであれば-1
 				if ( _field->isHitItemCancelButton( ) ) {
 					//アイテムが選択されていたらSEを鳴らす
@@ -361,6 +369,7 @@ void PhaseSetMirror::updateItem( ) {
 					}
 					idx = -1;
 				}
+
 				//アイテム番号セット
 				if ( idx != -1 ) {
 					_soundplayer->play( _itemselect_se );
@@ -379,14 +388,7 @@ void PhaseSetMirror::updateItem( ) {
 		if ( !_field->isSelectedMirror( ) ) {
 			return;
 		}
-		int order = 0;
-		if ( !_player_num ) {
-			order = ( _turn + 1 ) % 2 + 1;
-		} else {
-			order = _turn % 2 + 1;
-		}
-
-		if ( order != 1 ) {
+		if ( !_first ) {
 			_field->mirrorPosNotSelected( );
 			return;
 		}

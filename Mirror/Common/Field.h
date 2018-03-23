@@ -21,7 +21,7 @@ const short int SQUARE_SIZE = ( short int )( 96 * FIELD_SIZE_RATE );
 const short int FIELD_ROW = 4;
 const short int FIELD_COL = 4;
 const int START_POS_X = WIDTH / 3 * 2 - SQUARE_SIZE * FIELD_COL / 2;
-const int START_POS_Y = HEIGHT / 2 - SQUARE_SIZE * FIELD_ROW / 2 + SQUARE_SIZE;
+const int START_POS_Y = HEIGHT / 2 - SQUARE_SIZE * FIELD_ROW / 2 + SQUARE_SIZE + SQUARE_SIZE / 10;
 const int INFO_TEXT_MAX = 10;
 const int BATTLE_BUTTON_IMAGE_NUM = 4;
 
@@ -214,11 +214,13 @@ private:
 	int _table_handle;
 	int _time_string_handle;
 	int _timeboard_handle;
+	int _item_not_handle;
 	std::array< int, NUMBER_HANDLE_MAX > _number_handle;
 	std::array< int, PLAYER_NUM > _mirror_handle;
 	std::array< int, BATTLE_BUTTON_IMAGE_NUM > _button_handle;
 	std::array< int, ITEM_MAX > _item_handle;
 	std::array< int, LAZER_TYPE_MAX > _lazer_handle;
+	std::array< int, PLAYER_NUM > _first_or_second_handle;
 	std::array< BoxObject, COMMAND_TYPE_MAX > _mirror_cmd;
 	LightImageProperty _button_image;
 	LightImageProperty _background;
