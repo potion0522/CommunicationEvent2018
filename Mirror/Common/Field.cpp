@@ -431,10 +431,6 @@ int Field::getHitItemIdx( ) const {
 		if ( !_item[ i ].flag ) {
 			continue;
 		}
-		//後攻でダブルミラーなら
-		if ( !_first && _item[ i ].type == DOUBLE_MIRROR ) {
-			return -1;
-		}
 
 		float lx = ( float )( _item[ i ].x - SQUARE_SIZE * 0.5 );
 		float ly = ( float )( _item[ i ].y - SQUARE_SIZE * 0.5 );
@@ -443,6 +439,12 @@ int Field::getHitItemIdx( ) const {
 
 		if ( lx <= mouse_x && mouse_x <= rx &&
 			 ly <= mouse_y && mouse_y <= ry ) {
+
+			//後攻でダブルミラーなら使用不可
+			if ( !_first && _item[ i ].type == DOUBLE_MIRROR ) {
+				return -1;
+			}
+
 			SetCursor( _cur_hand );
 			return i;
 		}

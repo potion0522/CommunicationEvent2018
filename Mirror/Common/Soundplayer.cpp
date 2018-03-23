@@ -65,6 +65,7 @@ void Soundplayer::play( SoundProperty wav ) {
 	if ( wav.volume > 0 ) {
 		ChangeVolumeSoundMem( wav.volume, wav.wav );
 	}
+
 	int top_flag = FALSE;
 	if ( wav.top ) {
 		top_flag = TRUE;
