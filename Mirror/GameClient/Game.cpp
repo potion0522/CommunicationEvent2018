@@ -49,6 +49,7 @@ void Game::initialize( ) {
 	_cutin->initialize( );
 	_turn = 1;
 	_win = false;
+	_drawn = false;
 	_cause = CAUSE_OF_DEATH( );
 	_player_num = _client->getPlayerNum( );
 	_phase = SET_PLAYER_PHASE;
@@ -102,6 +103,7 @@ void Game::update( ) {
 	if ( _data->getScene( ) == RESULT ) {
 		_soundplayer->stop( _bgm );
 		PhaseJudgePtr judge = std::dynamic_pointer_cast< PhaseJudge >( _battle );
+		_drawn = judge->isDrawn( );
 		_win = judge->isWin( );
 		_cause = judge->getCauseOfDeath( );
 	}
@@ -137,6 +139,10 @@ void Game::changePhase( ) {
 		_battle = PhaseJudgePtr( new PhaseJudge( _data, _field, _player_num ) );
 		break;
 	}
+}
+
+bool Game::isDrawn( ) const {
+	return _drawn;
 }
 
 bool Game::isWin( ) const {

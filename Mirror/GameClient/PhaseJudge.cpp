@@ -14,6 +14,8 @@ _field( field ) {
 
 	_recv = false;
 	_turn_fin = false;
+	_win = false;
+	_drawn = false;
 	_cause = CAUSE_OF_DEATH( );
 
 	SoundPtr sound_ptr = _data->getSoundPtr( );
@@ -60,12 +62,17 @@ void PhaseJudge::update( ) {
 		_field->nextTurn( );
 		_turn++;
 		_field->setTurn( _turn );
-	} else {
+	} else if ( winner != 2 ) {
 		//•‰‚¯
 		_data->setScene( RESULT );
 		_soundplayer->play( _lose_se );
 		_win = false;
 		_cause = _client->getCauseOfDeath( );
+	} else {
+		//ˆø‚«•ª‚¯
+		_data->setScene( RESULT );
+		_soundplayer->play( _lose_se );
+		_drawn = true;
 	}
 
 	_turn_fin = true;
@@ -77,6 +84,10 @@ void PhaseJudge::recv( ) {
 		return;
 	}
 	_recv = true;
+}
+
+bool PhaseJudge::isDrawn( ) const {
+	return _drawn;
 }
 
 bool PhaseJudge::isWin( ) const {

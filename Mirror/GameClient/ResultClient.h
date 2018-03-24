@@ -26,6 +26,7 @@ private:
 	std::string convLoseMessage( CAUSE_OF_DEATH cause );
 
 private:
+	bool _drawn;
 	bool _win;
 	CAUSE_OF_DEATH _cause;
 	short int _cnt;

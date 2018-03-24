@@ -7,6 +7,8 @@
 #include "Command.h"
 #include <map>
 
+const short int DRAWN = 2;//ˆø‚«•ª‚¯
+
 GameMaster::GameMaster( GlobalDataPtr data, ConnectorPtr connector, LogPtr log, CommandPtr command ) :
 _data( data ),
 _connector( connector ),
@@ -264,9 +266,14 @@ void GameMaster::updateAttackPhase( ) {
 	CAUSE_OF_DEATH cause = CAUSE_OF_DEATH( );
 	for ( int i = 0; i < PLAYER_NUM; i++ ) {
 		if ( !_client_data[ i ].alive ) {
+			//‘¼‚ÌƒvƒŒƒCƒ„[‚àŽžŠÔØ‚ê‚Å‚ ‚ê‚Î
+			if ( _winner != -1 ) {
+				_winner = DRAWN;
+				break;
+			}
+
 			_winner = ( i + 1 ) % PLAYER_NUM;
 			cause = _server->getCauseOfDeath( _client_data[ i ].player_num );
-			break;
 		}
 	}
 	

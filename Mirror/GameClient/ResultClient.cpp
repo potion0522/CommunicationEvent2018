@@ -18,6 +18,7 @@ std::string ResultClient::getTag( ) {
 }
 
 void ResultClient::initialize( ) {
+	_drawn = _game->isDrawn( );
 	_win = _game->isWin( );
 	_cause = _game->getCauseOfDeath( );
 	_cnt = FRAME * 10;
@@ -27,15 +28,22 @@ void ResultClient::finalize( ) {
 }
 
 void ResultClient::update( ) {
-	if ( _win ) {
-		//Ÿ—˜
-		_drawer->setFrontString( true, WIDTH / 2, HEIGHT / 3, RED, "‚ ‚È‚½‚ÌŸ‚¿", Drawer::SUPER_BIG );
-		_drawer->setFrontString( true, WIDTH / 2, HEIGHT / 2, WATER, convResultMessage( _win, _cause ), Drawer::LITTLE_BIG );
+
+	std::string result;
+	if ( _drawn ) {
+		//ˆø‚«•ª‚¯
+		result = "ˆø‚«•ª‚¯";
 	} else {
-		//”s–k
-		_drawer->setFrontString( true, WIDTH / 2, HEIGHT / 3, RED, "‚ ‚È‚½‚Ì•‰‚¯", Drawer::SUPER_BIG );
-		_drawer->setFrontString( true, WIDTH / 2, HEIGHT / 2, WATER, convResultMessage( _win, _cause ), Drawer::LITTLE_BIG );
+		if ( _win ) {
+			result = "‚ ‚È‚½‚ÌŸ‚¿";
+		} else {
+			result = "‚ ‚È‚½‚Ì•‰‚¯";
+		}
 	}
+
+	std::string result_message = convResultMessage( _win, _cause );
+	_drawer->setFrontString( true, WIDTH / 2, HEIGHT / 3, RED, result, Drawer::SUPER_BIG );
+	_drawer->setFrontString( true, WIDTH / 2, HEIGHT / 2, WATER, result_message, Drawer::LITTLE_BIG );
 
 	_drawer->setFrontString( true, WIDTH / 2, HEIGHT / 5 * 3.5, YELLOW, "Return Title ....", Drawer::BIG );
 	_drawer->setFrontString( true, WIDTH / 2, HEIGHT / 5 * 3.5, RED,    "                  " + std::to_string( _cnt / FRAME ), Drawer::BIG );
@@ -52,6 +60,11 @@ void ResultClient::update( ) {
 
 std::string ResultClient::convResultMessage( bool win, CAUSE_OF_DEATH cause ) {
 	std::string str;
+
+	if ( _drawn ) {
+		return "‚¨ŒÝ‚¢‚ÌŽžŠÔ‚ª‚O‚É‚È‚Á‚Ä‚µ‚Ü‚¢‚Ü‚µ‚½.....";
+	}
+
 	if ( win ) {
 		str = convWinMessage( cause );
 	} else {

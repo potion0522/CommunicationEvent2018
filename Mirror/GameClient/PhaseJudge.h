@@ -20,6 +20,7 @@ public:
 	void recv( );
 
 public:
+	bool isDrawn( ) const;
 	bool isWin( ) const;
 	CAUSE_OF_DEATH getCauseOfDeath( ) const;
 
@@ -27,6 +28,7 @@ private:
 	bool _recv;
 	bool _turn_fin;
 	bool _win;
+	bool _drawn;//ˆø‚«•ª‚¯
 	CAUSE_OF_DEATH _cause;
 	
 	Base::SoundProperty _win_se;
