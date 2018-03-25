@@ -154,6 +154,7 @@
   <ItemGroup>
     <ClCompile Include="Connector.cpp" />
     <ClCompile Include="GameMaster.cpp" />
+    <ClCompile Include="Live.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Log.cpp" />
     <ClCompile Include="ResultServer.cpp" />
@@ -166,6 +167,7 @@
   <ItemGroup>
     <ClInclude Include="Connector.h" />
     <ClInclude Include="GameMaster.h" />
+    <ClInclude Include="Live.h" />
     <ClInclude Include="Log.h" />
     <ClInclude Include="ResultServer.h" />
   </ItemGroup>

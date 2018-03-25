@@ -3,7 +3,7 @@
 #include "Connector.h"
 #include "Server.h"
 #include "Log.h"
-#include "Field.h"
+#include "Live.h"
 #include "Command.h"
 #include <map>
 
@@ -14,11 +14,11 @@ _data( data ),
 _connector( connector ),
 _log( log ),
 _command( command ) {
-	_field = FieldPtr( new Field( _data ) );
-	_field->initialize( );
-	_field->setPhase( _phase );
-	_field->setPlayerNum( 1 );
-	_field->playerPosSelected( );
+	_live = LivePtr( new Live( _data ) );
+	_live->initialize( );
+	_live->setPhase( _phase );
+	_live->setPlayerNum( 1 );
+	_live->playerPosSelected( );
 	_server = _data->getServerPtr( );
 	setFlag( 1 );
 }
@@ -47,10 +47,10 @@ void GameMaster::initialize( ) {
 	_phase = SET_PLAYER_PHASE;
 
 	_server->setBattlePhase( _phase );
-	_field->initialize( );
-	_field->setPhase( _phase );
-	_field->setPlayerNum( 1 );
-	_field->playerPosSelected( );
+	_live->initialize( );
+	_live->setPhase( _phase );
+	_live->setPlayerNum( 1 );
+	_live->playerPosSelected( );
 }
 
 void GameMaster::finalize( ) {
@@ -71,7 +71,7 @@ void GameMaster::update( ) {
 
 	//フラグが立っていればフィールドを描画
 	if ( _field_draw_flag ) {
-		_field->update( );
+		_live->update( );
 	}
 
 	commandExecution( );
@@ -144,8 +144,8 @@ int GameMaster::getOrderIdx( int order ) const {
 }
 
 int GameMaster::calcLazerPoint( int exclusion ) {
-	int player_one = _field->getPlayerPosIdx( 0 );
-	int player_two = _field->getPlayerPosIdx( 1 );
+	int player_one = _live->getPlayerPosIdx( 0 );
+	int player_two = _live->getPlayerPosIdx( 1 );
 	std::map< int, int > point;
 	for ( int i = 0; i < PLAYER_POSITION * 2; i++ ) {
 		point[ i ] = i;
@@ -177,16 +177,16 @@ void GameMaster::updatePlayerPhase( ) {
 	}
 
 	for ( int i = 0; i < PLAYER_NUM; i++ ) {
-		_field->setPlayerPoint( i, _client_data[ i ].player_pos );
+		_live->setPlayerPoint( i, _client_data[ i ].player_pos );
 	}
 
 	_phase = SET_MIRROR_PHASE;
 	_server->setBattlePhase( _phase );
-	_field->setPhase( _phase );
+	_live->setPhase( _phase );
 
 	int lazer = calcLazerPoint( );
 	_server->setLazerPos( lazer );
-	_field->setLazerPoint( lazer );
+	_live->setLazerPoint( lazer );
 
 	for ( int i = 0; i < MACHINE_MAX; i++ ) {
 		_server->setPlayerPos( i, _client_data[ i ].player_pos );
@@ -205,7 +205,7 @@ void GameMaster::updateMirrorPhase( ) {
 
 	_phase = ATTACK_PHASE;
 	_server->setBattlePhase( _phase );
-	_field->setPhase( _phase );
+	_live->setPhase( _phase );
 
 	idx = getOrderIdx( 1 );
 
@@ -221,12 +221,12 @@ void GameMaster::updateMirrorPhase( ) {
 	}
 
 	if ( del ) {
-		_field->deleteMirrorPoint( _client_data[ 0 ].x + _client_data[ 0 ].y * FIELD_COL );
+		_live->deleteMirrorPoint( _client_data[ 0 ].x + _client_data[ 0 ].y * FIELD_COL );
 	} else {
 		for ( int i = 0; i < PLAYER_NUM; i++ ) {
 			Data data = _client_data[ idx ];
 			if ( data.flag ) {
-				_field->setMirrorPoint( idx, data.x, data.y, data.angle );
+				_live->setMirrorPoint( idx, data.x, data.y, data.angle );
 			}
 
 			idx = ( idx + 1 ) % PLAYER_NUM;
@@ -234,7 +234,7 @@ void GameMaster::updateMirrorPhase( ) {
 	}
 
 	if ( _reverse_mirror ) {
-		_field->reverseMirror( );
+		_live->reverseMirror( );
 		_reverse_mirror = false;
 	}
 
@@ -281,7 +281,7 @@ void GameMaster::updateAttackPhase( ) {
 	_server->setCauseOfDeath( cause );
 	_server->setBattlePhase( _phase );
 	_server->setStcWinner( _winner );
-	_field->setPhase( _phase );
+	_live->setPhase( _phase );
 
 	for ( int i = 0; i < PLAYER_NUM; i++ ) {
 		_client_data[ i ].fin = false;
@@ -299,13 +299,13 @@ void GameMaster::updateJudgePhase( ) {
 	if ( _winner < 0 ) {
 		//勝敗なし
 		_phase = SET_MIRROR_PHASE;
-		_field->setPhase( _phase );
+		_live->setPhase( _phase );
 		_server->setBattlePhase( _phase );
-		_field->nextTurn( );
+		_live->nextTurn( );
 
 		if ( _turn % TURN_MAX == 0 ) {
-			int lazer = calcLazerPoint( _field->getLazerPointIdx( ) );
-			_field->setLazerPoint( lazer );
+			int lazer = calcLazerPoint( _live->getLazerPointIdx( ) );
+			_live->setLazerPoint( lazer );
 			_server->setLazerPos( lazer );
 		}
 
@@ -393,16 +393,18 @@ void GameMaster::updateItemCalc( ) {
 	_server->setBattlePhase( _phase );
 	_server->setItemFlag( false );
 	_server->setItem( 0 );
-	_field->setPhase( _phase );
+	_live->setPhase( _phase );
 }
 
 void GameMaster::invocationItem( ) {
 	switch ( _item ) {
 	case LAZER_RESET:
 		{//レーザーの位置を変更
-			int lazer = calcLazerPoint( _field->getLazerPointIdx( ) );
-			_field->setLazerPoint( lazer );
+			int lazer = calcLazerPoint( _live->getLazerPointIdx( ) );
+			_live->setLazerPoint( lazer );
 			_server->setLazerPos( lazer );
+			_live->nextTurn( );
+			_reverse_mirror = false;
 		}
 		break;
 
@@ -413,7 +415,7 @@ void GameMaster::invocationItem( ) {
 			data.x = _server->getCtsX( _item_user );
 			data.y = _server->getCtsY( _item_user );
 			data.angle = _server->getCtsAngle( _item_user );
-			_field->setMirrorPoint( _item_user, data.x, data.y, data.angle );
+			_live->setMirrorPoint( _item_user, data.x, data.y, data.angle );
 
 			_server->setStcPlayerNum( _item_user, data.player_num );
 			_server->setStcX( _item_user, data.x );

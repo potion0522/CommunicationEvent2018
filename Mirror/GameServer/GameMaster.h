@@ -10,7 +10,7 @@ PTR( GlobalData );
 PTR( Connector );
 PTR( Log );
 PTR( Server );
-PTR( Field );
+PTR( Live );
 PTR( Command );
 
 class GameMaster : public Base {
@@ -74,7 +74,7 @@ private:
 	ConnectorPtr _connector;
 	LogPtr _log;
 	ServerPtr _server;
-	FieldPtr _field;
+	LivePtr _live;
 	CommandPtr _command;
 };
 

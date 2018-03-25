@@ -43,6 +43,7 @@ _data( data ) {
 	_time_string_handle = -1;
 	_timeboard_handle = -1;
 	_item_not_handle = -1;
+	std::array< int, PLAYER_NUM >( ).swap( _player_handle );
 	std::array< int, NUMBER_HANDLE_MAX >( ).swap( _number_handle );
 	std::array< int, PLAYER_NUM >( ).swap( _mirror_handle );
 	std::array< int, BATTLE_BUTTON_IMAGE_NUM >( ).swap( _button_handle );
@@ -54,6 +55,11 @@ _data( data ) {
 	_item_cancel = BoxObject( );
 
 	Png png = Png( );
+	//プレイヤー
+	for ( int i = 0; i < PLAYER_NUM; i++ ) {
+		_player_handle[ i ] = _image->getPng( PLAYER_IMAGE, i ).png;
+	}
+
 	//ボタン
 	for ( int i = 0; i < BATTLE_BUTTON_IMAGE_NUM; i++ ) {
 		_button_handle[ i ] = _image->getPng( BUTTON_IMAGE, BATTLE_BUTTON_IDX + i ).png;
@@ -941,8 +947,6 @@ void Field::drawPlayerPos( ) const {
 	if ( _player_num < 0 ) {
 		return;
 	}
-
-	ImagePtr image_ptr = _data->getImagePtr( );
 	
 	for ( int i = 0; i < PLAYER_POSITION * 2; i++ ) {
 		if ( _player_num != i / PLAYER_POSITION ) {
@@ -951,8 +955,7 @@ void Field::drawPlayerPos( ) const {
 		ImageProperty image = ImageProperty( );
 		double x = _select_player_pos[ i ].x;
 		double y = _select_player_pos[ i ].y;
-		Png png = image_ptr->getPng( PLAYER_IMAGE, i / PLAYER_POSITION );
-		image.png = png.png;
+		image.png = _player_handle[ i / PLAYER_POSITION ];
 		image.cx = x;
 		image.cy = y;
 		
@@ -978,7 +981,6 @@ void Field::drawPlayer( ) const {
 		return;
 	}
 
-	ImagePtr image_ptr = _data->getImagePtr( );
 	for ( int i = 0; i < PLAYER_NUM; i++ ) {
 		if ( _dead_player == i ) {
 			continue;
@@ -996,8 +998,7 @@ void Field::drawPlayer( ) const {
 		y = _select_player_pos[ pos ].y;
 
 		ImageProperty image = ImageProperty( );
-		Png png = image_ptr->getPng( PLAYER_IMAGE, i );
-		image.png = png.png;
+		image.png = _player_handle[ i ];
 		image.cx = x;
 		image.cy = y;
 		image.size = FIELD_SIZE_RATE;

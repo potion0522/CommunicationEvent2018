@@ -149,7 +149,7 @@ private:
 	void checkItemRecovery( );
 
 //Drawån
-private:
+protected:
 	void drawField( );
 	void drawArmament( ) const;
 	void drawTmpMirror( ) const;
@@ -167,7 +167,7 @@ private:
 	void drawItemCancelButton( ) const;
 	void drawFirstOrSecond( ) const;
 
-private:
+protected:
 #pragma pack( 1 )
 	struct BoxObject {
 		LightImageProperty image;
@@ -215,6 +215,7 @@ private:
 	int _time_string_handle;
 	int _timeboard_handle;
 	int _item_not_handle;
+	std::array< int, PLAYER_NUM > _player_handle;
 	std::array< int, NUMBER_HANDLE_MAX > _number_handle;
 	std::array< int, PLAYER_NUM > _mirror_handle;
 	std::array< int, BATTLE_BUTTON_IMAGE_NUM > _button_handle;

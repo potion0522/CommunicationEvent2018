@@ -163,6 +163,7 @@
     <ClCompile Include="GlobalData.cpp" />
     <ClCompile Include="Image.cpp" />
     <ClCompile Include="KeyBoard.cpp" />
+    <ClCompile Include="Lazer.cpp" />
     <ClCompile Include="LoadCSV.cpp" />
     <ClCompile Include="Loading.cpp" />
     <ClCompile Include="Message.cpp" />
@@ -186,6 +187,7 @@
     <ClInclude Include="GlobalData.h" />
     <ClInclude Include="Image.h" />
     <ClInclude Include="KeyBoard.h" />
+    <ClInclude Include="Lazer.h" />
     <ClInclude Include="LoadCSV.h" />
     <ClInclude Include="Loading.h" />
     <ClInclude Include="Message.h" />

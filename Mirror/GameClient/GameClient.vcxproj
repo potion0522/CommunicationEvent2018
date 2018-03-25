@@ -155,7 +155,6 @@
     <ClCompile Include="Console.cpp" />
     <ClCompile Include="Cutin.cpp" />
     <ClCompile Include="IpSetting.cpp" />
-    <ClCompile Include="Lazer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Phase.cpp" />
@@ -176,7 +175,6 @@
     <ClInclude Include="Console.h" />
     <ClInclude Include="Cutin.h" />
     <ClInclude Include="IpSetting.h" />
-    <ClInclude Include="Lazer.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Phase.h" />
     <ClInclude Include="PhaseAttack.h" />

@@ -43,9 +43,6 @@
     <ClCompile Include="Command.cpp">
       <Filter>Global</Filter>
     </ClCompile>
-    <ClCompile Include="Field.cpp">
-      <Filter>Global</Filter>
-    </ClCompile>
     <ClCompile Include="Sound.cpp">
       <Filter>Global</Filter>
     </ClCompile>
@@ -60,6 +57,12 @@
     </ClCompile>
     <ClCompile Include="MultiThreadLoad.cpp">
       <Filter>Load</Filter>
+    </ClCompile>
+    <ClCompile Include="Field.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Lazer.cpp">
+      <Filter>Game</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -108,9 +111,6 @@
     <ClInclude Include="Command.h">
       <Filter>Global</Filter>
     </ClInclude>
-    <ClInclude Include="Field.h">
-      <Filter>Global</Filter>
-    </ClInclude>
     <ClInclude Include="Sound.h">
       <Filter>Global</Filter>
     </ClInclude>
@@ -125,6 +125,12 @@
     </ClInclude>
     <ClInclude Include="MultiThreadLoad.h">
       <Filter>Load</Filter>
+    </ClInclude>
+    <ClInclude Include="Field.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Lazer.h">
+      <Filter>Game</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -151,6 +157,9 @@
     </Filter>
     <Filter Include="Load">
       <UniqueIdentifier>{a5071c56-9695-4e2f-ae97-e3200082de0c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game">
+      <UniqueIdentifier>{a1427197-17a4-4651-84a5-85558b2fa2a6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
