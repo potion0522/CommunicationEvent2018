@@ -10,6 +10,9 @@
 #include "ResultClient.h"
 #include "SelectItem.h"
 #include "IpSetting.h"
+#include "LoadCSV.h"
+#include <vector>
+#include <string>
 
 /**********************************************************
 *														  *
@@ -17,10 +20,38 @@
 *														  *
 ***********************************************************/
 
+void setScreenSize( int *width, int *height ) {
+	*width = SCREEN_WIDTH;
+	*height = SCREEN_HEIGHT;
+
+	LoadCSVPtr load( new LoadCSV( ) );
+	std::vector< CsvData > data;
+	load->read( data, "screen" );
+
+	int size = ( int )data.size( );
+	for ( int i = 0; i < size; i++ ) {
+		if ( "CLIENT_WIDTH" == data[ i ].tag ) {
+			*width = atoi( data[ i ].values.begin( )->c_str( ) );
+			continue;
+		}
+
+		if ( "CLIENT_HEIGHT" == data[ i ].tag ) {
+			*height = atoi( data[ i ].values.begin( )->c_str( ) );
+			continue;
+		}
+	}
+}
+
 int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow ) {
 	SetWindowText( "Mirror" );
-	ChangeWindowMode( 1 );
-	//SetWindowSize( SCREEN_WIDTH, SCREEN_HEIGHT );
+	ChangeWindowMode( TRUE );
+
+	//スクリーンサイズを詰める
+	int screen_width = 0;
+	int screen_height = 0;
+	setScreenSize( &screen_width, &screen_height );
+
+	SetWindowSize( screen_width, screen_height );
 	SetGraphMode( WIDTH, HEIGHT, 32 );
 	SetDoubleStartValidFlag( TRUE );
 	SetAlwaysRunFlag( TRUE );
