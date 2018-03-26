@@ -8,7 +8,7 @@
 
 const std::string PATH = "Resources/sound/";
 
-Sound::Sound( ) {
+Sound::Sound( MACHINE_TYPE type ) {
 	_sound_load = false;
 
 	LoadCSVPtr csv = LoadCSVPtr( new LoadCSV( ) );
@@ -30,7 +30,18 @@ Sound::Sound( ) {
 			if ( atoi( data[ i ].values.begin( )->c_str( ) ) ) {
 				_sound_load = true;
 			}
-			break;
+			continue;
+		}
+
+		if ( type != SERVER ) {
+			continue;
+		}
+		//ƒ‰ƒCƒu‚É‚·‚é‚©‚Ç‚¤‚©
+		if ( "LIVE_SOUND" == data[ i ].tag ) {
+			if ( atoi( data[ i ].values.begin( )->c_str( ) ) != 1 ) {
+				_sound_load = false;
+			}
+			continue;
 		}
 	}
 

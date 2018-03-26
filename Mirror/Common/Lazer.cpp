@@ -315,7 +315,7 @@ double Lazer::getReflectEffectAngle( Vector old_vec, Vector new_vec ) {
 	return angle;
 }
 
-void Lazer::drawLazerLine( ) const {
+void Lazer::drawLazerLine( ) {
 	int size = ( int )_lazer.size( );
 	if ( size < 1 ) {
 		return;

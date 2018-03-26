@@ -12,6 +12,7 @@ PTR( Log );
 PTR( Server );
 PTR( Live );
 PTR( Command );
+PTR( LiveLazer );
 
 class GameMaster : public Base {
 public:
@@ -63,7 +64,6 @@ private:
 	bool _dice;
 	bool _use_item;
 	bool _reverse_mirror;
-	bool _field_draw_flag;
 	int _item;
 	int _item_user;
 	int _winner;
@@ -76,5 +76,6 @@ private:
 	ServerPtr _server;
 	LivePtr _live;
 	CommandPtr _command;
+	LiveLazerPtr _lazer;
 };
 

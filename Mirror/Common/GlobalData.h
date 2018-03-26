@@ -44,6 +44,7 @@ public:
 	bool isCommandFlag( ) const;
 	bool isInitFlag( ) const;
 	bool isMessageFlag( ) const;
+	bool isLiveFlag( ) const;
 
 public:
 	void setCommandFlag( bool flag );
@@ -72,6 +73,7 @@ private:
 	bool _init;
 	bool _message_flag;
 	bool _clicking;
+	bool _live;
 	int _count;
 
 	UpdateKeyPtr _key;

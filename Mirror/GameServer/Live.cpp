@@ -1,10 +1,5 @@
 #include "Live.h"
 
-const int LIVE_ORIGIN_X = WIDTH / 2;
-const int LIVE_ORIGIN_Y = HEIGHT / 2;
-const int GAP_X = LIVE_ORIGIN_X - ( START_POS_X + SQUARE_SIZE * 2 );
-const int GAP_Y = LIVE_ORIGIN_Y - ( START_POS_Y + SQUARE_SIZE * 2 );
-
 Live::Live( GlobalDataPtr data ) :
 Field( data ) {
 }
@@ -37,8 +32,8 @@ void Live::drawField( ) {
 			image.png = _table_handle;
 			image.size = FIELD_SIZE_RATE;
 
-			image.cx += GAP_X;
-			image.cy += GAP_Y;
+			image.cx += LIVE_GAP_X;
+			image.cy += LIVE_GAP_Y;
 			_drawer->setBackImage( image );
 		}
 	}
@@ -55,8 +50,8 @@ void Live::drawArmament( ) const {
 	image.png = _lazer_image.png;
 	image.size = FIELD_SIZE_RATE;
 
-	image.cx += GAP_X;
-	image.cy += GAP_Y;
+	image.cx += LIVE_GAP_X;
+	image.cy += LIVE_GAP_Y;
 	_drawer->setBackImage( image );
 }
 
@@ -79,8 +74,8 @@ void Live::drawMirror( ) const {
 		image.png = _mirror_handle[ mirror.player_num ];
 		image.size = FIELD_SIZE_RATE;
 
-		image.cx += GAP_X;
-		image.cy += GAP_Y;
+		image.cx += LIVE_GAP_X;
+		image.cy += LIVE_GAP_Y;
 		_drawer->setBackImage( image );
 	}
 }
@@ -113,8 +108,8 @@ void Live::drawPlayer( ) const {
 		image.cy = y;
 		image.size = FIELD_SIZE_RATE;
 
-		image.cx += GAP_X;
-		image.cy += GAP_Y;
+		image.cx += LIVE_GAP_X;
+		image.cy += LIVE_GAP_Y;
 		_drawer->setBackImage( image );
 	}
 }

@@ -14,7 +14,7 @@ struct Wav {
 
 class Sound {
 public:
-	Sound( );
+	Sound( MACHINE_TYPE type );
 	virtual ~Sound( );
 
 public:

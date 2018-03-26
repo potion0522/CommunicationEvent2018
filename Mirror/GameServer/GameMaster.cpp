@@ -5,6 +5,7 @@
 #include "Log.h"
 #include "Live.h"
 #include "Command.h"
+#include "LiveLazer.h"
 #include <map>
 
 const short int DRAWN = 2;//引き分け
@@ -14,13 +15,16 @@ _data( data ),
 _connector( connector ),
 _log( log ),
 _command( command ) {
+	setFlag( 1 );
 	_live = LivePtr( new Live( _data ) );
 	_live->initialize( );
 	_live->setPhase( _phase );
 	_live->setPlayerNum( 1 );
 	_live->playerPosSelected( );
+	_data->setPtr( _live );
+
 	_server = _data->getServerPtr( );
-	setFlag( 1 );
+	_lazer = LiveLazerPtr( new LiveLazer( _data ) );
 }
 
 GameMaster::~GameMaster( ) {
@@ -35,7 +39,6 @@ void GameMaster::initialize( ) {
 	_dice = true;
 	_use_item = false;
 	_reverse_mirror = false;
-	_field_draw_flag = false;
 	_winner = -1;
 	_turn = 1;
 	_item = 0;
@@ -70,7 +73,7 @@ void GameMaster::update( ) {
 	}
 
 	//フラグが立っていればフィールドを描画
-	if ( _field_draw_flag ) {
+	if ( _data->isLiveFlag( ) ) {
 		_live->update( );
 	}
 
@@ -253,9 +256,21 @@ void GameMaster::updateMirrorPhase( ) {
 	for ( int i = 0; i < PLAYER_NUM; i++ ) {
 		_client_data[ i ].fin = false;
 	}
+
+	if ( _data->isLiveFlag( ) ) {
+		_lazer = LiveLazerPtr( new LiveLazer( _data ) );
+	}
 }
 
 void GameMaster::updateAttackPhase( ) {
+	//ライブモードがオンなら
+	if ( _data->isLiveFlag( ) ) {
+		_lazer->update( );
+		if ( !_lazer->isFinish( ) ) {
+			return;
+		}
+	}
+
 	int idx = getWaitingIdx( );
 	_server->setOrder( -1 );
 
@@ -486,13 +501,6 @@ void GameMaster::commandExecution( ) {
 	if ( _command->getWordNum( ) < 2 ) {
 		return;
 	}
-
-	if ( _command->getWord( 0 ) == "DRAW" ) {
-		if ( _command->getWord( 1 ) == "FIELD" ) {
-			_field_draw_flag = !_field_draw_flag;
-		}
-	}
-
 
 	if ( _command->getWord( 0 ) != "SET" ) {
 		return;

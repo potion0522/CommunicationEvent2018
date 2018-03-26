@@ -9,6 +9,7 @@
 #include "Drawer.h"
 #include "Soundplayer.h"
 #include "Message.h"
+#include "LoadCSV.h"
 #include <ctime>
 #include <cstdlib>
 #include <limits.h>
@@ -22,6 +23,7 @@ _type( type ) {
 	_drawer = DrawerPtr( new Drawer( ) );
 	_soundplayer = SoundplayerPtr( new Soundplayer( ) );
 	_message = MessagePtr( new Message( _drawer ) );
+	_sound = SoundPtr( new Sound( _type ) );
 	_debug = NULL;
 
 	switch ( _type ) {
@@ -31,7 +33,6 @@ _type( type ) {
 
 	case CLIENT	: 
 		_client = ClientPtr( new Client( ) );
-		_sound = SoundPtr( new Sound( ) );
 		break;
 
 	case TEST	: 
@@ -42,7 +43,6 @@ _type( type ) {
 	initialize( );
 
 	_init = true;
-
 }
 
 GlobalData::~GlobalData( ) {
@@ -56,7 +56,9 @@ void GlobalData::initialize( ) {
 	_scene = TITLE;
 	_command_flag = false;
 	_clicking = false;
+	_live = false;
 	_count = 0;
+	_soundplayer->initialize( );
 
 	switch ( _type ) {
 	case SERVER:
@@ -65,13 +67,31 @@ void GlobalData::initialize( ) {
 
 	case CLIENT:
 		_client->disConnect( );
-		_soundplayer->initialize( );
 		break;
 
 	case TEST:
 		_debug->initialize( );
 		break;
 	}
+
+	LoadCSVPtr csv = LoadCSVPtr( new LoadCSV( ) );
+	std::vector< CsvData > data;
+	csv->read( data, "flag" );
+	int size = ( int )data.size( );
+	bool load_scene = false;
+	for ( int i = 0; i < size; i++ ) {
+		if ( _type != SERVER ) {
+			continue;
+		}
+		//ƒ‰ƒCƒu‚É‚·‚é‚©‚Ç‚¤‚©
+		if ( "LIVE_DRAW" == data[ i ].tag ) {
+			if ( atoi( data[ i ].values.begin( )->c_str( ) ) ) {
+				_live = true;
+			}
+			continue;
+		}
+	}
+
 
 	foldInitFlag( );
 }
@@ -178,6 +198,10 @@ bool GlobalData::isInitFlag( ) const {
 
 bool GlobalData::isMessageFlag( ) const {
 	return _message_flag;
+}
+
+bool GlobalData::isLiveFlag( ) const {
+	return _live;
 }
 
 void GlobalData::setCommandFlag( bool flag ) {

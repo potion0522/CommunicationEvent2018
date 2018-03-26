@@ -15,7 +15,7 @@ const int BOM_EFFECT_MAX = 8;
 const int DEAD_EFFECT_MAX = 8;
 
 class Lazer {
-private:
+protected:
 	struct Coordinate {
 		short int cnt;
 		short int x;
@@ -45,26 +45,26 @@ public:
 	bool isFinish( ) const;
 	void clearLazerImage( );
 
-private:
+protected:
 	void updateLazerVector( );
 	void updateUnitVector( );
 	void checkPlayerHit( );
 	DIRECT convVectorToDir( Vector vec );
 
-private:
+protected:
 	void setDirect( MIRROR_ANGLE angle );
 
-private:
+protected:
 	double getLazerImageAngle( );
 	double getReflectEffectAngle( Vector old_vec, Vector new_vec );
 	Vector getDirectVector( ) const;
 
-private:
-	void drawLazerLine( ) const;
+protected:
+	void drawLazerLine( );
 	void drawRefrecEffect( );
 	void drawDeadEffect( );
 
-private:
+protected:
 	bool _play_lazer_se;
 	bool _lazer_update;
 	bool _fin;
