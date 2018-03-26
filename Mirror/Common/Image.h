@@ -16,7 +16,7 @@ struct Png {
 
 class Image {
 public:
-	Image( );
+	Image( MACHINE_TYPE type );
 	virtual ~Image( );
 
 public:

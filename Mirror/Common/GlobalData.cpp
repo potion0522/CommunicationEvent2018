@@ -19,7 +19,7 @@ _type( type ) {
 	setFlag( 1 );
 	_key =   UpdateKeyPtr( new UpdateKey( ) );
 	_mouse = MouseEventPtr( new MouseEvent( ) );
-	_image = ImagePtr( new Image( ) );
+	_image = ImagePtr( new Image( _type ) );
 	_drawer = DrawerPtr( new Drawer( ) );
 	_soundplayer = SoundplayerPtr( new Soundplayer( ) );
 	_message = MessagePtr( new Message( _drawer ) );

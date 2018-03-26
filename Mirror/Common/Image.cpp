@@ -9,8 +9,8 @@
 
 const std::string IMAGE_PATH = "Resources/image/";
 
-Image::Image( ) {
-	_image_load = false;
+Image::Image( MACHINE_TYPE type ) {
+	_image_load = true;
 
 	LoadCSVPtr csv = LoadCSVPtr( new LoadCSV( ) );
 	std::vector< CsvData > data;
@@ -26,11 +26,16 @@ Image::Image( ) {
 			continue;
 		}
 
+		if ( type != SERVER ) {
+			continue;
+		}
+
 		//‰æ‘œƒ[ƒh‚·‚é‚©‚Ç‚¤‚©
 		if ( "LIVE_DRAW" == data[ i ].tag ) {
-			if ( atoi( data[ i ].values.begin( )->c_str( ) ) ) {
-				_image_load = true;
+			if ( atoi( data[ i ].values.begin( )->c_str( ) ) != 1 ) {
+				_image_load = false;
 			}
+			continue;
 		}
 	}
 	
