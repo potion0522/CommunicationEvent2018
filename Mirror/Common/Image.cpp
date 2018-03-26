@@ -10,6 +10,8 @@
 const std::string IMAGE_PATH = "Resources/image/";
 
 Image::Image( ) {
+	_image_load = false;
+
 	LoadCSVPtr csv = LoadCSVPtr( new LoadCSV( ) );
 	std::vector< CsvData > data;
 	csv->read( data, "flag" );
@@ -21,12 +23,19 @@ Image::Image( ) {
 			if ( atoi( data[ i ].values.begin( )->c_str( ) ) ) {
 				load_scene = true;
 			}
-			break;
+			continue;
+		}
+
+		//画像ロードするかどうか
+		if ( "LIVE_DRAW" == data[ i ].tag ) {
+			if ( atoi( data[ i ].values.begin( )->c_str( ) ) ) {
+				_image_load = true;
+			}
 		}
 	}
 	
 	//マルチスレッド
-	if ( load_scene ) {
+	if ( load_scene && _image_load ) {
 		_load = MultiThreadLoadPtr( new MultiThreadLoad( "画像データを読み込み中" ) );
 	} else {
 		_load = MultiThreadLoadPtr( new MultiThreadLoad( ) );
@@ -52,6 +61,10 @@ Image::~Image( ) {
 }
 
 void Image::initialize( ) {
+	if ( !_image_load ) {
+		return;
+	}
+
 	_dir_num = 0;
 	inputFileName( IMAGE_PATH );
 
@@ -105,6 +118,10 @@ void Image::initialize( ) {
 }
 
 Png Image::getPng( IMAGE item, int num ) const {
+	if ( !_image_load ) {
+		return Png( );
+	}
+
 	int dir = item;
 	Png tmp;
 	memset( &tmp, 0, sizeof( Png ) );

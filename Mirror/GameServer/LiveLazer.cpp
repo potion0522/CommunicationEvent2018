@@ -41,6 +41,16 @@ void LiveLazer::update( ) {
 
 	//ƒvƒŒƒCƒ„[€–S
 	if ( _field->getDeadPlayer( ) != -1 ) {
+		//”š”­‰¹
+		if ( !_dead_flag ) {
+			SoundplayerPtr player = _data->getSoundplayerPtr( );
+			Base::SoundProperty sound = Base::SoundProperty( );
+			sound.loop = false;
+			sound.top = true;
+			sound.wav = _data->getSoundPtr( )->getWav( EFFECT_SOUND, EXPLOSION_SE ).wav;
+			player->play( sound );
+		}
+
 		_dead_flag = true;
 		_dead_pnt.x = ( short int )( _start.x + _dir_vec.x );
 		_dead_pnt.y = ( short int )( _start.y + _dir_vec.y );

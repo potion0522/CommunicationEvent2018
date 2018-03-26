@@ -6,15 +6,28 @@
     <ClCompile Include="GameMaster.cpp" />
     <ClCompile Include="Connector.cpp" />
     <ClCompile Include="ResultServer.cpp" />
-    <ClCompile Include="Live.cpp" />
-    <ClCompile Include="LiveLazer.cpp" />
+    <ClCompile Include="Live.cpp">
+      <Filter>Live</Filter>
+    </ClCompile>
+    <ClCompile Include="LiveLazer.cpp">
+      <Filter>Live</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Log.h" />
     <ClInclude Include="GameMaster.h" />
     <ClInclude Include="Connector.h" />
     <ClInclude Include="ResultServer.h" />
-    <ClInclude Include="Live.h" />
-    <ClInclude Include="LiveLazer.h" />
+    <ClInclude Include="Live.h">
+      <Filter>Live</Filter>
+    </ClInclude>
+    <ClInclude Include="LiveLazer.h">
+      <Filter>Live</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Live">
+      <UniqueIdentifier>{ad9cd667-bbd1-4356-bf10-7f369e8b73aa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

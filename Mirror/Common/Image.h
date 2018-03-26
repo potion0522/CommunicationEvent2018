@@ -33,6 +33,7 @@ private:
 		std::string name;		//ディレクトリ名
 		std::vector< Png > png;	//読み込んだ画像
 	};
+	bool _image_load;
 
 	std::vector< Directory > _data;
 	std::vector< WIN32_FIND_DATA > _file;
