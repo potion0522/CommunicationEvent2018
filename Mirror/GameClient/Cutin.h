@@ -73,6 +73,7 @@ private:
 	CUTIN_TYPE _type;
 	int _cutin_half_width;
 	int _cutin_half_height;
+	short int _brt;
 
 	//‰æ‘œŠÖŒW
 	std::map< CUTIN_TYPE, std::vector< int > > _cutin_handles;

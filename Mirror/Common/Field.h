@@ -117,6 +117,8 @@ public:
 	void setDeadPlayer( int player );
 	void setReverseFlag( );
 	void setFirstOrSecond( bool first );
+	void blindField( );
+	void clearBlindField( );
 
 public:
 	std::map< int, Mirror > &getAllMirror( );
@@ -193,6 +195,7 @@ protected:
 	bool _button_lighting;
 	bool _reverse_mirror;
 	bool _first;//êÊçUÇ©Ç«Ç§Ç©
+	bool _blind_field;
 	short int _turn;
 	short int _order;
 	short int _info_idx;

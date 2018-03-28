@@ -13,6 +13,7 @@ const int PLAYER_CUTIN_IDX = 3;
 const int ITEM_CUTIN_IDX = 5;
 const int CUTIN_BACKIMAGE_SIZEMAX_CNT = 15;
 const int FINISH_TIME = WAIT_TIME + CUTIN_BACKIMAGE_SIZEMAX_CNT / 2;
+const short int DEFAULT_BRT = 100;
 
 Cutin::Cutin( GlobalDataPtr data ) :
 _data( data ) {
@@ -21,6 +22,7 @@ _data( data ) {
 	_your_turn = false;
 	_play_se = false;
 	_click = true;
+	_brt = DEFAULT_BRT;
 	_drawer = _data->getDrawerPtr( );
 	_soundplayer = _data->getSoundplayerPtr( );
 
@@ -100,6 +102,7 @@ void Cutin::update( ) {
 }
 
 void Cutin::calc( ) {
+	_brt = DEFAULT_BRT;
 	calcBack( );
 	calcString( );
 }
@@ -197,7 +200,7 @@ void Cutin::playSound( ) {
 }
 
 void Cutin::drawBack( ) {
-	_drawer->setAllBright( 100, 100, 100 );
+	_drawer->setAllBright( _brt, _brt, _brt );
 	_drawer->setFrontExtendImage( _cutin_back, ( float )_cutin_half_width, ( float )_cutin_half_height, 1, ( float )_cutin_back.cnt / ( float )CUTIN_BACKIMAGE_SIZEMAX_CNT );
 }
 

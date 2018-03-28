@@ -179,6 +179,7 @@ void Field::initialize( ) {
 	_mirror_selected = false;
 	_button_lighting = false;
 	_reverse_mirror = false;
+	_blind_field = false;
 	_first = true;
 	_order = -1;
 	_info_idx = 0;
@@ -265,6 +266,7 @@ void Field::nextTurn( ) {
 	_phase = SET_MIRROR_PHASE;
 	_mirror_selected = false;
 	_reverse_mirror = false;
+	_blind_field = false;
 	_order = -1;
 	_dead_player = -1;
 	_hit_mirror_num = -1;
@@ -740,6 +742,13 @@ void Field::setFirstOrSecond( bool first ) {
 	_first = first;
 }
 
+void Field::blindField( ) {
+	_blind_field = true;
+}
+
+void Field::clearBlindField( ) {
+	_blind_field = false;
+}
 
 Vector Field::getLazerPoint( ) const {
 	Vector vec = Vector( );
@@ -816,6 +825,7 @@ void Field::drawField( ) {
 	if ( getFieldPosHitNum( ) != -1 ) {
 		SetCursor( _cur_hand );
 	}
+
 	//フィールド描画
 	for ( int i = 0; i < FIELD_ROW; i++ ) {
 		for ( int j = 0; j < FIELD_COL; j++ ) {
@@ -895,6 +905,10 @@ void Field::drawTmpMirror( ) const {
 		image.angle = angle;
 		image.png = _mirror_handle[ mirror.player_num ];
 		image.size = FIELD_SIZE_RATE;
+
+		if ( _blind_field ) {
+			image.alpha = 0;
+		}
 		_drawer->setBackImage( image );
 	}
 }

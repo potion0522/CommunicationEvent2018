@@ -159,19 +159,28 @@ void PhaseSetMirror::setTmpMirror( ) {
 
 	//プレイヤーカットイン
 	if ( _order != _order_past ) {
+		bool your_turn = ( _order == _player_num );
 		_cutin->setImage( Cutin::CUTIN_TYPE_PLAYER,
 			              _player_num == _order ? 
 			              Cutin::CUTIN_PLAYER_YOUR_TURN : 
 			              Cutin::CUTIN_PLAYER_ENEMY_TURN,
 						  true,
-						  ( _order == _player_num ? true : false )
+						  ( your_turn ? true : false )
 		                );
+		if ( your_turn ) {
+			//カットイン中に盤面が見えるのを防ぐ
+			_field->blindField( );
+		}
 	}
 	_order_past = _order;
 
 	if ( _cutin->isCutin( ) ) {
 		return;
 	}
+
+	//ブラインドをなくす
+	_field->clearBlindField( );
+
 
 	if ( _order != _player_num ) {
 		_field->setInfoText( "", YELLOW, Drawer::BIG );
