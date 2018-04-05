@@ -42,7 +42,7 @@ _data( data ) {
 	_keycode.push_back( _keyboard->getKeyCode( DECIMAL_KEY ) );
 
 
-	// ‰æ‘œŠÖŒW ///////////////////////////////////////////////
+	// ‰æ‘œŠÖŒW /////////////////////////////////////////////// 
 	ImagePtr image_ptr = _data->getImagePtr( );
 	{//”wŒi
 		_background_handle = image_ptr->getPng( BACKGROUND_IMAGE, BACKGROUND_WHITE ).png;
