@@ -4,6 +4,7 @@
 #include "const.h"
 #include <string>
 #include <array>
+#include <Windows.h>
 
 PTR( ResultClient );
 PTR( GlobalData );
@@ -24,7 +25,7 @@ public:
 private:
 	void calcButtonAction( );
 	bool isDrag( ) const;
-	int getHitButton( ) const;
+	bool getHitButton( ) const;
 	
 private:
 	void drawReturnButton( ) const;
@@ -41,14 +42,15 @@ private:
 	std::string convResultMessage( bool win, CAUSE_OF_DEATH cause );
 	std::string convWinMessage( CAUSE_OF_DEATH cause );
 	std::string convLoseMessage( CAUSE_OF_DEATH cause );
-	bool _returnbutton_clicking;
 	
 private:
 	std::array< int, BUTTON_TYPE_MAX > _returnbutton_handles;
 	bool _drawn;
 	bool _win;
-	CAUSE_OF_DEATH _cause;
 	short int _cnt;
+	bool _returnbutton_clicking;
+	CAUSE_OF_DEATH _cause;
+	HCURSOR _cur_hand;
 	BoxObject _returnbutton;
 
 	GlobalDataPtr _data;

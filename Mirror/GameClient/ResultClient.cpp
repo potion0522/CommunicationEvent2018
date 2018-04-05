@@ -4,18 +4,19 @@
 #include "Drawer.h"
 #include "Image.h"
 
-const float RETURNBUTTON_X = WIDTH / 3;
-const float RETURNBUTTON_Y = HEIGHT / 5 * 1.25;
+const float RETURNBUTTON_X = WIDTH  / 2;
+const float RETURNBUTTON_Y = HEIGHT / 5 * 3.5 ;
 
 ResultClient::ResultClient( GlobalDataPtr data, GamePtr game ) :
 _data( data ),
 _game( game ) {
 	setFlag( 1 );
 	_drawer = _data->getDrawerPtr( );
-	
+	_cur_hand = LoadCursor( NULL, IDC_HAND );
 
 	_returnbutton = BoxObject( );
 	ImagePtr image_ptr = _data->getImagePtr( );
+
 	//リターンボタン
 		float half_width  = image_ptr->getPng( BUTTON_IMAGE, SAVE_BUTTON_IDX ).width * 0.5f;
 		float half_height = image_ptr->getPng( BUTTON_IMAGE, SAVE_BUTTON_IDX ).height * 0.5f;
@@ -67,9 +68,6 @@ void ResultClient::update( ) {
 	_drawer->setFrontString( true, WIDTH / 2, HEIGHT / 3, RED, result, Drawer::SUPER_BIG );
 	_drawer->setFrontString( true, WIDTH / 2, HEIGHT / 2, WATER, result_message, Drawer::LITTLE_BIG );
 
-	_drawer->setFrontString( true, WIDTH / 2, HEIGHT / 5 * 3.5, YELLOW, "Return Title ....", Drawer::BIG );
-	_drawer->setFrontString( true, WIDTH / 2, HEIGHT / 5 * 3.5, RED,    "                  " + std::to_string( _cnt / FRAME ), Drawer::BIG );
-
 	_cnt--;
 
 	if ( _data->getClickLeft( ) ) {
@@ -78,23 +76,62 @@ void ResultClient::update( ) {
 	if ( _cnt <= 0 ) {
 		_data->setInitFlag( );
 	}
+
+	if ( _returnbutton_clicking && !isDrag( ) ) {
+		switch ( getHitButton( ) ) {
+			case true:
+				_data->setScene( TITLE );
+				break;
+			default:
+				_returnbutton_clicking = false;
+				break;
+		}
+	}
+
+	calcButtonAction( );
+	drawReturnButton( );
 }
 
-//void ResultClient::calcButtonAction( ) {
-//	_returnbutton.image.png = _returnbutton_handles[ NORMAL ];
-//
-//	if ( getHitButton( ) == NONE_BUTTON ) {
-//		return;
-//	}
-//
-//	if ( !isDrag( ) ) {
-//		return;
-//	}
-//	if ( getHitButton( ) == RETURN_BUTTON ) {
-//		_returnbutton.image.png = _returnbutton_handles[ CLICKING ];
-//		_returnbutton_clicking = true;
-//	}
-//}
+void ResultClient::calcButtonAction( ) {
+	_returnbutton.image.png = _returnbutton_handles[ NORMAL ];
+
+	if ( !getHitButton( ) ) {
+		return;
+	}
+
+	if ( !isDrag( ) ) {
+		return;
+	}
+
+	if ( getHitButton( ) ) {
+		_returnbutton.image.png = _returnbutton_handles[ CLICKING ];
+		_returnbutton_clicking = true;
+	}
+}
+
+bool ResultClient::isDrag( ) const {
+	if ( _data->getClickingLeft( ) > 0 ) {
+		return true;
+	}
+	return false;
+}
+
+bool ResultClient::getHitButton( ) const {
+	double mouse_x = _data->getMouseX( );
+	double mouse_y = _data->getMouseY( );
+
+	if ( _returnbutton.collider.lx <= mouse_x && mouse_x <= _returnbutton.collider.rx &&
+		_returnbutton.collider.ly <= mouse_y && mouse_y <= _returnbutton.collider.ry ) {
+		SetCursor( _cur_hand );
+		return true;
+	}
+
+	return false;
+}
+
+void ResultClient::drawReturnButton( ) const {
+	_drawer->setFrontImage( _returnbutton.image );
+}
 
 std::string ResultClient::convResultMessage( bool win, CAUSE_OF_DEATH cause ) {
 	std::string str;
