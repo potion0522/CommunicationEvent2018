@@ -21,6 +21,7 @@ void Client::initialize( ) {
 	_handle_tcp = -1;
 	_handle_udp = -1;
 	_player_num = 0;
+	_dead_count = 0;
 	_recv_data_udp = NetWorkData( );
 	_send_data_tcp = NetWorkData( );
 
@@ -83,7 +84,7 @@ void Client::recvTcp( ) {
 		return;
 	}
 
-	int size = sizeof( bool ) + sizeof( int );
+	int size = sizeof( bool ) + sizeof( int ) + sizeof( float );
 	char *buf;
 	buf = ( char* )malloc( size );
 	int recv = NetWorkRecv( _handle_tcp, buf, size );
@@ -92,6 +93,7 @@ void Client::recvTcp( ) {
 	_player_num = 0;
 	if ( _matching ) {
 		_player_num = *( int* )( buf + sizeof( bool ) );
+		_dead_count = *( float* )( buf + sizeof( bool ) + sizeof( int ) );
 	}
 
 	free( buf );
@@ -263,6 +265,10 @@ int Client::getPlayerNum( ) const {
 		return -1;
 	}
 	return _player_num;
+}
+
+float Client::getDeadCount( ) const {
+	return _dead_count;
 }
 
 int Client::getLazerPoint( ) const {

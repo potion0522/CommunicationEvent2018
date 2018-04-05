@@ -53,6 +53,7 @@ void Game::initialize( ) {
 	_cause = CAUSE_OF_DEATH( );
 	_player_num = _client->getPlayerNum( );
 	_phase = SET_PLAYER_PHASE;
+	_field->setDeadCount( _client->getDeadCount( ) );
  	_field->setPhase( _phase );
 	_order = -1;
 

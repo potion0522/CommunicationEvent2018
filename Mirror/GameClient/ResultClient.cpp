@@ -80,7 +80,7 @@ void ResultClient::update( ) {
 	if ( _returnbutton_clicking && !isDrag( ) ) {
 		switch ( getHitButton( ) ) {
 			case true:
-				_data->setScene( TITLE );
+				_data->setInitFlag( );
 				break;
 			default:
 				_returnbutton_clicking = false;

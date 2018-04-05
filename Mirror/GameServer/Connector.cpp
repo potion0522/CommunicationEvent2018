@@ -2,6 +2,9 @@
 #include "GlobalData.h"
 #include "Log.h"
 #include "Command.h"
+#include "LoadCSV.h"
+#include "Field.h"
+#include <vector>
 #include <string.h>
 
 Connector::Connector( GlobalDataPtr data, LogPtr log, CommandPtr command ) :
@@ -96,7 +99,26 @@ void Connector::sendState( ) {
 	if ( _sending_state == _matching ) {
 		return;
 	}
-	_server->sendDataTcp( _matching );
+
+	float time = 0.0f;
+	{//§ŒÀŠÔ‚ğ“Ç‚İ‚Ş
+		LoadCSVPtr csv( new LoadCSV( ) );
+		std::vector< CsvData > data;
+		csv->read( data, "limit" );
+		int size = ( int )data.size( );
+		for ( int i = 0; i < size; i++ ) {
+			if ( data[ i ].tag == "DEAD_COUNT" ) {
+				time = atof( data[ i ].values.front( ).c_str( ) );
+				break;
+			}
+		}
+
+		FieldPtr field = _data->getFieldPtr( );
+		field->setDeadCount( time );
+	}
+
+	//TCP‘—M
+	_server->sendDataTcp( _matching, time );
 	_sending_state = _matching;
 	if ( _matching ) {
 		_data->setScene( BATTLE );

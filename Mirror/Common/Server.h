@@ -23,7 +23,7 @@ public:
 	bool isRecving( int idx ) const;
 	std::string getServerIpStr( );
 	std::string getClientIpStr( int idx );
-	void sendDataTcp( bool matching );
+	void sendDataTcp( bool matching, float time );
 	void sendDataUdp( );
 	void disConnect( );
 

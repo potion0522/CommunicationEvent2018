@@ -21,20 +21,13 @@ std::string ResultServer::getTag( )  {
 
 void ResultServer::initialize( ) {
 	_win = _game->getWinner( );
-	_cnt = 60 * 3;
 }
 
 void ResultServer::finalize( ) {
 }
 
 void ResultServer::update( ) {
-	_drawer->setFrontString( false, WIDTH / 2, HEIGHT / 2, RED, std::to_string( ( _cnt / 60 ) + 1 ), Drawer::SUPER_BIG );
-
-	if ( _cnt <= 0 ) {
-		_data->setInitFlag( );
-		_log->reset( );
-		_log->add( "Game Reset" );
-		return;
-	}
-	_cnt--;
+	_data->setInitFlag( );
+	_log->reset( );
+	_log->add( "Game Reset" );
 }

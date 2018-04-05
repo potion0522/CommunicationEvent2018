@@ -78,16 +78,18 @@ void Server::lost( ) {
 	}
 }
 
-void Server::sendDataTcp( bool matching ) {
+void Server::sendDataTcp( bool matching, float time ) {
 	for ( int i = 0; i < MACHINE_MAX; i++ ) {
-		int size = sizeof( bool ) + sizeof( int );
+		int size = sizeof( bool ) + sizeof( int ) + sizeof( float );
 		char *buf;
 		buf = ( char* )malloc( size );
-		bool *match = ( bool* )buf;
-		int	 *order = ( int * )( buf + sizeof( bool ) );
+		bool  *match = ( bool* )buf;
+		int	  *order = ( int* )( buf + sizeof( bool ) );
+		float *dead_count = ( float* )( buf + sizeof( bool ) + sizeof( int ) );
 
 		*match = matching;
 		*order = i;
+		*dead_count = time;
 
 		NetWorkSend( _handles[ i ], buf, size );
 

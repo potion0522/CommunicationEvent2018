@@ -48,6 +48,7 @@ public:
 public:
 	std::string getClientIpStr( );
 	int getPlayerNum( ) const;
+	float getDeadCount( ) const;
 	int getLazerPoint( ) const;
 	int getOrder( ) const;
 	int getPlayerPos( int idx ) const;
@@ -86,6 +87,7 @@ private:
 	bool _recving_udp;
 	bool _matching;
 	short int _player_num;
+	float _dead_count;
 	NetWorkData _recv_data_udp;
 	NetWorkData _send_data_tcp;
 	IPDATA _ip;

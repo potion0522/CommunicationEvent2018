@@ -20,6 +20,8 @@ const float WRITTING_BOX_Y = HEIGHT / 2;
 const int PROGRESS_BAR_X = WIDTH / 2;
 const int PROGRESS_BAR_Y = HEIGHT / 3 * 2;
 
+const int SAVE_TIME = FRAME * 2;
+
 IpSetting::IpSetting( GlobalDataPtr data ) :
 _data( data ) {
 	setFlag( 1 );
@@ -95,7 +97,7 @@ _data( data ) {
 		_bar_height_half = image_ptr->getPng( BAR_IMAGE, 1 ).height / 2;
 
 		int length = image_ptr->getPng( BAR_IMAGE, 0 ).width;
-		_bar_rate = length / ( FRAME * 2 );
+		_bar_rate = length / SAVE_TIME;
 	}
 
 	// ‰¹ŠÖŒW ///////////////////////////////////////////////
@@ -160,7 +162,7 @@ void IpSetting::update( ) {
 		image.png = _bar_frame.png;
 		_drawer->setFrontImage( image );
 
-		if ( _wait_time < ( FRAME ) ) {
+		if ( _wait_time < SAVE_TIME ) {
 			_wait_time++;
 		} else {
 			_soundplayer->play( _save_se );

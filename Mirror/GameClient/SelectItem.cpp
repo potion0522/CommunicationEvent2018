@@ -26,6 +26,8 @@ const float SAVE_BUTTON_Y = HEIGHT / 5 * 1.25;
 const int PROGRESS_BAR_X = WIDTH / 2;
 const int PROGRESS_BAR_Y = HEIGHT / 3 * 2;
 
+const int SAVE_TIME = FRAME * 2;
+
 std::string path = "Resources/csv/item.csv";
 
 SelectItem::SelectItem( GlobalDataPtr data ) :
@@ -117,7 +119,7 @@ _data( data ) {
 		_bar_height_half = image_ptr->getPng( BAR_IMAGE, 1 ).height / 2;
 
 		int length = image_ptr->getPng( BAR_IMAGE, 0 ).width;
-		_bar_rate = length / ( FRAME * 2 );
+		_bar_rate = length / SAVE_TIME;
 	}
 
 
@@ -206,7 +208,7 @@ void SelectItem::update( ) {
 		image.png = _bar_frame.png;
 		_drawer->setFrontImage( image );
 
-		if ( _wait_time < ( FRAME * 2 ) ) {
+		if ( _wait_time < SAVE_TIME ) {
 			_wait_time++;
 		} else {
 			_soundplayer->play( _save_se );

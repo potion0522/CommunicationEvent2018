@@ -22,7 +22,6 @@ public:
 
 private:
 	int _win;
-	int _cnt;
 
 	GlobalDataPtr _data;
 	GameMasterPtr _game;

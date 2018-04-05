@@ -109,8 +109,7 @@ void GlobalData::finalize( ) {
 void GlobalData::update( ) {
 	//‰Šú‰»ƒRƒ}ƒ“ƒh
 	if ( _key->getKeyState( KEY_INPUT_Z ) == 1 &&
-		 _key->getKeyState( KEY_INPUT_X ) == 1 &&
-		 _key->getKeyState( KEY_INPUT_C ) == 1 ) {
+		 _key->getKeyState( KEY_INPUT_X ) == 1  ) {
 		setInitFlag( );
 	}
 

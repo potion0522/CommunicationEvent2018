@@ -236,13 +236,6 @@ void Field::initialize( ) {
 			}
 		}
 	}
-	{//§ŒÀŠÔ‚ğ“Ç‚İ‚Ş
-		std::vector< CsvData > limit;
-		csv->read( limit, "limit" );
-		if ( limit.begin( )->tag == "DEATH_COUNT" ) {
-			_dead_count = ( short int )( MINUTE * atof( limit.begin( )->values.begin( )->c_str( ) ) );
-		}
-	}
 
 	for ( int i = 0; i < PLAYER_POSITION * 2; i++ ) {
 		if ( i < PLAYER_POSITION ) {
@@ -748,6 +741,13 @@ void Field::blindField( ) {
 
 void Field::clearBlindField( ) {
 	_blind_field = false;
+}
+
+void Field::setDeadCount( float time ) {
+	if ( time < 0.1 ) {
+		return;
+	}
+	_dead_count = ( int )( time * MINUTE );
 }
 
 Vector Field::getLazerPoint( ) const {

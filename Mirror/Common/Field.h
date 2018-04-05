@@ -119,6 +119,7 @@ public:
 	void setFirstOrSecond( bool first );
 	void blindField( );
 	void clearBlindField( );
+	void setDeadCount( float time );
 
 public:
 	std::map< int, Mirror > &getAllMirror( );
