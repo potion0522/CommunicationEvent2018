@@ -133,6 +133,8 @@ void PhaseSetMirror::setMirror( ) {
 		}
 		return;
 	}
+	//SE
+	_soundplayer->play( _button_se );
 
 	_field->mirrorPosSelected( );
 
@@ -229,9 +231,6 @@ void PhaseSetMirror::setTmpMirror( ) {
 
 	//Œˆ’è‚ð‰Ÿ‚µ‚½‚ç
 	if ( _field->isHitDecisionButton( ) ) {
-		if ( _data->getClickLeft( ) ) {
-			_soundplayer->play( _button_se );
-		}
 		return;
 	}
 
@@ -393,6 +392,7 @@ void PhaseSetMirror::updateItem( ) {
 	if ( item < 0 ) {
 		return;
 	}
+
 	if ( item == ( int )DOUBLE_MIRROR ) {
 		if ( !_field->isSelectedMirror( ) ) {
 			return;
@@ -402,6 +402,8 @@ void PhaseSetMirror::updateItem( ) {
 			return;
 		}
 	}
+	//SE
+	_soundplayer->play( _button_se );
 
 	_client->setItemFlag( true );
 	_client->setItem( _field->getSelectItem( ) );
