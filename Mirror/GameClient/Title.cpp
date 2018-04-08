@@ -94,10 +94,10 @@ _data( data ) {
 		_ip_setbutton.image.cy = IP_SET_BUTTON_Y;
 		_ip_setbutton.image.png = image_ptr->getPng( BUTTON_IMAGE, IP_SETTING_BUTTON_IDX ).png;
 
-		_ip_setbutton.collider.lx = ( float )_ip_setbutton.image.cx - half_width;
-		_ip_setbutton.collider.rx = ( float )_ip_setbutton.image.cx + half_width;
-		_ip_setbutton.collider.ly = ( float )_ip_setbutton.image.cy - half_height;
-		_ip_setbutton.collider.ry = ( float )_ip_setbutton.image.cy + half_height;
+		_ip_setbutton.collider.lx = ( float )_ip_setbutton.image.cx - ( float )image_ptr->getPng( BUTTON_IMAGE, IP_SETTING_BUTTON_IDX ).width / 2;
+		_ip_setbutton.collider.rx = ( float )_ip_setbutton.image.cx + ( float )image_ptr->getPng( BUTTON_IMAGE, IP_SETTING_BUTTON_IDX ).width / 2;
+		_ip_setbutton.collider.ly = ( float )_ip_setbutton.image.cy - ( float )image_ptr->getPng( BUTTON_IMAGE, IP_SETTING_BUTTON_IDX ).height / 2;
+		_ip_setbutton.collider.ry = ( float )_ip_setbutton.image.cy + ( float )image_ptr->getPng( BUTTON_IMAGE, IP_SETTING_BUTTON_IDX ).height / 2;
 	}
 
 	{//ƒ{ƒ^ƒ“SE

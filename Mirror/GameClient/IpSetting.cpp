@@ -209,9 +209,15 @@ void IpSetting::update( ) {
 
 void IpSetting::writeIp( ) {
 	int size = ( int )_keycode.size( );
+	std::string max_str = "123.123.123.123";
 
 	for ( int i = 0; i < size; i++ ) {
 		if ( _data->getKeyState( _keycode[ i ] ) == 1 ) {
+			//•¶Žš“ü—Í‰Â”\”‚ð’´‚¦‚Ä‚¢‚½‚ç“ü—Í‚Å‚«‚È‚¢
+			if ( _ip.length( ) >= max_str.length( ) ) {
+				break;
+			}
+
 			_ip += _keyboard->getKeyStr( _keycode[ i ] );
 		}
 	}

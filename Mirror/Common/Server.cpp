@@ -138,7 +138,11 @@ void Server::createIP( ) {
 }
 
 void Server::createIP( std::string ipstr ) {
-	IPDATA ip;
+	IPDATA ip = IPDATA( );
+
+	if ( ipstr.find( "." ) == std::string::npos ) {
+		return;
+	}
 
 	short int pos = ( short int )ipstr.find_first_of( "." );
 	short int ipint = atoi( ipstr.substr( 0, pos ).c_str( ) );
