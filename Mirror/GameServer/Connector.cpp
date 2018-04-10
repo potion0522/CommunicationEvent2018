@@ -108,7 +108,7 @@ void Connector::sendState( ) {
 		int size = ( int )data.size( );
 		for ( int i = 0; i < size; i++ ) {
 			if ( data[ i ].tag == "DEAD_COUNT" ) {
-				time = atof( data[ i ].values.front( ).c_str( ) );
+				time = ( float )atof( data[ i ].values.front( ).c_str( ) );
 				break;
 			}
 		}
