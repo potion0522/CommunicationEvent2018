@@ -428,6 +428,7 @@ void PhaseSetMirror::invocationItem( ) {
 			_field->setLazerPoint( lazer_pos );
 			_field->mirrorPosNotSelected( );
 			_tmp_mirror = Field::Mirror( );
+			_client->setCtsFlag( false );
 			_field->nextTurn( );
 			_order_past = -1;
 		}
