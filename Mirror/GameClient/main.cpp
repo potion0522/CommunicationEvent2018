@@ -41,7 +41,7 @@ void setScreenSize( int *width, int *height ) {
 		}
 	}
 }
-
+//test
 int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow ) {
 	SetWindowText( "Mirror" );
 	ChangeWindowMode( TRUE );
