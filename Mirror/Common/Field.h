@@ -208,7 +208,7 @@ protected:
 	short int _hit_mirror_num;
 	short int _lazer_point_idx;
 	short int _select_item;
-	short int _dead_count;
+	int _dead_count;
 	HCURSOR _cur_hand;
 	BATTLE_PHASE _phase;
 	Mirror _tmp_mirror;

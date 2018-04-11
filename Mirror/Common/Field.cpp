@@ -1139,7 +1139,7 @@ void Field::drawDeathCount( ) const {
 	const short int TIME_BOARD_Y = 150;
 	const short int TIME_STRING_X = WIDTH - 100;
 	const short int TIME_STRING_Y = 100;
-	const short int TIME_NUMBER_X = WIDTH - 130;
+	const short int TIME_NUMBER_X = WIDTH - 140;
 	const short int TIME_NUMBER_Y = 170;
 
 	//カウント背景
@@ -1172,12 +1172,22 @@ void Field::drawDeathCount( ) const {
 		tmp /= 10;
 	}
 
+
+	float size_rate = 1;
+	const short int PITCH = 50;
+
+	//4桁以上であれば
+	if ( length >= 4 ) {
+		size_rate = 0.7f - ( length - 4 ) * 0.1f;
+	}
+
 	for ( int i = 0; i < length; i++ ) {
 		image = ImageProperty( );
 		//フレーム
-		image.cx = TIME_NUMBER_X + i * 50;
+		image.cx = TIME_NUMBER_X + i * ( PITCH * size_rate );
 		image.cy = TIME_NUMBER_Y;
 		image.png = frame[ length - i - 1 ];
+		image.size = size_rate;
 		_drawer->setBackImage( image );
 
 		//中身
