@@ -214,7 +214,7 @@ void GameMaster::updateMirrorPhase( ) {
 
 	//‹¾‚Ì”z’u
 	bool del = false;
-	if ( _client_data[ 0 ].flag && _client_data[ 0 ].flag ) {
+	if ( _client_data[ 0 ].flag && _client_data[ 1 ].flag ) {
 		//x y angle ‚·‚×‚Ä“¯‚¶‚Å‚ ‚ê‚Î
 		if ( _client_data[ 0 ].x     == _client_data[ 1 ].x &&
 			 _client_data[ 0 ].y     == _client_data[ 1 ].y &&

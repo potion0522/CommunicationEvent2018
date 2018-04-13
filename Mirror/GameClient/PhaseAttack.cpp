@@ -100,10 +100,12 @@ void PhaseAttack::recv( ) {
 
 	//‹¾‚Ì”z’u
 	bool del = false;
-	if ( mirror[ 0 ].x     == mirror[ 1 ].x     &&
-		 mirror[ 0 ].y     == mirror[ 1 ].y     &&
-		 mirror[ 0 ].angle == mirror[ 1 ].angle ) {
-		del = true;
+	if ( mirror[ 0 ].flag && mirror[ 1 ].flag ) {
+		if ( mirror[ 0 ].x == mirror[ 1 ].x     &&
+			mirror[ 0 ].y == mirror[ 1 ].y     &&
+			mirror[ 0 ].angle == mirror[ 1 ].angle ) {
+			del = true;
+		}
 	}
 
 	if ( del ) {
