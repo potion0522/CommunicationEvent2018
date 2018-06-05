@@ -525,6 +525,7 @@ void GameMaster::commandExecution( ) {
 		if ( value < ( int )ITEM_MAX ) {
 			_item = value;
 			_use_item = true;
+			_item_user = 1;
 			invocationItem( );
 			for ( int i = 0; i < MACHINE_MAX; i++ ) {
 				_client_data[ i ].fin = false;
