@@ -97,6 +97,7 @@ void GameMaster::update( ) {
 		return;
 	}
 
+	// Clientから受け取ったデータを反映
 	switch ( _phase ) {
 	case SET_PLAYER_PHASE	: updatePlayerPhase( ); break;
 	case SET_MIRROR_PHASE	: updateMirrorPhase( ); break;
@@ -104,8 +105,11 @@ void GameMaster::update( ) {
 	case JUDGE_PHASE		: updateJudgePhase ( ); break;
 	}
 
+	// 更新データの送信
 	_server->sendDataUdp( );
 
+
+	// Clientからのデータを受け取る
 	switch ( _phase ) {
 	case SET_PLAYER_PHASE	: inputPlayerPhase( ); break;
 	case SET_MIRROR_PHASE	: inputMirrorPhase( ); break;
@@ -121,6 +125,8 @@ void GameMaster::orderPlayer( ) {
 }
 
 int GameMaster::getWaitingIdx( ) const {
+	// 行動中プレイヤーを返す
+	// 両プレイヤー終了なら -1
 	int idx = -1;
 	for ( int i = 0; i < PLAYER_NUM; i++ ) {
 		if ( _client_data[ i ].fin ) {
@@ -173,6 +179,8 @@ int GameMaster::calcLazerPoint( int exclusion ) {
 
 void GameMaster::updatePlayerPhase( ) {
 	int idx = getWaitingIdx( );
+
+	// このフェーズはオーダーはない
 	_server->setOrder( -1 );
 
 	if ( idx != -1 ) {
@@ -200,12 +208,15 @@ void GameMaster::updatePlayerPhase( ) {
 void GameMaster::updateMirrorPhase( ) {
 	int idx = getWaitingIdx( );
 
+	// 操作権をセット
 	_server->setOrder( idx );
 
+	// 操作中ならリターン
 	if ( idx != -1 ) {
 		return;
 	}
 
+	// 両プレイヤーの行動反映
 	_phase = ATTACK_PHASE;
 	_server->setBattlePhase( _phase );
 	_live->setPhase( _phase );
@@ -278,6 +289,7 @@ void GameMaster::updateAttackPhase( ) {
 		return;
 	}
 
+	// 生死判定
 	CAUSE_OF_DEATH cause = CAUSE_OF_DEATH( );
 	for ( int i = 0; i < PLAYER_NUM; i++ ) {
 		if ( !_client_data[ i ].alive ) {
